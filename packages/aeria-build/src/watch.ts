@@ -17,7 +17,7 @@ export const compileAndSpawn = async () => {
     })
 
     const config = await getConfig()
-    writeMirrorFiles(mirror, config)
+    await writeMirrorFiles(mirror, config)
 
   } catch( err: any ) {
     if( err.code !== 'MODULE_NOT_FOUND' ) {

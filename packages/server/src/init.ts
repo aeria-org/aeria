@@ -56,7 +56,7 @@ export const init = <const TInitOptions extends InitOptions>(_options: TInitOpti
       })
 
       console.time('warmup')
-      void await warmup()
+      await warmup()
 
       console.log()
       console.timeEnd('warmup')
@@ -98,7 +98,7 @@ export const init = <const TInitOptions extends InitOptions>(_options: TInitOpti
       })
 
       if( !options.config?.database?.noDatabase ) {
-        void await getDatabase()
+        await getDatabase()
       }
 
       server.listen()
