@@ -1,0 +1,27 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "paths": {
+      "@aeriajs/api": [
+        "../api/dist"
+      ],
+      "@aeriajs/access-control": [
+        "../access-control/dist"
+      ],
+      "@aeriajs/common": [
+        "../common/dist"
+      ],
+      "@aeriajs/types": [
+        "../types/dist"
+      ],
+      "@aeriajs/validation": [
+        "../validation/dist"
+      ]
+    }
+  },
+  "include": [
+    "@types/*.d.ts",
+    "src"
+  ]
+}

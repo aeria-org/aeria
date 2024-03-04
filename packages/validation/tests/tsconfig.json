@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@aeriajs/common": [
+        "../../common/dist"
+      ],
+      "@aeriajs/types": [
+        "../../types/dist"
+      ]
+    }
+  }
+}

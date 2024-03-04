@@ -1,0 +1,59 @@
+{
+  "name": "@aeriajs/api",
+  "version": "0.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "env TS_NODE_COMPILER_OPTIONS=\"$(cat ../compilerOptions.json)\" mocha -r ts-node/register tests/*.spec.ts",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "build": "pnpm build:cjs && pnpm build:esm",
+    "build:cjs": "tsc",
+    "build:esm": "swc src/* -d dist --strip-leading-paths -C module.type=es6 --out-file-extension=mjs && pnpm build:esm-transform",
+    "build:esm-transform": "pnpm -w esm-transform $PWD/dist",
+    "prepublishOnly": "pnpm lint && pnpm build",
+    "postinstall": "node dist/__scripts__/postinstall.js || true"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./presets": {
+      "import": "./dist/presets/index.mjs",
+      "require": "./dist/presets/index.js",
+      "types": "./dist/presets/index.d.ts"
+    },
+    "./presets/*": "./dist/presets/*"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.6"
+  },
+  "peerDependencies": {
+    "@aeriajs/access-control": "^0.0.0",
+    "@aeriajs/common": "^0.0.0",
+    "@aeriajs/entrypoint": "^0.0.0",
+    "@aeriajs/http": "^0.0.0",
+    "@aeriajs/security": "^0.0.0",
+    "@aeriajs/builtins": "^0.0.0",
+    "@aeriajs/types": "^0.0.0",
+    "@aeriajs/validation": "^0.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^6.1.0"
+  },
+  "optionalDependencies": {
+    "mongodb-memory-server": "^8.10.2"
+  }
+}

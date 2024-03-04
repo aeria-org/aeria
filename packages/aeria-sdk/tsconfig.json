@@ -1,0 +1,19 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "paths": {
+      "@aeriajs/common": [
+        "../common/dist"
+      ],
+      "@aeriajs/types": [
+        "../types/dist"
+      ]
+    }
+  },
+  "include": [
+    "@types",
+    "src",
+    "aeria-sdk.d.ts"
+  ]
+}

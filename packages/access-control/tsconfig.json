@@ -1,0 +1,21 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "paths": {
+      "@aeriajs/common": [
+        "../common/dist"
+      ],
+      "@aeriajs/entrypoint": [
+        "../entrypoint/dist"
+      ],
+      "@aeriajs/types": [
+        "../types/dist"
+      ]
+    }
+  },
+  "include": [
+    "@types/*.d.ts",
+    "src"
+  ]
+}

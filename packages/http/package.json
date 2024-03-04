@@ -1,0 +1,40 @@
+{
+  "name": "@aeriajs/http",
+  "version": "0.0.0",
+  "description": "## Installation",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "echo skipping",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "build": "pnpm build:cjs && pnpm build:esm",
+    "build:cjs": "tsc",
+    "build:esm": "swc src/* -d dist --strip-leading-paths -C module.type=es6 --out-file-extension=mjs && pnpm build:esm-transform",
+    "build:esm-transform": "pnpm -w esm-transform $PWD/dist",
+    "prepublishOnly": "pnpm lint && pnpm build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "peerDependencies": {
+    "@aeriajs/access-control": "^0.0.0",
+    "@aeriajs/common": "^0.0.0",
+    "@aeriajs/types": "^0.0.0",
+    "@aeriajs/validation": "^0.0.0"
+  }
+}

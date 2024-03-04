@@ -1,0 +1,22 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "pnpm build && (cd dist && NODE_PATH=../node_modules node index.js)"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "api": "link:",
+    "aeria": "file:../packages/aeria"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.3"
+  }
+}

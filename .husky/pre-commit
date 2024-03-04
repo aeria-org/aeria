@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+for ws in $(git diff --name-only --cached | grep -oE 'packages/([^/]+)' | uniq); do
+  pnpm --filter="./${ws}" lint:fix
+done
+

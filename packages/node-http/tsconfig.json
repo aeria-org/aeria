@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "paths": {
+      "@aeriajs/http": [
+        "../http/dist"
+      ],
+      "@aeriajs/types": [
+        "../types/dist"
+      ]
+    }
+  },
+  "include": [
+    "@types/*.d.ts",
+    "src"
+  ]
+}
