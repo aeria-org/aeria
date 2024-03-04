@@ -12,7 +12,6 @@ type Payload = {
   roles?: boolean
   revalidate?: boolean
   router?: boolean
-  noMemoize?: boolean
 }
 
 export const describe = async (contextOrPayload: Context | Payload) => {
@@ -46,9 +45,7 @@ export const describe = async (contextOrPayload: Context | Payload) => {
     result.auth = JSON.parse(JSON.stringify(auth))
   }
 
-  const collections = await getCollections({
-    memoize: !props.noMemoize,
-  })
+  const collections = await getCollections()
 
   const retrievedCollections = props.collections?.length
     ? Object.fromEntries(Object.entries(collections).filter(([key]) => props.collections!.includes(key)))

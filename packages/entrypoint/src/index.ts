@@ -28,10 +28,8 @@ const internalGetCollections = async (): Promise<Record<string, Collection | (()
   return Object.assign({}, collections)
 }
 
-export const getCollections = async ({ memoize } = {
-  memoize: true,
-}) => {
-  if( memoize && collectionsMemo ) {
+export const getCollections = async () => {
+  if( collectionsMemo ) {
     return Object.assign({}, collectionsMemo)
   }
 

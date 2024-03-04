@@ -14,7 +14,6 @@ export const compileAndSpawn = async () => {
 
     const mirror = await systemFunctions.describe({
       router: true,
-      noMemoize: true,
     })
 
     const config = await getConfig()
