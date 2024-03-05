@@ -33,7 +33,7 @@ export const describe = async (contextOrPayload: Context | Payload) => {
       revalidate: true,
     }, await createContext({
       collectionName: 'user',
-      parentContext: context,
+      parentContext: contextOrPayload,
     }))
 
     if( isLeft(authEither) ) {

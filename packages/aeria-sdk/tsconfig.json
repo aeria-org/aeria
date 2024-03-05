@@ -6,6 +6,9 @@
       "@aeriajs/common": [
         "../common/dist"
       ],
+      "@aeriajs/common/*": [
+        "../common/dist/*"
+      ],
       "@aeriajs/types": [
         "../types/dist"
       ]

@@ -29,6 +29,11 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./either": {
+      "import": "./dist/either.mjs",
+      "require": "./dist/either.js",
+      "types": "./dist/either.d.ts"
     }
   },
   "peerDependencies": {
