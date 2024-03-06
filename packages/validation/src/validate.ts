@@ -15,6 +15,7 @@ import { ValidationErrorCodes } from '@aeriajs/types'
 
 export type ValidateOptions = {
   extraneous?: string[] | boolean
+  filterOutExtraneous?: boolean
   throwOnError?: boolean
   coerce?: boolean
 }
@@ -72,13 +73,17 @@ export const validateProperty = (
   property: Property | undefined,
   options: ValidateOptions = {},
 ): Either<PropertyValidationError | ValidationError, any> => {
-  const { extraneous, coerce } = options
+  const { extraneous, filterOutExtraneous, coerce } = options
   if( what === undefined ) {
     return right(what)
   }
 
   if( !property ) {
     if( extraneous || (Array.isArray(extraneous) && extraneous.includes(propName)) ) {
+      if( filterOutExtraneous ) {
+        return right(undefined)
+      }
+
       return right(what)
     }
 
@@ -93,11 +98,7 @@ export const validateProperty = (
   }
 
   if( 'properties' in property ) {
-    const resultEither = validate(what, property, options)
-
-    return isLeft(resultEither)
-      ? resultEither
-      : right(what)
+    return validate(what, property, options)
   }
 
   if( 'literal' in property ) {
@@ -279,7 +280,10 @@ export const validate = <
       errors[propName] = result
     }
 
-    resultCopy[propName] = unwrapEither(resultEither)
+    const parsed = unwrapEither(resultEither)
+    if( parsed !== undefined ) {
+      resultCopy[propName] = parsed
+    }
   }
 
   if( Object.keys(errors).length > 0 ) {

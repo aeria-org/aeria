@@ -103,6 +103,7 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
       const token = await signToken({
         _id: null,
         roles: ['root'],
+        userinfo: {},
       })
 
       return right(<Return>{
