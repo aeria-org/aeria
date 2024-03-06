@@ -1,5 +1,17 @@
 # aeria-sdk
 
+## 0.0.19
+
+### Patch Changes
+
+- Update exports
+
+## 0.0.18
+
+### Patch Changes
+
+- Change path of .d.ts files
+
 ## 0.0.17
 
 ### Patch Changes

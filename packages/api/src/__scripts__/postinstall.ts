@@ -1,5 +1,5 @@
 import path from 'path'
-import * as fs from 'fs/promises'
+import * as fs from 'fs'
 
 const DTS_FILENAME = 'aeria.d.ts'
 
@@ -15,7 +15,7 @@ declare global {
       : never
   }
 
-  type Collections = typeof import('.') extends infer EntrypointModule
+  type Collections = typeof import('..') extends infer EntrypointModule
     ? 'collections' extends keyof EntrypointModule
       ? UnpackCollections<EntrypointModule['collections']>
       : 'default' extends keyof EntrypointModule
@@ -43,7 +43,9 @@ const install = async () => {
     throw new Error('must run as a script')
   }
 
-  const { name } = JSON.parse(await fs.readFile(path.join(base, 'package.json'), {
+  const aeriaDir = path.join(base, '.aeria')
+
+  const { name } = JSON.parse(await fs.promises.readFile(path.join(base, 'package.json'), {
     encoding: 'utf8',
   }))
 
@@ -51,7 +53,12 @@ const install = async () => {
     return
   }
 
-  await fs.writeFile(path.join(base, DTS_FILENAME), dts)
+  if( !fs.existsSync(aeriaDir) ) {
+    await fs.promises.mkdir(aeriaDir)
+  }
+
+  await fs.promises.writeFile(path.join(aeriaDir, DTS_FILENAME), dts)
 }
 
 install()
+

@@ -1,5 +1,21 @@
 # @aeriajs/api
 
+## 0.0.5
+
+### Patch Changes
+
+- Update postinstall script
+  - @aeriajs/builtins@0.0.5
+  - @aeriajs/security@0.0.5
+
+## 0.0.4
+
+### Patch Changes
+
+- Update postinstall script
+  - @aeriajs/builtins@0.0.4
+  - @aeriajs/security@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes

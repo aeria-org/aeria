@@ -17,7 +17,7 @@ export const compileAndSpawn = async () => {
     })
 
     const config = await getConfig()
-    await writeMirrorFiles(mirror, config)
+    await writeMirrorFiles(mirror, config, path.join(process.cwd(), '.aeria'))
 
   } catch( err: any ) {
     if( err.code !== 'MODULE_NOT_FOUND' ) {

@@ -3,7 +3,3 @@
 
 pnpm -r lint
 
-if test -d playground/node_modules; then
-  rm pnpm-lock.yaml
-  pnpm i
-fi
