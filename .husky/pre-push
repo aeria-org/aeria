@@ -3,3 +3,7 @@
 
 pnpm -r lint
 
+pnpm i
+git add pnpm-lock.yaml
+git commit -m 'chore: update lockfile'
+
