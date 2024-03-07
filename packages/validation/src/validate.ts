@@ -325,7 +325,7 @@ export const validator = <const TJsonSchema extends Omit<Description, '$id'> | P
 
   return <const>[
     {} as InferSchema<TJsonSchema>,
-    <TWhat extends Record<string, any>>(what: TWhat) => {
+    <TWhat>(what: TWhat) => {
       return validate(what, schema, options)
     },
   ]
@@ -338,7 +338,7 @@ export const silentValidator = <const TJsonSchema extends Omit<Description, '$id
 
   return <const>[
     {} as InferSchema<TJsonSchema>,
-    <TWhat extends Record<string, any>>(what: TWhat) => {
+    <TWhat>(what: TWhat) => {
       return validateSilently(what, schema, options)
     },
   ]

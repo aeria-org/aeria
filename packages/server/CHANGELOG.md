@@ -1,5 +1,14 @@
 # @aeriajs/server
 
+## 0.0.6
+
+### Patch Changes
+
+- @aeriajs/api@0.0.6
+- @aeriajs/builtins@0.0.6
+- @aeriajs/http@0.0.4
+- @aeriajs/server@0.0.6
+
 ## 0.0.5
 
 ### Patch Changes

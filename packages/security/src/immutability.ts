@@ -1,6 +1,5 @@
 import type { Context } from '@aeriajs/types'
 import type { SecurityCheckProps, SecurityCheckReadPayload, SecurityCheckWritePayload } from './types.js'
-
 import { ACErrors, ObjectId } from '@aeriajs/types'
 import { left, right, isLeft } from '@aeriajs/common'
 
@@ -33,13 +32,14 @@ const internalCheckImmutability = async (
   const currentDocument: Record<string, any> | null = await context.collection.model.findOne({
     _id: new ObjectId(parentId),
   })
+
   if( !currentDocument ) {
     return left(ACErrors.ImmutabilityParentNotFound)
   }
 
   if( childId ) {
     if(
-      (Array.isArray(currentDocument[propertyName]) && !currentDocument[propertyName].some((child) => child.toString() === childId))
+      (Array.isArray(currentDocument[propertyName]) && !currentDocument[propertyName].some((child: any) => child.toString() === childId))
       || (!Array.isArray(currentDocument[propertyName]) && currentDocument[propertyName] && currentDocument[propertyName] !== childId.toString())
     ) {
       return left(ACErrors.ImmutabilityIncorrectChild)

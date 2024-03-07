@@ -35,6 +35,7 @@ jobs:
             && pnpm --no-bail --filter='./packages/builtins' build \
             && pnpm --no-bail --filter='./packages/server' build \
             && pnpm --no-bail --filter='./packages/aeria' build \
+            && pnpm --no-bail --filter='./packages/aeria-sdk' build \
             && pnpm --no-bail --filter='./packages/aeria-build' build:build
 
       - name: Patch node_modules

@@ -1,4 +1,12 @@
-export * from '@aeriajs/common/either'
+export {
+  left,
+  right,
+  isLeft,
+  isRight,
+  unwrapEither,
+  unsafe,
+} from '@aeriajs/common/either'
+
 export {
   topLevel as Aeria,
 } from './topLevel.js'
