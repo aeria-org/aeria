@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.7
+
+### Patch Changes
+
+- Fix normalizeProjection() bug
+  - @aeriajs/builtins@0.0.7
+  - @aeriajs/security@0.0.7
+
 ## 0.0.6
 
 ### Patch Changes

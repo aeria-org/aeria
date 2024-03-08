@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/api",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -46,8 +46,8 @@
     "@aeriajs/common": "^0.0.1",
     "@aeriajs/entrypoint": "^0.0.1",
     "@aeriajs/http": "^0.0.4",
-    "@aeriajs/security": "^0.0.6",
-    "@aeriajs/builtins": "^0.0.6",
+    "@aeriajs/security": "^0.0.7",
+    "@aeriajs/builtins": "^0.0.7",
     "@aeriajs/types": "^0.0.0",
     "@aeriajs/validation": "^0.0.4",
     "jsonwebtoken": "^8.5.1",

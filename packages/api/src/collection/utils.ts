@@ -14,7 +14,7 @@ export const normalizeProjection = <
   }
 
   const projection = target.reduce((a, key) => {
-    if( description.properties[key].hidden ) {
+    if( key !== '_id' && description.properties[key].hidden ) {
       return a
     }
 

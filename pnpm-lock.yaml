@@ -66,10 +66,10 @@ importers:
         specifier: ^0.0.1
         version: link:../access-control
       '@aeriajs/api':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../api
       '@aeriajs/builtins':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../builtins
       '@aeriajs/common':
         specifier: ^0.0.1
@@ -84,10 +84,10 @@ importers:
         specifier: ^0.0.4
         version: link:../node-http
       '@aeriajs/security':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../security
       '@aeriajs/server':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../server
       '@aeriajs/types':
         specifier: ^0.0.0
@@ -99,10 +99,10 @@ importers:
   packages/aeria-build:
     dependencies:
       '@aeriajs/api':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../api
       '@aeriajs/builtins':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../builtins
       '@aeriajs/common':
         specifier: ^0.0.1
@@ -156,7 +156,7 @@ importers:
         specifier: ^0.0.1
         version: link:../access-control
       '@aeriajs/builtins':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../builtins
       '@aeriajs/common':
         specifier: ^0.0.1
@@ -168,7 +168,7 @@ importers:
         specifier: ^0.0.4
         version: link:../http
       '@aeriajs/security':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../security
       '@aeriajs/types':
         specifier: ^0.0.0
@@ -197,7 +197,7 @@ importers:
         specifier: ^0.0.1
         version: link:../access-control
       '@aeriajs/api':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../api
       '@aeriajs/common':
         specifier: ^0.0.1
@@ -266,7 +266,7 @@ importers:
   packages/security:
     dependencies:
       '@aeriajs/api':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../api
       '@aeriajs/common':
         specifier: ^0.0.1
@@ -281,10 +281,10 @@ importers:
         specifier: ^0.0.1
         version: link:../access-control
       '@aeriajs/api':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../api
       '@aeriajs/builtins':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../builtins
       '@aeriajs/common':
         specifier: ^0.0.1
@@ -296,7 +296,7 @@ importers:
         specifier: ^0.0.4
         version: link:../http
       '@aeriajs/server':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: 'link:'
       '@aeriajs/types':
         specifier: ^0.0.0
