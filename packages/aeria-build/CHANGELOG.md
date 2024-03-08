@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.9
+
+### Patch Changes
+
+- Include dotfiles in glob search
+
 ## 0.0.8
 
 ### Patch Changes

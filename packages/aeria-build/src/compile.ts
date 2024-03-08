@@ -8,6 +8,7 @@ import { log } from './log.js'
 export const compile = async () => {
   const fileList = glob.sync('**/*.ts', {
     ignore: ['node_modules/**/*.ts'],
+    dot: true,
   })
 
   const tsConfig = JSON.parse(await readFile(`${process.cwd()}/tsconfig.json`, {
@@ -34,7 +35,8 @@ export const compile = async () => {
   const compilerOptions = tsConfig.compilerOptions as unknown
 
   const selectedFiles = fileList.filter((file) => {
-    const testFile = (exp: string) => new RegExp(exp.replace('*', '([^\/]+)'), 'g').test(file)
+    const testFile = (exp: string) => new RegExp(exp.replace('*', '([^\/]+)')).test(file)
+
     if( tsConfig.include ) {
       return tsConfig.include.some(testFile)
     }
