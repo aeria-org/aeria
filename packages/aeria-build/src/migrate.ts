@@ -1,5 +1,5 @@
 import type { Collection } from '@aeriajs/types'
-import { right } from '@aeriajs/common'
+import { right, dynamicImport } from '@aeriajs/common'
 import { getDatabase, prepareCollectionName, getDatabaseCollection } from '@aeriajs/api'
 import { config as loadEnv } from 'dotenv'
 import { log } from './log.js'
@@ -20,7 +20,7 @@ export const migrate = async () => {
     loadEnv()
   }
 
-  const collections = await import(path.join(process.cwd(), 'dist', 'collections')) as Record<string,
+  const collections = await dynamicImport(path.join(process.cwd(), 'dist', 'collections', 'index.js')) as Record<string,
     | Collection
     | (()=> Collection)
   >

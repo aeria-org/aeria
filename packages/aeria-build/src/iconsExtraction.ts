@@ -1,12 +1,12 @@
 import * as fs from 'fs/promises'
 import path from 'path'
 import { extractIcons, iconsEsmContent, iconsCjsContent, iconsDtsContent } from './icons'
-import { right } from '@aeriajs/common'
+import { right, dynamicImport } from '@aeriajs/common'
 
 const DATA_PATH = '.aeria'
 
 export const iconsExtraction = async () => {
-  const collections = await import(path.join(process.cwd(), 'dist', 'collections'))
+  const collections = await dynamicImport(path.join(process.cwd(), 'dist', 'collections', 'index.js'))
   const base = path.join(process.cwd(), 'node_modules', DATA_PATH)
   const icons = []
 

@@ -1,4 +1,5 @@
 import type { InstanceConfig } from './types.js'
+import { dynamicImport } from '@aeriajs/common'
 import path from 'path'
 
 export const apiUrl = (config: InstanceConfig) => {
@@ -12,7 +13,7 @@ export const apiUrl = (config: InstanceConfig) => {
 }
 
 export const getConfig = async () => {
-  const { aeriaSdk } = await import(path.join(process.cwd(), 'package.json'))
+  const { aeriaSdk } = await dynamicImport(path.join(process.cwd(), 'package.json'))
   if( typeof aeriaSdk !== 'object' || !aeriaSdk ) {
     throw new Error('aeriaSdk is absent in package.json')
   }
