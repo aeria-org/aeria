@@ -8,24 +8,24 @@ import { log } from './log.js'
 export const compileAndSpawn = async () => {
   const result = await compile()
 
-  try {
-    const { getConfig } = await import('aeria-sdk/utils')
-    const { writeMirrorFiles } = await import('aeria-sdk/mirror')
-
-    const mirror = await systemFunctions.describe({
-      router: true,
-    })
-
-    const config = await getConfig()
-    await writeMirrorFiles(mirror, config, path.join(process.cwd(), '.aeria'))
-
-  } catch( err: any ) {
-    if( err.code !== 'MODULE_NOT_FOUND' ) {
-      throw err
-    }
-  }
-
   if( result.success ) {
+    try {
+      const { getConfig } = await import('aeria-sdk/utils')
+      const { writeMirrorFiles } = await import('aeria-sdk/mirror')
+
+      const mirror = await systemFunctions.describe({
+        router: true,
+      })
+
+      const config = await getConfig()
+      await writeMirrorFiles(mirror, config, path.join(process.cwd(), '.aeria'))
+
+    } catch( err: any ) {
+      if( err.code !== 'MODULE_NOT_FOUND' ) {
+        throw err
+      }
+    }
+
     const api = spawn('node', [
       '-r',
       'aeria/loader',
