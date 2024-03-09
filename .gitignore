@@ -1,5 +1,4 @@
 node_modules
-__pycache__
+dist
 .env
 production.env
-dist
