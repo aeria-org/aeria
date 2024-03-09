@@ -34,6 +34,10 @@
   "peerDependencies": {
     "@aeriajs/api": "^0.0.10",
     "@aeriajs/common": "^0.0.4",
-    "@aeriajs/types": "^0.0.3"
+    "@aeriajs/types": "^0.0.3",
+    "mongodb": "^6.1.0"
+  },
+  "devDependencies": {
+    "mongodb": "^6.1.0"
   }
 }

@@ -1,7 +1,7 @@
 import type { Context } from '@aeriajs/types'
 import type { SecurityCheckProps, SecurityCheckReadPayload, SecurityCheckWritePayload } from './types.js'
 import { ACErrors } from '@aeriajs/types'
-import { ObjectId } from '@aeriajs/api'
+import { ObjectId } from 'mongodb'
 import { left, right, isLeft } from '@aeriajs/common'
 
 const internalCheckImmutability = async (
