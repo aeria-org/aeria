@@ -1,5 +1,5 @@
+import type { ObjectId } from 'mongodb'
 import type {
-  ObjectId,
   Context,
   Description,
   SecurityPolicy,

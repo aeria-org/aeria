@@ -1,5 +1,22 @@
 # @aeriajs/entrypoint
 
+## 0.0.4
+
+### Patch Changes
+
+- Remove unused deps from dependency tree
+- Updated dependencies
+  - @aeriajs/common@0.0.4
+  - @aeriajs/types@0.0.3
+
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/types@0.0.2
+  - @aeriajs/common@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes

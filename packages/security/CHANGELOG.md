@@ -1,5 +1,24 @@
 # @aeriajs/security
 
+## 0.0.10
+
+### Patch Changes
+
+- Remove unused deps from dependency tree
+- Updated dependencies
+  - @aeriajs/common@0.0.4
+  - @aeriajs/types@0.0.3
+  - @aeriajs/api@0.0.10
+
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/types@0.0.2
+  - @aeriajs/api@0.0.9
+  - @aeriajs/common@0.0.3
+
 ## 0.0.8
 
 ### Patch Changes

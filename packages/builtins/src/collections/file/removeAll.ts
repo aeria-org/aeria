@@ -1,6 +1,6 @@
-import type { Context, SchemaWithId, PackReferences, RemoveAllPayload, ObjectId } from '@aeriajs/types'
+import type { Context, SchemaWithId, PackReferences, RemoveAllPayload } from '@aeriajs/types'
 import type { description } from './description.js'
-import { removeAll as originalRemoveAll } from '@aeriajs/api'
+import { removeAll as originalRemoveAll, type ObjectId } from '@aeriajs/api'
 import fs from 'fs/promises'
 
 export const removeAll = async (payload: RemoveAllPayload, context: Context<typeof description>) => {

@@ -6,3 +6,6 @@ export * from './database.js'
 export * from './functions/index.js'
 export * from './use.js'
 export * as functions from './functions/index.js'
+export {
+  ObjectId,
+} from 'mongodb'

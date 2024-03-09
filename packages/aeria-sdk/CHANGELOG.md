@@ -1,5 +1,22 @@
 # aeria-sdk
 
+## 0.0.23
+
+### Patch Changes
+
+- Remove unused deps from dependency tree
+- Updated dependencies
+  - @aeriajs/common@0.0.4
+  - @aeriajs/types@0.0.3
+
+## 0.0.22
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/types@0.0.2
+  - @aeriajs/common@0.0.3
+
 ## 0.0.21
 
 ### Patch Changes

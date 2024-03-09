@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/types",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -34,8 +34,5 @@
   "devDependencies": {
     "@phosphor-icons/core": "^2.0.6",
     "mongodb": "^6.1.0"
-  },
-  "peerDependencies": {
-    "@phosphor-icons/core": "^2.0.6"
   }
 }

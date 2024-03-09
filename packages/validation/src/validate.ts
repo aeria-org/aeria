@@ -9,7 +9,6 @@ import type {
   ValidationError,
 } from '@aeriajs/types'
 
-import { ObjectId } from '@aeriajs/types'
 import { isLeft, left, right, unwrapEither, getMissingProperties } from '@aeriajs/common'
 import { ValidationErrorCodes } from '@aeriajs/types'
 
@@ -133,7 +132,7 @@ export const validateProperty = (
     }
 
     if( '$ref' in property && actualType === 'string' ) {
-      if( ObjectId.isValid(what) ) {
+      if( /^[0-9a-fA-F]{24}$/.test(what) ) {
         return right(what)
       }
     }

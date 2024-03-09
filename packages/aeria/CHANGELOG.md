@@ -1,5 +1,40 @@
 # aeria
 
+## 0.0.10
+
+### Patch Changes
+
+- Remove unused deps from dependency tree
+- Updated dependencies
+  - @aeriajs/access-control@0.0.4
+  - @aeriajs/entrypoint@0.0.4
+  - @aeriajs/validation@0.0.7
+  - @aeriajs/node-http@0.0.7
+  - @aeriajs/builtins@0.0.10
+  - @aeriajs/security@0.0.10
+  - @aeriajs/common@0.0.4
+  - @aeriajs/server@0.0.10
+  - @aeriajs/types@0.0.3
+  - @aeriajs/http@0.0.7
+  - @aeriajs/api@0.0.10
+
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/validation@0.0.6
+  - @aeriajs/types@0.0.2
+  - @aeriajs/api@0.0.9
+  - @aeriajs/builtins@0.0.9
+  - @aeriajs/http@0.0.6
+  - @aeriajs/access-control@0.0.3
+  - @aeriajs/common@0.0.3
+  - @aeriajs/entrypoint@0.0.3
+  - @aeriajs/security@0.0.9
+  - @aeriajs/server@0.0.9
+  - @aeriajs/node-http@0.0.6
+
 ## 0.0.8
 
 ### Patch Changes

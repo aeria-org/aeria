@@ -1,5 +1,6 @@
-import type { Context, SchemaWithId, ObjectId } from '@aeriajs/types'
+import type { Context, SchemaWithId } from '@aeriajs/types'
 import type { description } from './description.js'
+import { type ObjectId } from '@aeriajs/api'
 import { compare as bcryptCompare } from 'bcrypt'
 import { signToken } from '@aeriajs/api'
 import { left, right } from '@aeriajs/common'

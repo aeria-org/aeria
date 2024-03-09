@@ -1,6 +1,6 @@
 import type { Context } from '@aeriajs/types'
 import type { description } from './description.js'
-import { ObjectId } from 'mongodb'
+import { ObjectId } from '@aeriajs/api'
 import { left } from '@aeriajs/common'
 import fs from 'fs'
 
