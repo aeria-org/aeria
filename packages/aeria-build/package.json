@@ -1,6 +1,6 @@
 {
   "name": "aeria-build",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -46,9 +46,9 @@
     "tslib": "^2.5.0"
   },
   "peerDependencies": {
-    "@aeriajs/api": "^0.0.7",
-    "@aeriajs/builtins": "^0.0.7",
-    "@aeriajs/common": "^0.0.1",
-    "@aeriajs/types": "^0.0.0"
+    "@aeriajs/api": "^0.0.8",
+    "@aeriajs/builtins": "^0.0.8",
+    "@aeriajs/common": "^0.0.2",
+    "@aeriajs/types": "^0.0.1"
   }
 }

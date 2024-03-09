@@ -45,7 +45,7 @@ export type InferSchema<TSchema> = MergeReferences<TSchema> extends infer Mapped
         ? Pick<MappedTypes, RequiredPropNames[number]> extends infer RequiredProps
           ? RequiredProps & Partial<Exclude<MappedTypes, keyof RequiredProps>>
           : never
-        : never
+        : MappedTypes
       : MappedTypes
   : never
 
