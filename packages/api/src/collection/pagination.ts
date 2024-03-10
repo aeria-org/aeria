@@ -3,7 +3,7 @@ import type { Context, Pagination, GetAllPayload } from '@aeriajs/types'
 export const makePagination = async (
   payload: GetAllPayload<any>,
   documents: any[],
-  context: Context
+  context: Context,
 ): Promise<Pagination> => {
   const limit = payload.limit
     ? payload.limit
@@ -14,7 +14,7 @@ export const makePagination = async (
   const recordsTotal = 'count' in context.collection.functions
     ? await context.collection.functions.count(payload)
     : await context.collection.model.countDocuments({
-      filters: payload.filters
+      filters: payload.filters,
     })
 
   return {

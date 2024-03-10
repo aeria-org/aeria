@@ -18,7 +18,7 @@ export const getEndpoints = async (): Promise<RoutesMeta> => {
     const {
       description,
       functions: collectionFunctions,
-      functionContracts
+      functionContracts,
     } = collection
 
     if( collectionFunctions ) {
@@ -27,15 +27,19 @@ export const getEndpoints = async (): Promise<RoutesMeta> => {
         const roles = await grantedFor(description.$id, fnName)
 
         const contract = functionContracts && fnName in functionContracts
-          ? roles
-            ? Object.assign({ roles }, functionContracts[fnName])
+          ? roles.length
+            ? Object.assign({
+              roles,
+            }, functionContracts[fnName])
             : functionContracts[fnName]
-          : roles
-            ? { roles }
+          : roles.length
+            ? {
+              roles,
+            }
             : null
 
         functions[endpoint as RouteUri] = {
-          POST: contract
+          POST: contract,
         }
       }
     }
@@ -43,7 +47,7 @@ export const getEndpoints = async (): Promise<RoutesMeta> => {
 
   const result = deepMerge(
     functions,
-    router.routesMeta
+    router.routesMeta,
   )
 
   return result

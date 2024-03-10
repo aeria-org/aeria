@@ -31,7 +31,7 @@ export const getAll = async <
     sort,
     project = [],
     offset = 0,
-  } = !options?.bypassSecurity
+  } = !options.bypassSecurity
     ? unsafe(await security.beforeRead(payload))
     : payload
 

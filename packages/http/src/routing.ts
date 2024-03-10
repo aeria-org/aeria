@@ -9,7 +9,7 @@ import type {
   ContractWithRoles,
 } from '@aeriajs/types'
 
-import { REQUEST_METHODS } from '@aeriajs/types'
+import { ACErrors, REQUEST_METHODS } from '@aeriajs/types'
 import { Stream } from 'stream'
 import { pipe, arraysIntersects, left, isLeft, unwrapEither, deepMerge } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
@@ -70,8 +70,12 @@ const checkUnprocessable = (validationEither: ReturnType<typeof validate>, conte
 
 const unsufficientRoles = (context: Context) => {
   context.response.writeHead(403, {
-    'content-type': 'application/json'
+    'content-type': 'application/json',
   })
+
+  return {
+    error: ACErrors.AuthorizationError
+  }
 }
 
 export const matches = <TRequest extends GenericRequest>(
@@ -141,10 +145,8 @@ export const registerRoute = async <TCallback extends (context: Context)=> any>(
           if( !contract.roles.includes('guest') ) {
             return unsufficientRoles(context)
           }
-        } else if( context.token.roles ) {
-          if( !arraysIntersects(context.token.roles, contract.roles) ) {
-            return unsufficientRoles(context)
-          }
+        } else if( !arraysIntersects(context.token.roles, contract.roles) ) {
+          return unsufficientRoles(context)
         }
       }
 

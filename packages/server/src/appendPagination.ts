@@ -9,7 +9,7 @@ export const appendPagination = async (result: any, context: Context) => {
         context.request.payload,
         result,
         context,
-      )
+      ),
     }
   }
 

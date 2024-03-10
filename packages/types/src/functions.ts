@@ -90,10 +90,10 @@ export type CollectionFunctionsPaginated<TDocument extends CollectionDocument<Op
   }>
 }
 
-export type CollectionFunctionsWithContext<TDocument extends CollectionDocument<OptionalId<any>>> =  {
+export type CollectionFunctionsWithContext<TDocument extends CollectionDocument<OptionalId<any>>> = {
   [P in keyof CollectionFunctions<TDocument>]: (
     payload: Parameters<CollectionFunctions<TDocument>[P]>[0],
     context: Context
-  ) => ReturnType<CollectionFunctions<TDocument>[P]>
+  )=> ReturnType<CollectionFunctions<TDocument>[P]>
 }
 

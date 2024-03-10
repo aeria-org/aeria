@@ -67,7 +67,7 @@ export type ContractRoles = {
   roles?: Collections['user']['item']['roles']
 }
 
-export type Contract = 
+export type Contract =
   | { response: Property | Property[] }
   | { payload: Property }
   | { query: Property }
