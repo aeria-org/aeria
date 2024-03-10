@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.4
+
+### Patch Changes
+
+- Provide separate types for validation errors
+
 ## 0.0.3
 
 ### Patch Changes

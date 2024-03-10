@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/access-control",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "## Instalation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -32,8 +32,8 @@
     "dist"
   ],
   "peerDependencies": {
-    "@aeriajs/common": "^0.0.4",
-    "@aeriajs/entrypoint": "^0.0.4",
-    "@aeriajs/types": "^0.0.3"
+    "@aeriajs/common": "^0.0.5",
+    "@aeriajs/entrypoint": "^0.0.5",
+    "@aeriajs/types": "^0.0.4"
   }
 }

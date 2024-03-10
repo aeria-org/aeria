@@ -20,7 +20,23 @@ export type PropertyValidationError = {
   }
 }
 
+export type ValidationErrorInvalidProperties = {
+  code: ValidationErrorCodes.InvalidProperties
+  errors: Record<string, PropertyValidationError | ValidationError>
+}
+
+export type ValidationErrorMissingProperties = {
+  code: ValidationErrorCodes.MissingProperties
+  errors: Record<string, { type: 'missing' }>
+}
+
+export type ValidationErrorEmptyTarget = {
+  code: ValidationErrorCodes.EmptyTarget
+  errors: {}
+}
+
 export type ValidationError =
-  | { code: ValidationErrorCodes.InvalidProperties, errors: Record<string, PropertyValidationError | ValidationError> }
-  | { code: ValidationErrorCodes.MissingProperties, errors: Record<string, { type: 'missing' }> }
-  | { code: ValidationErrorCodes.EmptyTarget, errors: {} }
+  | ValidationErrorInvalidProperties
+  | ValidationErrorMissingProperties
+  | ValidationErrorEmptyTarget
+
