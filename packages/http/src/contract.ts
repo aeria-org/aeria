@@ -1,15 +1,6 @@
-import type { Property } from '@aeriajs/types'
+import type { ContractWithRoles } from '@aeriajs/types'
 
-export type Contract =
-  | { response: Property | Property[] }
-  | { payload: Property }
-  | { query: Property }
-  | {
-    response?: Property | Property[]
-    payload?: Property
-    query?: Property
-  }
-
-export const defineContract = <const TContract extends Contract>(contract: TContract) => {
+export const defineContract = <const TContractWithRoles extends ContractWithRoles>(contract: TContractWithRoles) => {
   return contract
 }
+

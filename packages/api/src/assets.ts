@@ -64,7 +64,7 @@ export const getFunction = async <
   acProfile?: ACProfile,
 ) => {
   if( acProfile ) {
-    if( !await isGranted(String(collectionName), String(functionName), acProfile) ) {
+    if( !await isGranted(collectionName, functionName, acProfile) ) {
       return left(ACErrors.AuthorizationError)
     }
   }

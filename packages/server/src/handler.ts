@@ -55,6 +55,7 @@ export const customVerbs = () => async (parentContext: Context) => {
   const context = await createContext({
     parentContext,
     collectionName,
+    calledFunction: functionName,
   })
 
   const fnEither = await getFunction(
@@ -87,6 +88,7 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
   const context = await createContext({
     parentContext,
     collectionName,
+    calledFunction: functionName,
   })
 
   const requestCopy = Object.assign({}, context.request)

@@ -1,6 +1,8 @@
 import type { ObjectId } from 'mongodb'
 import type {
   Context,
+  Contract,
+  CollectionFunctionsWithContext,
   Description,
   SecurityPolicy,
   AccessControl,
@@ -13,7 +15,8 @@ export type Collection<TCollection extends Collection = any> = {
   item?: any
   security?: SecurityPolicy
   accessControl?: AccessControl<TCollection>
-  functions?: Record<string, (payload: any, context: Context, ...args: any[])=> any>
+  functions?: Partial<CollectionFunctionsWithContext<any>> & Record<string, (payload: any, context: Context, ...args: any[])=> any>
+  functionContracts?: Record<string, Contract>
 }
 
 export type AssetType = keyof Collection

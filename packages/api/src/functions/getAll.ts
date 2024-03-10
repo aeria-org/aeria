@@ -20,7 +20,7 @@ export const getAll = async <
 >(
   _payload: GetAllPayload<SchemaWithId<Context['description']>> | null,
   context: TContext,
-  options?: GetAllOptions,
+  options: GetAllOptions = {},
 ) => {
   const security = useSecurity(context)
   const payload = _payload || {}
@@ -103,7 +103,7 @@ export const getAll = async <
   }
 
   const result = await context.collection.model.aggregate(pipeline).toArray()
-  const documents: typeof result = []
+  const documents: TDocument[] = []
 
   for( const document of result ) {
     documents.push(unsafe(await traverseDocument(fill(document, context.description), context.description, {
@@ -114,5 +114,6 @@ export const getAll = async <
     })))
   }
 
-  return documents as TDocument[]
+  return documents
 }
+

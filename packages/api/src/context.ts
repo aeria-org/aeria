@@ -28,6 +28,7 @@ const indepthCollection = (collectionName: string, collections: Record<string, C
         const childContext = await createContext({
           parentContext,
           collectionName,
+          inherited: true,
         })
 
         return collection.functions[functionName](props, childContext, ...args)
@@ -91,3 +92,4 @@ export const createContext = async (_options?: ContextOptions<any>) => {
   Object.assign(context, await internalCreateContext(options, context))
   return context
 }
+

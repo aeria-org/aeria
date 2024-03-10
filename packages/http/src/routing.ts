@@ -6,12 +6,12 @@ import type {
   InferProperty,
   InferResponse,
   PackReferences,
+  ContractWithRoles,
 } from '@aeriajs/types'
-import type { Contract } from './contract.js'
 
 import { REQUEST_METHODS } from '@aeriajs/types'
 import { Stream } from 'stream'
-import { pipe, left, isLeft, unwrapEither, deepMerge } from '@aeriajs/common'
+import { pipe, arraysIntersects, left, isLeft, unwrapEither, deepMerge } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
 import { safeJson } from './payload.js'
 import { DEFAULT_BASE_URI } from './constants.js'
@@ -23,18 +23,23 @@ export type RouterOptions = {
   base?: RouteUri
 }
 
+export type RoutesMeta = Record<
+  RouteUri,
+  Partial<Record<RequestMethod, ContractWithRoles | null> | undefined>
+>
+
 export type Middleware = (context: Context)=> any
 
 export type RouteGroupOptions = {
   base?: RouteUri
 }
 
-type TypedContext<TContract extends Contract> = Omit<Context, 'request'> & {
+type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<Context, 'request'> & {
   request: Omit<Context['request'], 'payload' | 'query'> & {
-    payload: TContract extends { payload: infer Payload }
+    payload: TContractWithRoles extends { payload: infer Payload }
       ? PackReferences<InferProperty<Payload>>
       : never
-    query: TContract extends { query: infer Query }
+    query: TContractWithRoles extends { query: infer Query }
       ? InferProperty<Query>
       : any
   }
@@ -43,16 +48,31 @@ type TypedContext<TContract extends Contract> = Omit<Context, 'request'> & {
 export type ProxiedRouter<TRouter> = TRouter & Record<
   RequestMethod,
   <
-    TCallback extends (context: TypedContext<TContract>)=> TContract extends { response: infer Response }
+    TCallback extends (context: TypedContext<TContractWithRoles>)=> TContractWithRoles extends { response: infer Response }
       ? InferResponse<Response>
       : any,
-    const TContract extends Contract,
+    const TContractWithRoles extends ContractWithRoles,
   >(
     exp: RouteUri,
     cb: TCallback,
-    contract?: TContract
+    contract?: TContractWithRoles
   )=> ReturnType<typeof registerRoute>
 >
+
+const checkUnprocessable = (validationEither: ReturnType<typeof validate>, context: Context) => {
+  if( isLeft(validationEither) ) {
+    context.response.writeHead(422, {
+      'content-type': 'application/json',
+    })
+    return validationEither
+  }
+}
+
+const unsufficientRoles = (context: Context) => {
+  context.response.writeHead(403, {
+    'content-type': 'application/json'
+  })
+}
 
 export const matches = <TRequest extends GenericRequest>(
   req: TRequest,
@@ -88,7 +108,7 @@ export const registerRoute = async <TCallback extends (context: Context)=> any>(
   method: RequestMethod | RequestMethod[],
   exp: RouteUri,
   cb: TCallback,
-  contract?: Contract,
+  contract?: ContractWithRoles,
   options: RouterOptions = {},
 ) => {
   const match = matches(context.request, method, exp, options)
@@ -116,18 +136,21 @@ export const registerRoute = async <TCallback extends (context: Context)=> any>(
     Object.assign(context.request, match)
 
     if( contract ) {
-      const checkUnprocessable = (validationEither: ReturnType<typeof validate>) => {
-        if( isLeft(validationEither) ) {
-          context.response.writeHead(422, {
-            'content-type': 'application/json',
-          })
-          return validationEither
+      if( contract.roles ) {
+        if( !context.token.authenticated ) {
+          if( !contract.roles.includes('guest') ) {
+            return unsufficientRoles(context)
+          }
+        } else if( context.token.roles ) {
+          if( !arraysIntersects(context.token.roles, contract.roles) ) {
+            return unsufficientRoles(context)
+          }
         }
       }
 
       if( 'payload' in contract && contract.payload ) {
         const validationEither = validate(context.request.payload, contract.payload)
-        const error = checkUnprocessable(validationEither)
+        const error = checkUnprocessable(validationEither, context)
         if( error ) {
           return error
         }
@@ -138,7 +161,7 @@ export const registerRoute = async <TCallback extends (context: Context)=> any>(
           coerce: true,
         })
 
-        const error = checkUnprocessable(validationEither)
+        const error = checkUnprocessable(validationEither, context)
         if( error ) {
           return error
         }
@@ -206,18 +229,18 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
   options.base ??= DEFAULT_BASE_URI
 
   const routes: ((_: unknown, context: Context, groupOptions?: RouteGroupOptions)=> ReturnType<typeof registerRoute>)[] = []
-  const routesMeta = {} as Record<RouteUri, Partial<Record<RequestMethod, Contract | null> | undefined>>
+  const routesMeta = {} as RoutesMeta
 
   const route = <
-    TCallback extends (context: TypedContext<TContract>)=> TContract extends { response: infer Response }
+    TCallback extends (context: TypedContext<TContractWithRoles>)=> TContractWithRoles extends { response: infer Response }
       ? InferResponse<Response>
-      : TContract,
-    const TContract extends Contract,
+      : TContractWithRoles,
+    const TContractWithRoles extends ContractWithRoles,
   >(
     method: RequestMethod | RequestMethod[],
     exp: RouteUri,
     cb: TCallback,
-    contract?: TContract,
+    contract?: TContractWithRoles,
   ) => {
     routesMeta[exp] ??= {}
     routesMeta[exp]![Array.isArray(method)

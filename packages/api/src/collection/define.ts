@@ -1,4 +1,11 @@
-import type { SchemaWithId, Collection, Context, Description } from '@aeriajs/types'
+import type {
+  SchemaWithId,
+  Collection,
+  Context,
+  Contract,
+  Description,
+
+} from '@aeriajs/types'
 
 export const defineCollection = <
   TCollection extends Collection<TCollection extends Collection ? TCollection : never> extends infer Coll
@@ -9,6 +16,9 @@ export const defineCollection = <
     >
     : never,
   const TDescription extends Description<TDescription>,
+  const TFunctionContracts extends Partial<{
+    [P in keyof TFunctions]: Contract
+  }>,
   const TFunctions extends {
     [P: string]: (payload: any, context: Context<TDescription>, ...args: any[])=> any
   },
@@ -16,6 +26,7 @@ export const defineCollection = <
   collection: TCollection & {
     description: TDescription
     functions?: TFunctions
+    functionContracts?: TFunctionContracts
   },
 ) => {
   return collection as TCollection & {

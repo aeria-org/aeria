@@ -1,7 +1,7 @@
 import type { Context, Either } from '@aeriajs/types'
 import type { Description } from '@aeriajs/types'
-import { createContext, preloadDescription } from '@aeriajs/api'
-import { getCollections, getRouter } from '@aeriajs/entrypoint'
+import { createContext, preloadDescription, getEndpoints } from '@aeriajs/api'
+import { getCollections } from '@aeriajs/entrypoint'
 import { serialize, isLeft, left, unwrapEither } from '@aeriajs/common'
 import { getAvailableRoles } from '@aeriajs/access-control'
 import { authenticate } from '../collections/user/authenticate.js'
@@ -61,6 +61,7 @@ export const describe = async (contextOrPayload: Context | Payload) => {
       : candidate
 
     const { description: rawDescription } = collection
+
     const description = await preloadDescription(rawDescription)
     descriptions[description.$id] = description
   }
@@ -70,8 +71,7 @@ export const describe = async (contextOrPayload: Context | Payload) => {
   }
 
   if( props.router ) {
-    const router = await getRouter()
-    result.router = router.routesMeta
+    result.router = await getEndpoints()
   }
 
   if( props.noSerialize || !('response' in contextOrPayload) ) {

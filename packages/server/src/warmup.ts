@@ -1,5 +1,5 @@
-import { getCollections } from '@aeriajs/entrypoint'
-import { grantedFor } from '@aeriajs/access-control'
+import type { RouteUri } from '@aeriajs/http'
+import { getEndpoints } from '@aeriajs/api'
 
 const ANSI_COLORS = {
   green: '\x1b[32m',
@@ -8,55 +8,42 @@ const ANSI_COLORS = {
   white: '\x1b[37m',
 }
 
-const colorizedRoute = (color: keyof typeof ANSI_COLORS, roles?: string[]) =>
-  (verb: string, collectionName: string, path?: string | null, parameters?: string[]) => {
+const METHOD_COLORS: Record<string, keyof typeof ANSI_COLORS> = {
+  GET: 'green',
+  PUT: 'blue',
+  POST: 'white',
+  DELETE: 'red',
+}
 
-    let line = `\x1b[1m${ANSI_COLORS[color]}${verb}\x1b[0m\t\x1b[90m/api\x1b[0m`
-    line += `/\x1b[1m${collectionName}\x1b[0m`
+const colorizedRoute = (
+  method: string,
+  endpointUri: string,
+  roles?: string[],
+) => {
+  const color = method in METHOD_COLORS
+    ? ANSI_COLORS[METHOD_COLORS[method]]
+    : ANSI_COLORS.white
 
-    if( path ) {
-      line += `/${path}`
-    }
-    if( parameters ) {
-      line += `/${parameters.map((p) => `{${ANSI_COLORS.green}${p}\x1b[0m}`).join('/')}`
-    }
-    if( roles ) {
-      line += ` \x1b[90m[${roles.join('|')}]\x1b[0m`
-    }
-    return line
+  let line = `\x1b[1m${color}${method}\x1b[0m\t\x1b[90m/api\x1b[0m`
+  line += `\x1b[1m${endpointUri}\x1b[0m`
+
+  if( roles ) {
+    line += ` \x1b[90m[${roles.join('|')}]\x1b[0m`
   }
 
-export const warmup = async () => {
-  const collections = await getCollections()
-  const sortedCollections = Object.keys(collections).sort((a, b) => {
-    return a > b
-      ? 1
-      : -1
-  })
-
-  return Promise.all(sortedCollections.map(async (collectionName) => {
-    const candidate = collections[collectionName]
-    const collection = typeof candidate === 'function'
-      ? candidate()
-      : candidate
-
-    if( !collection.functions ) {
-      return
-    }
-
-    const routes = await Promise.all(Object.keys(collection.functions).sort().map(async (functionName) => {
-      const roles = await grantedFor(collectionName, functionName)
-
-      switch( functionName ) {
-        case 'get': return colorizedRoute('green', roles)('GET', collectionName, null, ['id'])
-        case 'getAll': return colorizedRoute('green', roles)('GET', collectionName)
-        case 'insert': return colorizedRoute('blue', roles)('POST', collectionName)
-        case 'remove': return colorizedRoute('red', roles)('DELETE', collectionName, null, ['id'])
-        default: return colorizedRoute('white', roles)('POST', collectionName, functionName)
-      }
-    }))
-
-    console.log(routes.join('\n'))
-
-  }))
+  return line
 }
+
+export const warmup = async () => {
+  const endpoints = await getEndpoints()
+
+  for( const endpointUri in endpoints ) {
+    const endpoint = endpoints[endpointUri as RouteUri]
+
+    for( const method in endpoint ) {
+      const line = colorizedRoute(method, endpointUri, endpoint[method as keyof typeof endpoint]?.roles)
+      console.log(line)
+    }
+  }
+}
+

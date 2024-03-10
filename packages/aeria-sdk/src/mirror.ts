@@ -14,7 +14,7 @@ const mirrorDts = (mirrorObj: any) => {
   SchemaWithId,
   MakeEndpoint,
   RequestMethod,
-  CollectionFunctions
+  CollectionFunctionsPaginated
 
 } from '@aeriajs/types'
 
@@ -58,7 +58,7 @@ declare module 'aeria-sdk' {
 
   type StrongelyTypedTLO = TopLevelObject & Endpoints & {
     [K in keyof MirrorDescriptions]: SchemaWithId<MirrorDescriptions[K]> extends infer Document
-      ? CollectionFunctions<Document> extends infer Functions
+      ? CollectionFunctionsPaginated<Document> extends infer Functions
         ? Omit<TLOFunctions, keyof Functions> & {
           [P in keyof Functions]: {
             POST: Functions[P]

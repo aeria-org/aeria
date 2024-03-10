@@ -1,9 +1,16 @@
 import type { FilterOperators, UpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
-import type { PackReferences, Either, ValidationError } from '.'
+import type { PackReferences, Either, ValidationError, Context } from '.'
 
 export type UploadAuxProps = {
   parentId: string
   propertyName: string
+}
+
+export type Pagination = {
+  recordsCount: number
+  recordsTotal: number
+  offset: number
+  limit: number
 }
 
 export type Filters<TDocument> = FilterOperators<TDocument>
@@ -74,5 +81,19 @@ export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<
   remove: (payload: RemovePayload<TDocument>)=> Promise<TDocument>
   removeAll: (payload: RemoveAllPayload)=> Promise<any>
   removeFile: (payload: RemoveFilePayload)=> Promise<any>
+}
+
+export type CollectionFunctionsPaginated<TDocument extends CollectionDocument<OptionalId<any>>> = Omit<CollectionFunctions<TDocument>, 'getAll'> & {
+  getAll: (payload?: GetAllPayload<TDocument>)=> Promise<{
+    data: TDocument[]
+    pagination: Pagination
+  }>
+}
+
+export type CollectionFunctionsWithContext<TDocument extends CollectionDocument<OptionalId<any>>> =  {
+  [P in keyof CollectionFunctions<TDocument>]: (
+    payload: Parameters<CollectionFunctions<TDocument>[P]>[0],
+    context: Context
+  ) => ReturnType<CollectionFunctions<TDocument>[P]>
 }
 

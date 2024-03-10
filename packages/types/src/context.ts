@@ -56,6 +56,8 @@ export type ContextOptions<TContext> = {
   parentContext?: TContext
   collectionName?: string
   token?: DecodedToken
+  inherited?: boolean
+  calledFunction?: string
 }
 
 export type Context<TDescription extends Description = any, TFunctions = any> = {
@@ -75,5 +77,7 @@ export type Context<TDescription extends Description = any, TFunctions = any> = 
 
   log: (message: string, details?: any)=> Promise<any>
   config: ApiConfig
+  inherited: boolean
+  calledFunction: string
 }
 
