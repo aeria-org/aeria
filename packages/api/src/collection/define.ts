@@ -4,6 +4,7 @@ import type {
   Context,
   Contract,
   Description,
+  AccessControl,
 
 } from '@aeriajs/types'
 
@@ -22,17 +23,24 @@ export const defineCollection = <
   const TFunctions extends {
     [P: string]: (payload: any, context: Context<TDescription>, ...args: any[])=> any
   },
+  const TAccessControl extends AccessControl<{
+    description: TDescription
+    functions: TFunctions
+  }>,
 >(
   collection: TCollection & {
     description: TDescription
     functions?: TFunctions
     functionContracts?: TFunctionContracts
+    accessControl?: TAccessControl
   },
 ) => {
   return collection as TCollection & {
     item: SchemaWithId<TDescription>
     description: TDescription
     functions: TFunctions
+    functionContracts?: TFunctionContracts
+    accessControl?: TAccessControl
   }
 }
 

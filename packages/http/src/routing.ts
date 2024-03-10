@@ -74,7 +74,7 @@ const unsufficientRoles = (context: Context) => {
   })
 
   return {
-    error: ACErrors.AuthorizationError
+    error: ACErrors.AuthorizationError,
   }
 }
 

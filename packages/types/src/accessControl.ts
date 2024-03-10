@@ -26,7 +26,10 @@ export type Role<
 export type Roles<
   TCollection extends Collection = any,
   TAccessControl extends AccessControl<TCollection> = any,
-> = Record<string, Role<TCollection, TAccessControl>>
+> = Record<
+  string,
+  Role<TCollection, TAccessControl>
+>
 
 export type InternalAccessControl<
   TCollection extends Collection = any,
