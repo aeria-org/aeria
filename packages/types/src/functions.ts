@@ -31,7 +31,7 @@ export type StrictFilterOperators<TDocument> = FilterOperators<TDocument> extend
   : never
 
 export type Filters<TDocument> = Partial<{
-  [P in keyof TDocument]: TDocument[P] | StrictFilterOperators<TDocument[P]>
+  [P in keyof TDocument]: PackReferences<TDocument>[P] | StrictFilterOperators<PackReferences<TDocument>[P]>
 }>
 
 export type What<TDocument> = StrictUpdateFilter<TDocument> & {

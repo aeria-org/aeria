@@ -1,5 +1,14 @@
 # @aeriajs/access-control
 
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/types@0.0.8
+  - @aeriajs/common@0.0.9
+  - @aeriajs/entrypoint@0.0.9
+
 ## 0.0.8
 
 ### Patch Changes
