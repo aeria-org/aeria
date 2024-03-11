@@ -23,13 +23,12 @@ export type Pagination = {
 export type StrictFilterOperators<TDocument> = FilterOperators<TDocument> extends infer InferredFilters
   ? {
     [
-      P in keyof InferredFilters as 0 extends (InferredFilters[P] & 1)
-        ? never
-        : P
+    P in keyof InferredFilters as 0 extends (InferredFilters[P] & 1)
+      ? never
+      : P
     ]: InferredFilters[P]
   }
   : never
-
 
 export type Filters<TDocument> = Partial<{
   [P in keyof TDocument]: TDocument[P] | StrictFilterOperators<TDocument[P]>

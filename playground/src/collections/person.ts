@@ -27,6 +27,7 @@ export const person = defineCollection({
     get,
     getAll,
     insert,
+    hello: (obj) => obj.name,
   },
   accessControl: {
     roles: {
@@ -39,5 +40,17 @@ export const person = defineCollection({
       },
     },
   },
+  functionContracts: {
+    hello: {
+      payload: {
+        type: 'object',
+        properties: {
+          name: {
+            type: 'string'
+          }
+        }
+      }
+    }
+  }
 })
 

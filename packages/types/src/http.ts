@@ -63,4 +63,3 @@ export type InferResponse<TResponse> = MapSchemaUnion<UnwrapResponse<TResponse>>
   ? InferredResponse | Promise<InferredResponse>
   : never
 
-

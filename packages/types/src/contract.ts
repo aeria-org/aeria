@@ -20,15 +20,15 @@ export type ContractToFunction<TContract extends Contract | ContractWithRoles, C
   'payload' extends keyof TContract
     ? InferProperty<TContract['payload']>
     : undefined
-  ) extends infer Payload
-    ? (
-      'response' extends keyof TContract
-        ? InferProperty<TContract['response']>
-        : any
-      ) extends infer Response
-        ? Payload extends undefined
-          ? (payload: Payload | undefined, context: ContextParameter) => Response
-          : (payload: Payload, context: ContextParameter) => Response
-        : never
+) extends infer Payload
+  ? (
+    'response' extends keyof TContract
+      ? InferProperty<TContract['response']>
+      : any
+  ) extends infer Response
+    ? Payload extends undefined
+      ? (payload: Payload | undefined, context: ContextParameter)=> Response
+      : (payload: Payload, context: ContextParameter)=> Response
     : never
+  : never
 

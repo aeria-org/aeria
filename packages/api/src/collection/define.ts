@@ -27,16 +27,15 @@ export const defineCollection = <
       ? ContractToFunction<TFunctionContracts[P], Context<TDescription>>
       : (payload: any, context: Context<TDescription>, ...args: any[])=> any
   },
-  const TAccessControl extends AccessControl<{
-    description: TDescription
-    functions: TFunctions
-  }>,
 >(
   collection: TCollection & {
     description: TDescription
     functions?: TFunctions
     functionContracts?: TFunctionContracts
-    accessControl?: TAccessControl
+    accessControl?: AccessControl<{
+      description: TDescription
+      functions: typeof collection['functions']
+    }>,
   } & {
     functions?: Partial<CollectionFunctionsWithContext<SchemaWithId<TDescription>, TDescription, TFunctions>>
   },
@@ -46,7 +45,6 @@ export const defineCollection = <
     description: TDescription
     functions: TFunctions
     functionContracts: TFunctionContracts
-    accessControl: TAccessControl
   }
 }
 
