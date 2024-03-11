@@ -1,4 +1,4 @@
-import type { FilterOperators, UpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
+import type { FilterOperators, StrictUpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
 import type {
   PackReferences,
   Either,
@@ -20,9 +20,22 @@ export type Pagination = {
   limit: number
 }
 
-export type Filters<TDocument> = FilterOperators<TDocument>
+export type StrictFilterOperators<TDocument> = FilterOperators<TDocument> extends infer InferredFilters
+  ? {
+    [
+      P in keyof InferredFilters as 0 extends (InferredFilters[P] & 1)
+        ? never
+        : P
+    ]: InferredFilters[P]
+  }
+  : never
 
-export type What<TDocument> = Omit<UpdateFilter<TDocument>, keyof TDocument> & {
+
+export type Filters<TDocument> = Partial<{
+  [P in keyof TDocument]: TDocument[P] | StrictFilterOperators<TDocument[P]>
+}>
+
+export type What<TDocument> = StrictUpdateFilter<TDocument> & {
   [P in keyof TDocument]?: '_id' extends keyof TDocument[P]
     ? TDocument[P] | string
     : TDocument[P]
@@ -46,7 +59,7 @@ export type CountPayload<TDocument extends CollectionDocument<OptionalId<any>>> 
 export type GetPayload<TDocument extends CollectionDocument<OptionalId<any>>> = {
   filters: Filters<TDocument>
   project?: Projection<TDocument>
-  populate?: (keyof TDocument & string)[]
+  populate?: (keyof TDocument | string)[]
 }
 
 export type GetAllPayload<TDocument extends CollectionDocument<OptionalId<any>>> = {
@@ -55,11 +68,13 @@ export type GetAllPayload<TDocument extends CollectionDocument<OptionalId<any>>>
   offset?: number
   limit?: number
   sort?: QuerySort<TDocument>
-  populate?: (keyof TDocument & string)[]
+  populate?: (keyof TDocument | string)[]
 }
 
-export type InsertPayload<TDocument extends CollectionDocument<any>> = {
-  what: What<PackReferences<TDocument> & { _id?: any }>
+export type InsertPayload<TDocument extends CollectionDocument<any>, BypassTypeRestriction = false> = {
+  what: BypassTypeRestriction extends true
+    ? any
+    : What<PackReferences<TDocument>>
   project?: Projection<TDocument>
 }
 
@@ -87,11 +102,21 @@ export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<
   removeFile: (payload: RemoveFilePayload)=> Promise<any>
 }
 
-export type CollectionFunctionsPaginated<TDocument extends CollectionDocument<OptionalId<any>>> = Omit<CollectionFunctions<TDocument>, 'getAll'> & {
+export type CollectionFunctionsPaginated<TDocument extends CollectionDocument<OptionalId<any>>> = Omit<
+  CollectionFunctions<TDocument>,
+  | 'getAll'
+> & {
   getAll: (payload?: GetAllPayload<TDocument>)=> Promise<{
     data: TDocument[]
     pagination: Pagination
   }>
+}
+
+export type CollectionFunctionsWithBypass<TDocument extends CollectionDocument<OptionalId<any>>> = Omit<
+  CollectionFunctions<TDocument>,
+  | 'insert'
+> & {
+  insert: (payload: InsertPayload<TDocument, true>)=> Promise<Either<ValidationError | ACErrors, TDocument>>
 }
 
 export type CollectionFunctionsWithContext<
@@ -99,8 +124,8 @@ export type CollectionFunctionsWithContext<
   TDescription extends Description = any,
   TFunctions = any,
 > = {
-  [P in keyof CollectionFunctions<TDocument>]: (
-    payload: Parameters<CollectionFunctions<TDocument>[P]>[0],
+  [P in keyof CollectionFunctionsWithBypass<TDocument>]: (
+    payload: Parameters<CollectionFunctionsWithBypass<TDocument>[P]>[0],
     context: Context<TDescription, TFunctions>
   )=> ReturnType<CollectionFunctions<TDocument>[P]>
 }

@@ -1,8 +1,10 @@
 import type {
   SchemaWithId,
   Collection,
+  CollectionFunctionsWithContext,
   Context,
   Contract,
+  ContractToFunction,
   Description,
   AccessControl,
 
@@ -17,11 +19,13 @@ export const defineCollection = <
     >
     : never,
   const TDescription extends Description<TDescription>,
-  const TFunctionContracts extends Partial<{
+  const TFunctionContracts extends {
     [P in keyof TFunctions]: Contract
-  }>,
+  },
   const TFunctions extends {
-    [P: string]: (payload: any, context: Context<TDescription>, ...args: any[])=> any
+    [P in keyof TFunctionContracts]: TFunctionContracts[P] extends Contract
+      ? ContractToFunction<TFunctionContracts[P], Context<TDescription>>
+      : (payload: any, context: Context<TDescription>, ...args: any[])=> any
   },
   const TAccessControl extends AccessControl<{
     description: TDescription
@@ -33,6 +37,8 @@ export const defineCollection = <
     functions?: TFunctions
     functionContracts?: TFunctionContracts
     accessControl?: TAccessControl
+  } & {
+    functions?: Partial<CollectionFunctionsWithContext<SchemaWithId<TDescription>, TDescription, TFunctions>>
   },
 ) => {
   return collection as unknown as TCollection & {

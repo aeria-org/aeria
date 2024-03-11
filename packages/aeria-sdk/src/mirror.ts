@@ -80,10 +80,7 @@ declare module 'aeria-sdk' {
   export const url: string
   export const aeria: StrongelyTypedTLO
 }
-
-  
-\n
-  `
+\n`
 }
 
 export const runtimeCjs = (config: InstanceConfig) =>

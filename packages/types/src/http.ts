@@ -1,5 +1,5 @@
 import type { ServerResponse, IncomingMessage } from 'http'
-import type { MapSchemaUnion, Property } from '.'
+import type { MapSchemaUnion } from '.'
 
 export const REQUEST_METHODS = <const>[
   'GET',
@@ -63,19 +63,4 @@ export type InferResponse<TResponse> = MapSchemaUnion<UnwrapResponse<TResponse>>
   ? InferredResponse | Promise<InferredResponse>
   : never
 
-export type ContractRoles = {
-  roles?: Collections['user']['item']['roles']
-}
-
-export type Contract =
-  | { response: Property | Property[] }
-  | { payload: Property }
-  | { query: Property }
-  | {
-    response?: Property | Property[]
-    payload?: Property
-    query?: Property
-  }
-
-export type ContractWithRoles = ContractRoles & Contract
 

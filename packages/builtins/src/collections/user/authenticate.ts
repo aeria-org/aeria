@@ -37,7 +37,7 @@ const getUser = async (
   userId: ObjectId,
   context: Context<typeof description, Collections['user']['functions']>,
 ): Promise<Return> => {
-  const leanUser = await context.collection.functions.get({
+  const leanUser: any = await context.collection.functions.get({
     filters: {
       _id: userId,
     },

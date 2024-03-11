@@ -18,7 +18,7 @@ export const insert = async <
   const security = useSecurity(context)
 
   const query = !options?.bypassSecurity
-    ? unsafe(await security.beforeWrite(payload))
+    ? unsafe(await security.beforeWrite(payload as any))
     : payload
 
   const whatEither = await traverseDocument(query.what, context.description, {
