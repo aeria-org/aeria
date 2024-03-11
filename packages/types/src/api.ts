@@ -2,7 +2,6 @@ import type { ObjectId } from 'mongodb'
 import type {
   Context,
   Contract,
-  CollectionFunctionsWithContext,
   Description,
   SecurityPolicy,
   AccessControl,
@@ -15,7 +14,7 @@ export type Collection<TCollection extends Collection = any> = {
   item?: any
   security?: SecurityPolicy
   accessControl?: AccessControl<TCollection>
-  functions?: Partial<CollectionFunctionsWithContext<any>> & Record<string, (payload: any, context: Context, ...args: any[])=> any>
+  functions?: Record<string, (payload: any, context: Context, ...args: any[])=> any>
   functionContracts?: Record<string, Contract>
 }
 

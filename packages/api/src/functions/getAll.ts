@@ -18,7 +18,7 @@ export const getAll = async <
   TContext extends Context,
   TDocument = SchemaWithId<TContext['description']>,
 >(
-  _payload: GetAllPayload<SchemaWithId<Context['description']>> | null,
+  _payload: GetAllPayload<SchemaWithId<Context['description']>> | undefined,
   context: TContext,
   options: GetAllOptions = {},
 ) => {

@@ -35,12 +35,12 @@ export const defineCollection = <
     accessControl?: TAccessControl
   },
 ) => {
-  return collection as TCollection & {
+  return collection as unknown as TCollection & {
     item: SchemaWithId<TDescription>
     description: TDescription
     functions: TFunctions
-    functionContracts?: TFunctionContracts
-    accessControl?: TAccessControl
+    functionContracts: TFunctionContracts
+    accessControl: TAccessControl
   }
 }
 

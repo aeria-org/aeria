@@ -37,40 +37,52 @@ declare module 'aeria-sdk' {
     ? R
     : never
 
-  type Endpoints = {
-    [Route in keyof MirrorRouter]: {
-      [Method in keyof MirrorRouter[Route]]: Method extends RequestMethod
-        ? MirrorRouter[Route][Method] extends infer Contract
-          ? Contract extends
-            | { response: infer RouteResponse }
-            | { payload: infer RoutePayload  }
-            | { query: infer RoutePayload  }
-            ? MakeEndpoint<Route, Method, InferResponse<RouteResponse>, InferProperty<RoutePayload>>
-            : MakeEndpoint<Route, Method>
-          : never
+  type InferEndpoint<Route extends keyof MirrorRouter> = {
+    [Method in keyof MirrorRouter[Route]]: Method extends RequestMethod
+      ? MirrorRouter[Route][Method] extends infer Contract
+        ? Contract extends
+        | { response: infer RouteResponse }
+        | { payload: infer RoutePayload  }
+        | { query: infer RoutePayload  }
+          ? MakeEndpoint<
+            Route,
+            Method,
+            InferResponse<RouteResponse>,
+            RoutePayload extends {}
+              ? InferProperty<RoutePayload>
+              : undefined
+          >
+          : MakeEndpoint<Route, Method>
         : never
+      : never
     } extends infer Methods
       ? Methods[keyof Methods]
       : never
+
+  type Endpoints = {
+    [Route in keyof MirrorRouter]: Route extends \`/\${infer Coll}/\${infer Fn}\`
+      ? Coll extends keyof Collections
+        ? Fn extends keyof CollectionFunctionsPaginated<any>
+          ? Record<Coll, Record<
+              Fn, {
+              POST: CollectionFunctionsPaginated<SchemaWithId<MirrorDescriptions[Coll]>>[Fn]
+            }
+            >>
+          : InferEndpoint<Route>
+        : InferEndpoint<Route>
+      : InferEndpoint<Route>
   } extends infer Endpoints
     ? UnionToIntersection<Endpoints[keyof Endpoints]>
     : never
 
-  type StrongelyTypedTLO = TopLevelObject & Endpoints & {
-    [K in keyof MirrorDescriptions]: SchemaWithId<MirrorDescriptions[K]> extends infer Document
-      ? CollectionFunctionsPaginated<Document> extends infer Functions
-        ? Omit<TLOFunctions, keyof Functions> & {
-          [P in keyof Functions]: {
-            POST: Functions[P]
-          }
-        }
-        : never
-      : never
-  }
+  type StrongelyTypedTLO = TopLevelObject & Endpoints
 
   export const url: string
   export const aeria: StrongelyTypedTLO
-}\n
+}
+
+  
+\n
   `
 }
 

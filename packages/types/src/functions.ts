@@ -1,5 +1,12 @@
 import type { FilterOperators, UpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
-import type { PackReferences, Either, ValidationError, Context } from '.'
+import type {
+  PackReferences,
+  Either,
+  ValidationError,
+  ACErrors,
+  Context,
+  Description,
+} from '.'
 
 export type UploadAuxProps = {
   parentId: string
@@ -21,7 +28,7 @@ export type What<TDocument> = Omit<UpdateFilter<TDocument>, keyof TDocument> & {
     : TDocument[P]
 }
 
-export type Projection<TDocument extends Record<string, any>> =
+export type Projection<TDocument> =
   keyof TDocument | '_id' extends infer DocumentProp
     ? TDocument extends string
       ? DocumentProp[]
@@ -30,10 +37,7 @@ export type Projection<TDocument extends Record<string, any>> =
 
 export type QuerySort<TDocument> = Partial<Record<keyof WithId<TDocument>, 1 | -1>>
 
-export type CollectionDocument<TDocument> = Pick<
-  TDocument,
-  Extract<keyof TDocument, string>
->
+export type CollectionDocument<TDocument> = TDocument
 
 export type CountPayload<TDocument extends CollectionDocument<OptionalId<any>>> = {
   filters?: Filters<TDocument>
@@ -77,7 +81,7 @@ export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<
   count: (payload: CountPayload<TDocument>)=> Promise<number>
   get: (payload: GetPayload<TDocument>)=> Promise<TDocument | null>
   getAll: (payload?: GetAllPayload<TDocument>)=> Promise<TDocument[]>
-  insert: (payload: InsertPayload<TDocument>)=> Promise<Either<ValidationError, TDocument>>
+  insert: (payload: InsertPayload<TDocument>)=> Promise<Either<ValidationError | ACErrors, TDocument>>
   remove: (payload: RemovePayload<TDocument>)=> Promise<TDocument>
   removeAll: (payload: RemoveAllPayload)=> Promise<any>
   removeFile: (payload: RemoveFilePayload)=> Promise<any>
@@ -90,10 +94,14 @@ export type CollectionFunctionsPaginated<TDocument extends CollectionDocument<Op
   }>
 }
 
-export type CollectionFunctionsWithContext<TDocument extends CollectionDocument<OptionalId<any>>> = {
+export type CollectionFunctionsWithContext<
+  TDocument extends CollectionDocument<OptionalId<any>>,
+  TDescription extends Description = any,
+  TFunctions = any,
+> = {
   [P in keyof CollectionFunctions<TDocument>]: (
     payload: Parameters<CollectionFunctions<TDocument>[P]>[0],
-    context: Context
+    context: Context<TDescription, TFunctions>
   )=> ReturnType<CollectionFunctions<TDocument>[P]>
 }
 

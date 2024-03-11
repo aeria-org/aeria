@@ -23,15 +23,21 @@ type RestParameters<TFunction> = TFunction extends (payload: any, context: Conte
   : never
 
 type UnionFunctions<TFunctions, TSchema extends CollectionDocument<any>> = {
-  [P in keyof TFunctions]: P extends keyof CollectionFunctions<any>
-    ? CollectionFunctions<TSchema>[P] extends infer CollFunction
-      ? CollFunction extends (...args: any[])=> any
-        ? Extract<undefined, Parameters<CollFunction>[0]> extends never
-          ? (payload: Parameters<CollFunction>[0], ...args: RestParameters<TFunctions[P]>)=> ReturnType<CollFunction>
-          : (payload?: Parameters<CollFunction>[0], ...args: RestParameters<TFunctions[P]>)=> ReturnType<CollFunction>
+  [P in keyof TFunctions]: (
+    P extends keyof CollectionFunctions<any>
+      ? CollectionFunctions<TSchema>[P] extends infer CollFunction
+        ? CollFunction extends (...args: any[])=> any
+          ? Extract<undefined, Parameters<CollFunction>[0]> extends never
+            ? (payload: Parameters<CollFunction>[0], ...args: RestParameters<TFunctions[P]>)=> ReturnType<CollFunction>
+            : (payload?: Parameters<CollFunction>[0], ...args: RestParameters<TFunctions[P]>)=> ReturnType<CollFunction>
+          : never
         : never
-      : never
-    : OmitContextParameter<TFunctions[P]>
+      : OmitContextParameter<TFunctions[P]>
+  ) extends (...args: infer Args)=> infer Return
+    ? Return extends Promise<any>
+      ? (...args: Args)=> Return
+      : (...args: Args)=> Promise<Return>
+    : never
 }
 
 export type IndepthCollection<TCollection> = TCollection extends {
