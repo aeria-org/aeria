@@ -16,16 +16,16 @@ export const defineCollection = <
       | 'item'
       | 'description'
       | 'functions'
+      | 'functionContracts'
+      | 'accessControl'
     >
     : never,
   const TDescription extends Description<TDescription>,
-  const TFunctionContracts extends {
+  const TFunctionContracts extends Partial<{
     [P in keyof TFunctions]: Contract
-  },
+  }>,
   const TFunctions extends {
-    [P in keyof TFunctionContracts]: TFunctionContracts[P] extends Contract
-      ? ContractToFunction<TFunctionContracts[P], Context<TDescription>>
-      : (payload: any, context: Context<TDescription>, ...args: any[])=> any
+    [P in keyof TFunctionContracts]: ContractToFunction<NonNullable<TFunctionContracts[P]>, Context<TDescription>>
   },
 >(
   collection: TCollection & {
@@ -34,10 +34,14 @@ export const defineCollection = <
     functionContracts?: TFunctionContracts
     accessControl?: AccessControl<{
       description: TDescription
-      functions: typeof collection['functions']
-    }>,
-  } & {
-    functions?: Partial<CollectionFunctionsWithContext<SchemaWithId<TDescription>, TDescription, TFunctions>>
+      functions: NoInfer<TFunctions>
+    }>
+  } | {
+    functions?: Record<string, unknown> & Partial<CollectionFunctionsWithContext<
+      SchemaWithId<TDescription>,
+      TDescription,
+      any
+    >>
   },
 ) => {
   return collection as unknown as TCollection & {
@@ -45,6 +49,7 @@ export const defineCollection = <
     description: TDescription
     functions: TFunctions
     functionContracts: TFunctionContracts
+    accessControl: AccessControl
   }
 }
 
