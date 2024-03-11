@@ -1,5 +1,4 @@
 export * from './constants.js'
-export * from './contract.js'
 export * from './cors.js'
 export * from './options.js'
 export * from './routing.js'

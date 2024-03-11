@@ -1,5 +1,22 @@
 # @aeriajs/http
 
+## 0.0.12
+
+### Patch Changes
+
+- Refactor file structure
+- Updated dependencies
+  - @aeriajs/types@0.0.7
+  - @aeriajs/access-control@0.0.8
+  - @aeriajs/common@0.0.8
+  - @aeriajs/validation@0.0.11
+
+## 0.0.11
+
+### Patch Changes
+
+- Type route context according to roles
+
 ## 0.0.10
 
 ### Patch Changes

@@ -107,12 +107,21 @@ export const matches = <TRequest extends GenericRequest>(
   }
 }
 
-export const registerRoute = async <TCallback extends (context: Context)=> any>(
+export const registerRoute = async <
+  const TContractWithRoles extends ContractWithRoles,
+  TCallback extends 'roles' extends keyof TContractWithRoles
+    ? TContractWithRoles['roles'] extends readonly (infer Role)[]
+      ? 'guest' extends Role
+        ? (context: Context)=> any
+        : (context: Context & { token: { authenticated: true } })=> any
+      : never
+    : (context: Context)=> any,
+>(
   context: Context,
   method: RequestMethod | RequestMethod[],
   exp: RouteUri,
   cb: TCallback,
-  contract?: ContractWithRoles,
+  contract?: TContractWithRoles,
   options: RouterOptions = {},
 ) => {
   const match = matches(context.request, method, exp, options)

@@ -32,3 +32,7 @@ export type ContractToFunction<TContract extends Contract | ContractWithRoles, C
     : never
   : never
 
+export const defineContract = <const TContractWithRoles extends ContractWithRoles>(contract: TContractWithRoles) => {
+  return contract
+}
+
