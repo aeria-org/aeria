@@ -1,30 +1,15 @@
 import chokidar from 'chokidar'
 import path from 'path'
 import { spawn, fork } from 'child_process'
-import { systemFunctions } from '@aeriajs/builtins'
 import { compile } from './compile.js'
 import { log } from './log.js'
+import { mirrorSdk } from './mirrorSdk.js'
 
 export const compileAndSpawn = async () => {
   const result = await compile()
 
   if( result.success ) {
-    try {
-      const { getConfig } = await import('aeria-sdk/utils')
-      const { writeMirrorFiles } = await import('aeria-sdk/mirror')
-
-      const mirror = await systemFunctions.describe({
-        router: true,
-      })
-
-      const config = await getConfig()
-      await writeMirrorFiles(mirror, config, path.join(process.cwd(), '.aeria'))
-
-    } catch( err: any ) {
-      if( err.code !== 'MODULE_NOT_FOUND' ) {
-        throw err
-      }
-    }
+    await mirrorSdk()
 
     const api = spawn('node', [
       '-r',

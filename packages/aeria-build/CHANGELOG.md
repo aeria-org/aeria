@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.25
+
+### Patch Changes
+
+- Add -k option to aeria-build
+
 ## 0.0.24
 
 ### Patch Changes

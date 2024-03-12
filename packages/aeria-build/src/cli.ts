@@ -7,6 +7,7 @@ import { compilationPhase } from './compile.js'
 import { watch } from './watch.js'
 import { migrate } from './migrate.js'
 import { iconsExtraction } from './iconsExtraction.js'
+import { mirrorSdk } from './mirrorSdk.js'
 
 const { values: opts } = parseArgs({
   options: {
@@ -29,6 +30,10 @@ const { values: opts } = parseArgs({
     bundle: {
       type: 'boolean',
       short: 'b',
+    },
+    sdk: {
+      type: 'boolean',
+      short: 'k',
     },
   },
 })
@@ -54,6 +59,10 @@ async function main() {
 
   if( opts.bundle ) {
     phases.push(bundle)
+  }
+
+  if( opts.sdk ) {
+    phases.push(mirrorSdk)
   }
 
   return phases.reduce(async (a: any, phase) => {
