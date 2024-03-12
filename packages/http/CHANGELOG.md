@@ -1,5 +1,55 @@
 # @aeriajs/http
 
+## 0.0.19
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/types@0.0.13
+  - @aeriajs/access-control@0.0.14
+  - @aeriajs/common@0.0.14
+  - @aeriajs/validation@0.0.17
+
+## 0.0.18
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/types@0.0.12
+  - @aeriajs/access-control@0.0.13
+  - @aeriajs/common@0.0.13
+  - @aeriajs/validation@0.0.16
+
+## 0.0.17
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/types@0.0.11
+  - @aeriajs/access-control@0.0.12
+  - @aeriajs/common@0.0.12
+  - @aeriajs/validation@0.0.15
+
+## 0.0.16
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/types@0.0.10
+  - @aeriajs/access-control@0.0.11
+  - @aeriajs/common@0.0.11
+  - @aeriajs/validation@0.0.14
+
+## 0.0.15
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/types@0.0.9
+  - @aeriajs/access-control@0.0.10
+  - @aeriajs/common@0.0.10
+  - @aeriajs/validation@0.0.13
+
 ## 0.0.14
 
 ### Patch Changes

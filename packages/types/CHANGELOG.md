@@ -1,5 +1,35 @@
 # @aeriajs/types
 
+## 0.0.13
+
+### Patch Changes
+
+- Multiple fixes
+
+## 0.0.12
+
+### Patch Changes
+
+- Fix types bug
+
+## 0.0.11
+
+### Patch Changes
+
+- Fix function types
+
+## 0.0.10
+
+### Patch Changes
+
+- Fix types
+
+## 0.0.9
+
+### Patch Changes
+
+- Fix types
+
 ## 0.0.8
 
 ### Patch Changes

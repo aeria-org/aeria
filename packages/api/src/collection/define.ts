@@ -1,7 +1,6 @@
 import type {
   SchemaWithId,
   Collection,
-  CollectionFunctionsWithContext,
   Context,
   Contract,
   ContractToFunction,
@@ -36,13 +35,7 @@ export const defineCollection = <
       description: TDescription
       functions: NoInfer<TFunctions>
     }>
-  } | {
-    functions?: Record<string, unknown> & Partial<CollectionFunctionsWithContext<
-      SchemaWithId<TDescription>,
-      TDescription,
-      any
-    >>
-  },
+  } | {},
 ) => {
   return collection as unknown as TCollection & {
     item: SchemaWithId<TDescription>

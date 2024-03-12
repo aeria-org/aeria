@@ -18,6 +18,8 @@ export const mirrorSdk = async () => {
     if( err.code !== 'MODULE_NOT_FOUND' ) {
       throw err
     }
+
+    return right('skipped sdk mirroring (aeria-sdk dependency is absent)')
   }
 
   return right('sdk mirrored')

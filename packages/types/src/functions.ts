@@ -1,12 +1,5 @@
-import type { FilterOperators, StrictUpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
-import type {
-  PackReferences,
-  Either,
-  ValidationError,
-  ACErrors,
-  Context,
-  Description,
-} from '.'
+import type { FilterOperators, StrictFilter as Filter, StrictUpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
+import type { PackReferences, Either, ValidationError, ACErrors } from '.'
 
 export type UploadAuxProps = {
   parentId: string
@@ -20,25 +13,51 @@ export type Pagination = {
   limit: number
 }
 
-export type StrictFilterOperators<TDocument> = FilterOperators<TDocument> extends infer InferredFilters
+type DocumentFilter<TDocument> = PackReferences<TDocument> extends infer Document
   ? {
-    [
-    P in keyof InferredFilters as 0 extends (InferredFilters[P] & 1)
-      ? never
-      : P
-    ]: InferredFilters[P]
+    [P in keyof Document]: null | (
+      Document[P] extends ObjectId
+        ? Document[P] | string
+        : Document[P]
+    )
   }
   : never
 
-export type Filters<TDocument> = Partial<{
-  [P in keyof TDocument]: PackReferences<TDocument>[P] | StrictFilterOperators<PackReferences<TDocument>[P]>
+type RemoveAny<T> = {
+  [
+  P in keyof T as 0 extends (T[P] & 1)
+    ? never
+    : P
+  ]: T[P]
+}
+
+export type StrictFilter<TDocument> = RemoveAny<Filter<DocumentFilter<TDocument>>>
+
+export type StrictFilterOperators<TDocument> = RemoveAny<FilterOperators<DocumentFilter<TDocument>>>
+
+export type Filters<TDocument> = StrictFilter<any> & Partial<{
+  [P in keyof TDocument]: null | (
+    TDocument[P] extends infer Field
+      ? Field extends ObjectId
+        ? Field | string
+        : Field extends { _id: infer Id }
+          ? Id | string
+          : Field
+      : never
+    ) extends infer Field
+    ? Field | StrictFilterOperators<Field> | null
+    : never
 }>
 
-export type What<TDocument> = StrictUpdateFilter<TDocument> & {
-  [P in keyof TDocument]?: '_id' extends keyof TDocument[P]
-    ? TDocument[P] | string
-    : TDocument[P]
-}
+export type What<TDocument> = DocumentFilter<TDocument> extends infer Document
+  ? Partial<{
+    [P in keyof Document]: Document[P] extends null
+      ? null
+      : Document[P] | StrictUpdateFilter<Document[P]>
+  }> & {
+    _id?: ObjectId | string
+  }
+  : never
 
 export type Projection<TDocument> =
   keyof TDocument | '_id' extends infer DocumentProp
@@ -73,7 +92,7 @@ export type GetAllPayload<TDocument extends CollectionDocument<OptionalId<any>>>
 export type InsertPayload<TDocument extends CollectionDocument<any>, BypassTypeRestriction = false> = {
   what: BypassTypeRestriction extends true
     ? any
-    : What<PackReferences<TDocument>>
+    : What<TDocument>
   project?: Projection<TDocument>
 }
 
@@ -109,23 +128,5 @@ export type CollectionFunctionsPaginated<TDocument extends CollectionDocument<Op
     data: TDocument[]
     pagination: Pagination
   }>
-}
-
-export type CollectionFunctionsWithBypass<TDocument extends CollectionDocument<OptionalId<any>>> = Omit<
-  CollectionFunctions<TDocument>,
-  | 'insert'
-> & {
-  insert: (payload: InsertPayload<TDocument, true>)=> Promise<Either<ValidationError | ACErrors, TDocument>>
-}
-
-export type CollectionFunctionsWithContext<
-  TDocument extends CollectionDocument<OptionalId<any>>,
-  TDescription extends Description = any,
-  TFunctions = any,
-> = {
-  [P in keyof CollectionFunctionsWithBypass<TDocument>]: (
-    payload: Parameters<CollectionFunctionsWithBypass<TDocument>[P]>[0],
-    context: Context<TDescription, TFunctions>
-  )=> ReturnType<CollectionFunctions<TDocument>[P]>
 }
 

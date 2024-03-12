@@ -1,11 +1,11 @@
 import type { Context, SchemaWithId, RemovePayload } from '@aeriajs/types'
 import type { description } from './description.js'
-import { remove as originalRemove } from '@aeriajs/api'
+import { remove as originalRemove, type ObjectId } from '@aeriajs/api'
 import fs from 'fs/promises'
 
 export const remove = async (payload: RemovePayload<SchemaWithId<typeof description>>, context: Context<typeof description>) => {
   const file = await context.collection.model.findOne({
-    _id: payload.filters._id,
+    _id: <ObjectId>payload.filters._id,
   }, {
     projection: {
       absolute_path: 1,

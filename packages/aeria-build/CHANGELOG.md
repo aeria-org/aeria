@@ -1,5 +1,56 @@
 # aeria-build
 
+## 0.0.30
+
+### Patch Changes
+
+- Multiple fixes
+- Updated dependencies
+  - @aeriajs/types@0.0.13
+  - @aeriajs/api@0.0.26
+  - @aeriajs/builtins@0.0.26
+  - @aeriajs/common@0.0.14
+
+## 0.0.29
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/types@0.0.12
+  - @aeriajs/api@0.0.25
+  - @aeriajs/builtins@0.0.25
+  - @aeriajs/common@0.0.13
+
+## 0.0.28
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/types@0.0.11
+  - @aeriajs/api@0.0.24
+  - @aeriajs/builtins@0.0.24
+  - @aeriajs/common@0.0.12
+
+## 0.0.27
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/builtins@0.0.23
+  - @aeriajs/types@0.0.10
+  - @aeriajs/api@0.0.23
+  - @aeriajs/common@0.0.11
+
+## 0.0.26
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/types@0.0.9
+  - @aeriajs/api@0.0.22
+  - @aeriajs/builtins@0.0.22
+  - @aeriajs/common@0.0.10
+
 ## 0.0.25
 
 ### Patch Changes
