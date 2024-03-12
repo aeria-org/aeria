@@ -47,7 +47,7 @@ export const getEndpoints = async (): Promise<RoutesMeta> => {
 
   const result = deepMerge(
     functions,
-    router.routesMeta,
+    router?.routesMeta || {},
   )
 
   return result

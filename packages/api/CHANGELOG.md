@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.21
+
+### Patch Changes
+
+- Tolerate absence of router export in entrypoint
+  - @aeriajs/builtins@0.0.21
+  - @aeriajs/security@0.0.21
+
 ## 0.0.20
 
 ### Patch Changes
