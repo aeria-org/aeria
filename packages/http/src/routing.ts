@@ -48,10 +48,20 @@ type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<Context, 
 export type ProxiedRouter<TRouter> = TRouter & Record<
   RequestMethod,
   <
-    TCallback extends (context: TypedContext<TContractWithRoles>)=> TContractWithRoles extends { response: infer Response }
-      ? InferResponse<Response>
-      : any,
-    const TContractWithRoles extends ContractWithRoles,
+    const TContractWithRoles extends ContractWithRoles | {},
+    TCallback extends (
+      TContractWithRoles extends { response: infer Response }
+        ? InferResponse<Response>
+        : any
+    ) extends infer Response
+      ? 'roles' extends keyof TContractWithRoles
+        ? TContractWithRoles['roles'] extends readonly (infer Role)[]
+          ? 'guest' extends Role
+            ? (context: TypedContext<TContractWithRoles>)=> Response
+            : (context: TypedContext<TContractWithRoles> & { token: { authenticated: true } })=> Response
+          : never
+        : (context: TypedContext<TContractWithRoles>)=> Response
+      : never,
   >(
     exp: RouteUri,
     cb: TCallback,
@@ -107,21 +117,12 @@ export const matches = <TRequest extends GenericRequest>(
   }
 }
 
-export const registerRoute = async <
-  const TContractWithRoles extends ContractWithRoles,
-  TCallback extends 'roles' extends keyof TContractWithRoles
-    ? TContractWithRoles['roles'] extends readonly (infer Role)[]
-      ? 'guest' extends Role
-        ? (context: Context)=> any
-        : (context: Context & { token: { authenticated: true } })=> any
-      : never
-    : (context: Context)=> any,
->(
+export const registerRoute = async (
   context: Context,
   method: RequestMethod | RequestMethod[],
   exp: RouteUri,
-  cb: TCallback,
-  contract?: TContractWithRoles,
+  cb: (context: Context)=> any,
+  contract?: ContractWithRoles,
   options: RouterOptions = {},
 ) => {
   const match = matches(context.request, method, exp, options)
@@ -243,10 +244,20 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
   const routesMeta = {} as RoutesMeta
 
   const route = <
-    TCallback extends (context: TypedContext<TContractWithRoles>)=> TContractWithRoles extends { response: infer Response }
-      ? InferResponse<Response>
-      : TContractWithRoles,
-    const TContractWithRoles extends ContractWithRoles,
+    const TContractWithRoles extends ContractWithRoles | {},
+    TCallback extends (
+      TContractWithRoles extends { response: infer Response }
+        ? InferResponse<Response>
+        : any
+    ) extends infer Response
+      ? 'roles' extends keyof TContractWithRoles
+        ? TContractWithRoles['roles'] extends readonly (infer Role)[]
+          ? 'guest' extends Role
+            ? (context: TypedContext<TContractWithRoles>)=> Response
+            : (context: TypedContext<TContractWithRoles> & { token: { authenticated: true } })=> Response
+          : never
+        : (context: TypedContext<TContractWithRoles>)=> Response
+      : never,
   >(
     method: RequestMethod | RequestMethod[],
     exp: RouteUri,

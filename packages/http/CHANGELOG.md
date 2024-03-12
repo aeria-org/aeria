@@ -1,5 +1,11 @@
 # @aeriajs/http
 
+## 0.0.14
+
+### Patch Changes
+
+- Fix router callback typing
+
 ## 0.0.13
 
 ### Patch Changes
