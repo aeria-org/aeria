@@ -11,11 +11,11 @@ export const makePagination = async (
 
   const offset = payload.offset || 0
 
-  const recordsTotal = 'count' in context.collection.functions
-    ? await context.collection.functions.count(payload)
-    : await context.collection.model.countDocuments({
+  const recordsTotal = context.collection.functions.count
+    ? await context.collection.functions.count({
       filters: payload.filters,
     })
+    : await context.collection.model.countDocuments(payload.filters)
 
   return {
     recordsCount: documents.length,
