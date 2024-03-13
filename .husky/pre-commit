@@ -8,8 +8,3 @@ done
 pnpm i
 git add pnpm-lock.yaml
 
-if $(git diff --name-only | grep -q '^pnpm-lock.yaml$'); then
-  git add pnpm-lock.yaml
-  git commit -m 'chore: update lockfile'
-fi
-
