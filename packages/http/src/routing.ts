@@ -38,7 +38,7 @@ type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<Context, 
   request: Omit<Context['request'], 'payload' | 'query'> & {
     payload: TContractWithRoles extends { payload: infer Payload }
       ? PackReferences<InferProperty<Payload>>
-      : never
+      : any
     query: TContractWithRoles extends { query: infer Query }
       ? InferProperty<Query>
       : any

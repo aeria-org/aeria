@@ -1,5 +1,11 @@
 # @aeriajs/http
 
+## 0.0.20
+
+### Patch Changes
+
+- Fix context type inference
+
 ## 0.0.19
 
 ### Patch Changes
