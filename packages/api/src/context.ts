@@ -20,18 +20,18 @@ const indepthCollection = (collectionName: string, collections: Record<string, C
 
   const proxiedFunctions = new Proxy<NonNullable<IndepthCollection<any>['functions']>>({}, {
     get: (_: unknown, functionName: string) => {
-      return async (props: any, ...args: any[]) => {
-        if( !collection.functions ) {
-          return null
-        }
+      if( !collection.functions?.[functionName] ) {
+        return null
+      }
 
+      return async (props: any, ...args: any[]) => {
         const childContext = await createContext({
           parentContext,
           collectionName,
           inherited: true,
         })
 
-        return collection.functions[functionName](props, childContext, ...args)
+        return collection.functions![functionName](props, childContext, ...args)
       }
     },
   })
