@@ -100,17 +100,6 @@ export const validateProperty = (
     return validate(what, property, options)
   }
 
-  if( 'literal' in property ) {
-    if( what !== property.literal ) {
-      return left(makePropertyError('unmatching', {
-        expected: property.literal ,
-        got: what,
-      }))
-    }
-
-    return right(what)
-  }
-
   const expectedType = getPropertyType(property)!
   const actualType = getValueType(what)
 

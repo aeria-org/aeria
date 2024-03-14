@@ -32,10 +32,9 @@ export type InferProperty<T> = T extends TestType<{ format: 'date' | 'date-time'
         ? number : T extends TestType<{ type: 'boolean' }>
           ? boolean : T extends TestType<{ properties: any }>
             ? Schema<T & { timestamps: false }> : T extends TestType<{ type: 'object' }>
-              ? any : T extends TestType<{ literal: infer K }>
-                ? K : T extends TestType<{ items: infer K }>
-                  ? InferProperty<K>[] : T extends TestType<{ getter: (doc: any)=> infer K }>
-                    ? K : never
+              ? any : T extends TestType<{ items: infer K }>
+                ? InferProperty<K>[] : T extends TestType<{ getter: (doc: any)=> infer K }>
+                  ? K : never
 
 export type InferSchema<TSchema> = MergeReferences<TSchema> extends infer MappedTypes
   ? TSchema extends { required: readonly [] }

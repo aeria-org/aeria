@@ -1,5 +1,26 @@
 # @aeriajs/http
 
+## 0.0.22
+
+### Patch Changes
+
+- Fix zeroes not being returned from routes
+- Updated dependencies
+  - @aeriajs/types@0.0.15
+  - @aeriajs/access-control@0.0.16
+  - @aeriajs/common@0.0.16
+  - @aeriajs/validation@0.0.19
+
+## 0.0.21
+
+### Patch Changes
+
+- Updated dependencies
+  - @aeriajs/validation@0.0.18
+  - @aeriajs/common@0.0.15
+  - @aeriajs/types@0.0.14
+  - @aeriajs/access-control@0.0.15
+
 ## 0.0.20
 
 ### Patch Changes

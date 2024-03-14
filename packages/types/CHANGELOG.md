@@ -1,5 +1,17 @@
 # @aeriajs/types
 
+## 0.0.15
+
+### Patch Changes
+
+- Fix zeroes not being returned from routes
+
+## 0.0.14
+
+### Patch Changes
+
+- Updates
+
 ## 0.0.13
 
 ### Patch Changes

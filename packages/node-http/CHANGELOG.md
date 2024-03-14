@@ -1,5 +1,19 @@
 # @aeriajs/node-http
 
+## 0.0.22
+
+### Patch Changes
+
+- Fix zeroes not being returned from routes
+- Updated dependencies
+  - @aeriajs/http@0.0.22
+
+## 0.0.21
+
+### Patch Changes
+
+- @aeriajs/http@0.0.21
+
 ## 0.0.20
 
 ### Patch Changes

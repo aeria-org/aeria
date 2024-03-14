@@ -48,7 +48,7 @@ export const upload = async <TContext extends Context>(_props: unknown, context:
     type: 'object',
     properties: {
       'x-stream-request': {
-        literal: '1',
+        enum: ['1'],
       },
       'content-type': {
         type: 'string',

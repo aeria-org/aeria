@@ -126,10 +126,6 @@ export type ArrayOfRefs = Omit<ArrayProperty, 'items'> & {
   items: RefProperty
 }
 
-export type LiteralProperty = {
-  literal: string | number | boolean
-}
-
 export type GetterProperty = {
   getter: (document: any)=> any
 }
@@ -143,7 +139,6 @@ export type MixedProperty =
   | StringProperty
   | NumberProperty
   | BooleanProperty
-  | LiteralProperty
   | GetterProperty
 
 export type NonCircularMixedProperty =
@@ -155,7 +150,6 @@ export type NonCircularMixedProperty =
   | StringProperty
   | NumberProperty
   | BooleanProperty
-  | LiteralProperty
   | GetterProperty
 
 export type PropertyBase = {

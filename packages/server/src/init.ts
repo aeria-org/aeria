@@ -11,6 +11,7 @@ import { registerRoutes } from './routes.js'
 
 export type InitOptions = {
   config?: ApiConfig
+  setup?: (context: Context)=> any
   callback?: (context: Context)=> any
   collections?: Record<string, {
     description: NonCircularJsonSchema
@@ -54,6 +55,10 @@ export const init = <const TInitOptions extends InitOptions>(_options: TInitOpti
       const parentContext = await createContext({
         config: options.config,
       })
+
+      if( options.setup ) {
+        await options.setup(parentContext)
+      }
 
       console.time('warmup')
       await warmup()
