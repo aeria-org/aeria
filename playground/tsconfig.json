@@ -10,5 +10,10 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "preserveSymlinks": true
-  }
+  },
+  "include": [
+      "@types/*.d.ts",
+      ".aeria/aeria.d.ts",
+      "src"
+  ]
 }

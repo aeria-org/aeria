@@ -38,11 +38,7 @@ declare module 'aeria' {
 //`
 
 const install = async () => {
-  const base = process.env.INIT_CWD
-  if( !base ) {
-    throw new Error('must run as a script')
-  }
-
+  const base = process.env.INIT_CWD || process.cwd()
   const aeriaDir = path.join(base, '.aeria')
 
   const { name } = JSON.parse(await fs.promises.readFile(path.join(base, 'package.json'), {

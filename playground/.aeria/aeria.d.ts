@@ -1,5 +1,5 @@
 // this file will be overwritten
-import type {} from 'aeria'
+import type {} from '@aeriajs/types'
 
 declare global {
   type UnpackCollections<TCollections> =  {
@@ -10,7 +10,7 @@ declare global {
       : never
   }
 
-  type Collections = typeof import('.') extends infer EntrypointModule
+  type Collections = typeof import('..') extends infer EntrypointModule
     ? 'collections' extends keyof EntrypointModule
       ? UnpackCollections<EntrypointModule['collections']>
       : 'default' extends keyof EntrypointModule
@@ -23,5 +23,11 @@ declare global {
           : never
         : never
     : never
+}
+
+declare module 'aeria' {
+  import type { Context } from 'aeria'
+  export const useAeria: () => Promise<Context>
+  export const aeria: Context
 }
 //
