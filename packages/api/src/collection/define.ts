@@ -14,7 +14,6 @@ export const defineCollection = <
     ? Omit<Coll,
       | 'item'
       | 'description'
-      | 'functions'
       | 'functionContracts'
       | 'accessControl'
     >
@@ -37,10 +36,9 @@ export const defineCollection = <
     }>
   } | {},
 ) => {
-  return collection as unknown as TCollection & {
+  return collection as TCollection & {
     item: SchemaWithId<TDescription>
     description: TDescription
-    functions: TFunctions
     functionContracts: TFunctionContracts
     accessControl: AccessControl
   }

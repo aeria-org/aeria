@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.32
+
+### Patch Changes
+
+- Fix defineCollection() typing
+  - @aeriajs/builtins@0.0.32
+  - @aeriajs/security@0.0.32
+
 ## 0.0.31
 
 ### Patch Changes
