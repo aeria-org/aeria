@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.16
+
+### Patch Changes
+
+- Add default to roles to ContractWithRoles
+
 ## 0.0.15
 
 ### Patch Changes

@@ -54,7 +54,7 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
         ? InferResponse<Response>
         : any
     ) extends infer Response
-      ? 'roles' extends keyof TContractWithRoles
+      ? TContractWithRoles['roles'] extends unknown[]
         ? TContractWithRoles['roles'][number] extends infer Role
           ? 'guest' extends Role
             ? (context: TypedContext<TContractWithRoles>)=> Response
@@ -250,7 +250,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
         ? InferResponse<Response>
         : any
     ) extends infer Response
-      ? 'roles' extends keyof TContractWithRoles
+      ? TContractWithRoles['roles'] extends unknown[]
         ? TContractWithRoles['roles'][number] extends infer Role
           ? 'guest' extends Role
             ? (context: TypedContext<TContractWithRoles>)=> Response

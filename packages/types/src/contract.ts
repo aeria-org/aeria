@@ -1,7 +1,11 @@
 import type { Property, InferProperty, Context } from '.'
 
 export type ContractRoles = {
-  roles?: Collections['user']['item']['roles']
+  roles?: (
+    | Collections['user']['item']['roles'][number]
+    | 'root'
+    | 'guest'
+  )[]
 }
 
 export type Contract =
