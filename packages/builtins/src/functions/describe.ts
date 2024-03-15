@@ -1,4 +1,4 @@
-import type { Context, Either } from '@aeriajs/types'
+import type { Context, Either, StringProperty, EnumProperty } from '@aeriajs/types'
 import type { Description } from '@aeriajs/types'
 import { createContext, preloadDescription, getEndpoints } from '@aeriajs/api'
 import { getCollections } from '@aeriajs/entrypoint'
@@ -67,7 +67,20 @@ export const describe = async (contextOrPayload: Context | Payload) => {
   }
 
   if( props.roles ) {
-    result.roles = await getAvailableRoles()
+    const userCandidate = collections.user
+    const userCollection = typeof userCandidate === 'function'
+      ? userCandidate()
+      : userCandidate
+
+    const userRolesProperty = userCollection.description.properties.roles as {
+      items: StringProperty | EnumProperty
+    }
+
+    const userRoles = 'enum' in userRolesProperty.items
+      ? userRolesProperty.items.enum
+      : []
+
+    result.roles = Array.from(new Set(userRoles.concat(await getAvailableRoles())))
   }
 
   if( props.router ) {

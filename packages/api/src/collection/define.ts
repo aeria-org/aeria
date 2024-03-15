@@ -6,8 +6,9 @@ import type {
   ContractToFunction,
   Description,
   AccessControl,
-
 } from '@aeriajs/types'
+
+import { deepMerge } from '@aeriajs/common'
 
 export const defineCollection = <
   TCollection extends Collection<TCollection extends Collection ? TCollection : never> extends infer Coll
@@ -19,9 +20,9 @@ export const defineCollection = <
     >
     : never,
   const TDescription extends Description<TDescription>,
-  const TFunctionContracts extends Partial<{
-    [P in keyof TFunctions]: Contract
-  }>,
+  const TFunctionContracts extends {
+    [P in keyof TFunctions]?: Contract
+  },
   const TFunctions extends {
     [P in keyof TFunctionContracts]: ContractToFunction<NonNullable<TFunctionContracts[P]>, Context<TDescription>>
   },
@@ -41,6 +42,20 @@ export const defineCollection = <
     description: TDescription
     functionContracts: TFunctionContracts
     accessControl: AccessControl
+  }
+}
+
+export const extendCollection = <
+  const TLeftCollection extends Collection,
+  const TRightCollection extends {
+    [P in keyof Collection]?: Partial<Collection[P]>
+  },
+>(
+  left: TLeftCollection,
+  right: TRightCollection,
+) => {
+  return deepMerge(left, right) as Omit<TLeftCollection & TRightCollection, 'item'> & {
+    item: SchemaWithId<(TLeftCollection & TRightCollection)['description']>
   }
 }
 

@@ -48,14 +48,14 @@ type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<Context, 
 export type ProxiedRouter<TRouter> = TRouter & Record<
   RequestMethod,
   <
-    const TContractWithRoles extends ContractWithRoles | {},
+    const TContractWithRoles extends ContractWithRoles,
     TCallback extends (
       TContractWithRoles extends { response: infer Response }
         ? InferResponse<Response>
         : any
     ) extends infer Response
       ? 'roles' extends keyof TContractWithRoles
-        ? TContractWithRoles['roles'] extends readonly (infer Role)[]
+        ? TContractWithRoles['roles'][number] extends infer Role
           ? 'guest' extends Role
             ? (context: TypedContext<TContractWithRoles>)=> Response
             : (context: TypedContext<TContractWithRoles> & { token: { authenticated: true } })=> Response
@@ -244,14 +244,14 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
   const routesMeta = {} as RoutesMeta
 
   const route = <
-    const TContractWithRoles extends ContractWithRoles | {},
+    const TContractWithRoles extends ContractWithRoles,
     TCallback extends (
       TContractWithRoles extends { response: infer Response }
         ? InferResponse<Response>
         : any
     ) extends infer Response
       ? 'roles' extends keyof TContractWithRoles
-        ? TContractWithRoles['roles'] extends readonly (infer Role)[]
+        ? TContractWithRoles['roles'][number] extends infer Role
           ? 'guest' extends Role
             ? (context: TypedContext<TContractWithRoles>)=> Response
             : (context: TypedContext<TContractWithRoles> & { token: { authenticated: true } })=> Response
