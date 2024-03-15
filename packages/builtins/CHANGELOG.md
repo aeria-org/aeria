@@ -1,5 +1,13 @@
 # @aeriajs/builtins
 
+## 0.0.33
+
+### Patch Changes
+
+- d5f6134: Introduce extendCollection() and fix bugs
+- Updated dependencies [d5f6134]
+  - @aeriajs/api@0.0.33
+
 ## 0.0.32
 
 ### Patch Changes

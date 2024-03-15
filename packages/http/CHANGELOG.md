@@ -1,5 +1,11 @@
 # @aeriajs/http
 
+## 0.0.23
+
+### Patch Changes
+
+- d5f6134: Introduce extendCollection() and fix bugs
+
 ## 0.0.22
 
 ### Patch Changes
