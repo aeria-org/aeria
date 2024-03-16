@@ -1,11 +1,18 @@
 import type { Context } from '@aeriajs/types'
 import type { functions } from '@aeriajs/api'
 import { createContext, getFunction } from '@aeriajs/api'
-import { ACErrors } from '@aeriajs/types'
+import { type ACErrors, ACErrorMessages } from '@aeriajs/types'
 import { isLeft, unwrapEither, pipe } from '@aeriajs/common'
 import { appendPagination } from './appendPagination.js'
 
 const postPipe = pipe([appendPagination])
+
+const getNormalizedACError = (code: ACErrors) => {
+  return {
+    code,
+    message: ACErrorMessages[code],
+  }
+}
 
 export const safeHandle = (
   fn: (context: Context)=> Promise<object>,
@@ -68,12 +75,7 @@ export const customVerbs = () => async (parentContext: Context) => {
 
   if( isLeft(fnEither) ) {
     const error = unwrapEither(fnEither)
-    switch( error ) {
-      case ACErrors.ResourceNotFound: throw new Error(`no such collection ${collectionName}`)
-      case ACErrors.FunctionNotFound: throw new Error(`no such function ${collectionName}@${functionName}`)
-      case ACErrors.AssetNotFound: throw new Error(`collection ${collectionName} has no registered functions`)
-      default: throw new Error(`unknown error: ${error}`)
-    }
+    return getNormalizedACError(error)
   }
 
   const fn = unwrapEither(fnEither)

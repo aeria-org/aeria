@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.19
+
+### Patch Changes
+
+- Normalize ACErrors
+
 ## 0.0.18
 
 ### Patch Changes

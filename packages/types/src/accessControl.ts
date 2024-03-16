@@ -1,16 +1,29 @@
 import type { Collection } from '.'
 
 export enum ACErrors {
-  AuthorizationError = 'AUTHORIZATION_ERROR',
+  AssetNotFound = 'ASSET_NOT_FOUND',
   AuthenticationError = 'AUTHENTICATION_ERROR',
+  AuthorizationError = 'AUTHORIZATION_ERROR',
+  FunctionNotFound = 'FUNCTION_NOT_FOUND',
   ImmutabilityIncorrectChild = 'IMMUTABILITY_INCORRECT_CHILD',
   ImmutabilityParentNotFound = 'IMMUTABILITY_PARENT_NOT_FOUND',
   ImmutabilityTargetImmutable = 'IMMUTABILITY_TARGET_IMMUTABLE',
+  InvalidLimit = 'INVALID_LIMIT',
   OwnershipError = 'OWNERSHIP_ERROR',
   ResourceNotFound = 'RESOURCE_NOT_FOUND',
-  AssetNotFound = 'ASSET_NOT_FOUND',
-  FunctionNotFound = 'FUNCTION_NOT_FOUND',
-  InvalidLimit = 'INVALID_LIMIT',
+}
+
+export const ACErrorMessages: Record<ACErrors, string> = {
+  [ACErrors.AssetNotFound]: 'collection has no registered functions',
+  [ACErrors.AuthenticationError]: 'you have insufficient privileges',
+  [ACErrors.AuthorizationError]: 'you have insufficient privileges',
+  [ACErrors.FunctionNotFound]: 'function not found',
+  [ACErrors.ImmutabilityIncorrectChild]: 'specified limit is invalid',
+  [ACErrors.ImmutabilityParentNotFound]: 'specified limit is invalid',
+  [ACErrors.ImmutabilityTargetImmutable]: 'specified limit is invalid',
+  [ACErrors.InvalidLimit]: 'specified limit is invalid',
+  [ACErrors.OwnershipError]: 'you have insufficient privileges',
+  [ACErrors.ResourceNotFound]: 'collection not found',
 }
 
 export type Role<
