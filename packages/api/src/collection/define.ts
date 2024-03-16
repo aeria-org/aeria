@@ -16,6 +16,7 @@ export const defineCollection = <
       Coll,
       | 'item'
       | 'description'
+      | 'functions'
     >
     : never,
   const TDescription extends Description<TDescription>,
@@ -41,6 +42,7 @@ export const defineCollection = <
   return collection as TCollection & {
     item: SchemaWithId<TDescription>
     description: TDescription
+    functions: TFunctions
     functionContracts: TFunctionContracts
     accessControl: AccessControl
   }
