@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.39
+
+### Patch Changes
+
+- Remove portuguese words
+  - @aeriajs/api@0.0.39
+
 ## 0.0.38
 
 ### Patch Changes
