@@ -18,7 +18,7 @@ export type RequestMethod = (typeof REQUEST_METHODS)[number]
 export type GenericRequest = {
   url: string
   method: RequestMethod
-  headers: Record<string, any>
+  headers: Record<string, string | string[] | undefined>
   body?: string
   query: Record<string, any>
   payload: Record<string, any>

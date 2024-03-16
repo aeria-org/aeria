@@ -51,7 +51,7 @@ export const download = async (
   }
 
   const range = context.request.headers.range
-  if( range ) {
+  if( typeof range === 'string' ) {
     const parts = range.replace(/bytes=/, '').split('-')
     const start = parseInt(parts[0])
     const end = parts[1]

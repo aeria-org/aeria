@@ -1,5 +1,19 @@
 # @aeriajs/node-http
 
+## 0.0.26
+
+### Patch Changes
+
+- Major types refactoring
+- Updated dependencies
+  - @aeriajs/http@0.0.26
+
+## 0.0.25
+
+### Patch Changes
+
+- @aeriajs/http@0.0.25
+
 ## 0.0.24
 
 ### Patch Changes

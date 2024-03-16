@@ -1,5 +1,17 @@
 # @aeriajs/types
 
+## 0.0.18
+
+### Patch Changes
+
+- Major types refactoring
+
+## 0.0.17
+
+### Patch Changes
+
+- Allow explicitly annotate insert() return
+
 ## 0.0.16
 
 ### Patch Changes

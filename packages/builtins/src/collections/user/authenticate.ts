@@ -88,11 +88,37 @@ const getUser = async (
   }
 }
 
+export const getDefaultUser = async () => {
+  const token = await signToken({
+    _id: null,
+    roles: ['root'],
+    userinfo: {},
+  })
+
+  return {
+    user: {
+      _id: null,
+      name: 'God Mode',
+      email: '',
+      roles: ['root'],
+      active: true,
+    },
+    token: {
+      type: 'bearer',
+      content: token,
+    },
+  }
+}
+
 export const authenticate = async (props: Props, context: Context<typeof description>) => {
   if( 'revalidate' in props ) {
-    return context.token.authenticated
-      ? right(await getUser(context.token.sub, context))
-      : left(AuthenticationErrors.Unauthenticated)
+    if( !context.token.authenticated ) {
+      return left(AuthenticationErrors.Unauthenticated)
+    }
+
+    return right(context.token.sub
+      ? await getUser(context.token.sub, context)
+      : await getDefaultUser())
   }
 
   if( typeof props.email !== 'string' ) {
@@ -101,25 +127,7 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
 
   if( context.config.defaultUser ) {
     if( props.email === context.config.defaultUser.username && props.password === context.config.defaultUser.password ) {
-      const token = await signToken({
-        _id: null,
-        roles: ['root'],
-        userinfo: {},
-      })
-
-      return right(<Return>{
-        user: {
-          _id: null,
-          name: 'God Mode',
-          email: '',
-          roles: ['root'],
-          active: true,
-        },
-        token: {
-          type: 'bearer',
-          content: token,
-        },
-      })
+      return right(await getDefaultUser())
     }
   }
 

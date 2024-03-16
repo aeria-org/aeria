@@ -27,7 +27,10 @@ export const getDecodedToken = async (request: GenericRequest, context: Context)
   }
 
   try {
-    const decodedToken: DecodedToken = await decodeToken(request.headers.authorization.split('Bearer ').pop() || '')
+    const decodedToken: DecodedToken = await decodeToken(typeof request.headers.authorization === 'string'
+      ? request.headers.authorization.split('Bearer ').pop()!
+      : '')
+
     decodedToken.authenticated = true
     Object.assign(decodedToken, unsafe(await traverseDocument(decodedToken, context.collections.user.description, {
       autoCast: true,

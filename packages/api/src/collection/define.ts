@@ -12,11 +12,10 @@ import { deepMerge } from '@aeriajs/common'
 
 export const defineCollection = <
   TCollection extends Collection<TCollection extends Collection ? TCollection : never> extends infer Coll
-    ? Omit<Coll,
+    ? Omit<
+      Coll,
       | 'item'
       | 'description'
-      | 'functionContracts'
-      | 'accessControl'
     >
     : never,
   const TDescription extends Description<TDescription>,
@@ -29,13 +28,15 @@ export const defineCollection = <
 >(
   collection: TCollection & {
     description: TDescription
-    functions?: TFunctions
     functionContracts?: TFunctionContracts
     accessControl?: AccessControl<{
-      description: TDescription
-      functions: NoInfer<TFunctions>
+      description: NoInfer<TDescription>
+      functions: Record<string, any>
     }>
-  } | {},
+  } & (
+    | { functions?: TFunctions }
+    | { functions?: Record<string, unknown> }
+  ),
 ) => {
   return collection as TCollection & {
     item: SchemaWithId<TDescription>

@@ -14,9 +14,11 @@ import type {
 export type CollectionModel<TDescription extends Description> =
   MongoCollection<Omit<PackReferences<SchemaWithId<TDescription>>, '_id'>>
 
-type OmitContextParameter<TFunction> = TFunction extends (payload: infer Payload, context: Context, ...args: infer Rest)=> infer Return
-  ? (payload: Payload, ...args: Rest)=> Return
-  : never
+type OmitContextParameter<TFunction> = TFunction extends ()=> any
+  ? TFunction
+  : TFunction extends (payload: infer Payload, context: Context, ...args: infer Rest)=> infer Return
+    ? (payload: Payload, ...args: Rest)=> Return
+    : never
 
 type RestParameters<TFunction> = TFunction extends (payload: any, context: Context, ...args: infer Rest)=> any
   ? Rest

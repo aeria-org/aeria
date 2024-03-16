@@ -9,7 +9,7 @@ export type InsertOptions = {
 
 export const insert = async <
   TContext extends Context,
-  TDocument = SchemaWithId<TContext['description']>,
+  TDocument extends Record<string, any> = SchemaWithId<TContext['description']>,
 >(
   payload: InsertPayload<SchemaWithId<TContext['description']>>,
   context: TContext,
@@ -69,25 +69,29 @@ export const insert = async <
   }
 
   if( context.collection.originalFunctions.get ) {
-    return right(await context.collection.originalFunctions.get({
+    const document: TDocument = await context.collection.originalFunctions.get({
       filters: {
         _id: newId,
       },
     }, context, {
       bypassSecurity: true,
-    }) as TDocument)
+    })
+
+    return right(document)
   }
 
-  const result = await context.collection.model.findOne({
+  const document: TDocument = await context.collection.model.findOne({
     _id: newId,
   }, {
     projection,
   })
 
-  /* eslint-disable-next-line */
-  return right(unsafe(await traverseDocument(result!, context.description, {
+  const result: TDocument = unsafe(await traverseDocument(document, context.description, {
     getters: true,
     fromProperties: true,
     recurseReferences: true,
-  })))
+  }))
+
+  return right(result)
 }
+

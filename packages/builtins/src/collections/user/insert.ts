@@ -7,7 +7,7 @@ export const insert = async (
   payload: {
     what: Omit<PackReferences<SchemaWithId<typeof description>>, 'roles'>
   },
-  context: Context,
+  context: Context<typeof description>,
 ) => {
   if( payload.what.password ) {
     payload.what.password = await bcrypt.hash(payload.what.password, 10)

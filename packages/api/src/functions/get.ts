@@ -23,7 +23,7 @@ export const get = async <
     ? TContext
     : never,
   options?: GetOptions,
-) => {
+): Promise<TDocument | null> => {
   const security = useSecurity(context)
 
   const {
@@ -68,6 +68,6 @@ export const get = async <
     fromProperties: true,
     recurseReferences: true,
     recurseDeep: true,
-  })), context.description) as TDocument
+  })), context.description)
 }
 
