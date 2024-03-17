@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,6 +42,23 @@ jobs:
             && pnpm --no-bail --filter='./packages/aeria-sdk' build \
             && pnpm --no-bail --filter='./packages/aeria-build' build:build
 
+      - name: Run tests
+        run: pnpm -r test
+
+      - name: Patch .npmrc
+        run: |
+          touch .npmrc
+          sed -i "1s/^/\/\/registry.npmjs.org\/:_authToken=${NPM_TOKEN}\n/" .npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Create release PR
+        uses: changesets/action@v1
+        with:
+          publish: pnpm changeset publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Patch node_modules
         run: |
           find packages -mindepth 1 -maxdepth 1 \
@@ -49,7 +70,4 @@ jobs:
           cd playground
           pnpm install .
           pnpm build
-
-      - name: Run tests
-        run: pnpm -r test
 
