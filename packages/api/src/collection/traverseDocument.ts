@@ -206,7 +206,7 @@ const validate = (value: any, ctx: PhaseContext) => {
 
   if( isLeft(validationEither) ) {
     return left({
-      [ctx.propName]: validationEither,
+      [ctx.propName]: unwrapEither(validationEither),
     })
   }
 
