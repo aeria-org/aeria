@@ -1,5 +1,5 @@
 # ignore husky hooks
-.husky/* linguist-detectable=false
+.husky/* linguist-vendored
 
 # ignore bin/index.js
-*.js linguist-detectable=false
+*.js linguist-vendored
