@@ -1,5 +1,16 @@
 # aeria
 
+## 0.0.41
+
+### Patch Changes
+
+- 8553453: Test release
+- Updated dependencies [bfe4da7]
+  - @aeriajs/api@0.0.41
+  - @aeriajs/builtins@0.0.41
+  - @aeriajs/security@0.0.41
+  - @aeriajs/server@0.0.41
+
 ## 0.0.40
 
 ### Patch Changes
