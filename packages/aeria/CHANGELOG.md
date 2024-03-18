@@ -1,5 +1,11 @@
 # aeria
 
+## 0.0.42
+
+### Patch Changes
+
+- 05bf460: Test release
+
 ## 0.0.41
 
 ### Patch Changes
