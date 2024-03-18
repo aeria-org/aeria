@@ -1,11 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-pnpm -r lint
-pnpm i
-
-if $(git diff --name-only | grep -q '^pnpm-lock.yaml$'); then
-  git add pnpm-lock.yaml
-  git commit -m 'chore: update lockfile'
+if ! test $GITHUB_ACTIONS; then
+  pnpm -r lint
 fi
 
