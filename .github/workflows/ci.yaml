@@ -51,10 +51,6 @@ jobs:
       - name: Run tests
         run: pnpm -r test
 
-      - name: Patch .npmrc
-        run: |
-          touch .npmrc
-          sed -i "1s/^/\/\/registry.npmjs.org\/:_authToken=${NPM_TOKEN}\n/" .npmrc
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Create release PR
