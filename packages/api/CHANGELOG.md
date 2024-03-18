@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.41
+
+### Patch Changes
+
+- bfe4da7: Export ExtendCollection<L, R> type
+  - @aeriajs/builtins@0.0.41
+  - @aeriajs/security@0.0.41
+
 ## 0.0.40
 
 ### Patch Changes
