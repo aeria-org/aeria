@@ -48,7 +48,6 @@ jobs:
             -exec bash -c 'a={}; cp -r $a/dist node_modules/@aeriajs/${a//packages\//} 2>/dev/null || true' \;
           cp -r packages node_modules/@aeriajs
 
-
       - name: Run tests
         run: pnpm -r test
 

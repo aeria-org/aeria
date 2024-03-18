@@ -5,6 +5,8 @@ for ws in $(git diff --name-only --cached | grep -oE 'packages/([^/]+)' | uniq);
   pnpm --filter="./${ws}" lint:fix
 done
 
-pnpm i
-git add pnpm-lock.yaml
+if ! test $GITHUB_ACTIONS; then
+  pnpm i
+  git add pnpm-lock.yaml
+fi
 
