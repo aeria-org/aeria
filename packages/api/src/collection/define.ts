@@ -10,6 +10,13 @@ import type {
 
 import { deepMerge } from '@aeriajs/common'
 
+export type ExtendCollection<
+  TLeftCollection extends Collection,
+  TRightCollection
+> = Omit<TLeftCollection & TRightCollection, 'item'> & {
+  item: SchemaWithId<(TLeftCollection & TRightCollection)['description']>
+}
+
 export const defineCollection = <
   TCollection extends Collection<TCollection extends Collection ? TCollection : never> extends infer Coll
     ? Omit<
@@ -57,8 +64,6 @@ export const extendCollection = <
   left: TLeftCollection,
   right: TRightCollection,
 ) => {
-  return deepMerge(left, right) as Omit<TLeftCollection & TRightCollection, 'item'> & {
-    item: SchemaWithId<(TLeftCollection & TRightCollection)['description']>
-  }
+  return deepMerge(left, right) as ExtendCollection<TLeftCollection, TRightCollection>
 }
 
