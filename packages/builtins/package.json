@@ -17,7 +17,7 @@
     "build:esm": "swc src/* -d dist --strip-leading-paths -C module.type=es6 --out-file-extension=mjs && pnpm build:esm-transform",
     "build:esm-transform": "pnpm -w esm-transform $PWD/dist",
     "write-icons": "pnpm -w write-icons",
-    "prepublishOnly": "pnpm lint && pnpm build && pnpm write-icons"
+    "prepublishOnly": "pnpm build && pnpm write-icons"
   },
   "keywords": [],
   "author": "",

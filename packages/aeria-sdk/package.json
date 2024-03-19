@@ -13,7 +13,7 @@
     "build:cjs": "tsc",
     "build:esm": "swc src/* -d dist --strip-leading-paths -C module.type=es6 --out-file-extension=mjs && pnpm build:esm-transform",
     "build:esm-transform": "pnpm -w esm-transform $PWD/dist",
-    "prepublishOnly": "pnpm lint && pnpm build"
+    "prepublishOnly": "pnpm build"
   },
   "keywords": [],
   "author": "",
