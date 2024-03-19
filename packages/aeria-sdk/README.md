@@ -1,4 +1,4 @@
-# `@waltz-ui/sdk`
+# `aeria-sdk`
 
 ## Introduction
 
