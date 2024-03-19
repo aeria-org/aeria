@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.21
+
+### Patch Changes
+
+- 795ce5e: Fix deepClone() bug
+
 ## 0.0.20
 
 ### Patch Changes
