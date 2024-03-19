@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.42
+
+### Patch Changes
+
+- 896b5e0: Improve insert(), get() and getAll() signatures
+- Updated dependencies [795ce5e]
+  - @aeriajs/common@0.0.21
+  - @aeriajs/builtins@0.0.42
+  - @aeriajs/security@0.0.42
+  - @aeriajs/access-control@0.0.21
+  - @aeriajs/entrypoint@0.0.21
+  - @aeriajs/http@0.0.28
+  - @aeriajs/validation@0.0.24
+
 ## 0.0.41
 
 ### Patch Changes
