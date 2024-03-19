@@ -35,7 +35,7 @@ export const compile = async () => {
   const compilerOptions = tsConfig.compilerOptions as unknown
 
   const selectedFiles = fileList.filter((file) => {
-    const testFile = (exp: string) => new RegExp(exp.replace('*', '([^\/]+)')).test(file)
+    const testFile = (exp: string) => new RegExp(exp.replace('*', '([^\/]+)')).test(file.replace(/\\/g, '/'))
 
     if( tsConfig.include ) {
       return tsConfig.include.some(testFile)
