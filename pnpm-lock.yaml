@@ -51,10 +51,10 @@ importers:
   packages/access-control:
     dependencies:
       '@aeriajs/common':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../common
       '@aeriajs/entrypoint':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../entrypoint
       '@aeriajs/types':
         specifier: ^0.0.19
@@ -63,49 +63,49 @@ importers:
   packages/aeria:
     dependencies:
       '@aeriajs/access-control':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../access-control
       '@aeriajs/api':
-        specifier: ^0.0.41
+        specifier: ^0.0.42
         version: link:../api
       '@aeriajs/builtins':
-        specifier: ^0.0.41
+        specifier: ^0.0.42
         version: link:../builtins
       '@aeriajs/common':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../common
       '@aeriajs/entrypoint':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../entrypoint
       '@aeriajs/http':
-        specifier: ^0.0.27
+        specifier: ^0.0.28
         version: link:../http
       '@aeriajs/node-http':
-        specifier: ^0.0.27
+        specifier: ^0.0.28
         version: link:../node-http
       '@aeriajs/security':
-        specifier: ^0.0.41
+        specifier: ^0.0.42
         version: link:../security
       '@aeriajs/server':
-        specifier: ^0.0.41
+        specifier: ^0.0.42
         version: link:../server
       '@aeriajs/types':
         specifier: ^0.0.19
         version: link:../types
       '@aeriajs/validation':
-        specifier: ^0.0.23
+        specifier: ^0.0.24
         version: link:../validation
 
   packages/aeria-build:
     dependencies:
       '@aeriajs/api':
-        specifier: ^0.0.41
+        specifier: ^0.0.42
         version: link:../api
       '@aeriajs/builtins':
-        specifier: ^0.0.41
+        specifier: ^0.0.42
         version: link:../builtins
       '@aeriajs/common':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../common
       '@aeriajs/types':
         specifier: ^0.0.19
@@ -144,7 +144,7 @@ importers:
   packages/aeria-sdk:
     dependencies:
       '@aeriajs/common':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../common
       '@aeriajs/types':
         specifier: ^0.0.19
@@ -153,28 +153,28 @@ importers:
   packages/api:
     dependencies:
       '@aeriajs/access-control':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../access-control
       '@aeriajs/builtins':
-        specifier: ^0.0.41
+        specifier: ^0.0.42
         version: link:../builtins
       '@aeriajs/common':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../common
       '@aeriajs/entrypoint':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../entrypoint
       '@aeriajs/http':
-        specifier: ^0.0.27
+        specifier: ^0.0.28
         version: link:../http
       '@aeriajs/security':
-        specifier: ^0.0.41
+        specifier: ^0.0.42
         version: link:../security
       '@aeriajs/types':
         specifier: ^0.0.19
         version: link:../types
       '@aeriajs/validation':
-        specifier: ^0.0.23
+        specifier: ^0.0.24
         version: link:../validation
       jsonwebtoken:
         specifier: ^8.5.1
@@ -194,22 +194,22 @@ importers:
   packages/builtins:
     dependencies:
       '@aeriajs/access-control':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../access-control
       '@aeriajs/api':
-        specifier: ^0.0.41
+        specifier: ^0.0.42
         version: link:../api
       '@aeriajs/common':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../common
       '@aeriajs/entrypoint':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../entrypoint
       '@aeriajs/types':
         specifier: ^0.0.19
         version: link:../types
       '@aeriajs/validation':
-        specifier: ^0.0.23
+        specifier: ^0.0.24
         version: link:../validation
       bcrypt:
         specifier: ^5.1.0
@@ -236,7 +236,7 @@ importers:
   packages/entrypoint:
     dependencies:
       '@aeriajs/common':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../common
       '@aeriajs/types':
         specifier: ^0.0.19
@@ -245,31 +245,31 @@ importers:
   packages/http:
     dependencies:
       '@aeriajs/access-control':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../access-control
       '@aeriajs/common':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../common
       '@aeriajs/types':
         specifier: ^0.0.19
         version: link:../types
       '@aeriajs/validation':
-        specifier: ^0.0.23
+        specifier: ^0.0.24
         version: link:../validation
 
   packages/node-http:
     dependencies:
       '@aeriajs/http':
-        specifier: ^0.0.27
+        specifier: ^0.0.28
         version: link:../http
 
   packages/security:
     dependencies:
       '@aeriajs/api':
-        specifier: ^0.0.41
+        specifier: ^0.0.42
         version: link:../api
       '@aeriajs/common':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../common
       '@aeriajs/types':
         specifier: ^0.0.19
@@ -282,32 +282,32 @@ importers:
   packages/server:
     dependencies:
       '@aeriajs/access-control':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../access-control
       '@aeriajs/api':
-        specifier: ^0.0.41
+        specifier: ^0.0.42
         version: link:../api
       '@aeriajs/builtins':
-        specifier: ^0.0.41
+        specifier: ^0.0.42
         version: link:../builtins
       '@aeriajs/common':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../common
       '@aeriajs/entrypoint':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../entrypoint
       '@aeriajs/http':
-        specifier: ^0.0.27
+        specifier: ^0.0.28
         version: link:../http
       '@aeriajs/server':
-        specifier: ^0.0.41
+        specifier: ^0.0.42
         version: 'link:'
       '@aeriajs/types':
         specifier: ^0.0.19
         version: link:../types
     optionalDependencies:
       '@aeriajs/node-http':
-        specifier: ^0.0.27
+        specifier: ^0.0.28
         version: link:../node-http
     devDependencies:
       mongodb:
@@ -323,7 +323,7 @@ importers:
   packages/validation:
     dependencies:
       '@aeriajs/common':
-        specifier: ^0.0.20
+        specifier: ^0.0.21
         version: link:../common
       '@aeriajs/types':
         specifier: ^0.0.19
