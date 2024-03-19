@@ -7,10 +7,7 @@ export type InsertOptions = {
   bypassSecurity?: boolean
 }
 
-export const insert = async <
-  TContext extends Context,
-  TDocument extends Record<string, any> = SchemaWithId<TContext['description']>,
->(
+export const insert = async <TContext extends Context>(
   payload: InsertPayload<SchemaWithId<TContext['description']>>,
   context: TContext,
   options?: InsertOptions,
@@ -69,7 +66,7 @@ export const insert = async <
   }
 
   if( context.collection.originalFunctions.get ) {
-    const document: TDocument = await context.collection.originalFunctions.get({
+    const document: SchemaWithId<TContext['description']> = await context.collection.originalFunctions.get({
       filters: {
         _id: newId,
       },
@@ -80,13 +77,13 @@ export const insert = async <
     return right(document)
   }
 
-  const document: TDocument = await context.collection.model.findOne({
+  const document: SchemaWithId<TContext['description']> = await context.collection.model.findOne({
     _id: newId,
   }, {
     projection,
   })
 
-  const result: TDocument = unsafe(await traverseDocument(document, context.description, {
+  const result: SchemaWithId<TContext['description']> = unsafe(await traverseDocument(document, context.description, {
     getters: true,
     fromProperties: true,
     recurseReferences: true,

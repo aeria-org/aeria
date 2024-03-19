@@ -14,16 +14,13 @@ export type GetOptions = {
   bypassSecurity?: boolean
 }
 
-export const get = async <
-  TContext extends Context,
-  TDocument = SchemaWithId<TContext['description']>,
->(
+export const get = async <TContext extends Context>(
   payload: GetPayload<SchemaWithId<TContext['description']>>,
   context: TContext extends Context<any>
     ? TContext
     : never,
   options?: GetOptions,
-): Promise<TDocument | null> => {
+): Promise<SchemaWithId<TContext['description']> | null> => {
   const security = useSecurity(context)
 
   const {

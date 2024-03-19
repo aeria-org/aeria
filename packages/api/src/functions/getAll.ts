@@ -14,10 +14,7 @@ export type GetAllOptions = {
   bypassSecurity?: boolean
 }
 
-export const getAll = async <
-  TContext extends Context,
-  TDocument = SchemaWithId<TContext['description']>,
->(
+export const getAll = async <TContext extends Context>(
   _payload: GetAllPayload<SchemaWithId<Context['description']>> | undefined,
   context: TContext,
   options: GetAllOptions = {},
@@ -103,7 +100,7 @@ export const getAll = async <
   }
 
   const result = await context.collection.model.aggregate(pipeline).toArray()
-  const documents: TDocument[] = []
+  const documents: SchemaWithId<TContext['description']>[] = []
 
   for( const document of result ) {
     documents.push(unsafe(await traverseDocument(fill(document, context.description), context.description, {

@@ -47,7 +47,7 @@ export const defineCollection = <
   ),
 ) => {
   return collection as TCollection & {
-    item: SchemaWithId<TDescription>
+      item: SchemaWithId<TDescription>
     description: TDescription
     functions: TFunctions
     functionContracts: TFunctionContracts
