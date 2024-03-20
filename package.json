@@ -3,6 +3,7 @@
   "private": true,
   "packageManager": "pnpm@8.7.6",
   "scripts": {
+    "test": "NODE_PATH=../../playground/node_modules pnpm -r test",
     "postinstall": "husky; rm -rf packages/*/node_modules/@aeriajs",
     "esm-transform": "./scripts/transform-import-extensions.ts",
     "write-icons": "NODE_PATH=./playground/node_modules ./scripts/compile-builtins-icons.ts"

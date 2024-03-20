@@ -25,12 +25,12 @@ describe('Validate', () => {
   it('validates object using validator', () => {
     const validationEither = personValidator(personCandidate)
     assert(isRight(validationEither))
-    assert(JSON.stringify(plainCandidate) === JSON.stringify(unwrapEither(validationEither)))
+    assert(JSON.stringify(personCandidate) === JSON.stringify(unwrapEither(validationEither)))
   })
 
   it('validates object using silent validator', () => {
     const person = personSilentValidator(personCandidate)
-    assert(JSON.stringify(plainCandidate) === JSON.stringify(person))
+    assert(JSON.stringify(personCandidate) === JSON.stringify(person))
   })
 
   it('returns left with validator', () => {

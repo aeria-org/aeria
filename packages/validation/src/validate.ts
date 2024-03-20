@@ -104,9 +104,11 @@ export const validateProperty = (
     if( what !== property.const ) {
       return left(makePropertyError('unmatching', {
         expected: property.const,
-        got: what
+        got: what,
       }))
     }
+
+    return right(what)
   }
 
   const expectedType = getPropertyType(property)!
