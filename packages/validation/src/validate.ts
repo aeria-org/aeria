@@ -100,6 +100,15 @@ export const validateProperty = (
     return validate(what, property, options)
   }
 
+  if( 'const' in property ) {
+    if( what !== property.const ) {
+      return left(makePropertyError('unmatching', {
+        expected: property.const,
+        got: what
+      }))
+    }
+  }
+
   const expectedType = getPropertyType(property)!
   const actualType = getValueType(what)
 
