@@ -62,7 +62,7 @@ export const leftSchema = <const TObject extends Property>(object: TObject) => {
     type: 'object',
     properties: {
       _tag: {
-        enum: ['Left'],
+        const: 'Left',
       },
       value: object,
     },
@@ -74,7 +74,7 @@ export const rightSchema = <const TObject extends Property>(object: TObject) => 
     type: 'object',
     properties: {
       _tag: {
-        enum: ['Right'],
+        const: 'Right',
       },
       value: object,
     },

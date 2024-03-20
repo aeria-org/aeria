@@ -64,6 +64,17 @@ describe('Validate', () => {
     assert('code' in error && error.code === 'INVALID_PROPERTIES')
   })
 
+  it('returns error on divergent const', () => {
+    const candidate = Object.assign({}, plainCandidate)
+    candidate.job = 'invalid'
+
+    const validationEither = validate(candidate, plainDescription)
+
+    assert(isLeft(validationEither))
+    const error = unwrapEither(validationEither)
+    assert('code' in error && error.code === 'INVALID_PROPERTIES')
+  })
+
   it('validates deep object', () => {
     const validationEither = validate(deepCandidate, deepDescription)
 

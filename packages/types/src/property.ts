@@ -130,6 +130,10 @@ export type GetterProperty = {
   getter: (document: any)=> any
 }
 
+export type ConstProperty = {
+  const: string | number | boolean
+}
+
 export type MixedProperty =
   | RefProperty
   | FileProperty
@@ -140,6 +144,7 @@ export type MixedProperty =
   | NumberProperty
   | BooleanProperty
   | GetterProperty
+  | ConstProperty
 
 export type NonCircularMixedProperty =
   | NonCircularRefProperty
@@ -151,6 +156,7 @@ export type NonCircularMixedProperty =
   | NumberProperty
   | BooleanProperty
   | GetterProperty
+  | ConstProperty
 
 export type PropertyBase = {
   description?: string
