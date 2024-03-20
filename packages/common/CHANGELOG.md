@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.22
+
+### Patch Changes
+
+- 1f97ace: Prefer JSON.stringify() over structuredClone() on browsers
+
 ## 0.0.21
 
 ### Patch Changes
