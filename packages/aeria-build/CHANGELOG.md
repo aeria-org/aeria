@@ -1,5 +1,15 @@
 # aeria-build
 
+## 0.0.47
+
+### Patch Changes
+
+- ee917b8: Treat Windows path separator in aeria-build
+- Updated dependencies [1f97ace]
+  - @aeriajs/common@0.0.22
+  - @aeriajs/api@0.0.43
+  - @aeriajs/builtins@0.0.43
+
 ## 0.0.46
 
 ### Patch Changes
