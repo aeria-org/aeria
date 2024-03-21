@@ -10,7 +10,6 @@ router.GET('/get-people', async (context) => {
     what: {
       name: context.request.payload.name,
       job: 'programmer',
-      pets: [],
     },
   })
 
