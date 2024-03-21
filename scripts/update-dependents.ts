@@ -9,7 +9,7 @@ const updateDependent = async (repo: string) => {
   const repoName = repo.split('/').pop()!
 
   await $([
-    `git clone https://aeria-org:${GITHUB_TOKEN}@github.com/${repo}.git /tmp/${repoName}`,
+    `git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${repo}.git /tmp/${repoName}`,
     `cd /tmp/${repoName}`,
     'pnpm update --recursive',
   ])
@@ -46,6 +46,8 @@ Update upstream
   await fs.promises.writeFile(`/tmp/${repoName}/.changeset/${fileName}.md`, changeset)
   await $([
     `cd /tmp/${repoName}`,
+    'git config --global user.name "Github Actions"',
+    'git config --global user.email "minenwerfer@users.noreply.github.com"',
     'git add .',
     'git commit -m "chore(deps): update upstream"',
     'git push',
