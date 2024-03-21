@@ -39,21 +39,21 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/jsonwebtoken": "^8.5.6"
+    "@types/jsonwebtoken": "^9.0.6"
   },
   "peerDependencies": {
     "@aeriajs/access-control": "^0.0.23",
+    "@aeriajs/builtins": "^0.0.44",
     "@aeriajs/common": "^0.0.23",
     "@aeriajs/entrypoint": "^0.0.23",
     "@aeriajs/http": "^0.0.30",
     "@aeriajs/security": "^0.0.44",
-    "@aeriajs/builtins": "^0.0.44",
     "@aeriajs/types": "^0.0.20",
     "@aeriajs/validation": "^0.0.26",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^6.1.0"
   },
   "optionalDependencies": {
-    "mongodb-memory-server": "^8.10.2"
+    "mongodb-memory-server": "^9.1.7"
   }
 }

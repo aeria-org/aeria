@@ -2,8 +2,8 @@
 module.exports = {
   extends: ['@commitlint/config-conventional'],
   ignores: [
-    (message) => {
-      return /^Version Packages/.test(message)
+    () => {
+      return !!process.env.GITHUB_ACTIONS
     }
   ],
 }

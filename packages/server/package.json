@@ -34,18 +34,18 @@
   "peerDependencies": {
     "@aeriajs/access-control": "^0.0.23",
     "@aeriajs/api": "^0.0.44",
+    "@aeriajs/builtins": "^0.0.44",
     "@aeriajs/common": "^0.0.23",
     "@aeriajs/entrypoint": "^0.0.23",
     "@aeriajs/http": "^0.0.30",
     "@aeriajs/server": "^0.0.44",
-    "@aeriajs/builtins": "^0.0.44",
     "@aeriajs/types": "^0.0.20",
     "mongodb": "^6.1.0"
   },
   "optionalDependencies": {
-    "@aeriajs/node-http": "^0.0.30"
+    "@aeriajs/node-http": "workspace:^"
   },
   "devDependencies": {
-    "mongodb": "^6.1.0"
+    "mongodb": "^6.5.0"
   }
 }

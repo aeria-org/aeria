@@ -55,7 +55,7 @@ jobs:
       - name: Create release PR
         uses: changesets/action@v1
         with:
-          publish: pnpm changeset publish
+          publish: pnpm push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
