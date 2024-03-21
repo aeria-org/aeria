@@ -1,5 +1,0 @@
----
-"aeria": patch
----
-
-Update dependencies

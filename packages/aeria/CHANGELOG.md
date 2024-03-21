@@ -1,5 +1,11 @@
 # aeria
 
+## 0.0.48
+
+### Patch Changes
+
+- 23975cc: Update dependencies
+
 ## 0.0.45
 
 ### Patch Changes
