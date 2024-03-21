@@ -1,5 +1,11 @@
 # aeria
 
+## 0.0.47
+
+### Patch Changes
+
+- bfc5fd5: Test changeset
+
 ## 0.0.46
 
 ### Patch Changes
