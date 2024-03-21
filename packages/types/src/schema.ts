@@ -123,13 +123,15 @@ type MapReferences<TSchema> = TSchema extends { properties: infer Properties }
 
 type PackReferencesAux<T> = T extends (...args: any[])=> any
   ? T
-  : T extends { _id: infer Id }
-    ? Id
-    : T extends Record<string, any>
-      ? PackReferences<T>
-      : T extends any[] | readonly any[]
-        ? PackReferencesAux<T[number]>[]
-        : T
+  : T extends ObjectId
+    ? T
+    : T extends { _id: infer Id }
+      ? Id
+      : T extends Record<string, any>
+        ? PackReferences<T>
+        : T extends any[] | readonly any[]
+          ? PackReferencesAux<T[number]>[]
+          : T
 
 type CombineProperties<TSchema> = TSchema extends { properties: infer Properties }
   ? FilterReadonlyProperties<Properties> extends infer ReadonlyProperties

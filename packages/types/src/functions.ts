@@ -49,15 +49,15 @@ export type Filters<TDocument> = StrictFilter<any> & Partial<{
     : never
 }>
 
-export type What<TDocument> = DocumentFilter<TDocument> extends infer Document
-  ? Partial<{
-    [P in keyof Document]: Document[P] extends null
-      ? null
-      : Document[P] | StrictUpdateFilter<Document[P]>
-  }> & {
-    _id?: ObjectId | string
-  }
-  : never
+type DocumentUpdateFilter<Document> = {
+  [P in keyof Document]: Document[P] extends null
+    ? null
+    : Document[P] | StrictUpdateFilter<Document[P]>
+}
+
+export type What<TDocument> =
+  | { _id: ObjectId | string } & Partial<DocumentUpdateFilter<DocumentFilter<TDocument>>>
+  | { _id?: null } & Omit<PackReferences<TDocument>, '_id'>
 
 export type Projection<TDocument> =
   keyof TDocument | '_id' extends infer DocumentProp
@@ -89,10 +89,8 @@ export type GetAllPayload<TDocument extends CollectionDocument<OptionalId<any>>>
   populate?: (keyof TDocument | string)[]
 }
 
-export type InsertPayload<TDocument extends CollectionDocument<any>, BypassTypeRestriction = false> = {
-  what: BypassTypeRestriction extends true
-    ? any
-    : What<TDocument>
+export type InsertPayload<TDocument extends CollectionDocument<any>> = {
+  what: What<TDocument>
   project?: Projection<TDocument>
 }
 
