@@ -45,6 +45,7 @@ Update upstream
 
   await fs.promises.writeFile(`/tmp/${repoName}/.changeset/${fileName}.md`, changeset)
   await $([
+    `cd /tmp/${repoName}`,
     'git add .',
     'git commit -m "chore(deps): update upstream"',
     'git push',
