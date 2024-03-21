@@ -39,7 +39,10 @@ context.collections.person.functions.insert({
 Invalid (from now on):
 
 ```typescript
-// Property 'age' is missing in type '{ name: string; }' but required in type 'Omit<PackReferences<SchemaWithId<{ readonly $id: "person"; readonly properties: { readonly name: { readonly type: "string"; }; readonly age: number; } & { ...; }>>, "_id">'.
+// Property 'age' is missing in type '{ name: string; }' but required in type
+// 'Omit<PackReferences<SchemaWithId<{ readonly $id: "person"; readonly
+// properties: { readonly name: { readonly type: "string"; }; readonly age:
+// number; } & { ...; }>>, "_id">'.
 context.collections.person.functions.insert({
   what: {
     name: "Terry",
