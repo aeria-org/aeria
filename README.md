@@ -9,7 +9,7 @@
 />
 
 
-A source of truth and REST framework for the busy developer.
+A source of truth and REST framework.
 
 ```typescript
 router.GET('/get-pets/(\w+)', (context) => {
