@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.45
+
+### Patch Changes
+
+- c1690e1: Fix MongoDB log serialization error and user tsconfig being shadowed
+  - @aeriajs/builtins@0.0.45
+  - @aeriajs/security@0.0.45
+
 ## 0.0.44
 
 ### Patch Changes

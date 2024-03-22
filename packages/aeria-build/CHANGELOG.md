@@ -1,5 +1,14 @@
 # aeria-build
 
+## 0.0.49
+
+### Patch Changes
+
+- c1690e1: Fix MongoDB log serialization error and user tsconfig being shadowed
+- Updated dependencies [c1690e1]
+  - @aeriajs/api@0.0.45
+  - @aeriajs/builtins@0.0.45
+
 ## 0.0.48
 
 ### Patch Changes
