@@ -33,7 +33,13 @@ export const getDatabase = async () => {
     })
 
     if( process.env.NODE_ENV === 'development' ) {
-      client.on('commandStarted', (event) => console.debug(JSON.stringify(event, null, 2)))
+      client.on('commandStarted', (event) => {
+        try {
+          console.debug(JSON.stringify(event, null, 2))
+        } catch( err ) {
+          console.debug(event)
+        }
+      })
     }
 
     dbMemo.client = client

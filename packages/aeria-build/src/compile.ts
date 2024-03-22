@@ -24,10 +24,10 @@ export const compile = async () => {
     Object.assign(
       tsConfig,
       deepMerge(
-        tsConfig,
         JSON.parse(await readFile(resolvedPath, {
           encoding: 'utf-8',
         })),
+        tsConfig,
       ),
     )
   }
