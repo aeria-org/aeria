@@ -41,6 +41,8 @@ jobs:
             && pnpm --no-bail --filter='./packages/aeria' build \
             && pnpm --no-bail --filter='./packages/aeria-sdk' build \
             && pnpm --no-bail --filter='./packages/aeria-build' build
+            && pnpm --no-bail --filter='./packages/aeria-build' build \
+            && pnpm --no-bail --filter='./packages/builtins' write-icons
 
       - name: Patch node_modules
         run: |
