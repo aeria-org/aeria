@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.47
+
+### Patch Changes
+
+- 17437a6: Use esbuild instead of swc, fix API getter bug
+  - @aeriajs/builtins@0.0.47
+  - @aeriajs/security@0.0.47
+
 ## 0.0.46
 
 ### Patch Changes
