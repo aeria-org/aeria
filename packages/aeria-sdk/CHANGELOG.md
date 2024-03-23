@@ -1,5 +1,14 @@
 # aeria-sdk
 
+## 0.0.45
+
+### Patch Changes
+
+- 7496717: Bump packages
+- Updated dependencies [7496717]
+  - @aeriajs/types@0.0.23
+  - @aeriajs/common@0.0.26
+
 ## 0.0.44
 
 ### Patch Changes

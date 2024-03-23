@@ -1,5 +1,14 @@
 # @aeriajs/entrypoint
 
+## 0.0.26
+
+### Patch Changes
+
+- 7496717: Bump packages
+- Updated dependencies [7496717]
+  - @aeriajs/types@0.0.23
+  - @aeriajs/common@0.0.26
+
 ## 0.0.25
 
 ### Patch Changes

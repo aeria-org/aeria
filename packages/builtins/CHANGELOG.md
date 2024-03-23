@@ -1,5 +1,18 @@
 # @aeriajs/builtins
 
+## 0.0.49
+
+### Patch Changes
+
+- 7496717: Bump packages
+- Updated dependencies [7496717]
+  - @aeriajs/types@0.0.23
+  - @aeriajs/api@0.0.49
+  - @aeriajs/access-control@0.0.26
+  - @aeriajs/common@0.0.26
+  - @aeriajs/entrypoint@0.0.26
+  - @aeriajs/validation@0.0.29
+
 ## 0.0.48
 
 ### Patch Changes
