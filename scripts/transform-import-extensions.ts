@@ -1,7 +1,7 @@
 #!/usr/bin/env -S pnpm ts-node --swc
 
-import glob from 'glob'
 import { Transform } from 'stream'
+import * as glob from 'glob'
 import * as fs from 'fs'
 
 const renameExtensions = () => new Transform({
