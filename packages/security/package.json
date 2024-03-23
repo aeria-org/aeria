@@ -38,6 +38,6 @@
     "mongodb": "^6.1.0"
   },
   "devDependencies": {
-    "mongodb": "^6.1.0"
+    "mongodb": "^6.5.0"
   }
 }
