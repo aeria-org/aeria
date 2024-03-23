@@ -1,5 +1,13 @@
 # @aeriajs/node-http
 
+## 0.0.33
+
+### Patch Changes
+
+- 7496717: Bump packages
+- Updated dependencies [7496717]
+  - @aeriajs/http@0.0.33
+
 ## 0.0.32
 
 ### Patch Changes

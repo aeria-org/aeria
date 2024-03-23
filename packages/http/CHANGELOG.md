@@ -1,5 +1,16 @@
 # @aeriajs/http
 
+## 0.0.33
+
+### Patch Changes
+
+- 7496717: Bump packages
+- Updated dependencies [7496717]
+  - @aeriajs/types@0.0.23
+  - @aeriajs/access-control@0.0.26
+  - @aeriajs/common@0.0.26
+  - @aeriajs/validation@0.0.29
+
 ## 0.0.32
 
 ### Patch Changes
