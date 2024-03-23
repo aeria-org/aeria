@@ -1,19 +1,8 @@
-import { compileAndSpawn } from './watch.js'
+import { mirrorSdk } from './mirrorSdk.js'
 
-const result = compileAndSpawn()
+const main = async () => {
+  await mirrorSdk()
+}
 
-process.on('SIGTERM', async () => {
-  const proc = await result
-  if( !proc ) {
-    process.exit(1)
-  }
+main()
 
-  if( proc.exitCode !== null ) {
-    process.exit(1)
-  }
-
-  proc.kill()
-  proc.on('exit', () => {
-    process.exit(0)
-  })
-})
