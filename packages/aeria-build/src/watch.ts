@@ -23,7 +23,7 @@ const compileOnChanges = () => {
   result.stderr.pipe(process.stderr)
 
   return {
-    success: !result.exitCode
+    success: !result.exitCode,
   }
 }
 
