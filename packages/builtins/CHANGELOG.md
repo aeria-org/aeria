@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.50
+
+### Patch Changes
+
+- 199fcac: Release builtin-icons
+  - @aeriajs/api@0.0.50
+
 ## 0.0.49
 
 ### Patch Changes
