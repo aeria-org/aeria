@@ -2,6 +2,7 @@ import type { BuildContext } from 'esbuild'
 import chokidar from 'chokidar'
 import path from 'path'
 import { spawn, fork, type ChildProcessWithoutNullStreams } from 'child_process'
+import { WATCH_BUILD_PATH } from './constants.js'
 import { compile } from './compile.js'
 import { log } from './log.js'
 import { mirrorSdk } from './mirrorSdk.js'
@@ -11,23 +12,25 @@ const processEnv = Object.assign({
   AERIA_MAIN: '.aeria/dist/index.js',
 }, process.env)
 
-const compileOnChanges = async (transpileCtx: BuildContext) => {
-  if( process.env.CHECK_TYPES ) {
-    return compile()
-  }
-
-  try {
-    await transpileCtx.rebuild()
-    return {
-      success: true,
+const compileOnChanges = async (transpileCtx: BuildContext | null) => {
+  if( transpileCtx ) {
+    try {
+      await transpileCtx.rebuild()
+      return {
+        success: true,
+      }
+    } catch( err: any ) {
+      console.log(err.message)
     }
-  } catch( err: any ) {
-    console.log(err.message)
+
+    return {
+      success: false,
+    }
   }
 
-  return {
-    success: false,
-  }
+  return compile({
+    outDir: WATCH_BUILD_PATH
+  })
 }
 
 export const spawnApi = async () => {
@@ -48,15 +51,20 @@ export const spawnApi = async () => {
   return api
 }
 
-export const watch = async () => {
-  const transpileCtx = await transpile.init()
+export const watch = async ({ transpileOnly } = { transpileOnly: true }) => {
+  const transpileCtx = transpileOnly
+    ? await transpile.init()
+    : null
+
   const initialCompilationResult = await compileOnChanges(transpileCtx)
 
   let runningApi: ChildProcessWithoutNullStreams | undefined
   process.env.AERIA_MAIN = '.aeria/dist/index.js'
 
   process.on('SIGINT', () => {
-    transpileCtx.dispose()
+    if( transpileCtx ) {
+      transpileCtx.dispose()
+    }
     if( runningApi ) {
       runningApi.kill()
     }

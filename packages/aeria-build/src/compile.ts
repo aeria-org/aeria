@@ -18,7 +18,7 @@ const findCaseInsensitiveKey = <TObject extends Record<string, any>>(object: TOb
     : null
 }
 
-export const compile = async () => {
+export const compile = async (additionalOptions?: ts.CompilerOptions) => {
   const fileList = glob.sync('**/*.ts', {
     ignore: ['node_modules/**/*.ts'],
     dot: true,
@@ -43,6 +43,10 @@ export const compile = async () => {
         tsConfig,
       ),
     )
+
+    if( additionalOptions ) {
+      Object.assign(tsConfig, additionalOptions)
+    }
   }
 
   const compilerOptions: ts.CompilerOptions = tsConfig.compilerOptions

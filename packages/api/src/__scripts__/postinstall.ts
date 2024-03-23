@@ -41,14 +41,6 @@ const install = async () => {
   const base = process.env.INIT_CWD || process.cwd()
   const aeriaDir = path.join(base, '.aeria')
 
-  const { name } = JSON.parse(await fs.promises.readFile(path.join(base, 'package.json'), {
-    encoding: 'utf8',
-  }))
-
-  if( name.startsWith('@aeriajs/') || name === 'aeria-monorepo' ) {
-    return
-  }
-
   if( !fs.existsSync(aeriaDir) ) {
     await fs.promises.mkdir(aeriaDir)
   }

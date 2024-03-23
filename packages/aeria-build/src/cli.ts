@@ -14,6 +14,10 @@ const { values: opts } = parseArgs({
       type: 'boolean',
       short: 'w',
     },
+    watchAndCheck: {
+      type: 'boolean',
+      short: 'W',
+    },
     compile: {
       type: 'boolean',
       short: 'c',
@@ -38,6 +42,11 @@ const phases: (()=> Promise<Either<string, string>>)[] = []
 async function main() {
   if( opts.watch ) {
     return watch()
+  }
+  if( opts.watchAndCheck ) {
+    return watch({
+      transpileOnly: false
+    })
   }
 
   if( opts.compile ) {
