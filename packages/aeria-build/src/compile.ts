@@ -45,7 +45,6 @@ export const compile = async () => {
     )
   }
 
-
   const compilerOptions: ts.CompilerOptions = tsConfig.compilerOptions
 
   if( compilerOptions.target ) {

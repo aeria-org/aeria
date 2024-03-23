@@ -4,10 +4,9 @@
     "noEmitOnError": true,
     "declaration": true,
     "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "skipLibCheck": true,
-    "resolveJsonModule": true,
     "esModuleInterop": true
   }
 }
