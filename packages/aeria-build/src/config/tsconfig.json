@@ -4,7 +4,8 @@
     "noEmitOnError": true,
     "declaration": true,
     "target": "esnext",
-    "module": "commonjs",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "esModuleInterop": true

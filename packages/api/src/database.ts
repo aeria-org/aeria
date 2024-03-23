@@ -12,8 +12,9 @@ const dbMemo = {} as {
 
 export const getDatabase = async () => {
   if( !dbMemo.db ) {
+    const config = await getConfig()
+
     const mongodbUri = await (async () => {
-      const config = await getConfig()
       const envUri = config.database?.mongodbUrl
 
       if( !envUri ) {
@@ -29,7 +30,7 @@ export const getDatabase = async () => {
     })()
 
     const client = new MongoClient(mongodbUri, {
-      monitorCommands: process.env.NODE_ENV === 'development',
+      monitorCommands: config.database?.logQueries || process.env.NODE_ENV === 'debug',
     })
 
     if( process.env.NODE_ENV === 'development' ) {

@@ -8,6 +8,7 @@ export type ApiConfig = {
   database?: {
     mongodbUrl?: string
     noDatabase?: boolean
+    logQueries?: boolean
   }
   storage?: {
     fs?: string

@@ -5,6 +5,19 @@ import { readFile } from 'fs/promises'
 import { left, right, deepMerge } from '@aeriajs/common'
 import { log } from './log.js'
 
+const findCaseInsensitiveKey = <TObject extends Record<string, any>>(object: TObject, search: any): TObject[keyof TObject] => {
+  if( typeof search !== 'string' ) {
+    return object[search]
+  }
+
+  const found = Object.entries(object)
+    .find(([key]) => key.toLowerCase() === search.toLowerCase())
+
+  return found
+    ? found[1]
+    : null
+}
+
 export const compile = async () => {
   const fileList = glob.sync('**/*.ts', {
     ignore: ['node_modules/**/*.ts'],
@@ -32,7 +45,18 @@ export const compile = async () => {
     )
   }
 
-  const compilerOptions = tsConfig.compilerOptions as unknown
+
+  const compilerOptions: ts.CompilerOptions = tsConfig.compilerOptions
+
+  if( compilerOptions.target ) {
+    compilerOptions.target = findCaseInsensitiveKey(ts.ScriptTarget, compilerOptions.target)
+  }
+  if( compilerOptions.module ) {
+    compilerOptions.module = findCaseInsensitiveKey(ts.ModuleKind, compilerOptions.module)
+  }
+  if( compilerOptions.moduleResolution ) {
+    compilerOptions.moduleResolution = findCaseInsensitiveKey(ts.ModuleResolutionKind, compilerOptions.moduleResolution)
+  }
 
   const selectedFiles = fileList.filter((file) => {
     const testFile = (exp: string) => new RegExp(exp.replace('*', '([^\/]+)')).test(file.replace(/\\/g, '/'))
@@ -48,7 +72,7 @@ export const compile = async () => {
     return true
   })
 
-  const program = ts.createProgram(selectedFiles, compilerOptions as ts.CompilerOptions)
+  const program = ts.createProgram(selectedFiles, compilerOptions)
   const emitResult = program.emit()
 
   const diagnostics = ts.getPreEmitDiagnostics(program)
