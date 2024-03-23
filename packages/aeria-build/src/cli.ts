@@ -45,7 +45,7 @@ async function main() {
   }
   if( opts.watchAndCheck ) {
     return watch({
-      transpileOnly: false
+      transpileOnly: false,
     })
   }
 

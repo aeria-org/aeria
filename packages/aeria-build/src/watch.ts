@@ -29,7 +29,7 @@ const compileOnChanges = async (transpileCtx: BuildContext | null) => {
   }
 
   return compile({
-    outDir: WATCH_BUILD_PATH
+    outDir: WATCH_BUILD_PATH,
   })
 }
 
@@ -51,7 +51,9 @@ export const spawnApi = async () => {
   return api
 }
 
-export const watch = async ({ transpileOnly } = { transpileOnly: true }) => {
+export const watch = async ({ transpileOnly } = {
+  transpileOnly: true,
+}) => {
   const transpileCtx = transpileOnly
     ? await transpile.init()
     : null
