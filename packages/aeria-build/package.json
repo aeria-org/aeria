@@ -37,17 +37,12 @@
     "chokidar": "^3.5.3",
     "dotenv": "^16.4.4",
     "esbuild": "^0.20.2",
-    "glob": "^9.3.0",
-    "tslib": "^2.5.0"
+    "glob": "^9.3.0"
   },
   "peerDependencies": {
     "@aeriajs/api": "^0.0.46",
     "@aeriajs/builtins": "^0.0.46",
     "@aeriajs/common": "^0.0.24",
-    "@aeriajs/types": "^0.0.21",
-    "@swc/cli": "^0.3.9"
-  },
-  "devDependencies": {
-    "@swc/cli": "^0.3.9"
+    "@aeriajs/types": "^0.0.21"
   }
 }
