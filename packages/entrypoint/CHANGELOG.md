@@ -1,5 +1,14 @@
 # @aeriajs/entrypoint
 
+## 0.0.25
+
+### Patch Changes
+
+- adf95a0: Bump versions
+- Updated dependencies [adf95a0]
+  - @aeriajs/common@0.0.25
+  - @aeriajs/types@0.0.22
+
 ## 0.0.24
 
 ### Patch Changes
