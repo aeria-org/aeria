@@ -19,7 +19,7 @@ importers:
         version: 17.8.1
       '@swc/cli':
         specifier: ^0.3.9
-        version: 0.3.10(@swc/core@1.4.7)
+        version: 0.3.10(@swc/core@1.4.7)(chokidar@3.6.0)
       '@types/mocha':
         specifier: ^10.0.1
         version: 10.0.6
@@ -140,6 +140,10 @@ importers:
       tslib:
         specifier: ^2.5.0
         version: 2.6.2
+    devDependencies:
+      '@swc/cli':
+        specifier: ^0.3.9
+        version: 0.3.10(@swc/core@1.4.7)(chokidar@3.6.0)
 
   packages/aeria-sdk:
     dependencies:
@@ -2117,7 +2121,7 @@ packages:
       - typescript
     dev: true
 
-  /@swc/cli@0.3.10(@swc/core@1.4.7):
+  /@swc/cli@0.3.10(@swc/core@1.4.7)(chokidar@3.6.0):
     resolution: {integrity: sha512-YWfYo9kXdbmIuGwIPth9geKgb0KssCMTdZa44zAN5KoqcuCP2rTW9s60heQDSRNpbtCmUr7BKF1VivsoHXrvrQ==}
     engines: {node: '>= 16.14.0'}
     hasBin: true
@@ -2131,6 +2135,7 @@ packages:
       '@mole-inc/bin-wrapper': 8.0.1
       '@swc/core': 1.4.7
       '@swc/counter': 0.1.3
+      chokidar: 3.6.0
       commander: 8.3.0
       fast-glob: 3.3.2
       minimatch: 9.0.3
@@ -2957,7 +2962,6 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.3
-    dev: false
 
   /chownr@2.0.0:
     resolution: {integrity: sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==}

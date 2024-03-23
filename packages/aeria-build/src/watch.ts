@@ -1,10 +1,15 @@
 import chokidar from 'chokidar'
 import path from 'path'
 import { spawn, fork } from 'child_process'
+import { compile } from './compile.js'
 import { log } from './log.js'
 import { mirrorSdk } from './mirrorSdk.js'
 
-export const compileAndSpawn = async () => {
+const compileOnChanges = () => {
+  if( process.env.CHECK_TYPES ) {
+    return compile()
+  }
+
   const result = spawn('swc', [
     'src',
     '-d',
@@ -17,11 +22,15 @@ export const compileAndSpawn = async () => {
   result.stdout.pipe(process.stdout)
   result.stderr.pipe(process.stderr)
 
-  await new Promise<void>((resolve) => {
-    result.on('close', () => resolve())
-  })
+  return {
+    success: !result.exitCode
+  }
+}
 
-  if( !result.exitCode ) {
+export const compileAndSpawn = async () => {
+  const result = await compileOnChanges()
+
+  if( result.success ) {
     await mirrorSdk()
 
     const api = spawn('node', [

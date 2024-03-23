@@ -49,6 +49,10 @@
     "@aeriajs/api": "^0.0.46",
     "@aeriajs/builtins": "^0.0.46",
     "@aeriajs/common": "^0.0.24",
-    "@aeriajs/types": "^0.0.21"
+    "@aeriajs/types": "^0.0.21",
+    "@swc/cli": "^0.3.9"
+  },
+  "devDependencies": {
+    "@swc/cli": "^0.3.9"
   }
 }

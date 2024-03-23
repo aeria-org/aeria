@@ -476,7 +476,7 @@ export const traverseDocument = async <const TWhat extends Record<string, any>>(
 
   let validationError: Record<string, ValidationError> | undefined
 
-  const mutateTarget = (fn: (value: any, ctx: PhaseContext) => any) => {
+  const mutateTarget = (fn: (value: any, ctx: PhaseContext)=> any) => {
     return async (value: any, ctx: PhaseContext) => {
       const result = await fn(value, ctx)
       ctx.target[ctx.propName] = result
