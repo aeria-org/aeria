@@ -12,12 +12,12 @@
     "test": "echo skipping",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "build": "pnpm build:cjs && pnpm build:esm",
+    "build": "pnpm build:cjs && pnpm build:esm && pnpm write-icons",
     "build:cjs": "tsc",
     "build:esm": "esbuild './src/**/*.ts' --outdir=dist --out-extension:.js=.mjs && pnpm build:esm-transform",
     "build:esm-transform": "pnpm -w esm-transform $PWD/dist",
     "write-icons": "pnpm -w write-icons",
-    "prepublishOnly": "pnpm build && pnpm write-icons"
+    "prepublishOnly": "pnpm build"
   },
   "keywords": [],
   "author": "",

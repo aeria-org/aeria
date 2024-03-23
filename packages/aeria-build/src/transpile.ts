@@ -1,4 +1,4 @@
-import glob from 'glob'
+import * as glob from 'glob'
 import * as esbuild from 'esbuild'
 import { WATCH_BUILD_PATH } from './constants.js'
 
