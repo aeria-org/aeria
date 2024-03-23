@@ -12,6 +12,7 @@
     "@changesets/cli": "^2.26.2",
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
+    "@swc/cli": "^0.3.10",
     "@types/mocha": "^10.0.1",
     "@types/node": "^20.10.4",
     "esbuild": "^0.20.2",
