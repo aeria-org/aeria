@@ -27,28 +27,29 @@ jobs:
 
       - name: Build packages
         run: |
-          pnpm --no-bail --filter='./packages/types' build \
-            && pnpm --no-bail --filter='./packages/common' build \
-            && pnpm --no-bail --filter='./packages/entrypoint' build \
-            && pnpm --no-bail --filter='./packages/validation' build \
-            && pnpm --no-bail --filter='./packages/http' build \
-            && pnpm --no-bail --filter='./packages/node-http' build \
-            && pnpm --no-bail --filter='./packages/access-control' build \
-            && pnpm --no-bail --filter='./packages/security' build \
-            && pnpm --no-bail --filter='./packages/api' build \
-            && pnpm --no-bail --filter='./packages/builtins' build \
-            && pnpm --no-bail --filter='./packages/server' build \
-            && pnpm --no-bail --filter='./packages/aeria' build \
-            && pnpm --no-bail --filter='./packages/aeria-sdk' build \
-            && pnpm --no-bail --filter='./packages/aeria-build' build \
-            && pnpm --no-bail --filter='./packages/aeria-build' build \
-            && pnpm --no-bail --filter='./packages/builtins' write-icons
+          pnpm --filter='./packages/types' build \
+            && pnpm --filter='./packages/common' build \
+            && pnpm --filter='./packages/entrypoint' build \
+            && pnpm --filter='./packages/validation' build \
+            && pnpm --filter='./packages/http' build \
+            && pnpm --filter='./packages/node-http' build \
+            && pnpm --filter='./packages/access-control' build \
+            && pnpm --filter='./packages/security' build \
+            && pnpm --filter='./packages/api' build \
+            && pnpm --filter='./packages/builtins' build \
+            && pnpm --filter='./packages/server' build \
+            && pnpm --filter='./packages/aeria' build \
+            && pnpm --filter='./packages/aeria-sdk' build \
+            && pnpm --filter='./packages/aeria-build' build
 
       - name: Patch node_modules
         run: |
           find packages -mindepth 1 -maxdepth 1 \
             -exec bash -c 'a={}; cp -r $a/dist node_modules/@aeriajs/${a//packages\//} 2>/dev/null || true' \;
           cp -r packages node_modules/@aeriajs
+
+      - name: Generate packages/builtins-icons
+        run: pnpm --filter='./packages/builtins' write-icons
 
       - name: Run tests
         run: pnpm -r test
