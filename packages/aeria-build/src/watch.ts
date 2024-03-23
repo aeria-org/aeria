@@ -1,20 +1,32 @@
 import type { BuildContext } from 'esbuild'
 import chokidar from 'chokidar'
 import path from 'path'
-import { spawn, fork } from 'child_process'
+import { spawn, fork, type ChildProcessWithoutNullStreams } from 'child_process'
 import { compile } from './compile.js'
 import { log } from './log.js'
+import { mirrorSdk } from './mirrorSdk.js'
 import * as transpile from './transpile.js'
+
+const processEnv = Object.assign({
+  AERIA_MAIN: '.aeria/dist/index.js',
+}, process.env)
 
 const compileOnChanges = async (transpileCtx: BuildContext) => {
   if( process.env.CHECK_TYPES ) {
     return compile()
   }
 
-  const result = await transpileCtx.rebuild()
+  try {
+    await transpileCtx.rebuild()
+    return {
+      success: true,
+    }
+  } catch( err: any ) {
+    console.log(err.message)
+  }
 
   return {
-    success: !result.errors.length,
+    success: false,
   }
 }
 
@@ -26,7 +38,9 @@ export const spawnApi = async () => {
     '--env-file',
     '.env',
     '.aeria/dist/index.js',
-  ])
+  ], {
+    env: processEnv,
+  })
 
   api.stdout.pipe(process.stdout)
   api.stderr.pipe(process.stderr)
@@ -35,7 +49,26 @@ export const spawnApi = async () => {
 }
 
 export const watch = async () => {
-  let runningApi = await spawnApi()
+  const transpileCtx = await transpile.init()
+  const initialCompilationResult = await compileOnChanges(transpileCtx)
+
+  let runningApi: ChildProcessWithoutNullStreams | undefined
+  process.env.AERIA_MAIN = '.aeria/dist/index.js'
+
+  process.on('SIGINT', () => {
+    transpileCtx.dispose()
+    if( runningApi ) {
+      runningApi.kill()
+    }
+
+    process.exit(0)
+  })
+
+  if( initialCompilationResult.success ) {
+    runningApi = await spawnApi()
+    await mirrorSdk()
+  }
+
   const srcWatcher = chokidar.watch([
     './src',
     './package.json',
@@ -43,17 +76,17 @@ export const watch = async () => {
     './.env',
   ])
 
-  const transpileCtx = await transpile.init()
-
   srcWatcher.on('change', async (filePath) => {
-    runningApi.kill()
+    if( runningApi ) {
+      runningApi.kill()
 
-    if( runningApi.exitCode === null ) {
-      await new Promise<void>((resolve) => {
-        runningApi.on('exit', () => {
-          resolve()
+      if( runningApi.connected ) {
+        await new Promise<void>((resolve) => {
+          runningApi!.on('exit', () => {
+            resolve()
+          })
         })
-      })
+      }
     }
 
     console.clear()
@@ -63,7 +96,11 @@ export const watch = async () => {
     const compilationResult = await compileOnChanges(transpileCtx)
     if( compilationResult.success ) {
       runningApi = await spawnApi()
-      fork(path.join(__dirname, 'watchWorker.js'))
+
+      fork(path.join(__dirname, 'watchWorker.js'), {
+        env: processEnv,
+        detached: true,
+      })
     }
   })
 }

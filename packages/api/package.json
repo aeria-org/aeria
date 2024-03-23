@@ -14,7 +14,7 @@
     "lint:fix": "eslint src --fix",
     "build": "pnpm build:cjs && pnpm build:esm",
     "build:cjs": "tsc",
-    "build:esm": "swc src/* -d dist --strip-leading-paths -C module.type=es6 --out-file-extension=mjs && pnpm build:esm-transform",
+    "build:esm": "esbuild './src/**/*.ts' --outdir=dist --out-extension:.js=.mjs && pnpm build:esm-transform",
     "build:esm-transform": "pnpm -w esm-transform $PWD/dist",
     "prepublishOnly": "pnpm build",
     "postinstall": "node dist/__scripts__/postinstall.js || true"

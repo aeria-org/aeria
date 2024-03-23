@@ -2,7 +2,6 @@ import type { Either } from '@aeriajs/types'
 import { parseArgs } from 'node:util'
 import { isLeft, unwrapEither } from '@aeriajs/common'
 import { log } from './log.js'
-import { bundle } from './bundle.js'
 import { compilationPhase } from './compile.js'
 import { watch } from './watch.js'
 import { migrate } from './migrate.js'
@@ -26,10 +25,6 @@ const { values: opts } = parseArgs({
     migrate: {
       type: 'boolean',
       short: 'm',
-    },
-    bundle: {
-      type: 'boolean',
-      short: 'b',
     },
     sdk: {
       type: 'boolean',
@@ -55,10 +50,6 @@ async function main() {
 
   if( opts.migrate ) {
     phases.push(migrate)
-  }
-
-  if( opts.bundle ) {
-    phases.push(bundle)
   }
 
   if( opts.sdk ) {

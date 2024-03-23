@@ -11,7 +11,7 @@
     "lint:fix": "eslint src --fix",
     "build": "pnpm build:cjs && pnpm build:esm",
     "build:cjs": "tsc",
-    "build:esm": "esbuild './src/**/*.ts' --outdir=teste --out-extension:.js=.mjs && pnpm build:esm-transform",
+    "build:esm": "esbuild './src/**/*.ts' --outdir=dist --out-extension:.js=.mjs && pnpm build:esm-transform",
     "build:esm-transform": "pnpm -w esm-transform $PWD/dist",
     "prepublishOnly": "pnpm build"
   },
@@ -34,16 +34,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@rollup/plugin-commonjs": "^25.0.3",
-    "@rollup/plugin-json": "^6.0.0",
-    "@rollup/plugin-node-resolve": "^15.0.1",
-    "@rollup/plugin-terser": "^0.4.0",
-    "@rollup/plugin-typescript": "^11.0.0",
     "chokidar": "^3.5.3",
     "dotenv": "^16.4.4",
     "esbuild": "^0.20.2",
     "glob": "^9.3.0",
-    "rollup": "^3.19.1",
     "tslib": "^2.5.0"
   },
   "peerDependencies": {

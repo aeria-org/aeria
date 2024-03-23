@@ -7,6 +7,10 @@ let collectionsMemo: Awaited<ReturnType<typeof internalGetCollections>> | undefi
 const collectionMemo: Record<string, Collection | undefined> = {}
 
 export const getEntrypointPath = async () => {
+  if( process.env.AERIA_MAIN ) {
+    return path.join(process.cwd(), process.env.AERIA_MAIN)
+  }
+
   const { main, aeriaMain } = JSON.parse(await fs.readFile(path.join(process.cwd(), 'package.json'), {
     encoding: 'utf8',
   }))
