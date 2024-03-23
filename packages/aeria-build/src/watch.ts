@@ -1,30 +1,40 @@
 import chokidar from 'chokidar'
 import path from 'path'
 import { spawn, fork } from 'child_process'
-import { compile } from './compile.js'
 import { log } from './log.js'
 import { mirrorSdk } from './mirrorSdk.js'
 
 export const compileAndSpawn = async () => {
-  const result = await compile()
+  const result = spawn('swc', [
+    'src',
+    '-d',
+    '.aeria/dist',
+    '--strip-leading-paths',
+    '-C',
+    'module.type=es6',
+  ])
 
-  if( result.success ) {
+  result.stdout.pipe(process.stdout)
+  result.stderr.pipe(process.stderr)
+
+  await new Promise<void>((resolve) => {
+    result.on('close', () => resolve())
+  })
+
+  if( !result.exitCode ) {
     await mirrorSdk()
 
     const api = spawn('node', [
       '-r',
       'aeria/loader',
+      '--preserve-symlinks',
       '--env-file',
       '.env',
-      'dist/index.js',
+      '.aeria/dist/index.js',
     ])
 
-    api.stdout.on('data', (data) => {
-      process.stdout.write(data)
-    })
-    api.stderr.on('data', (data) => {
-      process.stdout.write(data)
-    })
+    api.stdout.pipe(process.stdout)
+    api.stderr.pipe(process.stderr)
 
     return api
   }
