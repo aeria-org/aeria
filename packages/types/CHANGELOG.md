@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.21
+
+### Patch Changes
+
+- f30669a: Fix log pollution when NODE_ENV=development
+
 ## 0.0.20
 
 ### Patch Changes
