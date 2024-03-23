@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/builtins-icons",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "## Installation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

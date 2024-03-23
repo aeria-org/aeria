@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.22
+
+### Patch Changes
+
+- adf95a0: Bump versions
+
 ## 0.0.21
 
 ### Patch Changes
