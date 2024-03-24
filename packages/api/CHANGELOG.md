@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.51
+
+### Patch Changes
+
+- 32bcaff: Add cjs support
+  - @aeriajs/builtins@0.0.51
+  - @aeriajs/security@0.0.51
+
 ## 0.0.50
 
 ### Patch Changes
