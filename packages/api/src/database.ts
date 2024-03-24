@@ -32,7 +32,7 @@ export const getDatabase = async () => {
     const logQueries = config.database?.logQueries || process.env.NODE_ENV === 'debug'
 
     const client = new MongoClient(mongodbUri, {
-      monitorCommands: logQueries
+      monitorCommands: logQueries,
     })
 
     if( logQueries ) {

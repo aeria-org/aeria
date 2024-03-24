@@ -1,10 +1,7 @@
 import type { BuildContext } from 'esbuild'
 import chokidar from 'chokidar'
 import path from 'path'
-import ts from 'typescript'
 import { spawn, fork, type ChildProcessWithoutNullStreams } from 'child_process'
-import { WATCH_BUILD_PATH } from './constants.js'
-import { compile } from './compile.js'
 import { log } from './log.js'
 import { mirrorSdk } from './mirrorSdk.js'
 import * as transpile from './transpile.js'
@@ -13,7 +10,7 @@ const processEnv = Object.assign({
   AERIA_MAIN: '.aeria/dist/index.js',
 }, process.env)
 
-type WatchOptions = {
+export type WatchOptions = {
   commonjs?: boolean
 }
 
@@ -83,6 +80,8 @@ export const watch = async (options: WatchOptions = {}) => {
     './.env',
   ])
 
+  const compilerWorker = fork(path.join(__dirname, 'compilationWorker.js'))
+
   srcWatcher.on('change', async (filePath) => {
     if( runningApi ) {
       runningApi.kill()
@@ -104,12 +103,7 @@ export const watch = async (options: WatchOptions = {}) => {
     if( compilationResult.success ) {
       runningApi = await spawnApi()
 
-      await compile({
-        outDir: WATCH_BUILD_PATH,
-        module: ts.ModuleKind.CommonJS,
-        moduleResolution: ts.ModuleResolutionKind.Node16,
-        emitDeclarationOnly: true,
-      })
+      compilerWorker.send(options)
 
       fork(path.join(__dirname, 'watchWorker.js'), {
         env: processEnv,
