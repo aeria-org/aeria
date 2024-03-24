@@ -118,10 +118,10 @@ export const compile = async (additionalOptions?: ts.CompilerOptions) => {
 }
 
 export const compilationPhase = async (options: CompileOptions = {}) => {
-  const transpileCtx =  await transpile.init({
+  const transpileCtx = await transpile.init({
     format: options.commonjs
       ? 'cjs'
-      : 'esm'
+      : 'esm',
   })
 
   const result = await compile({

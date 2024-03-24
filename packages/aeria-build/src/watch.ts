@@ -51,10 +51,10 @@ export const spawnApi = async () => {
 }
 
 export const watch = async (options: WatchOptions = {}) => {
-  const transpileCtx =  await transpile.init({
+  const transpileCtx = await transpile.init({
     format: options.commonjs
       ? 'cjs'
-      : 'esm'
+      : 'esm',
   })
 
   const initialCompilationResult = await compileOnChanges(transpileCtx)

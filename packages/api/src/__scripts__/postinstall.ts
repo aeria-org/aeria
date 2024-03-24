@@ -15,7 +15,7 @@ declare global {
       : never
   }
 
-  type Collections = typeof import('../src') extends infer EntrypointModule
+  type Collections = typeof import('../src/index.ts') extends infer EntrypointModule
     ? 'collections' extends keyof EntrypointModule
       ? UnpackCollections<EntrypointModule['collections']>
       : 'default' extends keyof EntrypointModule

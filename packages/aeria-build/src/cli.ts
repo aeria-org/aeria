@@ -42,13 +42,13 @@ const phases: (()=> Promise<Either<string, string>>)[] = []
 async function main() {
   if( opts.watch ) {
     return watch({
-      commonjs: opts.cjs
+      commonjs: opts.cjs,
     })
   }
 
   if( opts.compile ) {
     phases.push(() => compilationPhase({
-      commonjs: opts.cjs
+      commonjs: opts.cjs,
     }))
   }
 
