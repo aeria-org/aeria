@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.53
+
+### Patch Changes
+
+- 2fcb65e: Fix log pollution
+  - @aeriajs/builtins@0.0.53
+  - @aeriajs/security@0.0.53
+
 ## 0.0.52
 
 ### Patch Changes
