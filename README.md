@@ -11,6 +11,15 @@
 
 A source of truth and REST framework.
 
+## Features
+
+- Minimalistically crafted DX
+- Fast reloads in watch mode with esbuild
+- Automatic reflection of HTTP endpoints
+- Batteries included (authentication, file management, logging)
+- _and much more!_
+
+
 ```typescript
 router.GET('/get-pets/(\w+)', (context) => {
   return context.collections.pet.functions.getAll({
