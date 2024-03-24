@@ -48,10 +48,10 @@ export const compile = async (additionalOptions?: ts.CompilerOptions) => {
         tsConfig,
       ),
     )
+  }
 
-    if( additionalOptions ) {
-      Object.assign(tsConfig, additionalOptions)
-    }
+  if( additionalOptions ) {
+    Object.assign(tsConfig.compilerOptions, additionalOptions)
   }
 
   const compilerOptions: ts.CompilerOptions = tsConfig.compilerOptions

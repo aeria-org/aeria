@@ -68,19 +68,20 @@ export const watch = async (options: WatchOptions = {}) => {
     process.exit(0)
   })
 
+  const compilerWorker = fork(path.join(__dirname, 'compilationWorker.js'))
+  compilerWorker.send(options)
+
   if( initialCompilationResult.success ) {
     runningApi = await spawnApi()
     await mirrorSdk()
   }
 
   const srcWatcher = chokidar.watch([
-    './src',
-    './package.json',
-    './tsconfig.json',
-    './.env',
+    'src',
+    'package.json',
+    'tsconfig.json',
+    '.env',
   ])
-
-  const compilerWorker = fork(path.join(__dirname, 'compilationWorker.js'))
 
   srcWatcher.on('change', async (filePath) => {
     if( runningApi ) {
