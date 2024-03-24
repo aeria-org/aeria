@@ -27,7 +27,7 @@ router.GET('/get-pets/(\w+)', (context) => {
 
 - 🤌 Minimalistically crafted DX
 - ⚡ Fast reloads in watch mode with esbuild
-- 🪩 Automatic reflection of HTTP endpoints
+- 🪞 Automatic reflection of HTTP endpoints
 - 🔋 Batteries included (authentication, file management, logging)
 - 😱 _and much more!_
 
