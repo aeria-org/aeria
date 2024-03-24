@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.52
+
+### Patch Changes
+
+- 4d28a9b: Fix api postinstall script
+  - @aeriajs/builtins@0.0.52
+  - @aeriajs/security@0.0.52
+
 ## 0.0.51
 
 ### Patch Changes
