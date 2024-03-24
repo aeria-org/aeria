@@ -90,7 +90,7 @@ importers:
         specifier: ^0.0.54
         version: link:../security
       '@aeriajs/server':
-        specifier: ^0.0.54
+        specifier: ^0.0.55
         version: link:../server
       '@aeriajs/types':
         specifier: ^0.0.23
@@ -285,7 +285,7 @@ importers:
         specifier: ^0.0.33
         version: link:../http
       '@aeriajs/server':
-        specifier: ^0.0.54
+        specifier: ^0.0.55
         version: 'link:'
       '@aeriajs/types':
         specifier: ^0.0.23
