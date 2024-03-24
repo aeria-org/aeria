@@ -29,11 +29,13 @@ export const getDatabase = async () => {
       return envUri
     })()
 
+    const logQueries = config.database?.logQueries || process.env.NODE_ENV === 'debug'
+
     const client = new MongoClient(mongodbUri, {
-      monitorCommands: config.database?.logQueries || process.env.NODE_ENV === 'debug',
+      monitorCommands: logQueries
     })
 
-    if( process.env.NODE_ENV === 'development' ) {
+    if( logQueries ) {
       client.on('commandStarted', (event) => {
         try {
           console.debug(JSON.stringify(event, null, 2))
