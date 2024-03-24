@@ -1,6 +1,6 @@
 {
   "name": "aeria-build",
-  "version": "0.0.56",
+  "version": "0.0.57",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -40,8 +40,8 @@
     "glob": "^10.3.10"
   },
   "peerDependencies": {
-    "@aeriajs/api": "^0.0.52",
-    "@aeriajs/builtins": "^0.0.52",
+    "@aeriajs/api": "^0.0.53",
+    "@aeriajs/builtins": "^0.0.53",
     "@aeriajs/common": "^0.0.26",
     "@aeriajs/types": "^0.0.23"
   }
