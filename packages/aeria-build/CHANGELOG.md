@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.59
+
+### Patch Changes
+
+- de58fc1: Fix incremental compilation bug
+
 ## 0.0.58
 
 ### Patch Changes
