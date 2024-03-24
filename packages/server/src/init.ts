@@ -63,11 +63,7 @@ export const init = <const TInitOptions extends InitOptions>(_options: TInitOpti
         await options.setup(parentContext)
       }
 
-      console.time('warmup')
       await warmup()
-
-      console.log()
-      console.timeEnd('warmup')
 
       const serverOptions = defineServerOptions()
       const apiRouter = registerRoutes()
