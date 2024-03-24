@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.54
+
+### Patch Changes
+
+- 0d7fbde: Perf: make watch reloads faster
+  - @aeriajs/builtins@0.0.54
+  - @aeriajs/security@0.0.54
+
 ## 0.0.53
 
 ### Patch Changes
