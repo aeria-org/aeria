@@ -1,6 +1,7 @@
 import type { BuildContext } from 'esbuild'
 import chokidar from 'chokidar'
 import path from 'path'
+import ts from 'typescript'
 import { spawn, fork, type ChildProcessWithoutNullStreams } from 'child_process'
 import { WATCH_BUILD_PATH } from './constants.js'
 import { compile } from './compile.js'
@@ -12,25 +13,23 @@ const processEnv = Object.assign({
   AERIA_MAIN: '.aeria/dist/index.js',
 }, process.env)
 
-const compileOnChanges = async (transpileCtx: BuildContext | null) => {
-  if( transpileCtx ) {
-    try {
-      await transpileCtx.rebuild()
-      return {
-        success: true,
-      }
-    } catch( err: any ) {
-      console.log(err.message)
-    }
+type WatchOptions = {
+  commonjs?: boolean
+}
 
+const compileOnChanges = async (transpileCtx: BuildContext) => {
+  try {
+    await transpileCtx.rebuild()
     return {
-      success: false,
+      success: true,
     }
+  } catch( err: any ) {
+    console.log(err.message)
   }
 
-  return compile({
-    outDir: WATCH_BUILD_PATH,
-  })
+  return {
+    success: false,
+  }
 }
 
 export const spawnApi = async () => {
@@ -38,8 +37,8 @@ export const spawnApi = async () => {
     '-r',
     'aeria/loader',
     '--preserve-symlinks',
-    '--env-file',
-    '.env',
+    '--env-file=.env',
+    '--experimental-specifier-resolution=node',
     '.aeria/dist/index.js',
   ], {
     env: processEnv,
@@ -51,12 +50,12 @@ export const spawnApi = async () => {
   return api
 }
 
-export const watch = async ({ transpileOnly } = {
-  transpileOnly: true,
-}) => {
-  const transpileCtx = transpileOnly
-    ? await transpile.init()
-    : null
+export const watch = async (options: WatchOptions = {}) => {
+  const transpileCtx =  await transpile.init({
+    format: options.commonjs
+      ? 'cjs'
+      : 'esm'
+  })
 
   const initialCompilationResult = await compileOnChanges(transpileCtx)
 
@@ -64,9 +63,7 @@ export const watch = async ({ transpileOnly } = {
   process.env.AERIA_MAIN = '.aeria/dist/index.js'
 
   process.on('SIGINT', () => {
-    if( transpileCtx ) {
-      transpileCtx.dispose()
-    }
+    transpileCtx.dispose()
     if( runningApi ) {
       runningApi.kill()
     }
@@ -106,6 +103,13 @@ export const watch = async ({ transpileOnly } = {
     const compilationResult = await compileOnChanges(transpileCtx)
     if( compilationResult.success ) {
       runningApi = await spawnApi()
+
+      await compile({
+        outDir: WATCH_BUILD_PATH,
+        module: ts.ModuleKind.CommonJS,
+        moduleResolution: ts.ModuleResolutionKind.Node16,
+        emitDeclarationOnly: true,
+      })
 
       fork(path.join(__dirname, 'watchWorker.js'), {
         env: processEnv,

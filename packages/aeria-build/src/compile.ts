@@ -1,9 +1,14 @@
 import ts from 'typescript'
-import glob from 'glob'
 import path from 'path'
+import * as glob from 'glob'
+import * as transpile from './transpile.js'
 import { readFile } from 'fs/promises'
 import { left, right, deepMerge } from '@aeriajs/common'
 import { log } from './log.js'
+
+type CompileOptions = {
+  commonjs?: boolean
+}
 
 const findCaseInsensitiveKey = <TObject extends Record<string, any>>(object: TObject, search: any): TObject[keyof TObject] => {
   if( typeof search !== 'string' ) {
@@ -112,12 +117,25 @@ export const compile = async (additionalOptions?: ts.CompilerOptions) => {
   }
 }
 
-export const compilationPhase = async () => {
-  const result = await compile()
+export const compilationPhase = async (options: CompileOptions = {}) => {
+  const transpileCtx =  await transpile.init({
+    format: options.commonjs
+      ? 'cjs'
+      : 'esm'
+  })
+
+  const result = await compile({
+    module: ts.ModuleKind.CommonJS,
+    moduleResolution: ts.ModuleResolutionKind.Node16,
+    emitDeclarationOnly: true,
+  })
 
   if( !result.success ) {
     return left(`typescript compilation produced ${result.diagnostics.length} errors, please fix them`)
   }
+
+  await transpileCtx.rebuild()
+  await transpileCtx.dispose()
 
   return right('compilation succeeded')
 }
