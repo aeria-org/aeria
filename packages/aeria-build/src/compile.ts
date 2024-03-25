@@ -58,7 +58,6 @@ export const getUserTsconfig = async () => {
     compilerOptions.moduleResolution = findCaseInsensitiveKey(ts.ModuleResolutionKind, compilerOptions.moduleResolution)
   }
 
-
   tsConfigMemo = tsConfig
   return tsConfig
 }

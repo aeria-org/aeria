@@ -33,8 +33,5 @@
   ],
   "devDependencies": {
     "@phosphor-icons/core": "^2.0.8"
-  },
-  "peerDependencies": {
-    "@phosphor-icons/core": "^2.0.8"
   }
 }
