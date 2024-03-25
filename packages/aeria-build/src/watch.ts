@@ -1,6 +1,7 @@
 import type { BuildContext } from 'esbuild'
-import chokidar from 'chokidar'
 import path from 'path'
+import chokidar from 'chokidar'
+import ts from 'typescript'
 import { spawn, fork, type ChildProcessWithoutNullStreams } from 'child_process'
 import { log } from './log.js'
 import { mirrorSdk } from './mirrorSdk.js'
@@ -14,10 +15,6 @@ const processEnv = async () => {
   return Object.assign({
     AERIA_MAIN: `${outDir}/index.js`,
   }, process.env)
-}
-
-export type WatchOptions = {
-  commonjs?: boolean
 }
 
 const compileOnChanges = async (transpileCtx: BuildContext) => {
@@ -55,11 +52,11 @@ export const spawnApi = async () => {
   return api
 }
 
-export const watch = async (options: WatchOptions = {}) => {
+export const watch = async () => {
   const tsConfig = await getUserTsconfig()
   const transpileCtx = await transpile.init({
     outdir: tsConfig.compilerOptions.outDir,
-    format: options.commonjs
+    format: tsConfig.compilerOptions.module === ts.ModuleKind.CommonJS
       ? 'cjs'
       : 'esm',
   })
@@ -69,17 +66,18 @@ export const watch = async (options: WatchOptions = {}) => {
   let runningApi: ChildProcessWithoutNullStreams | undefined
   process.env.AERIA_MAIN = `${tsConfig.compilerOptions.outDir}/index.js`
 
+  const compilerWorker = fork(path.join(__dirname, 'compilationWorker.js'))
+  compilerWorker.send({})
+
   process.on('SIGINT', () => {
     transpileCtx.dispose()
     if( runningApi ) {
       runningApi.kill()
     }
 
+    compilerWorker.kill()
     process.exit(0)
   })
-
-  const compilerWorker = fork(path.join(__dirname, 'compilationWorker.js'))
-  compilerWorker.send(options)
 
   if( initialCompilationResult.success ) {
     runningApi = await spawnApi()
@@ -114,7 +112,7 @@ export const watch = async (options: WatchOptions = {}) => {
     if( compilationResult.success ) {
       runningApi = await spawnApi()
 
-      compilerWorker.send(options)
+      compilerWorker.send({})
 
       fork(path.join(__dirname, 'watchWorker.js'), {
         env: await processEnv(),

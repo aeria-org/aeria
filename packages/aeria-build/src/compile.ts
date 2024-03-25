@@ -6,10 +6,6 @@ import { readFile } from 'fs/promises'
 import { left, right, deepMerge } from '@aeriajs/common'
 import { log } from './log.js'
 
-type CompileOptions = {
-  commonjs?: boolean
-}
-
 type TsConfig = {
   extends?: string
   include?: string[]
@@ -45,7 +41,7 @@ export const getUserTsconfig = async () => {
     )
   }
 
-  const compilerOptions: ts.CompilerOptions = tsConfig.compilerOptions
+  const compilerOptions = tsConfig.compilerOptions
   compilerOptions.outDir ??= 'dist'
 
   if( compilerOptions.target ) {
@@ -141,11 +137,11 @@ export const compile = async (additionalOptions?: ts.CompilerOptions) => {
   return <const>{
     success: true,
     program,
-    outDir: tsConfig.compilerOptions.outDir,
   }
 }
 
-export const compilationPhase = async (options: CompileOptions = {}) => {
+export const compilationPhase = async () => {
+  const tsConfig = await getUserTsconfig()
   const result = await compile({
     emitDeclarationOnly: true,
   })
@@ -155,8 +151,8 @@ export const compilationPhase = async (options: CompileOptions = {}) => {
   }
 
   const transpileCtx = await transpile.init({
-    outdir: result.outDir,
-    format: options.commonjs
+    outdir: tsConfig.compilerOptions.outDir,
+    format: tsConfig.compilerOptions.module === ts.ModuleKind.CommonJS
       ? 'cjs'
       : 'esm',
   })
