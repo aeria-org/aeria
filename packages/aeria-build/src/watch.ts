@@ -5,7 +5,7 @@ import ts from 'typescript'
 import { spawn, fork, type ChildProcessWithoutNullStreams } from 'child_process'
 import { log } from './log.js'
 import { mirrorSdk } from './mirrorSdk.js'
-import { getUserTsconfig } from './compile.js'
+import { getUserTsconfig, compile, type CompileOptions } from './compile.js'
 import * as transpile from './transpile.js'
 
 const processEnv = async () => {
@@ -17,19 +17,23 @@ const processEnv = async () => {
   }, process.env)
 }
 
-const compileOnChanges = async (transpileCtx: BuildContext) => {
-  try {
-    await transpileCtx.rebuild()
-    return {
-      success: true,
+const compileOnChanges = async (transpileCtx: BuildContext | null) => {
+  if( transpileCtx ) {
+    try {
+      await transpileCtx.rebuild()
+      return {
+        success: true,
+      }
+    } catch( err: any ) {
+      console.log(err.message)
     }
-  } catch( err: any ) {
-    console.log(err.message)
+
+    return {
+      success: false,
+    }
   }
 
-  return {
-    success: false,
-  }
+  return compile()
 }
 
 export const spawnApi = async () => {
@@ -52,30 +56,41 @@ export const spawnApi = async () => {
   return api
 }
 
-export const watch = async () => {
+export const watch = async (options: CompileOptions = {}) => {
   const tsConfig = await getUserTsconfig()
-  const transpileCtx = await transpile.init({
-    outdir: tsConfig.compilerOptions.outDir,
-    format: tsConfig.compilerOptions.module === ts.ModuleKind.CommonJS
-      ? 'cjs'
-      : 'esm',
-  })
+  const transpileCtx = !options.useTsc
+    ? await transpile.init({
+      outdir: tsConfig.compilerOptions.outDir,
+      format: tsConfig.compilerOptions.module === ts.ModuleKind.CommonJS
+        ? 'cjs'
+        : 'esm',
+    })
+    : null
 
   const initialCompilationResult = await compileOnChanges(transpileCtx)
 
   let runningApi: ChildProcessWithoutNullStreams | undefined
   process.env.AERIA_MAIN = `${tsConfig.compilerOptions.outDir}/index.js`
 
-  const compilerWorker = fork(path.join(__dirname, 'compilationWorker.js'))
-  compilerWorker.send({})
+  const compilerWorker = !options.useTsc
+    ? fork(path.join(__dirname, 'compilationWorker.js'))
+    : null
+
+  if( compilerWorker ) {
+    compilerWorker.send({})
+  }
 
   process.on('SIGINT', () => {
-    transpileCtx.dispose()
+    if( transpileCtx ) {
+      transpileCtx.dispose()
+    }
     if( runningApi ) {
       runningApi.kill()
     }
+    if( compilerWorker ) {
+      compilerWorker.kill()
+    }
 
-    compilerWorker.kill()
     process.exit(0)
   })
 
@@ -95,7 +110,7 @@ export const watch = async () => {
     if( runningApi ) {
       runningApi.kill()
 
-      if( runningApi.connected ) {
+      if( !runningApi.killed && runningApi.exitCode === null ) {
         await new Promise<void>((resolve) => {
           runningApi!.on('exit', () => {
             resolve()
@@ -112,7 +127,9 @@ export const watch = async () => {
     if( compilationResult.success ) {
       runningApi = await spawnApi()
 
-      compilerWorker.send({})
+      if( compilerWorker ) {
+        compilerWorker.send({})
+      }
 
       fork(path.join(__dirname, 'watchWorker.js'), {
         env: await processEnv(),

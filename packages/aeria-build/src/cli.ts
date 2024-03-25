@@ -30,6 +30,10 @@ const { values: opts } = parseArgs({
       type: 'boolean',
       short: 'k',
     },
+    tsc: {
+      type: 'boolean',
+      short: 't',
+    },
   },
 })
 
@@ -37,11 +41,15 @@ const phases: (()=> Promise<Either<string, string>>)[] = []
 
 async function main() {
   if( opts.watch ) {
-    return watch()
+    return watch({
+      useTsc: opts.tsc,
+    })
   }
 
   if( opts.compile ) {
-    phases.push(compilationPhase)
+    phases.push(() => compilationPhase({
+      useTsc: opts.tsc,
+    }))
   }
 
   if( opts.icons ) {

@@ -13,6 +13,10 @@ type TsConfig = {
   compilerOptions: ts.CompilerOptions
 }
 
+export type CompileOptions = {
+  useTsc?: boolean
+}
+
 let tsConfigMemo: TsConfig | undefined
 
 export const getUserTsconfig = async () => {
@@ -140,25 +144,27 @@ export const compile = async (additionalOptions?: ts.CompilerOptions) => {
   }
 }
 
-export const compilationPhase = async () => {
+export const compilationPhase = async (options: CompileOptions = {}) => {
   const tsConfig = await getUserTsconfig()
   const result = await compile({
-    emitDeclarationOnly: true,
+    emitDeclarationOnly: !options.useTsc,
   })
 
   if( !result.success ) {
     return left(`typescript compilation produced ${result.diagnostics.length} errors, please fix them`)
   }
 
-  const transpileCtx = await transpile.init({
-    outdir: tsConfig.compilerOptions.outDir,
-    format: tsConfig.compilerOptions.module === ts.ModuleKind.CommonJS
-      ? 'cjs'
-      : 'esm',
-  })
+  if( !options.useTsc ) {
+    const transpileCtx = await transpile.init({
+      outdir: tsConfig.compilerOptions.outDir,
+      format: tsConfig.compilerOptions.module === ts.ModuleKind.CommonJS
+        ? 'cjs'
+        : 'esm',
+    })
 
-  await transpileCtx.rebuild()
-  await transpileCtx.dispose()
+    await transpileCtx.rebuild()
+    await transpileCtx.dispose()
+  }
 
   return right('compilation succeeded')
 }
