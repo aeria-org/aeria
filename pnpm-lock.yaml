@@ -52,7 +52,7 @@ importers:
         version: 5.4.3
 
   packages/access-control:
-    dependencies:
+    devDependencies:
       '@aeriajs/common':
         specifier: ^0.0.26
         version: link:../common
@@ -64,7 +64,7 @@ importers:
         version: link:../types
 
   packages/aeria:
-    dependencies:
+    devDependencies:
       '@aeriajs/access-control':
         specifier: ^0.0.26
         version: link:../access-control
@@ -101,18 +101,6 @@ importers:
 
   packages/aeria-build:
     dependencies:
-      '@aeriajs/api':
-        specifier: ^0.0.54
-        version: link:../api
-      '@aeriajs/builtins':
-        specifier: ^0.0.54
-        version: link:../builtins
-      '@aeriajs/common':
-        specifier: ^0.0.26
-        version: link:../common
-      '@aeriajs/types':
-        specifier: ^0.0.23
-        version: link:../types
       chokidar:
         specifier: ^3.6.0
         version: 3.6.0
@@ -125,9 +113,22 @@ importers:
       glob:
         specifier: ^10.3.10
         version: 10.3.10
+    devDependencies:
+      '@aeriajs/api':
+        specifier: ^0.0.54
+        version: link:../api
+      '@aeriajs/builtins':
+        specifier: ^0.0.54
+        version: link:../builtins
+      '@aeriajs/common':
+        specifier: ^0.0.26
+        version: link:../common
+      '@aeriajs/types':
+        specifier: ^0.0.23
+        version: link:../types
 
   packages/aeria-sdk:
-    dependencies:
+    devDependencies:
       '@aeriajs/common':
         specifier: ^0.0.26
         version: link:../common
@@ -136,7 +137,11 @@ importers:
         version: link:../types
 
   packages/api:
-    dependencies:
+    optionalDependencies:
+      mongodb-memory-server:
+        specifier: ^9.1.7
+        version: 9.1.7
+    devDependencies:
       '@aeriajs/access-control':
         specifier: ^0.0.26
         version: link:../access-control
@@ -161,23 +166,22 @@ importers:
       '@aeriajs/validation':
         specifier: ^0.0.29
         version: link:../validation
+      '@types/jsonwebtoken':
+        specifier: ^9.0.6
+        version: 9.0.6
       jsonwebtoken:
         specifier: ^8.5.1
         version: 8.5.1
       mongodb:
         specifier: ^6.1.0
         version: 6.5.0
-    optionalDependencies:
-      mongodb-memory-server:
-        specifier: ^9.1.7
-        version: 9.1.7
-    devDependencies:
-      '@types/jsonwebtoken':
-        specifier: ^9.0.6
-        version: 9.0.6
 
   packages/builtins:
     dependencies:
+      bcrypt:
+        specifier: ^5.1.1
+        version: 5.1.1
+    devDependencies:
       '@aeriajs/access-control':
         specifier: ^0.0.26
         version: link:../access-control
@@ -196,10 +200,6 @@ importers:
       '@aeriajs/validation':
         specifier: ^0.0.29
         version: link:../validation
-      bcrypt:
-        specifier: ^5.1.1
-        version: 5.1.1
-    devDependencies:
       '@types/bcrypt':
         specifier: ^5.0.2
         version: 5.0.2
@@ -210,7 +210,7 @@ importers:
   packages/builtins-icons: {}
 
   packages/common:
-    dependencies:
+    devDependencies:
       '@aeriajs/types':
         specifier: ^0.0.23
         version: link:../types
@@ -219,7 +219,7 @@ importers:
         version: 5.5.1
 
   packages/entrypoint:
-    dependencies:
+    devDependencies:
       '@aeriajs/common':
         specifier: ^0.0.26
         version: link:../common
@@ -228,7 +228,7 @@ importers:
         version: link:../types
 
   packages/http:
-    dependencies:
+    devDependencies:
       '@aeriajs/access-control':
         specifier: ^0.0.26
         version: link:../access-control
@@ -243,13 +243,13 @@ importers:
         version: link:../validation
 
   packages/node-http:
-    dependencies:
+    devDependencies:
       '@aeriajs/http':
         specifier: ^0.0.33
         version: link:../http
 
   packages/security:
-    dependencies:
+    devDependencies:
       '@aeriajs/api':
         specifier: ^0.0.54
         version: link:../api
@@ -259,13 +259,16 @@ importers:
       '@aeriajs/types':
         specifier: ^0.0.23
         version: link:../types
-    devDependencies:
       mongodb:
         specifier: ^6.5.0
         version: 6.5.0
 
   packages/server:
-    dependencies:
+    optionalDependencies:
+      '@aeriajs/node-http':
+        specifier: ^0.0.33
+        version: link:../node-http
+    devDependencies:
       '@aeriajs/access-control':
         specifier: ^0.0.26
         version: link:../access-control
@@ -290,11 +293,6 @@ importers:
       '@aeriajs/types':
         specifier: ^0.0.23
         version: link:../types
-    optionalDependencies:
-      '@aeriajs/node-http':
-        specifier: ^0.0.33
-        version: link:../node-http
-    devDependencies:
       mongodb:
         specifier: ^6.5.0
         version: 6.5.0
@@ -306,7 +304,7 @@ importers:
         version: 2.0.8
 
   packages/validation:
-    dependencies:
+    devDependencies:
       '@aeriajs/common':
         specifier: ^0.0.26
         version: link:../common
@@ -1402,6 +1400,7 @@ packages:
     resolution: {integrity: sha512-lXCmTWSHJvf0TRSO58nm978b8HJ/EdsSsEKLd3ODHFjo+3VGAyyTp4v50nWvwtzBxSMQrVOK7tcuN0zGPLICMw==}
     dependencies:
       '@types/webidl-conversions': 7.0.3
+    dev: true
 
   /@types/whatwg-url@8.2.2:
     resolution: {integrity: sha512-FtQu10RWgn3D9U4aazdwIE2yzphmTJREDqNdODHrbrZmmMqI0vMheC/6NE/J1Yveaj8H+ela+YwWTjq5PGmuhA==}
@@ -1844,11 +1843,11 @@ packages:
     resolution: {integrity: sha512-ix0EwukN2EpC0SRWIj/7B5+A6uQMQy6KMREI9qQqvgpkV2frH63T0UDVd1SYedL6dNCmDBYB3QtXi4ISk9YT+g==}
     engines: {node: '>=14.20.1'}
     requiresBuild: true
-    dev: false
 
   /bson@6.5.0:
     resolution: {integrity: sha512-DXf1BTAS8vKyR90BO4x5v3rKVarmkdkzwOrnYDFdjAY694ILNDkmA3uRh1xXJEl+C1DAh8XCvAQ+Gh3kzubtpg==}
     engines: {node: '>=16.20.1'}
+    dev: true
 
   /buffer-crc32@0.2.13:
     resolution: {integrity: sha512-VO9Ht/+p3SN7SKWqcrgEzjGbRSJYTx+Q1pTQC0wrWqHx0vpJraQ6GtHx8tvcg1rlK1byhU5gccxgOgj7B0TDkQ==}
@@ -1858,7 +1857,7 @@ packages:
 
   /buffer-equal-constant-time@1.0.1:
     resolution: {integrity: sha512-zRpUiDwd/xk6ADqPMATG8vc9VPrkck7T07OIx0gnjmJAnHnTVXNQG3vfvWNuiZIkwu9KrKdA1iJKfsfTVxE6NA==}
-    dev: false
+    dev: true
 
   /cacheable-lookup@5.0.4:
     resolution: {integrity: sha512-2/kNscPhpcxrOigMZzbiWF7dz8ilhb/nIHU3EyZiXWXpeq/au8qJ8VhdftMkty3n7Gj6HIGalQG8oiBNB3AJgA==}
@@ -2326,7 +2325,7 @@ packages:
     resolution: {integrity: sha512-nagl3RYrbNv6kQkeJIpt6NJZy8twLB/2vtz6yN9Z4vRKHN4/QZJIEbqohALSgwKdnksuY3k5Addp5lg8sVoVcQ==}
     dependencies:
       safe-buffer: 5.2.1
-    dev: false
+    dev: true
 
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -3570,7 +3569,7 @@ packages:
       lodash.once: 4.1.1
       ms: 2.1.3
       semver: 5.7.2
-    dev: false
+    dev: true
 
   /jwa@1.4.1:
     resolution: {integrity: sha512-qiLX/xhEEFKUAJ6FiBMbes3w9ATzyk5W7Hvzpa/SLYdxNtng+gcurvrI7TbACjIXlsJyr05/S1oUhZrc63evQA==}
@@ -3578,14 +3577,14 @@ packages:
       buffer-equal-constant-time: 1.0.1
       ecdsa-sig-formatter: 1.0.11
       safe-buffer: 5.2.1
-    dev: false
+    dev: true
 
   /jws@3.2.2:
     resolution: {integrity: sha512-YHlZCB6lMTllWDtSPHz/ZXTsi8S00usEV6v1tjq8tOUZzw7DpSDWVXjXDre6ed1w/pd495ODpHZYSdkRTsa0HA==}
     dependencies:
       jwa: 1.4.1
       safe-buffer: 5.2.1
-    dev: false
+    dev: true
 
   /keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -3651,26 +3650,27 @@ packages:
 
   /lodash.includes@4.3.0:
     resolution: {integrity: sha512-W3Bx6mdkRTGtlJISOvVD/lbqjTlPPUDTMnlXZFnVwi9NKJ6tiAk6LVdlhZMm17VZisqhKcgzpO5Wz91PCt5b0w==}
-    dev: false
+    dev: true
 
   /lodash.isboolean@3.0.3:
     resolution: {integrity: sha512-Bz5mupy2SVbPHURB98VAcw+aHh4vRV5IPNhILUCsOzRmsTmSQ17jIuqopAentWoehktxGd9e/hbIXq980/1QJg==}
-    dev: false
+    dev: true
 
   /lodash.isinteger@4.0.4:
     resolution: {integrity: sha512-DBwtEWN2caHQ9/imiNeEA5ys1JoRtRfY3d7V9wkqtbycnAmTvRRmbHKDV4a0EYc678/dia0jrte4tjYwVBaZUA==}
-    dev: false
+    dev: true
 
   /lodash.isnumber@3.0.3:
     resolution: {integrity: sha512-QYqzpfwO3/CWf3XP+Z+tkQsfaLL/EnUlXWVkIk5FUPc4sBdTehEqZONuyRt2P67PXAk+NXmTBcc97zw9t1FQrw==}
-    dev: false
+    dev: true
 
   /lodash.isplainobject@4.0.6:
     resolution: {integrity: sha512-oSXzaWypCMHkPC3NvBEaPHf0KsA5mvPrOPgQWDsbg8n7orZ290M0BmC/jgRZ4vcJ6DTAhjrsSYgdsW/F+MFOBA==}
+    dev: true
 
   /lodash.isstring@4.0.1:
     resolution: {integrity: sha512-0wJxfxH1wgO3GrbuP+dTTk7op+6L41QCXbGINEmD+ny/G/eCqGzxyCsh7159S+mgDDcoarnBw6PC1PS5+wUGgw==}
-    dev: false
+    dev: true
 
   /lodash.kebabcase@4.1.1:
     resolution: {integrity: sha512-N8XRTIMMqqDgSy4VLKPnJ/+hpGZN+PHQiJnSenYqPaVV/NCqEogTnAdZLQiGKhxX+JCs8waWq2t1XHWKOmlY8g==}
@@ -3686,7 +3686,7 @@ packages:
 
   /lodash.once@4.1.1:
     resolution: {integrity: sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg==}
-    dev: false
+    dev: true
 
   /lodash.snakecase@4.1.1:
     resolution: {integrity: sha512-QZ1d4xoBHYUeuouhEq3lk3Uq7ldgyFXGBhg04+oRLnIz8o9T65Eh+8YdroUwn846zchkA9yDsDl5CVVaV2nqYw==}
@@ -3934,6 +3934,7 @@ packages:
     dependencies:
       '@types/whatwg-url': 11.0.4
       whatwg-url: 13.0.0
+    dev: true
 
   /mongodb-memory-server-core@9.1.7:
     resolution: {integrity: sha512-q8geqCmt5hGuxaDhRo03ZUB0ITr6lnJ3jffdNiC4nDq13WbHUfY2A1RQq3OHDbdrY6aRYvZphx2bcXYBFRis3A==}
@@ -4039,12 +4040,14 @@ packages:
       '@mongodb-js/saslprep': 1.1.5
       bson: 6.5.0
       mongodb-connection-string-url: 3.0.0
+    dev: true
 
   /ms@2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
 
   /ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
+    dev: true
 
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
@@ -4639,6 +4642,7 @@ packages:
   /semver@5.7.2:
     resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
     hasBin: true
+    dev: true
 
   /semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
@@ -5051,6 +5055,7 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       punycode: 2.3.1
+    dev: true
 
   /trim-newlines@3.0.1:
     resolution: {integrity: sha512-c1PTsA3tYrIsLGkJkzHF+w9F2EyxfXGo4UyJc4pFL++FMjnq0HJS69T3M7d//gKrFKwy429bouPescbjecU+Zw==}
@@ -5274,6 +5279,7 @@ packages:
     dependencies:
       tr46: 4.1.1
       webidl-conversions: 7.0.0
+    dev: true
 
   /whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}

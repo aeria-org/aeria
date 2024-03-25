@@ -39,6 +39,12 @@
     "esbuild": "^0.20.2",
     "glob": "^10.3.10"
   },
+  "devDependencies": {
+    "@aeriajs/api": "^0.0.54",
+    "@aeriajs/builtins": "^0.0.54",
+    "@aeriajs/common": "^0.0.26",
+    "@aeriajs/types": "^0.0.23"
+  },
   "peerDependencies": {
     "@aeriajs/api": "^0.0.54",
     "@aeriajs/builtins": "^0.0.54",

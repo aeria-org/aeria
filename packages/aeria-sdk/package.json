@@ -58,6 +58,10 @@
       "types": "./dist/mirror.d.ts"
     }
   },
+  "devDependencies": {
+    "@aeriajs/common": "^0.0.26",
+    "@aeriajs/types": "^0.0.23"
+  },
   "peerDependencies": {
     "@aeriajs/common": "^0.0.26",
     "@aeriajs/types": "^0.0.23"

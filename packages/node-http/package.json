@@ -31,6 +31,9 @@
   "files": [
     "dist"
   ],
+  "devDependencies": {
+    "@aeriajs/http": "^0.0.33"
+  },
   "peerDependencies": {
     "@aeriajs/http": "^0.0.33"
   }

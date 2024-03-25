@@ -31,6 +31,18 @@
   "files": [
     "dist"
   ],
+  "devDependencies": {
+    "@aeriajs/access-control": "^0.0.26",
+    "@aeriajs/api": "^0.0.54",
+    "@aeriajs/builtins": "^0.0.54",
+    "@aeriajs/common": "^0.0.26",
+    "@aeriajs/entrypoint": "^0.0.26",
+    "@aeriajs/http": "^0.0.33",
+    "@aeriajs/node-http": "^0.0.33",
+    "@aeriajs/server": "^0.0.54",
+    "@aeriajs/types": "^0.0.23",
+    "mongodb": "^6.5.0"
+  },
   "peerDependencies": {
     "@aeriajs/access-control": "^0.0.26",
     "@aeriajs/api": "^0.0.54",
@@ -44,8 +56,5 @@
   },
   "optionalDependencies": {
     "@aeriajs/node-http": "^0.0.33"
-  },
-  "devDependencies": {
-    "mongodb": "^6.5.0"
   }
 }

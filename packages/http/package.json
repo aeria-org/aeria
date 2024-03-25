@@ -31,6 +31,12 @@
   "files": [
     "dist"
   ],
+  "devDependencies": {
+    "@aeriajs/access-control": "^0.0.26",
+    "@aeriajs/common": "^0.0.26",
+    "@aeriajs/types": "^0.0.23",
+    "@aeriajs/validation": "^0.0.29"
+  },
   "peerDependencies": {
     "@aeriajs/access-control": "^0.0.26",
     "@aeriajs/common": "^0.0.26",

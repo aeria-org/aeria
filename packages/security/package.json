@@ -31,13 +31,16 @@
   "files": [
     "dist"
   ],
+  "devDependencies": {
+    "@aeriajs/api": "^0.0.54",
+    "@aeriajs/common": "^0.0.26",
+    "@aeriajs/types": "^0.0.23",
+    "mongodb": "^6.5.0"
+  },
   "peerDependencies": {
     "@aeriajs/api": "^0.0.54",
     "@aeriajs/common": "^0.0.26",
     "@aeriajs/types": "^0.0.23",
     "mongodb": "^6.1.0"
-  },
-  "devDependencies": {
-    "mongodb": "^6.5.0"
   }
 }

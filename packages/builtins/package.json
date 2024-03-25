@@ -47,6 +47,12 @@
     "bcrypt": "^5.1.1"
   },
   "devDependencies": {
+    "@aeriajs/access-control": "^0.0.26",
+    "@aeriajs/api": "^0.0.54",
+    "@aeriajs/common": "^0.0.26",
+    "@aeriajs/entrypoint": "^0.0.26",
+    "@aeriajs/types": "^0.0.23",
+    "@aeriajs/validation": "^0.0.29",
     "@types/bcrypt": "^5.0.2",
     "mongodb": "^6.5.0"
   },
