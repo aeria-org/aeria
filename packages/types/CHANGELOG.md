@@ -1,5 +1,12 @@
 # @aeriajs/types
 
+## 0.0.25
+
+### Patch Changes
+
+- e04358b: Remove @phosphor-icons/core peer dependency
+- bb052f0: Remove `@phosphor-icons/core` peer dependency
+
 ## 0.0.24
 
 ### Patch Changes
