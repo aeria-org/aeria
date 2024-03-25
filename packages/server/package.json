@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/server",
-  "version": "0.0.54",
+  "version": "0.0.55",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -50,7 +50,7 @@
     "@aeriajs/common": "^0.0.26",
     "@aeriajs/entrypoint": "^0.0.26",
     "@aeriajs/http": "^0.0.33",
-    "@aeriajs/server": "^0.0.54",
+    "@aeriajs/server": "^0.0.55",
     "@aeriajs/types": "^0.0.23",
     "mongodb": "^6.1.0"
   },

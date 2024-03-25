@@ -1,5 +1,13 @@
 # @aeriajs/server
 
+## 0.0.55
+
+### Patch Changes
+
+- b7eac47: Remove warmup timer
+- Updated dependencies [b7eac47]
+  - @aeriajs/server@0.0.55
+
 ## 0.0.54
 
 ### Patch Changes
