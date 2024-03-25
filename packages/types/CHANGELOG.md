@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.24
+
+### Patch Changes
+
+- e57cdfd: Add @phosphor-icons/core as a peer dependency
+
 ## 0.0.23
 
 ### Patch Changes
