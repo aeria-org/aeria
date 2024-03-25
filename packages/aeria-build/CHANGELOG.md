@@ -1,5 +1,16 @@
 # aeria-build
 
+## 0.0.60
+
+### Patch Changes
+
+- e5a9bbc: Respect tsconfig.json
+- Updated dependencies [e57cdfd]
+  - @aeriajs/types@0.0.24
+  - @aeriajs/api@0.0.55
+  - @aeriajs/builtins@0.0.55
+  - @aeriajs/common@0.0.27
+
 ## 0.0.59
 
 ### Patch Changes
