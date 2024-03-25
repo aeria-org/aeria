@@ -23,7 +23,7 @@ export const iconsExtraction = async () => {
     icons.push(...extractIcons(collection.description))
   }
 
-  const uniqueIcons = [...new Set(icons)]
+  const uniqueIcons = Array.from(new Set(icons))
   await fs.writeFile(path.join(base, 'icons.mjs'), iconsEsmContent(uniqueIcons))
   await fs.writeFile(path.join(base, 'icons.cjs'), iconsCjsContent(uniqueIcons))
   await fs.writeFile(path.join(base, 'icons.d.ts'), iconsDtsContent(uniqueIcons))

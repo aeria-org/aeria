@@ -4,11 +4,17 @@ import path from 'path'
 import { spawn, fork, type ChildProcessWithoutNullStreams } from 'child_process'
 import { log } from './log.js'
 import { mirrorSdk } from './mirrorSdk.js'
+import { getUserTsconfig } from './compile.js'
 import * as transpile from './transpile.js'
 
-const processEnv = Object.assign({
-  AERIA_MAIN: '.aeria/dist/index.js',
-}, process.env)
+const processEnv = async () => {
+  const tsConfig = await getUserTsconfig()
+  const outDir = tsConfig.compilerOptions.outDir
+
+  return Object.assign({
+    AERIA_MAIN: `${outDir}/index.js`,
+  }, process.env)
+}
 
 export type WatchOptions = {
   commonjs?: boolean
@@ -30,15 +36,17 @@ const compileOnChanges = async (transpileCtx: BuildContext) => {
 }
 
 export const spawnApi = async () => {
+  const tsConfig = await getUserTsconfig()
+
   const api = spawn('node', [
     '-r',
     'aeria/loader',
     '--preserve-symlinks',
     '--env-file=.env',
     '--experimental-specifier-resolution=node',
-    '.aeria/dist/index.js',
+    `${tsConfig.compilerOptions.outDir}/index.js`,
   ], {
-    env: processEnv,
+    env: await processEnv(),
   })
 
   api.stdout.pipe(process.stdout)
@@ -48,7 +56,9 @@ export const spawnApi = async () => {
 }
 
 export const watch = async (options: WatchOptions = {}) => {
+  const tsConfig = await getUserTsconfig()
   const transpileCtx = await transpile.init({
+    outdir: tsConfig.compilerOptions.outDir,
     format: options.commonjs
       ? 'cjs'
       : 'esm',
@@ -57,7 +67,7 @@ export const watch = async (options: WatchOptions = {}) => {
   const initialCompilationResult = await compileOnChanges(transpileCtx)
 
   let runningApi: ChildProcessWithoutNullStreams | undefined
-  process.env.AERIA_MAIN = '.aeria/dist/index.js'
+  process.env.AERIA_MAIN = `${tsConfig.compilerOptions.outDir}/index.js`
 
   process.on('SIGINT', () => {
     transpileCtx.dispose()
@@ -107,7 +117,7 @@ export const watch = async (options: WatchOptions = {}) => {
       compilerWorker.send(options)
 
       fork(path.join(__dirname, 'watchWorker.js'), {
-        env: processEnv,
+        env: await processEnv(),
         detached: true,
       })
     }

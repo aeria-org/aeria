@@ -10,26 +10,21 @@ type CompileOptions = {
   commonjs?: boolean
 }
 
-const findCaseInsensitiveKey = <TObject extends Record<string, any>>(object: TObject, search: any): TObject[keyof TObject] => {
-  if( typeof search !== 'string' ) {
-    return object[search]
-  }
-
-  const found = Object.entries(object)
-    .find(([key]) => key.toLowerCase() === search.toLowerCase())
-
-  return found
-    ? found[1]
-    : null
+type TsConfig = {
+  extends?: string
+  include?: string[]
+  exclude?: string[]
+  compilerOptions: ts.CompilerOptions
 }
 
-export const compile = async (additionalOptions?: ts.CompilerOptions) => {
-  const fileList = glob.sync('**/*.ts', {
-    ignore: ['node_modules/**/*.ts'],
-    dot: true,
-  })
+let tsConfigMemo: TsConfig | undefined
 
-  const tsConfig = JSON.parse(await readFile(`${process.cwd()}/tsconfig.json`, {
+export const getUserTsconfig = async () => {
+  if( tsConfigMemo ) {
+    return tsConfigMemo
+  }
+
+  const tsConfig: TsConfig = JSON.parse(await readFile(`${process.cwd()}/tsconfig.json`, {
     encoding: 'utf-8',
   }))
 
@@ -50,11 +45,8 @@ export const compile = async (additionalOptions?: ts.CompilerOptions) => {
     )
   }
 
-  if( additionalOptions ) {
-    Object.assign(tsConfig.compilerOptions, additionalOptions)
-  }
-
   const compilerOptions: ts.CompilerOptions = tsConfig.compilerOptions
+  compilerOptions.outDir ??= 'dist'
 
   if( compilerOptions.target ) {
     compilerOptions.target = findCaseInsensitiveKey(ts.ScriptTarget, compilerOptions.target)
@@ -65,6 +57,42 @@ export const compile = async (additionalOptions?: ts.CompilerOptions) => {
   if( compilerOptions.moduleResolution ) {
     compilerOptions.moduleResolution = findCaseInsensitiveKey(ts.ModuleResolutionKind, compilerOptions.moduleResolution)
   }
+
+
+  tsConfigMemo = tsConfig
+  return tsConfig
+}
+
+const findCaseInsensitiveKey = <TObject extends Record<string, any>>(object: TObject, search: any): TObject[keyof TObject] => {
+  if( typeof search !== 'string' ) {
+    return object[search]
+  }
+
+  const found = Object.entries(object)
+    .find(([key]) => key.toLowerCase() === search.toLowerCase())
+
+  return found
+    ? found[1]
+    : null
+}
+
+export const getTsconfig = async (additionalOptions?: ts.CompilerOptions) => {
+  const tsConfig = await getUserTsconfig()
+
+  if( additionalOptions ) {
+    Object.assign(tsConfig.compilerOptions, additionalOptions)
+  }
+
+  return tsConfig
+}
+
+export const compile = async (additionalOptions?: ts.CompilerOptions) => {
+  const fileList = glob.sync('**/*.ts', {
+    ignore: ['node_modules/**/*.ts'],
+    dot: true,
+  })
+
+  const tsConfig = await getTsconfig(additionalOptions)
 
   const selectedFiles = fileList.filter((file) => {
     const testFile = (exp: string) => new RegExp(exp.replace('*', '([^\/]+)')).test(file.replace(/\\/g, '/'))
@@ -80,7 +108,7 @@ export const compile = async (additionalOptions?: ts.CompilerOptions) => {
     return true
   })
 
-  const program = ts.createProgram(selectedFiles, compilerOptions)
+  const program = ts.createProgram(selectedFiles, tsConfig.compilerOptions)
   const emitResult = program.emit()
 
   const diagnostics = ts.getPreEmitDiagnostics(program)
@@ -114,25 +142,25 @@ export const compile = async (additionalOptions?: ts.CompilerOptions) => {
   return <const>{
     success: true,
     program,
+    outDir: tsConfig.compilerOptions.outDir,
   }
 }
 
 export const compilationPhase = async (options: CompileOptions = {}) => {
-  const transpileCtx = await transpile.init({
-    format: options.commonjs
-      ? 'cjs'
-      : 'esm',
-  })
-
   const result = await compile({
-    module: ts.ModuleKind.CommonJS,
-    moduleResolution: ts.ModuleResolutionKind.Node16,
     emitDeclarationOnly: true,
   })
 
   if( !result.success ) {
     return left(`typescript compilation produced ${result.diagnostics.length} errors, please fix them`)
   }
+
+  const transpileCtx = await transpile.init({
+    outdir: result.outDir,
+    format: options.commonjs
+      ? 'cjs'
+      : 'esm',
+  })
 
   await transpileCtx.rebuild()
   await transpileCtx.dispose()
