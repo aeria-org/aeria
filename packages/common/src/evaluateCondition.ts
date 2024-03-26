@@ -34,6 +34,7 @@ const evaluatesToTrue = (subject: any, condition: Condition): boolean => {
       case 'lt': return term1 < term2
       case 'gte': return term1 >= term2
       case 'lte': return term1 <= term2
+      case 'regex': return new RegExp(term2).test(term1)
     }
   }
 

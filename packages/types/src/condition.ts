@@ -12,7 +12,15 @@ export type FinalCondition<TSchema extends JsonSchema = any> = {
   operator: FinalOperator
   term1: PropertiesWithId<TSchema>
   term2: any
-  else?: any
+  fromState?: boolean
+}
+
+export type RegexCondition<TSchema extends JsonSchema = any> = {
+  operator: 'regex'
+  term1: PropertiesWithId<TSchema>
+  term2: string
+  fromState?: boolean
+  regexOptions?: string
 }
 
 export type TruthyCondition<TSchema extends JsonSchema = any> = {
@@ -32,10 +40,14 @@ export type NotCondition<TSchema extends JsonSchema = any> = {
   not: Condition<TSchema>
 }
 
-export type Condition<TSchema extends JsonSchema = any> =
+export type Condition<TSchema extends JsonSchema = any> = (
   | FinalCondition<TSchema>
+  | RegexCondition<TSchema>
   | TruthyCondition<TSchema>
   | AndCondition<TSchema>
   | OrCondition<TSchema>
   | NotCondition<TSchema>
+) & {
+  else?: any
+}
 

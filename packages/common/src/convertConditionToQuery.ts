@@ -1,10 +1,16 @@
-import type { Condition, TruthyCondition, FinalCondition } from '@aeriajs/types'
+import type { Condition, TruthyCondition, FinalCondition, RegexCondition } from '@aeriajs/types'
 import { getValueFromPath } from './getValueFromPath.js'
 
-const convertExpression = (condition: TruthyCondition | FinalCondition, subject?: any) => {
+const convertExpression = (
+  condition: 
+    | FinalCondition
+    | RegexCondition
+    | TruthyCondition,
+  subject?: any
+) => {
   const term2 = 'term2' in condition
-    ? typeof condition.term2 === 'string' && condition.term2.startsWith('$.')
-      ? getValueFromPath(subject, condition.term2.split('$.')[1])
+    ? condition.fromState
+      ? getValueFromPath(subject, condition.term2)
       : condition.term2
     : null
 
@@ -28,6 +34,10 @@ const convertExpression = (condition: TruthyCondition | FinalCondition, subject?
     }
     case 'lte': return {
       $lte: term2,
+    }
+    case 'regex': return {
+      $regex: term2,
+      $options: condition.regexOptions
     }
 
     case 'in': {
