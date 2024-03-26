@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.26
+
+### Patch Changes
+
+- b90cb06: Add RegexCondition, fix minor bugs
+
 ## 0.0.25
 
 ### Patch Changes

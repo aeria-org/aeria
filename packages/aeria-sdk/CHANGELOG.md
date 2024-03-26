@@ -1,5 +1,14 @@
 # aeria-sdk
 
+## 0.0.48
+
+### Patch Changes
+
+- b90cb06: Add RegexCondition, fix minor bugs
+- Updated dependencies [b90cb06]
+  - @aeriajs/common@0.0.29
+  - @aeriajs/types@0.0.26
+
 ## 0.0.47
 
 ### Patch Changes

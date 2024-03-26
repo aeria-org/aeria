@@ -1,5 +1,17 @@
 # aeria-build
 
+## 0.0.62
+
+### Patch Changes
+
+- b90cb06: Add RegexCondition, fix minor bugs
+- 63926f1: Allow using tsc instead of esbuild for transpilation
+- Updated dependencies [b90cb06]
+  - @aeriajs/common@0.0.29
+  - @aeriajs/types@0.0.26
+  - @aeriajs/api@0.0.57
+  - @aeriajs/builtins@0.0.57
+
 ## 0.0.61
 
 ### Patch Changes
