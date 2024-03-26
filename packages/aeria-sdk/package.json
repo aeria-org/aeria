@@ -37,6 +37,11 @@
     "./types": {
       "types": "./types.d.ts"
     },
+    "./http": {
+      "import": "./dist/http.mjs",
+      "require": "./dist/http.js",
+      "types": "./dist/http.d.ts"
+    },
     "./storage": {
       "import": "./dist/storage.mjs",
       "require": "./dist/storage.js",

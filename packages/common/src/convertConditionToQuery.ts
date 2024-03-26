@@ -2,11 +2,11 @@ import type { Condition, TruthyCondition, FinalCondition, RegexCondition } from 
 import { getValueFromPath } from './getValueFromPath.js'
 
 const convertExpression = (
-  condition: 
+  condition:
     | FinalCondition
     | RegexCondition
     | TruthyCondition,
-  subject?: any
+  subject?: any,
 ) => {
   const term2 = 'term2' in condition
     ? condition.fromState
@@ -37,7 +37,7 @@ const convertExpression = (
     }
     case 'regex': return {
       $regex: term2,
-      $options: condition.regexOptions
+      $options: condition.regexOptions,
     }
 
     case 'in': {

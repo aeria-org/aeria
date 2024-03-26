@@ -25,7 +25,7 @@ const compileOnChanges = async (transpileCtx: BuildContext | null) => {
         success: true,
       }
     } catch( err: any ) {
-      console.log(err.message)
+      console.trace(err.message)
     }
 
     return {
