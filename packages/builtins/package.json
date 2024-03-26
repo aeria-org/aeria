@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/builtins",
-  "version": "0.0.56",
+  "version": "0.0.57",
   "description": "## Installation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -47,21 +47,21 @@
     "bcrypt": "^5.1.1"
   },
   "devDependencies": {
-    "@aeriajs/access-control": "^0.0.28",
-    "@aeriajs/api": "^0.0.56",
-    "@aeriajs/common": "^0.0.28",
-    "@aeriajs/entrypoint": "^0.0.28",
-    "@aeriajs/types": "^0.0.25",
-    "@aeriajs/validation": "^0.0.31",
+    "@aeriajs/access-control": "^0.0.29",
+    "@aeriajs/api": "^0.0.57",
+    "@aeriajs/common": "^0.0.29",
+    "@aeriajs/entrypoint": "^0.0.29",
+    "@aeriajs/types": "^0.0.26",
+    "@aeriajs/validation": "^0.0.32",
     "@types/bcrypt": "^5.0.2",
     "mongodb": "^6.5.0"
   },
   "peerDependencies": {
-    "@aeriajs/access-control": "^0.0.28",
-    "@aeriajs/api": "^0.0.56",
-    "@aeriajs/common": "^0.0.28",
-    "@aeriajs/entrypoint": "^0.0.28",
-    "@aeriajs/types": "^0.0.25",
-    "@aeriajs/validation": "^0.0.31"
+    "@aeriajs/access-control": "^0.0.29",
+    "@aeriajs/api": "^0.0.57",
+    "@aeriajs/common": "^0.0.29",
+    "@aeriajs/entrypoint": "^0.0.29",
+    "@aeriajs/types": "^0.0.26",
+    "@aeriajs/validation": "^0.0.32"
   }
 }
