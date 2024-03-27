@@ -215,8 +215,8 @@ importers:
         specifier: ^0.0.25
         version: link:../types
       bson:
-        specifier: ^5.4.0
-        version: 5.5.1
+        specifier: ^6.5.0
+        version: 6.5.0
 
   packages/entrypoint:
     devDependencies:
@@ -1843,6 +1843,8 @@ packages:
     resolution: {integrity: sha512-ix0EwukN2EpC0SRWIj/7B5+A6uQMQy6KMREI9qQqvgpkV2frH63T0UDVd1SYedL6dNCmDBYB3QtXi4ISk9YT+g==}
     engines: {node: '>=14.20.1'}
     requiresBuild: true
+    dev: false
+    optional: true
 
   /bson@6.5.0:
     resolution: {integrity: sha512-DXf1BTAS8vKyR90BO4x5v3rKVarmkdkzwOrnYDFdjAY694ILNDkmA3uRh1xXJEl+C1DAh8XCvAQ+Gh3kzubtpg==}

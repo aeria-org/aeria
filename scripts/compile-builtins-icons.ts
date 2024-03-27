@@ -24,7 +24,7 @@ const main = async () => {
     icons.push(...extractIcons(preset))
   }
 
-  const uniqueIcons = [...new Set(icons)]
+  const uniqueIcons = Array.from(new Set(icons))
   await fs.writeFile(path.join(DIST_PATH, 'index.mjs'), iconsEsmContent(uniqueIcons))
   await fs.writeFile(path.join(DIST_PATH, 'index.js'), iconsCjsContent(uniqueIcons))
   await fs.writeFile(path.join(DIST_PATH, 'index.d.ts'), iconsDtsContent(uniqueIcons))
