@@ -34,7 +34,12 @@ export type RouteGroupOptions = {
   base?: RouteUri
 }
 
-type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<Context, 'request'> & {
+type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<
+  Context,
+  | 'request'
+  | 'collection'
+  | 'collectionName'
+> & {
   request: Omit<Context['request'], 'payload' | 'query'> & {
     payload: TContractWithRoles extends { payload: infer Payload }
       ? PackReferences<InferProperty<Payload>>
