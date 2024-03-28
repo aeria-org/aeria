@@ -69,6 +69,7 @@ export type ContextOptions<TContext> = {
 }
 
 export type RouteContext = {
+  collections: IndepthCollections
   functionPath: FunctionPath
   token: DecodedToken
 
@@ -87,18 +88,5 @@ export type Context<TDescription extends Description = any, TFunctions = any> = 
   collection: TDescription['$id'] extends keyof Collections
     ? IndepthCollection<{ description: TDescription, functions: TFunctions }>
     : TDescription
-
-  collections: IndepthCollections
-
-  functionPath: FunctionPath
-  token: DecodedToken
-
-  request: GenericRequest
-  response: GenericResponse
-
-  log: (message: string, details?: any)=> Promise<any>
-  config: ApiConfig
-  inherited: boolean
-  calledFunction: string
 }
 
