@@ -1,4 +1,4 @@
-import type { Context } from '@aeriajs/types'
+import type { RouteContext } from '@aeriajs/types'
 import { createRouter } from '@aeriajs/http'
 import { createContext } from '@aeriajs/api'
 import { systemFunctions } from '@aeriajs/builtins'
@@ -10,7 +10,7 @@ import {
 
 export const registerRoutes = () => {
   const defaultHandler = (fn: ReturnType<typeof regularVerb>) => {
-    return (context: Context) => safeHandle(fn, context)()
+    return (context: RouteContext) => safeHandle(fn, context)()
   }
 
   const router = createRouter({

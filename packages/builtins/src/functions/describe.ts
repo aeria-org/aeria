@@ -1,4 +1,4 @@
-import type { Context, Either, StringProperty, EnumProperty } from '@aeriajs/types'
+import type { RouteContext, Either, StringProperty, EnumProperty } from '@aeriajs/types'
 import type { Description } from '@aeriajs/types'
 import { createContext, preloadDescription, getEndpoints } from '@aeriajs/api'
 import { getCollections } from '@aeriajs/entrypoint'
@@ -14,7 +14,7 @@ type Payload = {
   router?: boolean
 }
 
-export const describe = async (contextOrPayload: Context | Payload) => {
+export const describe = async (contextOrPayload: RouteContext | Payload) => {
   const result = {} as {
     descriptions: typeof descriptions
     roles?: string[]

@@ -1,4 +1,4 @@
-import type { Context } from './context'
+import type { RouteContext } from './context'
 
 export type ApiConfig = {
   secret?: string
@@ -26,7 +26,7 @@ export type ApiConfig = {
   logSuccessfulAuthentications?: boolean
   tokenUserProperties?: string[]
   errorHandler?: <TError extends Error>(
-    context: Context,
+    context: RouteContext,
     error: TError
   )=> any | Promise<any>
 }

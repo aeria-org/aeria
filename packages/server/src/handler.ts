@@ -1,4 +1,4 @@
-import type { Context } from '@aeriajs/types'
+import type { RouteContext } from '@aeriajs/types'
 import type { functions } from '@aeriajs/api'
 import { createContext, getFunction } from '@aeriajs/api'
 import { type ACErrors, ACErrorMessages } from '@aeriajs/types'
@@ -15,8 +15,8 @@ const getNormalizedACError = (code: ACErrors) => {
 }
 
 export const safeHandle = (
-  fn: (context: Context)=> Promise<object>,
-  context: Context,
+  fn: (context: RouteContext)=> Promise<object>,
+  context: RouteContext,
 ) => async () => {
   try {
     const response = await fn(context)
@@ -56,7 +56,7 @@ export const safeHandle = (
   }
 }
 
-export const customVerbs = () => async (parentContext: Context) => {
+export const customVerbs = () => async (parentContext: RouteContext) => {
   const { fragments: [collectionName, functionName] } = parentContext.request
 
   const context = await createContext({
@@ -84,7 +84,7 @@ export const customVerbs = () => async (parentContext: Context) => {
   return postPipe(result, context)
 }
 
-export const regularVerb = (functionName: keyof typeof functions) => async (parentContext: Context) => {
+export const regularVerb = (functionName: keyof typeof functions) => async (parentContext: RouteContext) => {
   const { fragments: [collectionName, id] } = parentContext.request
 
   const context = await createContext({

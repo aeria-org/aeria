@@ -1,5 +1,5 @@
 import type {
-  Context,
+  RouteContext,
   GenericRequest,
   GenericResponse,
   RequestMethod,
@@ -28,19 +28,14 @@ export type RoutesMeta = Record<
   Partial<Record<RequestMethod, ContractWithRoles | null> | undefined>
 >
 
-export type Middleware = (context: Context)=> any
+export type Middleware = (context: RouteContext)=> any
 
 export type RouteGroupOptions = {
   base?: RouteUri
 }
 
-type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<
-  Context,
-  | 'request'
-  | 'collection'
-  | 'collectionName'
-> & {
-  request: Omit<Context['request'], 'payload' | 'query'> & {
+type TypedContext<TContractWithRoles extends ContractWithRoles> = RouteContext & {
+  request: Omit<RouteContext['request'], 'payload' | 'query'> & {
     payload: TContractWithRoles extends { payload: infer Payload }
       ? PackReferences<InferProperty<Payload>>
       : any
@@ -74,7 +69,7 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
   )=> ReturnType<typeof registerRoute>
 >
 
-const checkUnprocessable = (validationEither: ReturnType<typeof validate>, context: Context) => {
+const checkUnprocessable = (validationEither: ReturnType<typeof validate>, context: RouteContext) => {
   if( isLeft(validationEither) ) {
     context.response.writeHead(422, {
       'content-type': 'application/json',
@@ -83,7 +78,7 @@ const checkUnprocessable = (validationEither: ReturnType<typeof validate>, conte
   }
 }
 
-const unsufficientRoles = (context: Context) => {
+const unsufficientRoles = (context: RouteContext) => {
   context.response.writeHead(403, {
     'content-type': 'application/json',
   })
@@ -123,10 +118,10 @@ export const matches = <TRequest extends GenericRequest>(
 }
 
 export const registerRoute = async (
-  context: Context,
+  context: RouteContext,
   method: RequestMethod | RequestMethod[],
   exp: RouteUri,
-  cb: (context: Context)=> any,
+  cb: (context: RouteContext)=> any,
   contract?: ContractWithRoles,
   options: RouterOptions = {},
 ) => {
@@ -245,7 +240,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
   const { exhaust } = options
   options.base ??= DEFAULT_BASE_URI
 
-  const routes: ((_: unknown, context: Context, groupOptions?: RouteGroupOptions)=> ReturnType<typeof registerRoute>)[] = []
+  const routes: ((_: unknown, context: RouteContext, groupOptions?: RouteGroupOptions)=> ReturnType<typeof registerRoute>)[] = []
   const routesMeta = {} as RoutesMeta
 
   const route = <
@@ -288,7 +283,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
 
   const group = <
     TRouter extends {
-      install: (context: Context, options?: RouterOptions)=> any
+      install: (context: RouteContext, options?: RouterOptions)=> any
       routesMeta: typeof routesMeta
     },
   >(exp: RouteUri, router: TRouter, middleware?: Middleware) => {
@@ -327,12 +322,12 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
     routes,
     routesMeta,
     group,
-    install: (_context: Context, _options?: RouterOptions) => {
+    install: (_context: RouteContext, _options?: RouterOptions) => {
       return {} as ReturnType<typeof routerPipe>
     },
   }
 
-  router.install = async (context: Context, options?: RouterOptions) => {
+  router.install = async (context: RouteContext, options?: RouterOptions) => {
     const result = await routerPipe(undefined, context, options)
     if( exhaust && result === undefined ) {
       return left({
