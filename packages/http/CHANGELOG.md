@@ -1,5 +1,18 @@
 # @aeriajs/http
 
+## 0.0.37
+
+### Patch Changes
+
+- 7d5f041: Improve function inference in defineCollection, better warmup summary, apiBase
+- c47a513: Remove uneeded props from TypedContext
+- Updated dependencies [7d5f041]
+  - @aeriajs/types@0.0.27
+  - @aeriajs/access-control@0.0.30
+  - @aeriajs/common@0.0.30
+  - @aeriajs/entrypoint@0.0.30
+  - @aeriajs/validation@0.0.33
+
 ## 0.0.36
 
 ### Patch Changes

@@ -1,5 +1,21 @@
 # @aeriajs/server
 
+## 0.0.59
+
+### Patch Changes
+
+- 7d5f041: Improve function inference in defineCollection, better warmup summary, apiBase
+- Updated dependencies [7d5f041]
+- Updated dependencies [c47a513]
+  - @aeriajs/server@0.0.59
+  - @aeriajs/types@0.0.27
+  - @aeriajs/http@0.0.37
+  - @aeriajs/api@0.0.58
+  - @aeriajs/access-control@0.0.30
+  - @aeriajs/builtins@0.0.58
+  - @aeriajs/common@0.0.30
+  - @aeriajs/entrypoint@0.0.30
+
 ## 0.0.58
 
 ### Patch Changes

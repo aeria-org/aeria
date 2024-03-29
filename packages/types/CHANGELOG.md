@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.27
+
+### Patch Changes
+
+- 7d5f041: Improve function inference in defineCollection, better warmup summary, apiBase
+
 ## 0.0.26
 
 ### Patch Changes
