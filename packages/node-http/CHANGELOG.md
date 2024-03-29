@@ -1,5 +1,13 @@
 # @aeriajs/node-http
 
+## 0.0.37
+
+### Patch Changes
+
+- Updated dependencies [7d5f041]
+- Updated dependencies [c47a513]
+  - @aeriajs/http@0.0.37
+
 ## 0.0.36
 
 ### Patch Changes

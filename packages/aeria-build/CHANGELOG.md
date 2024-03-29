@@ -1,5 +1,16 @@
 # aeria-build
 
+## 0.0.63
+
+### Patch Changes
+
+- 7d5f041: Improve function inference in defineCollection, better warmup summary, apiBase
+- Updated dependencies [7d5f041]
+  - @aeriajs/types@0.0.27
+  - @aeriajs/api@0.0.58
+  - @aeriajs/builtins@0.0.58
+  - @aeriajs/common@0.0.30
+
 ## 0.0.62
 
 ### Patch Changes
