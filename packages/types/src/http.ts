@@ -13,6 +13,8 @@ export const REQUEST_METHODS = <const>[
   'SEARCH',
 ]
 
+export type RouteUri = `/${string}`
+
 export type RequestMethod = (typeof REQUEST_METHODS)[number]
 
 export type GenericRequest = {

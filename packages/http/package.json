@@ -34,12 +34,14 @@
   "devDependencies": {
     "@aeriajs/access-control": "^0.0.29",
     "@aeriajs/common": "^0.0.29",
+    "@aeriajs/entrypoint": "^0.0.29",
     "@aeriajs/types": "^0.0.26",
     "@aeriajs/validation": "^0.0.32"
   },
   "peerDependencies": {
     "@aeriajs/access-control": "^0.0.29",
     "@aeriajs/common": "^0.0.29",
+    "@aeriajs/entrypoint": "^0.0.29",
     "@aeriajs/types": "^0.0.26",
     "@aeriajs/validation": "^0.0.32"
   }

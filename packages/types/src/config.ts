@@ -1,8 +1,9 @@
-import type { RouteContext } from './context'
+import type { RouteContext, RouteUri } from '.'
 
 export type ApiConfig = {
   secret?: string
   apiUrl?: string
+  apiBase?: RouteUri
   port?: number
   paginationLimit?: number
   database?: {

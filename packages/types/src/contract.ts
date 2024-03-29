@@ -1,5 +1,9 @@
 import type { Property, InferProperty, Context } from '.'
 
+export type ContractBase = {
+  builtin?: boolean
+}
+
 export type ContractRoles = {
   roles?: (
     | Collections['user']['item']['roles'][number]
@@ -8,7 +12,7 @@ export type ContractRoles = {
   )[]
 }
 
-export type Contract =
+export type Contract = ContractBase & (
   | { response: Property | Property[] }
   | { payload: Property }
   | { query: Property }
@@ -17,6 +21,7 @@ export type Contract =
     payload?: Property
     query?: Property
   }
+)
 
 export type ContractWithRoles = ContractRoles & Contract
 

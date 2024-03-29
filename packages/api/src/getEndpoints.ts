@@ -1,7 +1,9 @@
-import type { RoutesMeta, RouteUri } from '@aeriajs/http'
+import type { RoutesMeta } from '@aeriajs/http'
+import type { ContractWithRoles, RouteUri } from '@aeriajs/types'
 import { getCollections, getRouter } from '@aeriajs/entrypoint'
 import { grantedFor } from '@aeriajs/access-control'
 import { deepMerge } from '@aeriajs/common'
+import * as builtinFunctions from './functions/index.js'
 
 export const getEndpoints = async (): Promise<RoutesMeta> => {
   const router = await getRouter()
@@ -26,21 +28,26 @@ export const getEndpoints = async (): Promise<RoutesMeta> => {
         const endpoint = `/${description.$id}/${fnName}`
         const roles = await grantedFor(description.$id, fnName)
 
-        const contract = functionContracts && fnName in functionContracts
-          ? roles.length
-            ? Object.assign({
-              roles,
-            }, functionContracts[fnName])
-            : functionContracts[fnName]
-          : roles.length
-            ? {
-              roles,
-            }
-            : null
-
-        functions[endpoint as RouteUri] = {
-          POST: contract,
+        const contracts: Record<'POST', ContractWithRoles | null> = {
+          POST: null,
         }
+
+        if( roles.length ) {
+          contracts.POST ??= {}
+          contracts.POST.roles = roles
+        }
+
+        if( functionContracts && fnName in functionContracts ) {
+          contracts.POST ??= {}
+          Object.assign(contracts.POST, functionContracts[fnName])
+        }
+
+        if( fnName in builtinFunctions ) {
+          contracts.POST ??= {}
+          contracts.POST.builtin = true
+        }
+
+        functions[endpoint as RouteUri] = contracts
       }
     }
   }

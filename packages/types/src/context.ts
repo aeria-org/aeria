@@ -16,9 +16,11 @@ export type CollectionModel<TDescription extends Description> =
 
 type OmitContextParameter<TFunction> = TFunction extends ()=> any
   ? TFunction
-  : TFunction extends (payload: infer Payload, context: Context, ...args: infer Rest)=> infer Return
-    ? (payload: Payload, ...args: Rest)=> Return
-    : never
+  : TFunction extends (payload: undefined, ...args: any[])=> infer Return
+    ? ()=> Return
+    : TFunction extends (payload: infer Payload, context: Context, ...args: infer Rest)=> infer Return
+      ? (payload: Payload, ...args: Rest)=> Return
+      : never
 
 type RestParameters<TFunction> = TFunction extends (payload: any, context: Context, ...args: infer Rest)=> any
   ? Rest

@@ -3,20 +3,20 @@ import type {
   GenericRequest,
   GenericResponse,
   RequestMethod,
+  RouteUri,
   InferProperty,
   InferResponse,
   PackReferences,
   ContractWithRoles,
+  ApiConfig,
 } from '@aeriajs/types'
 
 import { Stream } from 'stream'
 import { ACErrors, REQUEST_METHODS } from '@aeriajs/types'
 import { pipe, arraysIntersects, left, isLeft, unwrapEither, deepMerge } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
+import { getConfig } from '@aeriajs/entrypoint'
 import { safeJson } from './payload.js'
-import { DEFAULT_BASE_URI } from './constants.js'
-
-export type RouteUri = `/${string}`
 
 export type RouterOptions = {
   exhaust?: boolean
@@ -93,9 +93,14 @@ export const matches = <TRequest extends GenericRequest>(
   method: RequestMethod | RequestMethod[] | null,
   exp: string | RegExp,
   options: RouterOptions,
+  config: ApiConfig,
 ) => {
   const { url } = req
-  const { base = DEFAULT_BASE_URI } = options
+  const base = `${config.apiBase}${options.base
+    ? `/${options.base}`
+    : ''}`
+    .replace('//', '/')
+    .replace(/\/$/, '')
 
   if( method && method !== req.method ) {
     if( !Array.isArray(method) || !method.includes(req.method) ) {
@@ -125,7 +130,15 @@ export const registerRoute = async (
   contract?: ContractWithRoles,
   options: RouterOptions = {},
 ) => {
-  const match = matches(context.request, method, exp, options)
+  const config = await getConfig()
+  const match = matches(
+    context.request,
+    method,
+    exp,
+    options,
+    config,
+  )
+
   if( match ) {
     if( context.request.headers['content-type'] === 'application/json' ) {
       try {
@@ -238,7 +251,6 @@ export const wrapRouteExecution = async (res: GenericResponse, cb: ()=> any | Pr
 
 export const createRouter = (options: Partial<RouterOptions> = {}) => {
   const { exhaust } = options
-  options.base ??= DEFAULT_BASE_URI
 
   const routes: ((_: unknown, context: RouteContext, groupOptions?: RouteGroupOptions)=> ReturnType<typeof registerRoute>)[] = []
   const routesMeta = {} as RoutesMeta
@@ -294,11 +306,18 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
     }
 
     routes.push(async (_, context, groupOptions) => {
+      const config = await getConfig()
       newOptions.base = groupOptions
         ? `${groupOptions.base!}${exp}`
         : `${options.base!}${exp}`
 
-      const match = matches(context.request, null, new RegExp(`^${newOptions.base}/`), newOptions)
+      const match = matches(
+        context.request,
+        null,
+        new RegExp(`^${newOptions.base}/`),
+        newOptions,
+        config,
+      )
 
       if( match ) {
         if( middleware ) {

@@ -1,35 +1,63 @@
-import type { RouteUri } from '@aeriajs/http'
+import type { ContractWithRoles, RouteUri } from '@aeriajs/types'
 import { getEndpoints } from '@aeriajs/api'
+import { getConfig } from '@aeriajs/entrypoint'
 
-const ANSI_COLORS = {
-  green: '\x1b[32m',
-  blue: '\x1b[36m',
-  red: '\x1b[31m',
-  white: '\x1b[37m',
+type EscapeCode = `[${string}m`
+
+enum AnsiColors {
+  Green = '[32m',
+  Yellow = '[33m',
+  Blue = '[36m',
+  Red = '[31m',
+  White = '[37m',
 }
 
-const METHOD_COLORS: Record<string, keyof typeof ANSI_COLORS> = {
-  GET: 'green',
-  PUT: 'blue',
-  POST: 'white',
-  DELETE: 'red',
+const METHOD_COLORS: Record<string, AnsiColors> = {
+  GET: AnsiColors.Green,
+  PUT: AnsiColors.Blue,
+  POST: AnsiColors.White,
+  DELETE: AnsiColors.Red,
 }
 
-const colorizedRoute = (
+const escape = (code: EscapeCode | EscapeCode[], text: string) => {
+  const codeStr = Array.isArray(code)
+    ? code.map((c) => `\x1b${c}`).join('')
+    : `\x1b${code}`
+
+  return `${codeStr}${text}\x1b[0m`
+}
+
+const colorizedRoute = async (
   method: string,
   endpointUri: string,
-  roles?: string[],
+  endpoint?: ContractWithRoles | null,
 ) => {
+  const config = await getConfig()
   const color = method in METHOD_COLORS
-    ? ANSI_COLORS[METHOD_COLORS[method]]
-    : ANSI_COLORS.white
+    ? METHOD_COLORS[method]
+    : AnsiColors.White
 
-  let line = `\x1b[1m${color}${method}\x1b[0m\t\x1b[90m/api\x1b[0m`
-  line += `\x1b[1m${endpointUri}\x1b[0m`
+  let
+    rolesLine = '',
+    hasContractLine = escape(AnsiColors.Yellow, ' x')
 
-  if( roles ) {
-    line += ` \x1b[90m[${roles.join('|')}]\x1b[0m`
+  if( endpoint ) {
+    if( endpoint.roles ) {
+      rolesLine = ` ${escape('[90m', `[${endpoint.roles.join('|')}]`)}`
+    }
+    if( 'response' in endpoint || endpoint.builtin ) {
+      hasContractLine = escape(AnsiColors.Green, ' ✓')
+    }
   }
+
+  let line = escape([
+    '[1m',
+    color,
+  ], method) + '\t'
+  line += hasContractLine
+  line += escape('[90m', ` ${config.apiBase!}`)
+  line += escape('[1m', endpointUri)
+  line += rolesLine
 
   return line
 }
@@ -41,7 +69,7 @@ export const warmup = async () => {
     const endpoint = endpoints[endpointUri as RouteUri]
 
     for( const method in endpoint ) {
-      const line = colorizedRoute(method, endpointUri, endpoint[method as keyof typeof endpoint]?.roles)
+      const line = await colorizedRoute(method, endpointUri, endpoint[method as keyof typeof endpoint])
       console.log(line)
     }
   }

@@ -1,4 +1,4 @@
-import type { RouteContext } from '@aeriajs/types'
+import type { RouteContext, ApiConfig } from '@aeriajs/types'
 import { createRouter } from '@aeriajs/http'
 import { createContext } from '@aeriajs/api'
 import { systemFunctions } from '@aeriajs/builtins'
@@ -8,12 +8,13 @@ import {
   customVerbs,
 } from './handler.js'
 
-export const registerRoutes = () => {
+export const registerRoutes = (config: ApiConfig) => {
   const defaultHandler = (fn: ReturnType<typeof regularVerb>) => {
     return (context: RouteContext) => safeHandle(fn, context)()
   }
 
   const router = createRouter({
+    base: config.apiBase,
     exhaust: true,
   })
 

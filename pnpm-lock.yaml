@@ -235,6 +235,9 @@ importers:
       '@aeriajs/common':
         specifier: ^0.0.29
         version: link:../common
+      '@aeriajs/entrypoint':
+        specifier: ^0.0.29
+        version: link:../entrypoint
       '@aeriajs/types':
         specifier: ^0.0.26
         version: link:../types

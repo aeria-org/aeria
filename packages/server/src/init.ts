@@ -66,7 +66,7 @@ export const init = <const TInitOptions extends InitOptions>(_options: TInitOpti
       await warmup()
 
       const serverOptions = defineServerOptions()
-      const apiRouter = registerRoutes()
+      const apiRouter = registerRoutes(options.config!)
 
       const server = registerServer(serverOptions, async (request, response) => {
         if( cors(request, response) === null ) {

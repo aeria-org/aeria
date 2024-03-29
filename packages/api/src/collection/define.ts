@@ -36,15 +36,13 @@ export const defineCollection = <
 >(
   collection: TCollection & {
     description: TDescription
+    functions?: TFunctions
     functionContracts?: TFunctionContracts
     accessControl?: AccessControl<{
       description: NoInfer<TDescription>
       functions: Record<string, any>
     }>
-  } & (
-    | { functions?: TFunctions }
-    | { functions?: Record<string, unknown> }
-  ),
+  },
 ) => {
   return collection as TCollection & {
     item: SchemaWithId<TDescription>
