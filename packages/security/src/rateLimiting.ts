@@ -1,4 +1,4 @@
-import type { Context, Description, RateLimitingParams } from '@aeriajs/types'
+import type { RouteContext, RateLimitingParams } from '@aeriajs/types'
 import { left, right } from '@aeriajs/common'
 
 export enum RateLimitingErrors {
@@ -6,80 +6,91 @@ export enum RateLimitingErrors {
   LimitReached = 'LIMIT_REACHED',
 }
 
-const getUser = <TDescription extends Description>(context: Context<TDescription>): Promise<Record<string, any> | null> => {
-  if( !context.token.authenticated ) {
-    throw new Error()
-  }
-
-  return context.collections.user.model.findOne(
-    {
-      _id: context.token.sub,
-    },
-    {
-      resources_usage: 1,
-    },
-  )
-}
-
-export const limitRate = async <TDescription extends Description>(
-  context: Context<TDescription>,
+const buildEntryFilter = (
   params: RateLimitingParams,
+  context: RouteContext,
 ) => {
-  let user: Awaited<ReturnType<typeof getUser>>
-
-  if( !context.token.authenticated || !(user = await getUser(context)) ) {
-    return left(RateLimitingErrors.Unauthenticated)
-  }
-
-  const {
-    increment = 1,
-    limit,
-    scale,
-  } = params
-
-  const payload = {
-    $inc: {
-      hits: increment,
-    },
-    $set: {},
-  }
-
-  const usage = user.resources_usage?.get(context.functionPath)
-  if( !usage ) {
-    const entry = await context.collections.resourceUsage.model.insertOne({
-      hits: increment,
-    })
-
-    await context.collections.user.model.updateOne(
-      {
-        _id: user._id,
-      },
-      {
-        $set: {
-          [`resources_usage.${context.functionPath}`]: entry.insertedId,
-        },
-      },
-    )
-
-    return right(null)
-  }
-
-  if( scale && (new Date().getTime() / 1000 - usage.updated_at!.getTime() / 1000 < scale) ) {
-    return left(RateLimitingErrors.LimitReached)
-  }
-
-  if( limit && (usage.hits! % limit === 0) ) {
-    payload.$set = {
-      last_maximum_reach: new Date(),
+  if( params.type === 'ip' ) {
+    const address = context.response.socket?.remoteAddress
+    return {
+      address,
     }
   }
 
-  await context.collections.resourceUsage.model.updateOne(
+  if( !context.token.authenticated ) {
+    throw new Error('user is not authenticated')
+  }
+
+  return {
+    user: context.token.sub,
+  }
+}
+
+export const getOrCreateUsageEntry = async (
+  params: RateLimitingParams,
+  context: RouteContext,
+) => {
+  const filters = buildEntryFilter(params, context)
+  const entry = await context.collections.resourceUsage.model.findOneAndUpdate(
+    filters,
     {
-      _id: usage._id,
+      $setOnInsert: {
+        usage: {},
+      },
     },
-    payload,
+    {
+      upsert: true,
+      returnDocument: 'after',
+    },
   )
 
-  return right(null)
+  if( !entry ) {
+    throw new Error('there was an error creating the entry')
+  }
+
+  return entry
 }
+
+export const limitRate = async (
+  params: RateLimitingParams,
+  context: RouteContext,
+) => {
+  const { increment = 1 } = params
+
+  const entry = await getOrCreateUsageEntry(params, context)
+
+  const pathname = context.request.url.replace(new RegExp(`^${context.config.apiBase}`), '')
+  const resourceName = new URL(`http://0.com${pathname}`).pathname
+
+  const resource = entry.usage[resourceName]
+  if( resource ) {
+    if( params.scale ) {
+      const now = new Date()
+      if( params.scale > now.getTime() / 1000 - resource.last_reach.getTime() / 1000 ) {
+        return left(RateLimitingErrors.LimitReached)
+      }
+    }
+  }
+
+  const newEntry = await context.collections.resourceUsage.model.findOneAndUpdate(
+    {
+      _id: entry._id,
+    },
+    {
+      $inc: {
+        [`usage.${resourceName}.hits`]: 1,
+        [`usage.${resourceName}.points`]: increment,
+      },
+      $set: {
+        [`usage.${resourceName}.last_reach`]: new Date(),
+        [`usage.${resourceName}.last_maximum_reach`]: new Date(),
+      },
+    },
+    {
+      returnDocument: 'after',
+    },
+  )
+
+  return right(newEntry)
+}
+

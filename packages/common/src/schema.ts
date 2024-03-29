@@ -58,7 +58,7 @@ export const fromLiteral = <
 }
 
 export const leftSchema = <const TObject extends Property>(object: TObject) => {
-  return {
+  return <const>{
     type: 'object',
     properties: {
       _tag: {
@@ -70,7 +70,7 @@ export const leftSchema = <const TObject extends Property>(object: TObject) => {
 }
 
 export const rightSchema = <const TObject extends Property>(object: TObject) => {
-  return {
+  return <const>{
     type: 'object',
     properties: {
       _tag: {

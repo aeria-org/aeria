@@ -9,11 +9,17 @@
       "@aeriajs/api/*": [
         "../api/dist/*"
       ],
+      "@aeriajs/builtins": [
+        "../builtins/dist"
+      ],
       "@aeriajs/common": [
         "../common/dist"
       ],
       "@aeriajs/types": [
         "../types/dist"
+      ],
+      "mongodb": [
+        "../api/node_modules/mongodb"
       ]
     }
   },

@@ -39,14 +39,14 @@ const colorizedRoute = async (
 
   let
     rolesLine = '',
-    hasContractLine = escape(AnsiColors.Yellow, ' x')
+    hasContractLine = escape(AnsiColors.Yellow, 'x')
 
   if( endpoint ) {
     if( endpoint.roles ) {
       rolesLine = ` ${escape('[90m', `[${endpoint.roles.join('|')}]`)}`
     }
     if( 'response' in endpoint || endpoint.builtin ) {
-      hasContractLine = escape(AnsiColors.Green, ' ✓')
+      hasContractLine = escape(AnsiColors.Green, '✓')
     }
   }
 
@@ -54,6 +54,7 @@ const colorizedRoute = async (
     '[1m',
     color,
   ], method) + '\t'
+
   line += hasContractLine
   line += escape('[90m', ` ${config.apiBase!}`)
   line += escape('[1m', endpointUri)

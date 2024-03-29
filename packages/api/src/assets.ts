@@ -86,7 +86,7 @@ export const getFunction = async <
     }
 
     if( collection.security?.rateLimiting?.[functionName] ) {
-      const rateLimitingEither = await limitRate(context, collection.security.rateLimiting[functionName])
+      const rateLimitingEither = await limitRate(collection.security.rateLimiting[functionName], context)
       if( isLeft(rateLimitingEither) ) {
         return left({
           error: unwrapEither(rateLimitingEither),

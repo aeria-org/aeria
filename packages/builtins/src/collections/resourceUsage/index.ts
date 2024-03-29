@@ -3,15 +3,37 @@ import { defineCollection } from '@aeriajs/api'
 export const resourceUsage = defineCollection({
   description: {
     $id: 'resourceUsage',
-    required: [],
+    required: ['usage'],
     properties: {
-      hits: {
-        type: 'integer',
+      user: {
+        $ref: 'user',
       },
-      last_maximum_reach: {
+      address: {
         type: 'string',
-        format: 'date-time',
+      },
+      usage: {
+        type: 'object',
+        additionalProperties: {
+          type: 'object',
+          properties: {
+            hits: {
+              type: 'integer',
+            },
+            points: {
+              type: 'integer',
+            },
+            last_reach: {
+              type: 'string',
+              format: 'date-time',
+            },
+            last_maximum_reach: {
+              type: 'string',
+              format: 'date-time',
+            },
+          },
+        },
       },
     },
   },
 })
+

@@ -1,4 +1,7 @@
 export type RateLimitingParams = {
+  type:
+    | 'tenant'
+    | 'ip'
   limit?: number
   scale?: number
   increment?: number
