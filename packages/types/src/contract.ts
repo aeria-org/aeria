@@ -1,4 +1,4 @@
-import type { Property, InferProperty, Context } from '.'
+import type { Property, InferProperty, InferResponse, Context } from '.'
 
 export type ContractBase = {
   builtin?: boolean
@@ -32,7 +32,7 @@ export type ContractToFunction<TContract extends Contract | ContractWithRoles, C
 ) extends infer Payload
   ? (
     'response' extends keyof TContract
-      ? InferProperty<TContract['response']>
+      ? InferResponse<TContract['response']>
       : any
   ) extends infer Response
     ? Payload extends undefined
