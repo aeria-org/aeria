@@ -6,7 +6,7 @@ const buildEntryFilter = (
   params: RateLimitingParams,
   context: RouteContext,
 ) => {
-  if( params.type === 'ip' ) {
+  if( params.strategy === 'ip' ) {
     const address = context.response.socket!.remoteAddress
     return {
       address,

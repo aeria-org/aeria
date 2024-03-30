@@ -4,7 +4,7 @@ export enum RateLimitingErrors {
 }
 
 export type RateLimitingParams = {
-  type:
+  strategy:
     | 'tenant'
     | 'ip'
   limit?: number
