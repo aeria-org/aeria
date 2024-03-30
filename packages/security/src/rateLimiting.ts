@@ -87,6 +87,6 @@ export const limitRate = async (
     },
   )
 
-  return right(newEntry)
+  return right(newEntry!.usage[resourceName]!)
 }
 
