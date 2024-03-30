@@ -28,7 +28,7 @@ export const describe = async (contextOrPayload: RouteContext | Payload) => {
     ? contextOrPayload.request.payload
     : contextOrPayload
 
-  if( props.revalidate ) {
+  if( 'request' in contextOrPayload && props.revalidate ) {
     const authEither = await authenticate({
       revalidate: true,
     }, await createContext({

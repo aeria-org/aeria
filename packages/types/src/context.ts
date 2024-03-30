@@ -1,6 +1,7 @@
 import type { Collection as MongoCollection } from 'mongodb'
 import type { GenericRequest, GenericResponse } from './http'
 import type {
+  Either,
   Description,
   PackReferences,
   SchemaWithId,
@@ -9,6 +10,8 @@ import type {
   ApiConfig,
   CollectionDocument,
   CollectionFunctions,
+  RateLimitingParams,
+  RateLimitingErrors,
 } from '.'
 
 export type CollectionModel<TDescription extends Description> =
@@ -61,9 +64,9 @@ export type IndepthCollections = {
   [P in keyof Collections]: IndepthCollection<Collections[P]>
 }
 
-export type ContextOptions<TContext> = {
+export type ContextOptions = {
   config?: ApiConfig
-  parentContext?: TContext
+  parentContext?: RouteContext | Context
   collectionName?: string
   token?: DecodedToken
   inherited?: boolean
@@ -79,6 +82,13 @@ export type RouteContext = {
   response: GenericResponse
 
   log: (message: string, details?: any)=> Promise<any>
+  limitRate: (params: RateLimitingParams)=> Promise<Either<RateLimitingErrors, {
+    hits: number
+    points: number
+    last_reach: Date
+    last_maximum_reach: Date
+  }>>
+
   config: ApiConfig
   inherited: boolean
   calledFunction: string

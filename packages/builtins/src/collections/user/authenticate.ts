@@ -54,12 +54,17 @@ const getUser = async (
     userinfo: {},
   }
 
-  if( context.config.logSuccessfulAuthentications ) {
-    await context.log('successful authentication', {
-      email: leanUser.email,
-      roles: leanUser.roles,
-      _id: leanUser._id,
-    })
+  if( context.config.security ) {
+    if( context.config.security.authenticationRateLimiting ) {
+      //
+    }
+    if( context.config.security.logSuccessfulAuthentications ) {
+      await context.log('successful authentication', {
+        email: leanUser.email,
+        roles: leanUser.roles,
+        _id: leanUser._id,
+      })
+    }
   }
 
   if( context.config.tokenUserProperties ) {

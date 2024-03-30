@@ -1,9 +1,18 @@
-import type { Context, GenericRequest, ApiConfig, DecodedToken, NonCircularJsonSchema } from '@aeriajs/types'
+import type {
+  Context,
+  GenericRequest,
+  ApiConfig,
+  DecodedToken,
+  AuthenticatedToken,
+  NonCircularJsonSchema,
+} from '@aeriajs/types'
+
+import { ACErrors } from '@aeriajs/types'
 import { right, left, isLeft, unwrapEither, unsafe, deepMerge } from '@aeriajs/common'
 import { defineServerOptions, cors, wrapRouteExecution } from '@aeriajs/http'
 import { registerServer } from '@aeriajs/node-http'
 
-import { createContext, decodeToken, traverseDocument } from '@aeriajs/api'
+import { createContext, decodeToken, traverseDocument, ObjectId } from '@aeriajs/api'
 import { getDatabase } from '@aeriajs/api'
 import { DEFAULT_API_CONFIG } from './constants.js'
 import { warmup } from './warmup.js'
@@ -16,6 +25,11 @@ export type InitOptions = {
   collections?: Record<string, {
     description: NonCircularJsonSchema
   }>
+}
+
+const authenticationGuard = (decodedToken: DecodedToken): decodedToken is AuthenticatedToken => {
+  decodedToken.authenticated = true
+  return true
 }
 
 export const getDecodedToken = async (request: GenericRequest, context: Context) => {
@@ -31,10 +45,12 @@ export const getDecodedToken = async (request: GenericRequest, context: Context)
       ? request.headers.authorization.split('Bearer ').pop()!
       : '')
 
-    decodedToken.authenticated = true
-    Object.assign(decodedToken, unsafe(await traverseDocument(decodedToken, context.collections.user.description, {
-      autoCast: true,
-    })))
+    if( authenticationGuard(decodedToken) ) {
+      decodedToken.sub = new ObjectId(decodedToken.sub)
+      Object.assign(decodedToken.userinfo, unsafe(await traverseDocument(decodedToken.userinfo, context.collections.user.description, {
+        autoCast: true,
+      })))
+    }
 
     return right(decodedToken)
 
@@ -43,7 +59,7 @@ export const getDecodedToken = async (request: GenericRequest, context: Context)
       console.trace(err)
     }
 
-    return left('AUTHENTICATION_ERROR')
+    return left(ACErrors.AuthenticationError)
   }
 }
 
@@ -66,7 +82,7 @@ export const init = <const TInitOptions extends InitOptions>(_options: TInitOpti
       await warmup()
 
       const serverOptions = defineServerOptions()
-      const apiRouter = registerRoutes(options.config!)
+      const apiRouter = registerRoutes()
 
       const server = registerServer(serverOptions, async (request, response) => {
         if( cors(request, response) === null ) {

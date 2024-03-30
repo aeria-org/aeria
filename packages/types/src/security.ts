@@ -1,3 +1,8 @@
+export enum RateLimitingErrors {
+  Unauthenticated = 'UNAUTHENTICATED',
+  LimitReached = 'LIMIT_REACHED',
+}
+
 export type RateLimitingParams = {
   type:
     | 'tenant'

@@ -26,16 +26,20 @@ export type UserACProfile = {
   readonly allowed_functions?: string[]
 }
 
+export type AuthenticatedToken = {
+  authenticated: true
+  sub: ObjectId
+  roles: string[]
+  userinfo: PackReferences<Collections['user']['item']>
+  allowed_functions?: FunctionPath[]
+}
+
+export type UnauthenticatedToken = {
+  authenticated: false
+  sub: null
+}
+
 export type DecodedToken =
-  | {
-    authenticated: true
-    sub: ObjectId
-    roles: string[]
-    userinfo: PackReferences<Collections['user']['item']>
-    allowed_functions?: FunctionPath[]
-  }
-  | {
-    authenticated: false
-    sub: null
-  }
+  | AuthenticatedToken
+  | UnauthenticatedToken
 

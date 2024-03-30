@@ -9,6 +9,7 @@ import type {
 
 import { unsafe } from '@aeriajs/common'
 import { getCollections } from '@aeriajs/entrypoint'
+import { limitRate } from '@aeriajs/security'
 import { getDatabaseCollection } from './database.js'
 import { preloadDescription } from './collection/preload.js'
 
@@ -19,7 +20,11 @@ const indepthCollection = (collectionName: string, collections: Record<string, C
     : candidate
 
   const proxiedFunctions = new Proxy<NonNullable<IndepthCollection<any>['functions']>>({}, {
-    get: (_: unknown, functionName: string) => {
+    get: (_, functionName) => {
+      if( typeof functionName !== 'string' ) {
+        throw new Error()
+      }
+
       if( !collection.functions?.[functionName] ) {
         return null
       }
@@ -44,19 +49,20 @@ const indepthCollection = (collectionName: string, collections: Record<string, C
   }
 }
 
-export const internalCreateContext = async (options: ContextOptions<any>, parentContext: Context) => {
+export const createContext = async (options: ContextOptions = {}) => {
   const {
     collectionName,
+    parentContext = {},
     token = {} as DecodedToken,
   } = options
 
   const { getCollectionAsset } = await import('./assets.js')
   const collections = await getCollections()
 
-  const context = Object.assign({}, parentContext)
+  const context = Object.assign({} as Context, parentContext)
   Object.assign(context, options)
 
-  context.log = async (message: string, details?: any) => {
+  context.log = async (message, details) => {
     return getDatabaseCollection('log').insertOne({
       message,
       details,
@@ -64,8 +70,12 @@ export const internalCreateContext = async (options: ContextOptions<any>, parent
       owner: token.authenticated
         ? token.sub
         : options.parentContext?.token.sub,
-      created_at: new Date,
+      created_at: new Date(),
     })
+  }
+
+  context.limitRate = (params) => {
+    return limitRate(params, context)
   }
 
   if( collectionName ) {
@@ -77,19 +87,14 @@ export const internalCreateContext = async (options: ContextOptions<any>, parent
   }
 
   context.collections = new Proxy<IndepthCollections>({}, {
-    get: (_: unknown, collectionName: string) => {
+    get: (_, collectionName) => {
+      if( typeof collectionName !== 'string' ) {
+        throw new Error()
+      }
       return indepthCollection(collectionName, collections, context)
     },
   })
 
-  return context
-}
-
-export const createContext = async (_options?: ContextOptions<any>) => {
-  const options = _options as ContextOptions<Context>
-  const context = Object.assign({}, options.parentContext || {}) as Context
-
-  Object.assign(context, await internalCreateContext(options, context))
   return context
 }
 

@@ -1,4 +1,4 @@
-import type { RouteContext, RouteUri } from '.'
+import type { RouteContext, RouteUri, RateLimitingParams } from '.'
 
 export type ApiConfig = {
   secret?: string
@@ -24,7 +24,10 @@ export type ApiConfig = {
     roles: string[]
     active: boolean
   }>
-  logSuccessfulAuthentications?: boolean
+  security?: {
+    logSuccessfulAuthentications?: boolean
+    authenticationRateLimiting?: RateLimitingParams | null
+  }
   tokenUserProperties?: string[]
   errorHandler?: <TError extends Error>(
     context: RouteContext,

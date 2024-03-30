@@ -93,12 +93,19 @@ export const matches = <TRequest extends GenericRequest>(
   method: RequestMethod | RequestMethod[] | null,
   exp: string | RegExp,
   options: RouterOptions,
-  config: ApiConfig,
+  config?: ApiConfig,
 ) => {
   const { url } = req
-  const base = `${config.apiBase}${options.base
-    ? `/${options.base}`
-    : ''}`
+
+  let base = ''
+  if( config?.apiBase ) {
+    base += config.apiBase
+  }
+  if( options.base ) {
+    base += `/${options.base}`
+  }
+
+  base = base
     .replace('//', '/')
     .replace(/\/$/, '')
 
@@ -112,10 +119,10 @@ export const matches = <TRequest extends GenericRequest>(
     ? exp
     : new RegExp(`^${base}${exp}$`)
 
-  const matches = url.split('?')[0].match(regexp)
+  const expMatches = url.split('?')[0].match(regexp)
 
-  if( matches ) {
-    const fragments = matches.splice(1)
+  if( expMatches ) {
+    const fragments = expMatches.splice(1)
     return {
       fragments,
     }
@@ -307,16 +314,19 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
 
     routes.push(async (_, context, groupOptions) => {
       const config = await getConfig()
-      newOptions.base = groupOptions
-        ? `${groupOptions.base!}${exp}`
-        : `${options.base!}${exp}`
+      const base = groupOptions
+        ? groupOptions.base
+        : options.base
+
+      newOptions.base = base
+        ? `${base}${exp}`
+        : exp
 
       const match = matches(
         context.request,
         null,
-        new RegExp(`^${newOptions.base}/`),
+        new RegExp(`^${config.apiBase}${newOptions.base}/`),
         newOptions,
-        config,
       )
 
       if( match ) {

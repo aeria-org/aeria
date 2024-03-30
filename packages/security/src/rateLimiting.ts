@@ -1,17 +1,13 @@
 import type { RouteContext, RateLimitingParams } from '@aeriajs/types'
+import { RateLimitingErrors } from '@aeriajs/types'
 import { left, right } from '@aeriajs/common'
-
-export enum RateLimitingErrors {
-  Unauthenticated = 'UNAUTHENTICATED',
-  LimitReached = 'LIMIT_REACHED',
-}
 
 const buildEntryFilter = (
   params: RateLimitingParams,
   context: RouteContext,
 ) => {
   if( params.type === 'ip' ) {
-    const address = context.response.socket?.remoteAddress
+    const address = context.response.socket!.remoteAddress
     return {
       address,
     }
