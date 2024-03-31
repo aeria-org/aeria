@@ -8,7 +8,7 @@ import type {
   AccessControl,
 } from '@aeriajs/types'
 
-import { deepMerge } from '@aeriajs/common'
+import { deepMerge, freshItem } from '@aeriajs/common'
 
 export type ExtendCollection<
   TLeftCollection extends Collection,
@@ -44,7 +44,12 @@ export const defineCollection = <
     }>
   },
 ) => {
-  return collection as TCollection & {
+  return Object.assign(
+    {
+      item: freshItem(collection.description)
+    },
+    collection
+  ) as TCollection & {
     item: SchemaWithId<TDescription>
     description: TDescription
     functions: TFunctions

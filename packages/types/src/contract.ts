@@ -1,6 +1,7 @@
 import type { Property, InferProperty, InferResponse, Context } from '.'
 
 export type ContractBase = {
+  // used internally to indicate the contract belongs to a builtin function
   builtin?: boolean
 }
 

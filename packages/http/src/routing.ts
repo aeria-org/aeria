@@ -95,8 +95,6 @@ export const matches = <TRequest extends GenericRequest>(
   options: RouterOptions,
   config?: ApiConfig,
 ) => {
-  const { url } = req
-
   let base = ''
   if( config?.apiBase ) {
     base += config.apiBase
@@ -119,7 +117,8 @@ export const matches = <TRequest extends GenericRequest>(
     ? exp
     : new RegExp(`^${base}${exp}$`)
 
-  const expMatches = url.split('?')[0].match(regexp)
+  const url = new URL(`http://0.com${req.url}`).pathname
+  const expMatches = url.match(regexp)
 
   if( expMatches ) {
     const fragments = expMatches.splice(1)
