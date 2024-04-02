@@ -1,5 +1,12 @@
 # @aeriajs/types
 
+## 0.0.28
+
+### Patch Changes
+
+- 1a99762: Fix inference of array of objects in contract responses
+- 898406d: Several minor fixes, fix rate limiting
+
 ## 0.0.27
 
 ### Patch Changes
