@@ -46,9 +46,9 @@ export const defineCollection = <
 ) => {
   return Object.assign(
     {
-      item: freshItem(collection.description)
+      item: freshItem(collection.description),
     },
-    collection
+    collection,
   ) as TCollection & {
     item: SchemaWithId<TDescription>
     description: TDescription
