@@ -1,5 +1,19 @@
 # @aeriajs/builtins
 
+## 0.0.59
+
+### Patch Changes
+
+- 898406d: Several minor fixes, fix rate limiting
+- Updated dependencies [1a99762]
+- Updated dependencies [898406d]
+  - @aeriajs/types@0.0.28
+  - @aeriajs/common@0.0.31
+  - @aeriajs/api@0.0.59
+  - @aeriajs/access-control@0.0.31
+  - @aeriajs/entrypoint@0.0.31
+  - @aeriajs/validation@0.0.34
+
 ## 0.0.58
 
 ### Patch Changes
