@@ -26,8 +26,8 @@ export const download = async (
   }, {
     projection: {
       absolute_path: 1,
-      filename: 1,
-      mime: 1,
+      name: 1,
+      type: 1,
     },
   })
 
@@ -65,10 +65,10 @@ export const download = async (
         'accept-ranges': 'bytes',
         'content-range': `bytes ${start}-${end}/${stat.size}`,
         'content-length': chunkSize,
-        'content-type': file.mime,
+        'content-type': file.type,
         'content-disposition': `${options.includes('download')
           ? 'attachment; '
-          : ''}filename=${encodeURI(file.filename)}`,
+          : ''}name=${encodeURI(file.name)}`,
       })
     }
 
@@ -80,10 +80,10 @@ export const download = async (
 
   if( !payload.noHeaders ) {
     context.response.writeHead(200, {
-      'content-type': file.mime,
+      'content-type': file.type,
       'content-disposition': `${options.includes('download')
         ? 'attachment; '
-        : ''}filename=${encodeURI(file.filename)}`,
+        : ''}name=${encodeURI(file.name)}`,
     })
   }
 

@@ -9,19 +9,19 @@ import { createHash } from 'crypto'
 const [FileMetadata, validateFileMetadata] = validator({
   type: 'object',
   properties: {
-    filename: {
+    name: {
       type: 'string',
     },
   },
 })
 
 const streamToFs = (metadata: typeof FileMetadata, context: Context) => {
-  const filenameHash = createHash('sha1')
-    .update(metadata.filename + Date.now())
+  const nameHash = createHash('sha1')
+    .update(metadata.name + Date.now())
     .digest('hex')
 
-  const extension = metadata.filename.includes('.')
-    ? metadata.filename.split('.').pop()
+  const extension = metadata.name.includes('.')
+    ? metadata.name.split('.').pop()
     : 'bin'
 
   const tmpPath = context.config.storage
@@ -32,7 +32,7 @@ const streamToFs = (metadata: typeof FileMetadata, context: Context) => {
     throw new Error()
   }
 
-  const absolutePath = path.join(tmpPath, `${filenameHash}.${extension}`)
+  const absolutePath = path.join(tmpPath, `${nameHash}.${extension}`)
 
   return new Promise<string>((resolve, reject) => {
     const stream = createWriteStream(absolutePath)
@@ -74,9 +74,9 @@ export const upload = async <TContext extends Context>(_props: unknown, context:
     created_at: new Date(),
     absolute_path: path,
     size: context.request.headers['content-length'],
-    mime: context.request.headers['content-type'],
+    type: context.request.headers['content-type'],
     collection: context.description.$id,
-    filename: metadata.filename,
+    name: metadata.name,
   })
 
   return {

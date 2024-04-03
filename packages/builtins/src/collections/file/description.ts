@@ -15,12 +15,12 @@ export const description = defineDescription({
   owned: 'always',
   presets: ['owned'],
   indexes: [
-    'filename',
+    'name',
     'link',
     'mime',
   ],
   properties: {
-    mime: {
+    type: {
       type: 'string',
     },
     size: {
@@ -30,7 +30,7 @@ export const description = defineDescription({
       type: 'string',
       format: 'date-time',
     },
-    filename: {
+    name: {
       type: 'string',
     },
     absolute_path: {

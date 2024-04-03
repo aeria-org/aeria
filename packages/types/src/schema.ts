@@ -28,7 +28,7 @@ type TestType<T> = T & Record<string, any>
 export type InferProperty<T> = T extends TestType<{ format: 'date' | 'date-time' }>
   ? Date : T extends TestType<{ enum: ReadonlyArray<infer K> }>
     ? K : T extends TestType<{ type: 'string' }>
-      ? string : T extends TestType<{ type: 'number' }>
+      ? string : T extends TestType<{ type: 'number' | 'integer' }>
         ? number : T extends TestType<{ type: 'boolean' }>
           ? boolean : T extends TestType<{ properties: any }>
             ? Schema<T & { timestamps: false }> : T extends TestType<{ additionalProperties: infer K }>
