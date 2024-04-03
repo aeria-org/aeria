@@ -8,7 +8,7 @@ export const insert = async (
   payload: {
     what: { content: string } & Pick<PackReferences<SchemaWithId<typeof description>>,
       | '_id'
-      | 'filename'
+      | 'name'
       | 'owner'
       | 'absolute_path'
     >
@@ -22,7 +22,7 @@ export const insert = async (
   const what = Object.assign({}, payload.what)
   what.owner = context.token.sub
 
-  const extension = what.filename.split('.').pop()
+  const extension = what.name.split('.').pop()
 
   if( !context.config.storage ) {
     throw new Error('config.storage is not set')
@@ -53,7 +53,7 @@ export const insert = async (
   }
 
   const filenameHash = createHash('sha1')
-    .update(what.filename + Date.now())
+    .update(what.name + Date.now())
     .digest('hex')
 
   what.absolute_path = `${tempPath}/${filenameHash}.${extension}`
