@@ -1,5 +1,11 @@
 # @aeriajs/http
 
+## 0.0.39
+
+### Patch Changes
+
+- b47ba61: Fix route matching
+
 ## 0.0.38
 
 ### Patch Changes
