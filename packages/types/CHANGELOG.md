@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.29
+
+### Patch Changes
+
+- 50e5230: Fix integer inference, rename file properties
+
 ## 0.0.28
 
 ### Patch Changes
