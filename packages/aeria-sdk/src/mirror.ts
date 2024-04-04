@@ -3,7 +3,7 @@ import path from 'path'
 import { deserialize } from '@aeriajs/common'
 import { writeFile, mkdir } from 'fs/promises'
 import { topLevel } from './topLevel.js'
-import { apiUrl } from './utils.js'
+import { publicUrl } from './utils.js'
 
 const mirrorDts = (mirrorObj: any) => {
   const collections = mirrorObj.descriptions
@@ -86,7 +86,7 @@ declare module 'aeria-sdk' {
 export const runtimeCjs = (config: InstanceConfig) =>
   `const config = ${JSON.stringify(config)}
 exports.config = config
-exports.url = '${apiUrl(config)}'
+exports.url = '${publicUrl(config)}'
 exports.aeria = require('aeria-sdk/topLevel').topLevel(config)
 exports.storage = require('aeria-sdk/storage').getStorage(config)
 \n`
@@ -94,7 +94,7 @@ exports.storage = require('aeria-sdk/storage').getStorage(config)
 export const runtimeEsm = (config: InstanceConfig) =>
   `import { Aeria, getStorage } from 'aeria-sdk'
 export const config = ${JSON.stringify(config)}
-export const url = '${apiUrl(config)}'
+export const url = '${publicUrl(config)}'
 export const aeria = Aeria(config)
 export const storage = getStorage(config)
 \n`

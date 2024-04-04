@@ -95,10 +95,10 @@ export const matches = <TRequest extends GenericRequest>(
   options: RouterOptions,
   config?: ApiConfig,
 ) => {
-  const base = config?.apiBase && config.apiBase !== '/'
+  const base = config?.baseUrl && config.apiBase !== '/'
     ? options.base
-      ? `${config.apiBase}${options.base}`
-      : config.apiBase
+      ? `${config.baseUrl}${options.base}`
+      : config.baseUrl
     : options.base
       ? options.base
       : ''
@@ -320,9 +320,9 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
       const match = matches(
         context.request,
         null,
-        config.apiBase === '/'
+        config.baseUrl === '/'
           ? new RegExp(`^${newOptions.base}/`)
-          : new RegExp(`^${config.apiBase}${newOptions.base}/`),
+          : new RegExp(`^${config.baseUrl}${newOptions.base}/`),
         newOptions,
       )
 

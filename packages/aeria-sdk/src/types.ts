@@ -1,5 +1,5 @@
 export type InstanceConfig = {
-  apiUrl: string | {
+  publicUrl: string | {
     production: string
     development: string
   }

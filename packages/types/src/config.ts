@@ -2,8 +2,8 @@ import type { RouteContext, RouteUri, RateLimitingParams } from '.'
 
 export type ApiConfig = {
   secret?: string
-  apiUrl?: string
-  apiBase?: RouteUri
+  baseUrl?: RouteUri
+  publicUrl?: string
   port?: number
   paginationLimit?: number
   database?: {

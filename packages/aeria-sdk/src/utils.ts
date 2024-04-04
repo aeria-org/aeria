@@ -2,14 +2,14 @@ import type { InstanceConfig } from './types.js'
 import { dynamicImport } from '@aeriajs/common'
 import path from 'path'
 
-export const apiUrl = (config: InstanceConfig) => {
-  if( typeof config.apiUrl === 'string' ) {
-    return config.apiUrl
+export const publicUrl = (config: InstanceConfig) => {
+  if( typeof config.publicUrl === 'string' ) {
+    return config.publicUrl
   }
 
   return process.env.NODE_ENV === 'production'
-    ? config.apiUrl.production
-    : config.apiUrl.development
+    ? config.publicUrl.production
+    : config.publicUrl.development
 }
 
 export const getConfig = async () => {

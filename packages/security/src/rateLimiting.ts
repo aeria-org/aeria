@@ -55,7 +55,7 @@ export const limitRate = async (
 
   const entry = await getOrCreateUsageEntry(params, context)
 
-  const pathname = context.request.url.replace(new RegExp(`^${context.config.apiBase}`), '')
+  const pathname = context.request.url.replace(new RegExp(`^${context.config.baseUrl}`), '')
   const resourceName = new URL(`http://0.com${pathname}`).pathname
 
   const resource = entry.usage[resourceName]

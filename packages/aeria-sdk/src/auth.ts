@@ -1,7 +1,7 @@
 import type { InstanceConfig } from './types.js'
 import { isRight, unwrapEither } from '@aeriajs/common'
 import { request } from './http.js'
-import { apiUrl } from './utils.js'
+import { publicUrl } from './utils.js'
 import { getStorage } from './storage.js'
 
 export type AuthenticationResult = {
@@ -20,7 +20,7 @@ export type AuthenticationPayload = {
 export const authMemo = {} as AuthenticationResult
 
 export const authenticate = (config: InstanceConfig) => async (payload: AuthenticationPayload) => {
-  const response = await request(config, `${apiUrl(config)}/user/authenticate`, payload)
+  const response = await request(config, `${publicUrl(config)}/user/authenticate`, payload)
   const resultEither = response.data
   if( isRight(resultEither) ) {
     const result = unwrapEither(resultEither)

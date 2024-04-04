@@ -3,7 +3,7 @@ import type { RequestMethod } from '@aeriajs/types'
 import type { InstanceConfig } from './types.js'
 import { authenticate, signout, type AuthenticationPayload } from './auth.js'
 import { request } from './http.js'
-import { apiUrl } from './utils.js'
+import { publicUrl } from './utils.js'
 
 type UserFunctions = {
   user: TLOFunctions & {
@@ -54,7 +54,7 @@ export const topLevel = (config: InstanceConfig) => {
 
         const response = await request(
           config,
-          `${apiUrl(config)}/${endpoint}`,
+          `${publicUrl(config)}/${endpoint}`,
           payload,
           requestConfig,
         )

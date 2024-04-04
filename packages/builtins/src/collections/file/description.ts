@@ -3,7 +3,7 @@ import { getConfig } from '@aeriajs/entrypoint'
 
 const link = async (_id: string) => {
   const config = await getConfig()
-  return `${config.apiUrl || ''}/file/${_id}`
+  return `${config.publicUrl || ''}/file/${_id}`
 }
 
 const timestamp = (lastModified: Date | undefined) => lastModified
