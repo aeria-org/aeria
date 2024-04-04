@@ -1,5 +1,20 @@
 # @aeriajs/api
 
+## 0.0.61
+
+### Patch Changes
+
+- 50e5230: Fix integer inference, rename file properties
+- Updated dependencies [50e5230]
+  - @aeriajs/builtins@0.0.61
+  - @aeriajs/types@0.0.29
+  - @aeriajs/access-control@0.0.32
+  - @aeriajs/common@0.0.32
+  - @aeriajs/entrypoint@0.0.32
+  - @aeriajs/http@0.0.40
+  - @aeriajs/security@0.0.61
+  - @aeriajs/validation@0.0.35
+
 ## 0.0.60
 
 ### Patch Changes
