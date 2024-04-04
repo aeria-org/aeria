@@ -95,7 +95,7 @@ export const matches = <TRequest extends GenericRequest>(
   options: RouterOptions,
   config?: ApiConfig,
 ) => {
-  const base = config?.baseUrl && config.apiBase !== '/'
+  const base = config?.baseUrl && config.baseUrl !== '/'
     ? options.base
       ? `${config.baseUrl}${options.base}`
       : config.baseUrl
