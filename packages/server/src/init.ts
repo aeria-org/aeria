@@ -46,10 +46,12 @@ export const getDecodedToken = async (request: GenericRequest, context: Context)
       : '')
 
     if( authenticationGuard(decodedToken) ) {
-      decodedToken.sub = new ObjectId(decodedToken.sub)
-      Object.assign(decodedToken.userinfo, unsafe(await traverseDocument(decodedToken.userinfo, context.collections.user.description, {
-        autoCast: true,
-      })))
+      if( decodedToken.sub ) {
+        decodedToken.sub = new ObjectId(decodedToken.sub)
+        Object.assign(decodedToken.userinfo, unsafe(await traverseDocument(decodedToken.userinfo, context.collections.user.description, {
+          autoCast: true,
+        })))
+      }
     }
 
     return right(decodedToken)
