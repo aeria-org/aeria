@@ -60,7 +60,7 @@ export const limitRate = async (
 
   const resource = entry.usage[resourceName]
   if( resource ) {
-    if( params.scale ) {
+    if( 'scale' in params ) {
       const now = new Date()
       if( params.scale > now.getTime() / 1000 - resource.last_reach.getTime() / 1000 ) {
         return left(RateLimitingErrors.LimitReached)

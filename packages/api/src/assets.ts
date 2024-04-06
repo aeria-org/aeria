@@ -79,19 +79,23 @@ export const getFunction = async <
     return left(ACErrors.FunctionNotFound)
   }
 
-  const fn = async (payload: any, context: Context) => {
+  const fn = async (payload: unknown, context: Context) => {
     const collection = await getCollection(collectionName)
     if( !collection ) {
       return left(ACErrors.ResourceNotFound)
     }
 
-    if( collection.security?.rateLimiting?.[functionName] ) {
-      const rateLimitingEither = await limitRate(collection.security.rateLimiting[functionName], context)
-      if( isLeft(rateLimitingEither) ) {
-        return left({
-          error: unwrapEither(rateLimitingEither),
-          httpCode: 429,
-        })
+    const securityPolicy = collection.security?.[functionName]
+
+    if( securityPolicy ) {
+      if( securityPolicy.rateLimiting ) {
+        const rateLimitingEither = await limitRate(securityPolicy.rateLimiting, context)
+        if( isLeft(rateLimitingEither) ) {
+          return left({
+            error: unwrapEither(rateLimitingEither),
+            httpCode: 429,
+          })
+        }
       }
     }
 
@@ -100,3 +104,4 @@ export const getFunction = async <
 
   return right(fn)
 }
+

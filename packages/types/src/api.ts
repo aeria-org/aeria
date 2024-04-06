@@ -3,7 +3,7 @@ import type {
   Context,
   Contract,
   Description,
-  SecurityPolicy,
+  CollectionSecurityPolicy,
   AccessControl,
   PackReferences,
 
@@ -12,7 +12,7 @@ import type {
 export type Collection<TCollection extends Collection = any> = {
   description: Description
   item?: any
-  security?: SecurityPolicy
+  security?: CollectionSecurityPolicy<TCollection>
   accessControl?: AccessControl<TCollection>
   functions?: Record<string, (payload: any, context: Context, ...args: any[])=> any>
   functionContracts?: Record<string, Contract>

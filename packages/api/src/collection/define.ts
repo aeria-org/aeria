@@ -6,6 +6,7 @@ import type {
   ContractToFunction,
   Description,
   AccessControl,
+  CollectionSecurityPolicy,
 } from '@aeriajs/types'
 
 import { deepMerge, freshItem } from '@aeriajs/common'
@@ -40,7 +41,11 @@ export const defineCollection = <
     functionContracts?: TFunctionContracts
     accessControl?: AccessControl<{
       description: NoInfer<TDescription>
-      functions: Record<string, any>
+      functions: TFunctions
+    }>
+    security?: CollectionSecurityPolicy<{
+      description: NoInfer<TDescription>
+      functions: TFunctions
     }>
   },
 ) => {

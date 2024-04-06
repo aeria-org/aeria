@@ -1,20 +1,43 @@
+import type { Collection } from './api.js'
+
 export enum RateLimitingErrors {
   Unauthenticated = 'UNAUTHENTICATED',
   LimitReached = 'LIMIT_REACHED',
 }
 
+export type DiscriminationStrategy =
+  | 'tenant'
+  | 'ip'
+
+export type RateLimitingWithScale = {
+  scale: number
+}
+
+export type RateLimitingWithLimit = {
+  limit: number
+}
+
 export type RateLimitingParams = {
-  strategy:
-    | 'tenant'
-    | 'ip'
-  limit?: number
-  scale?: number
+  strategy: DiscriminationStrategy
   increment?: number
+} & (
+  | RateLimitingWithLimit
+  | RateLimitingWithScale
+  | (RateLimitingWithLimit & RateLimitingWithScale)
+)
+
+export type LoggingParams = {
+  strategy: DiscriminationStrategy
 }
 
 export type SecurityPolicy = {
   allowQueryOperators?: string[]
-  rateLimiting?: Record<string, RateLimitingParams>
-  accessControl?: any
+  rateLimiting?: RateLimitingParams
+  logging?: LoggingParams
 }
+
+export type CollectionSecurityPolicy<TCollection extends Collection = any> = Partial<
+  Record<keyof TCollection['functions'],
+  SecurityPolicy
+>>
 

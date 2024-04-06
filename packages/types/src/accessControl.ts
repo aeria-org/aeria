@@ -1,4 +1,4 @@
-import type { Collection } from '.'
+import type { Collection } from './api.js'
 
 export enum ACErrors {
   AssetNotFound = 'ASSET_NOT_FOUND',
