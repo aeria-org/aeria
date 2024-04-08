@@ -1,4 +1,4 @@
-import type { AccessControl, Role, Token } from '@aeriajs/types'
+import type { AccessControl, Role, AuthenticatedToken } from '@aeriajs/types'
 import { getCollection, getCollections } from '@aeriajs/entrypoint'
 import { deepMerge } from '@aeriajs/common'
 import { DEFAULT_ACCESS_CONTROL } from './constants.js'
@@ -54,14 +54,14 @@ export const getAvailableRoles = async () => {
 export const isGranted = async (
   collectionName: keyof Collections,
   functionName: string,
-  acProfile: Token,
+  acProfile: Pick<AuthenticatedToken, 'roles' | 'allowed_functions'>,
 ) => {
   const accessControl = await getAccessControl(collectionName)
   if( !accessControl ) {
     return false
   }
 
-  const userRoles = (acProfile.roles || ['guest'])
+  const userRoles = acProfile.roles
 
   for( const roleName of userRoles ) {
     const targetRole = accessControl.roles?.[roleName]

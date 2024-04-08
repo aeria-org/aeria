@@ -70,7 +70,7 @@ export const customVerbs = () => async (parentContext: RouteContext) => {
     functionName,
     context.token.authenticated
       ? context.token
-      : {},
+      : undefined,
   )
 
   if( isLeft(fnEither) ) {
@@ -109,7 +109,7 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
     functionName,
     context.token.authenticated
       ? context.token
-      : {},
+      : undefined,
   )
 
   if( isLeft(fnEither) ) {

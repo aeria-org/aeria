@@ -65,7 +65,7 @@ export type ExpectToken<TToken extends Token, TRole extends UserRole | UserRole[
     ? TRole[number]
     : TRole
 ) extends infer NormalizedRole
-  ? TToken extends AuthenticatedToken 
+  ? TToken extends AuthenticatedToken
     ? NormalizedRole extends TToken['roles'][number]
       ? TToken
       : Omit<TToken, 'roles'> & {
