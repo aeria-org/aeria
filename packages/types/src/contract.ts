@@ -6,11 +6,7 @@ export type ContractBase = {
 }
 
 export type ContractRoles = {
-  roles?: (
-    | UserRole
-    | 'root'
-    | 'guest'
-  )[]
+  roles?: UserRole[]
 }
 
 export type Contract = ContractBase & (
