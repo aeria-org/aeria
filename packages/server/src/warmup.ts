@@ -56,7 +56,9 @@ const colorizedRoute = async (
   ], method) + '\t'
 
   line += hasContractLine
-  line += escape('[90m', ` ${config.baseUrl === '/' ? '' : config.baseUrl!}`)
+  line += escape('[90m', ` ${config.baseUrl === '/'
+    ? ''
+    : config.baseUrl!}`)
   line += escape('[1m', endpointUri)
   line += rolesLine
 

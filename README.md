@@ -9,7 +9,7 @@
 />
 
 
-A source of truth and REST toolkit.
+Aeria is a secure backend framework.
 
 ```typescript
 router.GET('/get-pets/(\w+)', (context) => {
@@ -25,6 +25,7 @@ router.GET('/get-pets/(\w+)', (context) => {
 
 ## Features
 
+- 🔒 Runtime and static security
 - 🤌 Minimalistically crafted DX
 - ⚡ Fast reloads in watch mode with esbuild
 - 🪞 Automatic reflection of HTTP endpoints
