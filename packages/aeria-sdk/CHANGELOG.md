@@ -1,5 +1,15 @@
 # aeria-sdk
 
+## 0.0.52
+
+### Patch Changes
+
+- 254a8aa: Refactor: rename apiBase -> baseUrl and apiUrl -> publicUrl
+- Updated dependencies [254a8aa]
+- Updated dependencies [34753d9]
+  - @aeriajs/types@0.0.30
+  - @aeriajs/common@0.0.33
+
 ## 0.0.51
 
 ### Patch Changes
