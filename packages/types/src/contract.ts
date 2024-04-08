@@ -1,4 +1,4 @@
-import type { Property, InferProperty, InferResponse, Context } from '.'
+import type { Property, InferProperty, InferResponse, Context, UserRole } from '.'
 
 export type ContractBase = {
   // used internally to indicate the contract belongs to a builtin function
@@ -7,7 +7,7 @@ export type ContractBase = {
 
 export type ContractRoles = {
   roles?: (
-    | Collections['user']['item']['roles'][number]
+    | UserRole
     | 'root'
     | 'guest'
   )[]

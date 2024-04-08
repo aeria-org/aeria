@@ -1,4 +1,4 @@
-import type { Collection } from './api.js'
+import type { Collection, UserRole } from './api.js'
 
 export enum ACErrors {
   AssetNotFound = 'ASSET_NOT_FOUND',
@@ -39,10 +39,10 @@ export type Role<
 export type Roles<
   TCollection extends Collection = any,
   TAccessControl extends AccessControl<TCollection> = any,
-> = Record<
-  string,
+> = Partial<Record<
+  UserRole,
   Role<TCollection, TAccessControl>
->
+>>
 
 export type InternalAccessControl<
   TCollection extends Collection = any,
