@@ -1,4 +1,4 @@
-import type { AssetType, Context, Collection, ACProfile } from '@aeriajs/types'
+import type { AssetType, Context, Collection, Token } from '@aeriajs/types'
 import { ACErrors } from '@aeriajs/types'
 import { left, right, isLeft, unwrapEither } from '@aeriajs/common'
 import { limitRate } from '@aeriajs/security'
@@ -61,7 +61,7 @@ export const getFunction = async <
 >(
   collectionName: TCollectionName,
   functionName: TFunctionName,
-  acProfile?: ACProfile,
+  acProfile?: Token,
 ) => {
   if( acProfile ) {
     if( !await isGranted(collectionName, functionName, acProfile) ) {

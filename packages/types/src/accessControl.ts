@@ -1,4 +1,4 @@
-import type { Collection } from './api.js'
+import type { AuthenticatedToken, Collection, Token, UserRole } from '.'
 
 export enum ACErrors {
   AssetNotFound = 'ASSET_NOT_FOUND',
@@ -39,7 +39,7 @@ export type Role<
 export type AccessControl<
   TCollection extends Collection = any,
   TAccessControl extends AccessControl<TCollection, TAccessControl> = any,
-> =  {
+> = {
   roles?: Partial<Record<
     string,
     Role<TCollection, TAccessControl>
@@ -60,8 +60,17 @@ export type NonCircularAccessControl<
   parent?: TAccessControl['roles']
 }
 
-export type ACProfile = {
-  readonly roles?: string[]
-  readonly allowed_functions?: string[]
-}
+export type ExpectToken<TToken extends Token, TRole extends UserRole | UserRole[]> = (
+  TRole extends any[]
+    ? TRole[number]
+    : TRole
+) extends infer NormalizedRole
+  ? TToken extends AuthenticatedToken 
+    ? NormalizedRole extends TToken['roles'][number]
+      ? TToken
+      : Omit<TToken, 'roles'> & {
+        roles: readonly NormalizedRole[]
+      }
+    : TToken
+  : never
 

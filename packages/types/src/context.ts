@@ -6,7 +6,7 @@ import type {
   PackReferences,
   SchemaWithId,
   FunctionPath,
-  DecodedToken,
+  Token,
   ApiConfig,
   CollectionDocument,
   CollectionFunctions,
@@ -68,15 +68,15 @@ export type ContextOptions = {
   config?: ApiConfig
   parentContext?: RouteContext | Context
   collectionName?: string
-  token?: DecodedToken
+  token?: Token
   inherited?: boolean
   calledFunction?: string
 }
 
-export type RouteContext = {
+export type RouteContext<TAcceptedRole = string> = {
   collections: IndepthCollections
   functionPath: FunctionPath
-  token: DecodedToken
+  token: Token<TAcceptedRole>
 
   request: GenericRequest
   response: GenericResponse

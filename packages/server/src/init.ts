@@ -2,7 +2,7 @@ import type {
   Context,
   GenericRequest,
   ApiConfig,
-  DecodedToken,
+  Token,
   AuthenticatedToken,
   NonCircularJsonSchema,
 } from '@aeriajs/types'
@@ -27,21 +27,21 @@ export type InitOptions = {
   }>
 }
 
-const authenticationGuard = (decodedToken: DecodedToken): decodedToken is AuthenticatedToken => {
+const authenticationGuard = (decodedToken: Token): decodedToken is AuthenticatedToken => {
   decodedToken.authenticated = true
   return true
 }
 
-export const getDecodedToken = async (request: GenericRequest, context: Context) => {
+export const getToken = async (request: GenericRequest, context: Context) => {
   if( !request.headers.authorization ) {
-    return right(<DecodedToken>{
+    return right(<Token>{
       authenticated: false,
       sub: null,
     })
   }
 
   try {
-    const decodedToken: DecodedToken = await decodeToken(typeof request.headers.authorization === 'string'
+    const decodedToken: Token = await decodeToken(typeof request.headers.authorization === 'string'
       ? request.headers.authorization.split('Bearer ').pop()!
       : '')
 
@@ -92,7 +92,7 @@ export const init = <const TInitOptions extends InitOptions>(_options: TInitOpti
         }
 
         await wrapRouteExecution(response, async () => {
-          const tokenEither = await getDecodedToken(request, parentContext)
+          const tokenEither = await getToken(request, parentContext)
           if( isLeft(tokenEither) ) {
             return tokenEither
           }

@@ -3,7 +3,7 @@ import type {
   ContextOptions,
   IndepthCollection,
   IndepthCollections,
-  DecodedToken,
+  Token,
   Collection,
 } from '@aeriajs/types'
 
@@ -53,7 +53,7 @@ export const createContext = async (options: ContextOptions = {}) => {
   const {
     collectionName,
     parentContext = {},
-    token = {} as DecodedToken,
+    token = {} as Token,
   } = options
 
   const { getCollectionAsset } = await import('./assets.js')

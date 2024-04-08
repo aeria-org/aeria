@@ -23,17 +23,12 @@ export type FunctionPath = `${string}@${string}`
 
 export type UserRole = Collections['user']['item']['roles'][number]
 
-export type UserACProfile = {
-  readonly roles: string[]
-  readonly allowed_functions?: string[]
-}
-
-export type AuthenticatedToken = {
+export type AuthenticatedToken<TAcceptedRole = string> = {
   authenticated: true
   sub: ObjectId
-  roles: string[]
+  roles: readonly TAcceptedRole[]
+  allowed_functions?: readonly FunctionPath[]
   userinfo: PackReferences<Collections['user']['item']>
-  allowed_functions?: FunctionPath[]
 }
 
 export type UnauthenticatedToken = {
@@ -41,7 +36,7 @@ export type UnauthenticatedToken = {
   sub: null
 }
 
-export type DecodedToken =
-  | AuthenticatedToken
+export type Token<TAcceptedRole = string> =
+  | AuthenticatedToken<TAcceptedRole>
   | UnauthenticatedToken
 
