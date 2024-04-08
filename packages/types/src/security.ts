@@ -26,8 +26,15 @@ export type RateLimitingParams = {
   | (RateLimitingWithLimit & RateLimitingWithScale)
 )
 
+export type LoggingLevel =
+  | 'debug'
+  | 'info'
+  | 'error'
+  | 'critical'
+
 export type LoggingParams = {
   strategy: DiscriminationStrategy
+  level: LoggingLevel
 }
 
 export type SecurityPolicy = {
@@ -38,6 +45,6 @@ export type SecurityPolicy = {
 
 export type CollectionSecurityPolicy<TCollection extends Collection = any> = Partial<
   Record<keyof TCollection['functions'],
-  SecurityPolicy
->>
+    SecurityPolicy
+  >>
 
