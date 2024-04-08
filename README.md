@@ -9,7 +9,7 @@
 />
 
 
-Aeria is a secure backend framework.
+Aeria is a backend framework focused on security with cutting-edge features.
 
 ```typescript
 router.GET('/get-pets/(\w+)', (context) => {
@@ -25,7 +25,7 @@ router.GET('/get-pets/(\w+)', (context) => {
 
 ## Features
 
-- 🔒 Runtime and static security
+- 🔒 Secure by design
 - 🤌 Minimalistically crafted DX
 - ⚡ Fast reloads in watch mode with esbuild
 - 🪞 Automatic reflection of HTTP endpoints
