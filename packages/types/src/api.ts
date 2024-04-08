@@ -9,7 +9,6 @@ import type {
 
 } from '.'
 
-
 export type Collection<TCollection extends Collection = any> = {
   description: Description
   item?: any

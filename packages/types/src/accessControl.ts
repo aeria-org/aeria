@@ -1,4 +1,4 @@
-import type { Collection, UserRole } from './api.js'
+import type { Collection } from './api.js'
 
 export enum ACErrors {
   AssetNotFound = 'ASSET_NOT_FOUND',
@@ -36,27 +36,29 @@ export type Role<
   forbid?: readonly (keyof TCollection['functions'])[]
 }
 
-export type Roles<
-  TCollection extends Collection = any,
-  TAccessControl extends AccessControl<TCollection> = any,
-> = Partial<Record<
-  UserRole,
-  Role<TCollection, TAccessControl>
->>
-
-export type InternalAccessControl<
+export type AccessControl<
   TCollection extends Collection = any,
   TAccessControl extends AccessControl<TCollection, TAccessControl> = any,
-> = {
-  roles?: Roles<TCollection, TAccessControl>
+> =  {
+  roles?: Partial<Record<
+    string,
+    Role<TCollection, TAccessControl>
+  >>
   availableRoles?: keyof TAccessControl['roles']
   parent?: TAccessControl['roles']
 }
 
-export type AccessControl<
+export type NonCircularAccessControl<
   TCollection extends Collection = any,
   TAccessControl extends AccessControl<TCollection, TAccessControl> = any,
-> = InternalAccessControl<TCollection, TAccessControl>
+> = {
+  roles?: Record<
+    string,
+    Role<TCollection, TAccessControl>
+  >
+  availableRoles?: keyof TAccessControl['roles']
+  parent?: TAccessControl['roles']
+}
 
 export type ACProfile = {
   readonly roles?: string[]
