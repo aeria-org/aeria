@@ -1,5 +1,11 @@
 # @aeriajs/builtins-icons
 
+## 0.0.4
+
+### Patch Changes
+
+- 34753d9: Update
+
 ## 0.0.3
 
 ### Patch Changes

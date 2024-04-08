@@ -1,5 +1,12 @@
 # @aeriajs/types
 
+## 0.0.30
+
+### Patch Changes
+
+- 254a8aa: Refactor: rename apiBase -> baseUrl and apiUrl -> publicUrl
+- 34753d9: Update
+
 ## 0.0.29
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @aeriajs/security
 
+## 0.0.62
+
+### Patch Changes
+
+- 254a8aa: Refactor: rename apiBase -> baseUrl and apiUrl -> publicUrl
+- 34753d9: Update
+- Updated dependencies [254a8aa]
+- Updated dependencies [34753d9]
+  - @aeriajs/types@0.0.30
+  - @aeriajs/api@0.0.62
+  - @aeriajs/common@0.0.33
+
 ## 0.0.61
 
 ### Patch Changes
