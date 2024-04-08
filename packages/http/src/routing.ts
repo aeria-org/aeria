@@ -37,7 +37,7 @@ export type RouteGroupOptions = {
 type TypedContext<TContractWithRoles extends ContractWithRoles> = RouteContext<
   number extends keyof TContractWithRoles['roles']
     ? TContractWithRoles['roles'][number]
-    : string
+    : null
 > & {
   request: Omit<RouteContext['request'], 'payload' | 'query'> & {
     payload: TContractWithRoles extends { payload: infer Payload }

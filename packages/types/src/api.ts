@@ -39,7 +39,15 @@ export type UnauthenticatedToken = {
   sub: null
 }
 
-export type Token<TAcceptedRole = string> =
-  | AuthenticatedToken<TAcceptedRole>
-  | UnauthenticatedToken
+export type Token<TAcceptedRole extends UserRole | UserRole[] | null = null> = (
+  TAcceptedRole extends any[]
+    ? TAcceptedRole[number]
+    : TAcceptedRole
+) extends infer NormalizedRole
+  ? NormalizedRole extends null | 'guest'
+    ?
+      | AuthenticatedToken
+      | UnauthenticatedToken
+    : AuthenticatedToken<NormalizedRole>
+  : never
 

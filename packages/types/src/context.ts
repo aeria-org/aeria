@@ -12,6 +12,7 @@ import type {
   CollectionFunctions,
   RateLimitingParams,
   RateLimitingErrors,
+  UserRole,
 } from '.'
 
 export type CollectionModel<TDescription extends Description> =
@@ -73,7 +74,7 @@ export type ContextOptions = {
   calledFunction?: string
 }
 
-export type RouteContext<TAcceptedRole = string> = {
+export type RouteContext<TAcceptedRole extends UserRole | UserRole[] | null = null> = {
   collections: IndepthCollections
   functionPath: FunctionPath
   token: Token<TAcceptedRole>

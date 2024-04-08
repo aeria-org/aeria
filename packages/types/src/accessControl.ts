@@ -1,4 +1,4 @@
-import type { AuthenticatedToken, Collection, Token, UserRole } from '.'
+import type { Collection } from '.'
 
 export enum ACErrors {
   AssetNotFound = 'ASSET_NOT_FOUND',
@@ -59,18 +59,4 @@ export type NonCircularAccessControl<
   availableRoles?: keyof TAccessControl['roles']
   parent?: TAccessControl['roles']
 }
-
-export type ExpectToken<TToken extends Token, TRole extends UserRole | UserRole[]> = (
-  TRole extends any[]
-    ? TRole[number]
-    : TRole
-) extends infer NormalizedRole
-  ? TToken extends AuthenticatedToken
-    ? NormalizedRole extends TToken['roles'][number]
-      ? TToken
-      : Omit<TToken, 'roles'> & {
-        roles: readonly NormalizedRole[]
-      }
-    : TToken
-  : never
 
