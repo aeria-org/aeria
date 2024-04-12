@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.31
+
+### Patch Changes
+
+- 32a06cd: Add "on-write" ownership mode, refactor types
+
 ## 0.0.30
 
 ### Patch Changes

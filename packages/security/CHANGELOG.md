@@ -1,5 +1,15 @@
 # @aeriajs/security
 
+## 0.0.63
+
+### Patch Changes
+
+- 32a06cd: Add "on-write" ownership mode, refactor types
+- Updated dependencies [32a06cd]
+  - @aeriajs/types@0.0.31
+  - @aeriajs/api@0.0.63
+  - @aeriajs/common@0.0.34
+
 ## 0.0.62
 
 ### Patch Changes
