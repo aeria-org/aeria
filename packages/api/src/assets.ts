@@ -85,7 +85,7 @@ export const getFunction = async <
       return left(ACErrors.ResourceNotFound)
     }
 
-    const securityPolicy = collection.security?.[functionName]
+    const securityPolicy = collection.security?.functions?.[functionName]
 
     if( securityPolicy ) {
       if( securityPolicy.rateLimiting ) {

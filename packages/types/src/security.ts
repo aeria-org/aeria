@@ -48,8 +48,11 @@ export type SecurityPolicy = {
   logging?: LoggingParams
 }
 
-export type CollectionSecurityPolicy<TCollection extends Collection = any> = Partial<
-  Record<keyof TCollection['functions'],
-    SecurityPolicy
-  >>
-
+export type CollectionSecurityPolicy<TCollection extends Collection = any> = {
+  functions?: Partial<
+    Record<
+      keyof TCollection['functions'],
+      SecurityPolicy
+    >
+  >
+}
