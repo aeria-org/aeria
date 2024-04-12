@@ -95,14 +95,25 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
   calledFunction: string
 }
 
-export type Context<
+export type CollectionContext<
   TDescription extends Description = any,
   TFunctions = any,
-> = RouteContext & {
+> = {
   description: TDescription
   collectionName?: (keyof Collections & string) | string
   collection: TDescription['$id'] extends keyof Collections
     ? IndepthCollection<{ description: TDescription, functions: TFunctions }>
     : IndepthCollection<any>
 }
+
+export type Context<
+  TDescription extends Description = any,
+  TFunctions = any,
+> = RouteContext & CollectionContext<TDescription, TFunctions>
+
+export type StrictContext<
+  TAcceptedRole extends AcceptedRole = null,
+  TDescription extends Description = any,
+  TFunctions = any,
+> = RouteContext<TAcceptedRole> & CollectionContext<TDescription, TFunctions>
 
