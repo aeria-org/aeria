@@ -75,7 +75,7 @@ export const isGranted = async (
     }
 
     const allowedInToken = !acProfile.allowed_functions || (
-      acProfile.allowed_functions.includes(`${collectionName}@${functionName}`)
+      acProfile.allowed_functions.includes(`/${collectionName}/${functionName}`)
     )
 
     const result = allowedInToken && (
