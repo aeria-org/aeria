@@ -17,7 +17,7 @@ export const description = defineDescription({
   indexes: [
     'name',
     'link',
-    'mime',
+    'type',
   ],
   properties: {
     type: {

@@ -1,6 +1,7 @@
 import type { IconStyle, PhosphorIcon } from '@phosphor-icons/core'
-import type { JsonSchema, PropertiesWithId } from './property'
-import type { Condition } from './condition'
+import type { JsonSchema, PropertiesWithId } from './property.js'
+import type { Condition } from './condition.js'
+import type { OwnershipMode } from './security.js'
 
 export type CollectionPresets =
   | 'crud'
@@ -105,7 +106,7 @@ export type SearchOptions<TDescription extends Description> = {
 export type Description<TDescription extends Description = any> = JsonSchema<TDescription> & {
   // unused
   title?: string
-  categories?: string[]
+  categories?: readonly string[]
 
   system?: boolean
   inline?: boolean
@@ -115,35 +116,36 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
   icon?: Icon
   options?: CollectionOptions<TDescription>
 
-  indexes?: ReadonlyArray<string>
+  indexes?: readonly (keyof TDescription['properties'])[]
   defaults?: Record<string, any>
 
   // modifiers
-  owned?: boolean | 'always'
+  owned?: OwnershipMode
   temporary?: {
     index: keyof TDescription['properties']
     expireAfterSeconds: number
   }
   timestamps?: false
-  immutable?: boolean | ReadonlyArray<string>
+  immutable?: boolean | readonly string[]
 
   // takes an array of something
-  route?: ReadonlyArray<string>
-  presets?: ReadonlyArray<CollectionPresets>
+  route?: readonly string[]
+  presets?: readonly CollectionPresets[]
 
-  table?: ReadonlyArray<PropertiesWithId<TDescription>>
-  tableMeta?: ReadonlyArray<PropertiesWithId<TDescription>>
+  table?: readonly PropertiesWithId<TDescription>[]
+  tableMeta?: readonly PropertiesWithId<TDescription>[]
 
   filtersPresets?: Record<string, FiltersPreset<TDescription>>
   freshItem?: Partial<Record<PropertiesWithId<TDescription>, any>>
 
-  form?: ReadonlyArray<PropertiesWithId<TDescription>> | Record<PropertiesWithId<TDescription>, string[]>
-  writable?: ReadonlyArray<PropertiesWithId<TDescription>>
-  filters?: ReadonlyArray<PropertiesWithId<TDescription> | {
-    property: PropertiesWithId<TDescription>
-    default: string
-  }>
-
+  form?: readonly PropertiesWithId<TDescription>[] | Record<PropertiesWithId<TDescription>, string[]>
+  writable?: readonly PropertiesWithId<TDescription>[]
+  filters?: readonly (
+    PropertiesWithId<TDescription> | {
+      property: PropertiesWithId<TDescription>
+      default: string
+    }
+  )[]
   layout?: Layout<TDescription>
   formLayout?: Partial<FormLayout<TDescription>>
   tableLayout?: Partial<TableLayout<TDescription>>

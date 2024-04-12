@@ -14,23 +14,20 @@ import {
   checkPagination,
 } from './index.js'
 
-const chainFunctions = async <
-  TContext,
-  TPayload extends Record<string, any>,
-  TFunction extends SecurityCheck,
-  TProps extends SecurityCheckProps<TPayload>,
->(
+const chainFunctions = async <TProps extends SecurityCheckProps>(
   _props: TProps,
-  context: TContext extends Context<any>
-    ? TContext
-    : never,
-  functions: TFunction[],
+  context: Context,
+  functions: (SecurityCheck | null)[],
 ) => {
   const props = Object.assign({
     filters: {},
   }, _props)
 
   for( const fn of functions ) {
+    if( !fn ) {
+      continue
+    }
+
     const resultEither = await fn(props, context)
     if( isLeft(resultEither) ) {
       return resultEither
@@ -65,7 +62,9 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
 
     return chainFunctions(props, context, [
       checkPagination,
-      checkOwnershipRead,
+      context.description.owned === 'on-write'
+        ? null
+        : checkOwnershipRead,
     ])
   }
 

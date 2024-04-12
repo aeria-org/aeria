@@ -1,4 +1,4 @@
-import type { JsonSchema, PropertiesWithId } from './property'
+import type { JsonSchema, PropertiesWithId } from './property.js'
 
 export type FinalOperator =
   | 'equal'

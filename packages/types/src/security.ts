@@ -1,5 +1,10 @@
 import type { Collection } from './api.js'
 
+export type OwnershipMode =
+  | boolean
+  | 'always'
+  | 'on-write'
+
 export enum RateLimitingErrors {
   Unauthenticated = 'UNAUTHENTICATED',
   LimitReached = 'LIMIT_REACHED',

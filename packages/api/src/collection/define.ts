@@ -25,6 +25,8 @@ export const defineCollection = <
       | 'item'
       | 'description'
       | 'functions'
+      | 'security'
+      | 'accessControl'
     >
     : never,
   const TDescription extends Description<TDescription>,
@@ -32,7 +34,10 @@ export const defineCollection = <
     [P in keyof TFunctions]?: Contract
   },
   const TFunctions extends Record<string, unknown> & {
-    [P in keyof TFunctionContracts]: ContractToFunction<NonNullable<TFunctionContracts[P]>, Context<TDescription>>
+    [P in keyof TFunctionContracts]: ContractToFunction<
+      NonNullable<TFunctionContracts[P]>,
+      Context<TDescription>
+    >
   },
 >(
   collection: TCollection & {
@@ -59,7 +64,6 @@ export const defineCollection = <
     description: TDescription
     functions: TFunctions
     functionContracts: TFunctionContracts
-    accessControl: AccessControl
   }
 }
 

@@ -9,6 +9,12 @@ import type {
 
 } from '.'
 
+export type AcceptedRole =
+  | UserRole
+  | UserRole[]
+  | null
+  | unknown
+
 export type Collection<TCollection extends Collection = any> = {
   description: Description
   item?: any
@@ -26,10 +32,14 @@ export type UserRole =
   | 'root'
   | 'guest'
 
-export type AuthenticatedToken<TAcceptedRole = string> = {
+export type AuthenticatedToken<TAcceptedRole extends AcceptedRole = null> = {
   authenticated: true
   sub: ObjectId
-  roles: readonly TAcceptedRole[]
+  roles: readonly (
+    TAcceptedRole extends null
+      ? string
+      : TAcceptedRole
+  )[]
   allowed_functions?: readonly FunctionPath[]
   userinfo: PackReferences<Collections['user']['item']>
 }
@@ -39,7 +49,7 @@ export type UnauthenticatedToken = {
   sub: null
 }
 
-export type Token<TAcceptedRole extends UserRole | UserRole[] | null = null> = (
+export type Token<TAcceptedRole extends AcceptedRole = null> = (
   TAcceptedRole extends any[]
     ? TAcceptedRole[number]
     : TAcceptedRole

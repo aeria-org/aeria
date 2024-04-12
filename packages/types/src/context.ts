@@ -1,5 +1,5 @@
 import type { Collection as MongoCollection } from 'mongodb'
-import type { GenericRequest, GenericResponse } from './http'
+import type { GenericRequest, GenericResponse } from './http.js'
 import type {
   Either,
   Description,
@@ -12,7 +12,7 @@ import type {
   CollectionFunctions,
   RateLimitingParams,
   RateLimitingErrors,
-  UserRole,
+  AcceptedRole,
 } from '.'
 
 export type CollectionModel<TDescription extends Description> =
@@ -74,7 +74,7 @@ export type ContextOptions = {
   calledFunction?: string
 }
 
-export type RouteContext<TAcceptedRole extends UserRole | UserRole[] | null = null> = {
+export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
   collections: IndepthCollections
   functionPath: FunctionPath
   token: Token<TAcceptedRole>
@@ -95,11 +95,14 @@ export type RouteContext<TAcceptedRole extends UserRole | UserRole[] | null = nu
   calledFunction: string
 }
 
-export type Context<TDescription extends Description = any, TFunctions = any> = RouteContext & {
+export type Context<
+  TDescription extends Description = any,
+  TFunctions = any,
+> = RouteContext & {
   description: TDescription
   collectionName?: (keyof Collections & string) | string
   collection: TDescription['$id'] extends keyof Collections
     ? IndepthCollection<{ description: TDescription, functions: TFunctions }>
-    : TDescription
+    : IndepthCollection<any>
 }
 
