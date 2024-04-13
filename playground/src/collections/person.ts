@@ -27,7 +27,11 @@ export const person = defineCollection({
     get,
     getAll,
     insert,
-    hello: (obj) => obj.name,
+    hello: (obj) => {
+      console.log(obj.name)
+      // @ts-expect-error
+      console.log(obj.invalid)
+    },
   },
   accessControl: {
     roles: {
