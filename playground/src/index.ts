@@ -27,6 +27,8 @@ router.GET('/get-people', async (context) => {
       console.log(pet.name)
       console.log(pet.toys.favorite.name)
       console.log(pet.toys.favorite.brand)
+      // @ts-expect-error
+      console.log(pet.toys.favorite.invalid)
     }
   }
 
