@@ -1,5 +1,13 @@
 # @aeriajs/types
 
+## 0.0.32
+
+### Patch Changes
+
+- 49dda78: Refactor `CollectionSecurityPolicy`
+- 3c24db0: Refactor types
+- bd37b27: Rename packages
+
 ## 0.0.31
 
 ### Patch Changes
