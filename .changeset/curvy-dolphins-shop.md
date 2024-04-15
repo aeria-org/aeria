@@ -1,6 +1,6 @@
 ---
 "@aeriajs/types": patch
-"@aeriajs/api": patch
+"@aeriajs/core": patch
 ---
 
 Refactor `CollectionSecurityPolicy`
