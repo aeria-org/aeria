@@ -1,5 +1,24 @@
 # @aeriajs/api
 
+## 0.0.64
+
+### Patch Changes
+
+- 49dda78: Refactor `CollectionSecurityPolicy`
+- 29fc35f: Add isObjectId typeguard
+- Updated dependencies [49dda78]
+- Updated dependencies [3c24db0]
+- Updated dependencies [bd37b27]
+- Updated dependencies [29fc35f]
+  - @aeriajs/types@0.0.32
+  - @aeriajs/access-control@0.0.35
+  - @aeriajs/builtins@0.0.64
+  - @aeriajs/security@0.0.64
+  - @aeriajs/http@0.0.43
+  - @aeriajs/common@0.0.35
+  - @aeriajs/entrypoint@0.0.35
+  - @aeriajs/validation@0.0.38
+
 ## 0.0.63
 
 ### Patch Changes

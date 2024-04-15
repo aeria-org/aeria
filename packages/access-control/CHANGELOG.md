@@ -1,5 +1,18 @@
 # @aeriajs/access-control
 
+## 0.0.35
+
+### Patch Changes
+
+- 3c24db0: Refactor types
+- Updated dependencies [49dda78]
+- Updated dependencies [3c24db0]
+- Updated dependencies [bd37b27]
+- Updated dependencies [29fc35f]
+  - @aeriajs/types@0.0.32
+  - @aeriajs/common@0.0.35
+  - @aeriajs/entrypoint@0.0.35
+
 ## 0.0.34
 
 ### Patch Changes
