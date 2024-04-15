@@ -1,5 +1,5 @@
 import { type Description, type Property, type Either, type ACErrors, type ValidationError, type Context, ValidationErrorCodes } from '@aeriajs/types'
-import { left, right, isLeft, unwrapEither, unsafe, pipe, isReference, getValueFromPath } from '@aeriajs/common'
+import { left, right, isLeft, unwrapEither, unsafe, pipe, isReference, getValueFromPath, isObjectId } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
 import { ObjectId } from 'mongodb'
 import { getCollectionAsset } from '../assets.js'
@@ -148,11 +148,7 @@ const autoCast = (value: any, ctx: Omit<PhaseContext, 'options'> & { options: (T
     }
 
     case 'object': {
-      // we use this comparation instead of `value instanceof ObjectId` because
-      // the latter is prone to errors when `mongodb` dependency is duplicated
-      // -- when ./node_modules/mongodb and ../node_modules/mongodb are both
-      // present and the bundler doesn't handle this correctly
-      if( !value || value._bsontype === 'ObjectId' ) {
+      if( !value || isObjectId(value) ) {
         return value
       }
 
