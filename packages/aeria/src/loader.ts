@@ -1,14 +1,4 @@
-import type { init } from '@aeriajs/server'
-import { dynamicImport } from '@aeriajs/common'
+import { loader } from '@aeriajs/server'
 
-const main = async () => {
-  const entrypoint = await dynamicImport(process.argv[1])
-  const entrypointMain: ReturnType<typeof init> = entrypoint.default
-    ? entrypoint.default
-    : entrypoint
-
-  entrypointMain.listen()
-}
-
-main()
+loader()
 
