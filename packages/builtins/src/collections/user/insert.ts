@@ -1,7 +1,7 @@
 import type { Context, SchemaWithId, PackReferences } from '@aeriajs/types'
 import type { description } from './description'
 import * as bcrypt from 'bcrypt'
-import { functions } from '@aeriajs/api'
+import { functions } from '@aeriajs/core'
 
 export const insert = async (
   payload: {

@@ -1,6 +1,6 @@
 import type { RouteContext } from '@aeriajs/types'
 import { createRouter } from '@aeriajs/http'
-import { createContext } from '@aeriajs/api'
+import { createContext } from '@aeriajs/core'
 import { systemFunctions } from '@aeriajs/builtins'
 import {
   safeHandle,

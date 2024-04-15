@@ -1,4 +1,4 @@
-import { defineCollection, get } from '@aeriajs/api'
+import { defineCollection, get } from '@aeriajs/core'
 import { description } from './description.js'
 import { insert } from './insert.js'
 import { download } from './download.js'

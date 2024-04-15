@@ -3,11 +3,11 @@
   "compilerOptions": {
     "outDir": "dist",
     "paths": {
-      "@aeriajs/api": [
-        "../api/dist"
+      "@aeriajs/core": [
+        "../core/dist"
       ],
-      "@aeriajs/api/*": [
-        "../api/dist/*"
+      "@aeriajs/core/*": [
+        "../core/dist/*"
       ],
       "@aeriajs/access-control": [
         "../access-control/dist"

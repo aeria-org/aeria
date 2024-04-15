@@ -1,6 +1,6 @@
 import type { RouteContext } from '@aeriajs/types'
-import type { functions } from '@aeriajs/api'
-import { createContext, getFunction } from '@aeriajs/api'
+import type { functions } from '@aeriajs/core'
+import { createContext, getFunction } from '@aeriajs/core'
 import { type ACErrors, ACErrorMessages } from '@aeriajs/types'
 import { isLeft, unwrapEither, pipe } from '@aeriajs/common'
 import { appendPagination } from './appendPagination.js'

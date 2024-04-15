@@ -1,5 +1,5 @@
 {
-  "name": "@aeriajs/api",
+  "name": "@aeriajs/core",
   "version": "0.0.63",
   "description": "",
   "main": "dist/index.js",

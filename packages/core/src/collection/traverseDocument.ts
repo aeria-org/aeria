@@ -148,7 +148,11 @@ const autoCast = (value: any, ctx: Omit<PhaseContext, 'options'> & { options: (T
     }
 
     case 'object': {
-      if( !value || value instanceof ObjectId ) {
+      // we use this comparation instead of `value instanceof ObjectId` because
+      // the latter is prone to errors when `mongodb` dependency is duplicated
+      // -- when ./node_modules/mongodb and ../node_modules/mongodb are both
+      // present and the bundler doesn't handle this correctly
+      if( !value || value._bsontype === 'ObjectId' ) {
         return value
       }
 

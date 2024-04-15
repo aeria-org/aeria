@@ -12,8 +12,8 @@ import { right, left, isLeft, unwrapEither, unsafe, deepMerge } from '@aeriajs/c
 import { defineServerOptions, cors, wrapRouteExecution } from '@aeriajs/http'
 import { registerServer } from '@aeriajs/node-http'
 
-import { createContext, decodeToken, traverseDocument, ObjectId } from '@aeriajs/api'
-import { getDatabase } from '@aeriajs/api'
+import { createContext, decodeToken, traverseDocument, ObjectId } from '@aeriajs/core'
+import { getDatabase } from '@aeriajs/core'
 import { DEFAULT_API_CONFIG } from './constants.js'
 import { warmup } from './warmup.js'
 import { registerRoutes } from './routes.js'

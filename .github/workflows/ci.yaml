@@ -35,12 +35,12 @@ jobs:
             && pnpm --filter='./packages/node-http' build \
             && pnpm --filter='./packages/access-control' build \
             && pnpm --filter='./packages/security' build \
-            && pnpm --filter='./packages/api' build \
+            && pnpm --filter='./packages/core' build \
             && pnpm --filter='./packages/builtins' build \
             && pnpm --filter='./packages/server' build \
             && pnpm --filter='./packages/aeria' build \
             && pnpm --filter='./packages/aeria-sdk' build \
-            && pnpm --filter='./packages/aeria-build' build
+            && pnpm --filter='./packages/cli' build
 
       - name: Patch node_modules
         run: |

@@ -12,8 +12,8 @@
       "@aeriajs/common/*": [
         "../common/dist/*"
       ],
-      "@aeriajs/api": [
-        "../api/dist"
+      "@aeriajs/core": [
+        "../core/dist"
       ],
       "@aeriajs/entrypoint": [
         "../entrypoint/dist"

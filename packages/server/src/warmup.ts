@@ -1,5 +1,5 @@
 import type { ContractWithRoles, RouteUri } from '@aeriajs/types'
-import { getEndpoints } from '@aeriajs/api'
+import { getEndpoints } from '@aeriajs/core'
 import { getConfig } from '@aeriajs/entrypoint'
 
 type EscapeCode = `[${string}m`

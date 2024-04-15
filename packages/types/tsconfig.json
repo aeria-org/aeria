@@ -7,7 +7,7 @@
         "./node_modules/@phosphor-icons/core/dist"
       ],
       "mongodb": [
-        "../api/node_modules/mongodb"
+        "../core/node_modules/mongodb"
       ]
     }
   },

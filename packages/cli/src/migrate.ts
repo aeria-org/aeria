@@ -1,6 +1,6 @@
 import type { Collection } from '@aeriajs/types'
 import { right, dynamicImport } from '@aeriajs/common'
-import { getDatabase, prepareCollectionName, getDatabaseCollection } from '@aeriajs/api'
+import { getDatabase, prepareCollectionName, getDatabaseCollection } from '@aeriajs/core'
 import { config as loadEnv } from 'dotenv'
 import { log } from './log.js'
 import path from 'path'

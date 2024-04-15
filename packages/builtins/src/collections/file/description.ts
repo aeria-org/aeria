@@ -1,4 +1,4 @@
-import { defineDescription } from '@aeriajs/api'
+import { defineDescription } from '@aeriajs/core'
 import { getConfig } from '@aeriajs/entrypoint'
 
 const link = async (_id: string) => {

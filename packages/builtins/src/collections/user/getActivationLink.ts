@@ -1,4 +1,4 @@
-import type { ObjectId } from '@aeriajs/api'
+import type { ObjectId } from '@aeriajs/core'
 import { getConfig } from '@aeriajs/entrypoint'
 import bcrypt from 'bcrypt'
 

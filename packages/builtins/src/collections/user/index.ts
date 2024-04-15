@@ -1,4 +1,4 @@
-import { defineCollection, get, getAll, remove, upload, removeFile } from '@aeriajs/api'
+import { defineCollection, get, getAll, remove, upload, removeFile } from '@aeriajs/core'
 import { description } from './description.js'
 import { authenticate } from './authenticate.js'
 import { activate } from './activate.js'

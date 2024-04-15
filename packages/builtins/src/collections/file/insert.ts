@@ -2,7 +2,7 @@ import type { Context, SchemaWithId, PackReferences } from '@aeriajs/types'
 import type { description } from './description.js'
 import { createHash } from 'crypto'
 import { writeFile, unlink } from 'fs/promises'
-import { insert as originalInsert } from '@aeriajs/api'
+import { insert as originalInsert } from '@aeriajs/core'
 
 export const insert = async (
   payload: {

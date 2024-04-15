@@ -1,4 +1,4 @@
-# `aeria-build`
+# `@aeriajs/cli`
 
 ## Introduction
 

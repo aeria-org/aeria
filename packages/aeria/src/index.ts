@@ -1,5 +1,5 @@
 export * from '@aeriajs/access-control'
-export * from '@aeriajs/api'
+export * from '@aeriajs/core'
 export * from '@aeriajs/common'
 export * from '@aeriajs/entrypoint'
 export * from '@aeriajs/http'

@@ -1,4 +1,4 @@
-import { defineDescription } from '@aeriajs/api'
+import { defineDescription } from '@aeriajs/core'
 
 /**
  * This description complies with JWT claims specified in RFC-7519.

@@ -1,6 +1,6 @@
 import type { Context } from '@aeriajs/types'
 import type { description } from './description.js'
-import { ObjectId } from '@aeriajs/api'
+import { ObjectId } from '@aeriajs/core'
 import { left, right } from '@aeriajs/common'
 import bcrypt from 'bcrypt'
 

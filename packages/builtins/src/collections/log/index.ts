@@ -1,4 +1,4 @@
-import { defineCollection, get, getAll, insert } from '@aeriajs/api'
+import { defineCollection, get, getAll, insert } from '@aeriajs/core'
 
 export const log = defineCollection({
   description: {

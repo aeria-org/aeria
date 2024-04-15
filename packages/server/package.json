@@ -33,7 +33,7 @@
   ],
   "devDependencies": {
     "@aeriajs/access-control": "^0.0.34",
-    "@aeriajs/api": "^0.0.63",
+    "@aeriajs/core": "^0.0.63",
     "@aeriajs/builtins": "^0.0.63",
     "@aeriajs/common": "^0.0.34",
     "@aeriajs/entrypoint": "^0.0.34",
@@ -45,7 +45,7 @@
   },
   "peerDependencies": {
     "@aeriajs/access-control": "^0.0.34",
-    "@aeriajs/api": "^0.0.63",
+    "@aeriajs/core": "^0.0.63",
     "@aeriajs/builtins": "^0.0.63",
     "@aeriajs/common": "^0.0.34",
     "@aeriajs/entrypoint": "^0.0.34",

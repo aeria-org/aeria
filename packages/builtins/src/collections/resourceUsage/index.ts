@@ -1,4 +1,4 @@
-import { defineCollection } from '@aeriajs/api'
+import { defineCollection } from '@aeriajs/core'
 
 export const resourceUsage = defineCollection({
   description: {

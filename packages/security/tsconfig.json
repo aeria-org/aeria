@@ -3,11 +3,11 @@
   "compilerOptions": {
     "outDir": "dist",
     "paths": {
-      "@aeriajs/api": [
-        "../api/dist"
+      "@aeriajs/core": [
+        "../core/dist"
       ],
-      "@aeriajs/api/*": [
-        "../api/dist/*"
+      "@aeriajs/core/*": [
+        "../core/dist/*"
       ],
       "@aeriajs/builtins": [
         "../builtins/dist"
@@ -19,7 +19,7 @@
         "../types/dist"
       ],
       "mongodb": [
-        "../api/node_modules/mongodb"
+        "../core/node_modules/mongodb"
       ]
     }
   },

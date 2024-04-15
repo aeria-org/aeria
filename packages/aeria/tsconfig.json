@@ -6,11 +6,11 @@
       "@aeriajs/access-control": [
         "../access-control/dist"
       ],
-      "@aeriajs/api": [
-        "../api/dist"
+      "@aeriajs/core": [
+        "../core/dist"
       ],
-      "@aeriajs/api/*": [
-        "../api/dist/*"
+      "@aeriajs/core/*": [
+        "../core/dist/*"
       ],
       "@aeriajs/common": [
         "../common/dist"
