@@ -1,5 +1,21 @@
 # @aeriajs/builtins
 
+## 0.0.64
+
+### Patch Changes
+
+- bd37b27: Rename packages
+- Updated dependencies [49dda78]
+- Updated dependencies [3c24db0]
+- Updated dependencies [bd37b27]
+- Updated dependencies [29fc35f]
+  - @aeriajs/types@0.0.32
+  - @aeriajs/core@0.0.64
+  - @aeriajs/access-control@0.0.35
+  - @aeriajs/common@0.0.35
+  - @aeriajs/entrypoint@0.0.35
+  - @aeriajs/validation@0.0.38
+
 ## 0.0.63
 
 ### Patch Changes
