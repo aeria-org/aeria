@@ -1,6 +1,6 @@
-# `@aeriajs/api`
+# `@aeriajs/core`
 
 ## Introduction
 
-Aeria core functions.
+Aeria core functionalities.
 
