@@ -23,7 +23,7 @@ router.GET('/get-pets/(\w+)', (context) => {
 
 ## Introduction
 
-Aeria is a **backend framework** made for the enterprise.
+Aeria is a **backend framework** made for the enterprise. It features everything needed to build **secure** and **auditable** environments: routing, model definition, runtime validation, rate limiting, et cetera. It also tries to combine the richness of features that will ensure a fast-paced development with a elegant and minimalist coding style that will bring joy to developers.
 
 ## Features
 
