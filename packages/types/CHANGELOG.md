@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.33
+
+### Patch Changes
+
+- 3d878da: Revalidate token
+
 ## 0.0.32
 
 ### Patch Changes

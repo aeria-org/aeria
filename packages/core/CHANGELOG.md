@@ -1,5 +1,20 @@
 # @aeriajs/api
 
+## 0.0.65
+
+### Patch Changes
+
+- 3d878da: Revalidate token
+- Updated dependencies [3d878da]
+  - @aeriajs/builtins@0.0.65
+  - @aeriajs/types@0.0.33
+  - @aeriajs/access-control@0.0.36
+  - @aeriajs/common@0.0.36
+  - @aeriajs/entrypoint@0.0.36
+  - @aeriajs/http@0.0.44
+  - @aeriajs/security@0.0.65
+  - @aeriajs/validation@0.0.39
+
 ## 0.0.64
 
 ### Patch Changes
