@@ -49,6 +49,11 @@ export type UnauthenticatedToken = {
   sub: null
 }
 
+export type TokenRecipient = {
+  type: 'bearer'
+  content: string
+}
+
 export type Token<TAcceptedRole extends AcceptedRole = null> = (
   TAcceptedRole extends any[]
     ? TAcceptedRole[number]

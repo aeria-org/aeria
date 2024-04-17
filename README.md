@@ -9,8 +9,6 @@
 />
 
 
-Aeria is a backend framework focused on security with cutting-edge features.
-
 ```typescript
 router.GET('/get-pets/(\w+)', (context) => {
   return context.collections.pet.functions.getAll({
@@ -22,6 +20,10 @@ router.GET('/get-pets/(\w+)', (context) => {
 ```
 
 <br clear="left" />
+
+## Introduction
+
+Aeria is a **backend framework** made for the enterprise.
 
 ## Features
 

@@ -1,9 +1,5 @@
-import { promisify } from 'util'
 import { getConfig } from '@aeriajs/entrypoint'
-import jwt, { type Secret, type SignOptions } from 'jsonwebtoken'
-
-const asyncSign = promisify<string | object | Buffer, Secret, SignOptions>(jwt.sign)
-const asyncVerify = promisify<string, Secret, any>(jwt.verify)
+import jwt, { type SignOptions } from 'jsonwebtoken'
 
 export const EXPIRES_IN = 36000
 
@@ -23,18 +19,18 @@ export const signToken = async (_payload: Record<string, any>, secret?: string |
   delete payload.iat
   delete payload.exp
 
-  const signed = asyncSign(payload, secret || fallbackSecret, options || {
+  const signed = jwt.sign(payload, secret || fallbackSecret, options || {
     expiresIn: EXPIRES_IN,
-  }) as unknown
+  })
 
-  return signed as Promise<string>
+  return signed
 }
 
-export const verifyToken = async (token: string, secret?: string) => {
+export const verifyToken = async <TToken>(token: string, secret?: string) => {
   const fallbackSecret = await getApplicationSecret()
-  return asyncVerify(token, secret || fallbackSecret)
+  return jwt.verify(token, secret || fallbackSecret) as TToken
 }
 
-export const decodeToken = (token: string, secret?: string) => {
-  return verifyToken(token, secret)
+export const decodeToken = <TToken>(token: string, secret?: string) => {
+  return verifyToken<TToken>(token, secret)
 }

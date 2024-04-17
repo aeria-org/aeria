@@ -1,14 +1,15 @@
-import type { Context, SchemaWithId } from '@aeriajs/types'
+import type { Context, SchemaWithId, Token, TokenRecipient } from '@aeriajs/types'
 import type { description } from './description.js'
 import type { ObjectId } from '@aeriajs/core'
 import { compare as bcryptCompare } from 'bcrypt'
-import { signToken } from '@aeriajs/core'
+import { signToken, decodeToken } from '@aeriajs/core'
 import { left, right } from '@aeriajs/common'
 
 type Props = {
   email: string
   password: string
 } | {
+  token?: TokenRecipient
   revalidate: true
 }
 
@@ -21,10 +22,7 @@ type Return = {
   > & {
     _id: ObjectId | null
   }
-  token: {
-    type: 'bearer'
-    content: string
-  }
+  token: TokenRecipient
 }
 
 export enum AuthenticationErrors {
@@ -37,7 +35,7 @@ const getUser = async (
   userId: ObjectId,
   context: Context<typeof description, Collections['user']['functions']>,
 ): Promise<Return> => {
-  const leanUser: any = await context.collection.functions.get({
+  const leanUser = await context.collection.functions.get({
     filters: {
       _id: userId,
     },
@@ -117,12 +115,17 @@ export const getDefaultUser = async () => {
 
 export const authenticate = async (props: Props, context: Context<typeof description>) => {
   if( 'revalidate' in props ) {
-    if( !context.token.authenticated ) {
+    const { token } = props
+    if( !token && !context.token.authenticated ) {
       return left(AuthenticationErrors.Unauthenticated)
     }
 
-    return right(context.token.sub
-      ? await getUser(context.token.sub, context)
+    const decodedToken = token
+      ? await decodeToken<Token>(token.content)
+      : context.token
+
+    return right(decodedToken.sub
+      ? await getUser(decodedToken.sub, context)
       : await getDefaultUser())
   }
 
