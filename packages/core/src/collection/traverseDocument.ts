@@ -21,7 +21,7 @@ export type TraverseOptions = {
 
 export type TraverseNormalized = {
   description: Description
-  pipe: (value: any, phaseContext: PhaseContext)=> any
+  pipe: (value: unknown, phaseContext: PhaseContext)=> unknown
 }
 
 export enum TraverseErrors {
@@ -158,7 +158,7 @@ const autoCast = (value: any, ctx: Omit<PhaseContext, 'options'> & { options: (T
         }
 
         if( Object.keys(value).length > 0 ) {
-          const entries: [string, any][] = []
+          const entries: [string, unknown][] = []
           for( const [k, v] of Object.entries(value) ) {
             const subProperty = !k.startsWith('$')
               ? getProperty(k, ctx.property)
@@ -476,8 +476,8 @@ export const traverseDocument = async <const TWhat extends Record<string, any>>(
 
   let validationError: Record<string, ValidationError> | undefined
 
-  const mutateTarget = (fn: (value: any, ctx: PhaseContext)=> any) => {
-    return async (value: any, ctx: PhaseContext) => {
+  const mutateTarget = (fn: (value: unknown, ctx: PhaseContext)=> unknown) => {
+    return async (value: unknown, ctx: PhaseContext) => {
       const result = await fn(value, ctx)
       ctx.target[ctx.propName] = result
       return result
