@@ -2,7 +2,6 @@ import type { Context, Schema } from '@aeriajs/types'
 import type { description } from './description.js'
 import { isLeft, unwrapEither, left, right } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
-import bcrypt from 'bcrypt'
 
 export const createAccount = async (
   payload: Omit<Schema<typeof description>, 'roles'>,
@@ -52,6 +51,7 @@ export const createAccount = async (
   }
 
   if( user.password ) {
+    const bcrypt = await import('bcrypt')
     user.password = await bcrypt.hash(user.password, 10)
   }
 

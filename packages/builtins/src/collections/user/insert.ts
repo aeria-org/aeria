@@ -1,6 +1,5 @@
 import type { Context, SchemaWithId, PackReferences } from '@aeriajs/types'
 import type { description } from './description'
-import * as bcrypt from 'bcrypt'
 import { functions } from '@aeriajs/core'
 
 export const insert = async (
@@ -10,6 +9,7 @@ export const insert = async (
   context: Context<typeof description>,
 ) => {
   if( payload.what.password ) {
+    const bcrypt = await import('bcrypt')
     payload.what.password = await bcrypt.hash(payload.what.password, 10)
   }
 

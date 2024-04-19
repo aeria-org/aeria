@@ -2,7 +2,6 @@ import type { Context } from '@aeriajs/types'
 import type { description } from './description'
 import { ObjectId } from '@aeriajs/core'
 import { left, right } from '@aeriajs/common'
-import bcrypt from 'bcrypt'
 
 export enum ActivationErrors {
   UserNotFound = 'USER_NOT_FOUND',
@@ -37,6 +36,7 @@ export const getInfo = async (
     return left(ActivationErrors.AlreadyActiveUser)
   }
 
+  const bcrypt = await import('bcrypt')
   const equal = await bcrypt.compare(user._id.toString(), token)
   if( !equal ) {
     return left(ActivationErrors.InvalidLink)
