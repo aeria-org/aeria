@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.66
+
+### Patch Changes
+
+- c41a47d: Fix trouble with bcrypt dependency side-effect when using webpack
+  - @aeriajs/core@0.0.66
+
 ## 0.0.65
 
 ### Patch Changes
