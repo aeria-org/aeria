@@ -5,7 +5,7 @@ import { writeFile, mkdir } from 'fs/promises'
 import { topLevel } from './topLevel.js'
 import { publicUrl } from './utils.js'
 
-const mirrorDts = (mirrorObj: any) => {
+const mirrorDts = (mirrorObj: any, config: InstanceConfig) => {
   const collections = mirrorObj.descriptions
 
   return `import type {
@@ -22,14 +22,17 @@ declare type MirrorDescriptions = ${JSON.stringify(collections, null, 2)}\n
 
 declare type MirrorRouter = ${JSON.stringify(mirrorObj.router, null, 2)}\n
 
-declare global {
-  type Collections = {
-    [K in keyof MirrorDescriptions]: {
-      item: SchemaWithId<MirrorDescriptions[K]>
-    }
-  }
+${
+  config.integrated
+    ? ''
+    : `declare global {
+      type Collections = {
+        [K in keyof MirrorDescriptions]: {
+          item: SchemaWithId<MirrorDescriptions[K]>
+        }
+      }
+    }\n`
 }
-
 declare module 'aeria-sdk' {
   import { TopLevelObject, TLOFunctions } from 'aeria-sdk'
 
@@ -107,7 +110,7 @@ export const writeMirrorFiles = async (mirror: any, config: InstanceConfig, file
     recursive: true,
   })
 
-  await writeFile(path.join(filesPath, 'aeria-sdk.d.ts'), mirrorDts(mirror))
+  await writeFile(path.join(filesPath, 'aeria-sdk.d.ts'), mirrorDts(mirror, config))
   await writeFile(path.join(runtimeBase, 'runtime.js'), runtimeCjs(config))
   await writeFile(path.join(runtimeBase, 'runtime.mjs'), runtimeEsm(config))
 }

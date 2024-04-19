@@ -9,5 +9,6 @@ export type InstanceConfig = {
       | 'localStorage'
     namespace?: string
   }
+  integrated?: boolean
 }
 
