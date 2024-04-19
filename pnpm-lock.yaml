@@ -64,10 +64,6 @@ importers:
         version: link:../types
 
   packages/aeria:
-    dependencies:
-      '@aeriajs/cli':
-        specifier: ^0.0.4
-        version: link:../cli
     devDependencies:
       '@aeriajs/access-control':
         specifier: ^0.0.36
@@ -75,6 +71,9 @@ importers:
       '@aeriajs/builtins':
         specifier: ^0.0.67
         version: link:../builtins
+      '@aeriajs/cli':
+        specifier: ^0.0.4
+        version: link:../cli
       '@aeriajs/common':
         specifier: ^0.0.36
         version: link:../common
