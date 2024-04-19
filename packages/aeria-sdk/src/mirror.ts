@@ -87,15 +87,16 @@ export const runtimeCjs = (config: InstanceConfig) =>
   `const config = ${JSON.stringify(config)}
 exports.config = config
 exports.url = '${publicUrl(config)}'
-exports.aeria = require('aeria-sdk/topLevel').topLevel(config)
-exports.storage = require('aeria-sdk/storage').getStorage(config)
+exports.aeria = require('./topLevel.js').topLevel(config)
+exports.storage = require('./storage.js').getStorage(config)
 \n`
 
 export const runtimeEsm = (config: InstanceConfig) =>
-  `import { Aeria, getStorage } from 'aeria-sdk'
+  `import { topLevel } from './topLevel.mjs'
+import { getStorage } from './storage.mjs'
 export const config = ${JSON.stringify(config)}
 export const url = '${publicUrl(config)}'
-export const aeria = Aeria(config)
+export const aeria = topLevel(config)
 export const storage = getStorage(config)
 \n`
 
