@@ -1,6 +1,7 @@
 import type { Context, SchemaWithId, Token, TokenRecipient } from '@aeriajs/types'
 import type { description } from './description.js'
 import type { ObjectId } from '@aeriajs/core'
+import { compare as bcryptCompare } from 'bcrypt'
 import { signToken, decodeToken } from '@aeriajs/core'
 import { left, right } from '@aeriajs/common'
 
@@ -151,8 +152,7 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
     },
   )
 
-  const bcrypt = await import('bcrypt')
-  if( !user || !user.password || !await bcrypt.compare(props.password, user.password) ) {
+  if( !user || !user.password || !await bcryptCompare(props.password, user.password) ) {
     return left(AuthenticationErrors.InvalidCredentials)
   }
 
