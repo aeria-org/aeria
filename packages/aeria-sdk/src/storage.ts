@@ -1,10 +1,11 @@
 import type { InstanceConfig } from './types.js'
 import type { AuthenticationResult } from './auth.js'
+import { DEFAULT_STORAGE_NAMESPACE } from './constants.js'
 
 export const storageMemo: Record<string, string> = {}
 
 export const storageKey = (key: string, config: InstanceConfig) => {
-  const namespace = config.storage?.namespace || 'aeriaSdk'
+  const namespace = config.storage?.namespace || DEFAULT_STORAGE_NAMESPACE
   return `${namespace}:${key}`
 }
 
