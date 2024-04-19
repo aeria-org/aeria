@@ -6,6 +6,9 @@
       "@aeriajs/access-control": [
         "../access-control/dist"
       ],
+      "@aeriajs/cli": [
+        "../cli/dist"
+      ],
       "@aeriajs/core": [
         "../core/dist"
       ],
