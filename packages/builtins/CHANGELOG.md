@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.67
+
+### Patch Changes
+
+- 9d1cb57: Add option to avoid override of Collections global type
+  - @aeriajs/core@0.0.67
+
 ## 0.0.66
 
 ### Patch Changes

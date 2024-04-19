@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.57
+
+### Patch Changes
+
+- 9d1cb57: Add option to avoid override of Collections global type
+
 ## 0.0.56
 
 ### Patch Changes
