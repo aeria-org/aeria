@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.56
+
+### Patch Changes
+
+- 2537067: Fix cyclic dependency
+
 ## 0.0.55
 
 ### Patch Changes
