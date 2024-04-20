@@ -88,10 +88,12 @@ declare module 'aeria-sdk' {
 
 export const runtimeCjs = (config: InstanceConfig) =>
   `const config = ${JSON.stringify(config)}
+const aeria = require('./topLevel.js').topLevel(config)
 exports.config = config
 exports.url = '${publicUrl(config)}'
-exports.aeria = require('./topLevel.js').topLevel(config)
+exports.aeria = aeria
 exports.storage = require('./storage.js').getStorage(config)
+exports.default = aeria
 \n`
 
 export const runtimeEsm = (config: InstanceConfig) =>
@@ -101,6 +103,7 @@ export const config = ${JSON.stringify(config)}
 export const url = '${publicUrl(config)}'
 export const aeria = topLevel(config)
 export const storage = getStorage(config)
+export default aeria
 \n`
 
 export const writeMirrorFiles = async (mirror: any, config: InstanceConfig, filesPath = process.cwd()) => {
