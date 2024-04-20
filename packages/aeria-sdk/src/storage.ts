@@ -1,4 +1,4 @@
-import type { InstanceConfig } from './types.js'
+import type { InstanceConfig, StorageStrategy } from './types.js'
 import type { AuthenticationResult } from './auth.js'
 import { DEFAULT_STORAGE_NAMESPACE } from './constants.js'
 
@@ -10,10 +10,10 @@ export const storageKey = (key: string, config: InstanceConfig) => {
 }
 
 export const getStorage = (config: InstanceConfig) => {
-  const strategy = !config.storage?.strategy
-    ? 'memo'
+  const strategy: StorageStrategy = !config.storage?.strategy
+    ? 'none'
     : config.storage.strategy === 'localStorage' && !('localStorage' in globalThis)
-      ? 'memo'
+      ? 'none'
       : config.storage.strategy
 
   function get(key: 'auth'): AuthenticationResult | null
@@ -53,3 +53,4 @@ export const getStorage = (config: InstanceConfig) => {
     },
   }
 }
+

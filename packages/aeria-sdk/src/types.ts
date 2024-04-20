@@ -1,12 +1,15 @@
+export type StorageStrategy =
+  | 'none'
+  | 'memo'
+  | 'localStorage'
+
 export type InstanceConfig = {
   publicUrl: string | {
     production: string
     development: string
   }
   storage?: {
-    strategy?:
-      | 'memo'
-      | 'localStorage'
+    strategy?: StorageStrategy
     namespace?: string
   }
   integrated?: boolean
