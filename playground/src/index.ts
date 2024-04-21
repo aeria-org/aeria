@@ -19,16 +19,16 @@ router.GET('/get-people', async (context) => {
   }
 
   const person = unwrapEither(personEither)
-  console.log(person.name)
-  console.log(person.job)
+  person.name
+  person.job
 
   if( person.pets ) {
     for( const pet of person.pets ) {
-      console.log(pet.name)
-      console.log(pet.toys.favorite.name)
-      console.log(pet.toys.favorite.brand)
+      pet.name
+      pet.toys.favorite.name
+      pet.toys.favorite.brand
       // @ts-expect-error
-      console.log(pet.toys.favorite.invalid)
+      pet.toys.favorite.invalid
     }
   }
 
