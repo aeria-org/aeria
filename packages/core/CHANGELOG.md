@@ -1,5 +1,20 @@
 # @aeriajs/api
 
+## 0.0.68
+
+### Patch Changes
+
+- 295652f: Rename useAeria -> createAeria
+- Updated dependencies [2e0aa5c]
+  - @aeriajs/types@0.0.34
+  - @aeriajs/builtins@0.0.68
+  - @aeriajs/security@0.0.68
+  - @aeriajs/access-control@0.0.37
+  - @aeriajs/common@0.0.37
+  - @aeriajs/entrypoint@0.0.37
+  - @aeriajs/http@0.0.45
+  - @aeriajs/validation@0.0.40
+
 ## 0.0.67
 
 ### Patch Changes
