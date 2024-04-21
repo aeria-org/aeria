@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.34
+
+### Patch Changes
+
+- 2e0aa5c: Minor adjustments
+
 ## 0.0.33
 
 ### Patch Changes

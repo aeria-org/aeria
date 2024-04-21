@@ -1,5 +1,15 @@
 # aeria-sdk
 
+## 0.0.58
+
+### Patch Changes
+
+- a0c2d7f: Add default export
+- 04db8d5: Fix potential authentication token poisoning in aeria-sdk
+- Updated dependencies [2e0aa5c]
+  - @aeriajs/types@0.0.34
+  - @aeriajs/common@0.0.37
+
 ## 0.0.57
 
 ### Patch Changes

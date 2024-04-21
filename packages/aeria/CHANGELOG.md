@@ -1,5 +1,25 @@
 # aeria
 
+## 0.0.73
+
+### Patch Changes
+
+- 49de054: Add @aeriajs/cli in re-exports
+- Updated dependencies [295652f]
+- Updated dependencies [2e0aa5c]
+  - @aeriajs/core@0.0.68
+  - @aeriajs/server@0.0.69
+  - @aeriajs/types@0.0.34
+  - @aeriajs/builtins@0.0.68
+  - @aeriajs/cli@0.0.5
+  - @aeriajs/security@0.0.68
+  - @aeriajs/access-control@0.0.37
+  - @aeriajs/common@0.0.37
+  - @aeriajs/entrypoint@0.0.37
+  - @aeriajs/http@0.0.45
+  - @aeriajs/validation@0.0.40
+  - @aeriajs/node-http@0.0.45
+
 ## 0.0.72
 
 ### Patch Changes
