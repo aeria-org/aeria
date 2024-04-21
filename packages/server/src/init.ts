@@ -65,7 +65,7 @@ export const getToken = async (request: GenericRequest, context: Context) => {
   }
 }
 
-export const init = <const TInitOptions extends InitOptions>(_options: TInitOptions) => {
+export const init = (_options: InitOptions = {}) => {
   const options = Object.assign({}, _options)
   options.config ??= {}
   Object.assign(options.config, deepMerge(DEFAULT_API_CONFIG, options.config))

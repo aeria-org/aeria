@@ -50,7 +50,7 @@ type UnionFunctions<TFunctions, TSchema extends CollectionDocument<any>> = {
 
 export type IndepthCollection<TCollection> = TCollection extends {
   description: infer InferredDescription
-  functions: infer CollFunctions
+  functions?: infer CollFunctions
 }
   ? Omit<TCollection, 'functions'> & {
     functions: UnionFunctions<CollFunctions, SchemaWithId<InferredDescription>>
