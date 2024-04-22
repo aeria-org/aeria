@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.59
+
+### Patch Changes
+
+- d272d10: Add conditional exports for NextJS
+
 ## 0.0.58
 
 ### Patch Changes
