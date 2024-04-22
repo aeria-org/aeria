@@ -41,6 +41,6 @@
     "@aeriajs/core": "^0.0.68",
     "@aeriajs/common": "^0.0.37",
     "@aeriajs/types": "^0.0.34",
-    "mongodb": "^6.1.0"
+    "mongodb": "^6.5.0"
   }
 }
