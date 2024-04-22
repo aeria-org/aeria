@@ -72,7 +72,7 @@ importers:
         specifier: ^0.0.69
         version: link:../builtins
       '@aeriajs/cli':
-        specifier: ^0.0.6
+        specifier: ^0.0.7
         version: link:../cli
       '@aeriajs/common':
         specifier: ^0.0.37
