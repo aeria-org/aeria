@@ -69,16 +69,16 @@ importers:
         specifier: ^0.0.37
         version: link:../access-control
       '@aeriajs/builtins':
-        specifier: ^0.0.68
+        specifier: ^0.0.69
         version: link:../builtins
       '@aeriajs/cli':
-        specifier: ^0.0.5
+        specifier: ^0.0.6
         version: link:../cli
       '@aeriajs/common':
         specifier: ^0.0.37
         version: link:../common
       '@aeriajs/core':
-        specifier: ^0.0.68
+        specifier: ^0.0.69
         version: link:../core
       '@aeriajs/entrypoint':
         specifier: ^0.0.37
@@ -90,10 +90,10 @@ importers:
         specifier: ^0.0.45
         version: link:../node-http
       '@aeriajs/security':
-        specifier: ^0.0.68
+        specifier: ^0.0.69
         version: link:../security
       '@aeriajs/server':
-        specifier: ^0.0.69
+        specifier: ^0.0.70
         version: link:../server
       '@aeriajs/types':
         specifier: ^0.0.34
@@ -124,7 +124,7 @@ importers:
         specifier: ^0.0.37
         version: link:../common
       '@aeriajs/core':
-        specifier: ^0.0.68
+        specifier: ^0.0.69
         version: link:../core
       '@aeriajs/entrypoint':
         specifier: ^0.0.37
@@ -160,13 +160,13 @@ importers:
         version: 10.3.12
     devDependencies:
       '@aeriajs/builtins':
-        specifier: ^0.0.68
+        specifier: ^0.0.69
         version: link:../builtins
       '@aeriajs/common':
         specifier: ^0.0.37
         version: link:../common
       '@aeriajs/core':
-        specifier: ^0.0.68
+        specifier: ^0.0.69
         version: link:../core
       '@aeriajs/types':
         specifier: ^0.0.34
@@ -198,7 +198,7 @@ importers:
         specifier: ^0.0.37
         version: link:../access-control
       '@aeriajs/builtins':
-        specifier: ^0.0.68
+        specifier: ^0.0.69
         version: link:../builtins
       '@aeriajs/common':
         specifier: ^0.0.37
@@ -210,7 +210,7 @@ importers:
         specifier: ^0.0.45
         version: link:../http
       '@aeriajs/security':
-        specifier: ^0.0.68
+        specifier: ^0.0.69
         version: link:../security
       '@aeriajs/types':
         specifier: ^0.0.34
@@ -261,7 +261,7 @@ importers:
         specifier: ^0.0.37
         version: link:../common
       '@aeriajs/core':
-        specifier: ^0.0.68
+        specifier: ^0.0.69
         version: link:../core
       '@aeriajs/types':
         specifier: ^0.0.34
@@ -280,13 +280,13 @@ importers:
         specifier: ^0.0.37
         version: link:../access-control
       '@aeriajs/builtins':
-        specifier: ^0.0.68
+        specifier: ^0.0.69
         version: link:../builtins
       '@aeriajs/common':
         specifier: ^0.0.37
         version: link:../common
       '@aeriajs/core':
-        specifier: ^0.0.68
+        specifier: ^0.0.69
         version: link:../core
       '@aeriajs/entrypoint':
         specifier: ^0.0.37
@@ -295,7 +295,7 @@ importers:
         specifier: ^0.0.45
         version: link:../http
       '@aeriajs/server':
-        specifier: ^0.0.69
+        specifier: ^0.0.70
         version: 'link:'
       '@aeriajs/types':
         specifier: ^0.0.34
