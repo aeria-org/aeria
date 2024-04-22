@@ -6,7 +6,7 @@ import { right, dynamicImport } from '@aeriajs/common'
 const DATA_PATH = '.aeria'
 
 export const iconsExtraction = async () => {
-  const collections = await dynamicImport(path.join(process.cwd(), 'dist', 'collections', 'index.js'))
+  const collections = await dynamicImport(path.join(process.cwd(), 'dist', 'index.js'))
   const base = path.join(process.cwd(), 'node_modules', DATA_PATH)
   const icons = []
 

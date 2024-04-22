@@ -20,10 +20,12 @@ export const migrate = async () => {
     loadEnv()
   }
 
-  const collections = await dynamicImport(path.join(process.cwd(), 'dist', 'collections', 'index.js')) as Record<string,
-    | Collection
-    | (()=> Collection)
-  >
+  const { collections } = await dynamicImport(path.join(process.cwd(), 'dist', 'index.js')) as {
+    collections: Record<string,
+      | Collection
+      | (()=> Collection)
+    >
+  }
 
   const session = await getDatabase()
 
