@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/builtins",
-  "version": "0.0.69",
+  "version": "0.0.70",
   "description": "## Installation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@aeriajs/access-control": "^0.0.37",
-    "@aeriajs/core": "^0.0.69",
+    "@aeriajs/core": "^0.0.70",
     "@aeriajs/common": "^0.0.37",
     "@aeriajs/entrypoint": "^0.0.37",
     "@aeriajs/types": "^0.0.34",
@@ -58,7 +58,7 @@
   },
   "peerDependencies": {
     "@aeriajs/access-control": "^0.0.37",
-    "@aeriajs/core": "^0.0.69",
+    "@aeriajs/core": "^0.0.70",
     "@aeriajs/common": "^0.0.37",
     "@aeriajs/entrypoint": "^0.0.37",
     "@aeriajs/types": "^0.0.34",
