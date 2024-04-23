@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.7
+
+### Patch Changes
+
+- abf736b: Use dist/index.js instead of dist/collections/index.js
+
 ## 0.0.6
 
 ### Patch Changes

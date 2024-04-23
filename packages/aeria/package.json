@@ -1,6 +1,6 @@
 {
   "name": "aeria",
-  "version": "0.0.74",
+  "version": "0.0.75",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -34,7 +34,7 @@
   ],
   "devDependencies": {
     "@aeriajs/access-control": "^0.0.37",
-    "@aeriajs/cli": "^0.0.6",
+    "@aeriajs/cli": "^0.0.7",
     "@aeriajs/core": "^0.0.69",
     "@aeriajs/common": "^0.0.37",
     "@aeriajs/entrypoint": "^0.0.37",
@@ -48,7 +48,7 @@
   },
   "peerDependencies": {
     "@aeriajs/access-control": "^0.0.37",
-    "@aeriajs/cli": "^0.0.6",
+    "@aeriajs/cli": "^0.0.7",
     "@aeriajs/core": "^0.0.69",
     "@aeriajs/common": "^0.0.37",
     "@aeriajs/entrypoint": "^0.0.37",
