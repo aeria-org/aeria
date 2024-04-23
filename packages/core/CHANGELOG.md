@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.70
+
+### Patch Changes
+
+- bdca31b: Rename useAeria -> createAeria
+  - @aeriajs/builtins@0.0.70
+  - @aeriajs/security@0.0.70
+
 ## 0.0.69
 
 ### Patch Changes
