@@ -32,7 +32,7 @@ declare global {
 
 declare module 'aeria' {
   import type { Context } from 'aeria'
-  export const useAeria: () => Promise<Context>
+  export const createAeria: () => Promise<Context>
   export const aeria: Context
 }
 //`
