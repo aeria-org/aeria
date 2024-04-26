@@ -63,8 +63,8 @@ export const getFunction = async <
   functionName: TFunctionName,
   acProfile?: AuthenticatedToken,
   options = {
-    exposedOnly: false
-  }
+    exposedOnly: false,
+  },
 ) => {
   if( acProfile ) {
     if( !await isGranted(collectionName, functionName, acProfile) ) {

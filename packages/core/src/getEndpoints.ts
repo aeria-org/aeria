@@ -26,7 +26,7 @@ export const getEndpoints = async (): Promise<RoutesMeta> => {
     if( collectionFunctions ) {
       for( const fnName in collectionFunctions ) {
         const fn = collectionFunctions[fnName]
-        if( !fn.exposed && (!collection?.exposedFunctions || !collection.exposedFunctions.includes(fnName)) ) {
+        if( !fn.exposed && (!collection.exposedFunctions || !collection.exposedFunctions.includes(fnName)) ) {
           continue
         }
 

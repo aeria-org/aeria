@@ -9,4 +9,6 @@ export * from './use.js'
 export * from './functions/index.js'
 export * from './functions/builtin/index.js'
 export * as functions from './functions/builtin/index.js'
-export { ObjectId } from 'mongodb'
+export {
+  ObjectId,
+} from 'mongodb'
