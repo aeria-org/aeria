@@ -25,6 +25,7 @@ export const defineCollection = <
       | 'item'
       | 'description'
       | 'functions'
+      | 'exposedFunctions'
       | 'security'
       | 'accessControl'
     >
@@ -44,6 +45,7 @@ export const defineCollection = <
     description: TDescription
     functions?: TFunctions
     functionContracts?: TFunctionContracts
+    exposedFunctions?: (keyof TFunctions)[]
     accessControl?: AccessControl<{
       description: NoInfer<TDescription>
       functions: TFunctions

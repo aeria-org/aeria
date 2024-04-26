@@ -6,7 +6,7 @@ export * from './functions/index.js'
 export * from './getEndpoints.js'
 export * from './token.js'
 export * from './use.js'
-export * as functions from './functions/index.js'
-export {
-  ObjectId,
-} from 'mongodb'
+export * from './functions/index.js'
+export * from './functions/builtin/index.js'
+export * as functions from './functions/builtin/index.js'
+export { ObjectId } from 'mongodb'

@@ -43,7 +43,7 @@ export const getCollectionAsset = async <
     return right(cached[assetName] as NonNullable<Collection[TAssetName]>)
   }
 
-  const assetEither = await internalGetCollectionAsset(collectionName, assetName as any)
+  const assetEither = await internalGetCollectionAsset(collectionName, assetName)
   if( isLeft(assetEither) ) {
     return assetEither
   }
@@ -62,6 +62,9 @@ export const getFunction = async <
   collectionName: TCollectionName,
   functionName: TFunctionName,
   acProfile?: AuthenticatedToken,
+  options = {
+    exposedOnly: false
+  }
 ) => {
   if( acProfile ) {
     if( !await isGranted(collectionName, functionName, acProfile) ) {
@@ -76,11 +79,19 @@ export const getFunction = async <
 
   const functions = unwrapEither(functionsEither)
   if( !(functionName in functions) ) {
-    return left(ACErrors.FunctionNotFound)
+    return left(ACErrors.FunctionNotExposed)
   }
 
-  const fn = async (payload: unknown, context: Context) => {
-    const collection = await getCollection(collectionName)
+  const collection = await getCollection(collectionName)
+  const fn = functions[functionName]
+
+  if( options.exposedOnly ) {
+    if( !fn.exposed && (!collection?.exposedFunctions || !collection.exposedFunctions.includes(functionName)) ) {
+      return left(ACErrors.FunctionNotFound)
+    }
+  }
+
+  const wrapper = async (payload: unknown, context: Context) => {
     if( !collection ) {
       return left(ACErrors.ResourceNotFound)
     }
@@ -99,9 +110,9 @@ export const getFunction = async <
       }
     }
 
-    return functions[functionName](payload, context)
+    return fn(payload, context)
   }
 
-  return right(fn)
+  return right(wrapper)
 }
 

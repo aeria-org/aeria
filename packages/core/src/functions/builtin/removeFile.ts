@@ -1,7 +1,8 @@
 import type { Context, RemoveFilePayload } from '@aeriajs/types'
 import { checkImmutability } from '@aeriajs/security'
+import { defineExposedFunction } from '../utils.js'
 
-export const removeFile = async <TContext extends Context>(
+export const removeFile = defineExposedFunction(async <TContext extends Context>(
   payload: RemoveFilePayload,
   context: TContext,
 ) => {
@@ -19,4 +20,5 @@ export const removeFile = async <TContext extends Context>(
   }, context)
 
   return context.collections.file.functions!.remove(props)
-}
+})
+

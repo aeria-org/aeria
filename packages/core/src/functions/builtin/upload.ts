@@ -1,6 +1,7 @@
 import type { Context } from '@aeriajs/types'
 import { isLeft, unwrapEither, left } from '@aeriajs/common'
 import { validate, validator } from '@aeriajs/validation'
+import { defineExposedFunction } from '../utils.js'
 
 import path from 'path'
 import { createWriteStream } from 'fs'
@@ -43,7 +44,7 @@ const streamToFs = (metadata: typeof FileMetadata, context: Context) => {
   })
 }
 
-export const upload = async <TContext extends Context>(_props: unknown, context: TContext) => {
+export const upload = defineExposedFunction(async <TContext extends Context>(_props: unknown, context: TContext) => {
   const headersEither = validate(context.request.headers, {
     type: 'object',
     properties: {
@@ -82,5 +83,5 @@ export const upload = async <TContext extends Context>(_props: unknown, context:
   return {
     tempId: file.insertedId,
   }
-}
+})
 

@@ -128,3 +128,7 @@ export type CollectionFunctionsPaginated<TDocument extends CollectionDocument<Op
   }>
 }
 
+export type FunctionAttributes = {
+  exposed?: boolean
+}
+

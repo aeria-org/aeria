@@ -1,8 +1,9 @@
 import type { Context, SchemaWithId, RemovePayload } from '@aeriajs/types'
 import { left, unsafe } from '@aeriajs/common'
-import { traverseDocument, cascadingRemove } from '../collection/index.js'
+import { defineExposedFunction } from '../utils.js'
+import { traverseDocument, cascadingRemove } from '../../collection/index.js'
 
-export const remove = async <TContext extends Context>(
+export const remove = defineExposedFunction(async <TContext extends Context>(
   payload: RemovePayload<SchemaWithId<TContext['description']>>,
   context: TContext,
 ) => {
@@ -25,4 +26,5 @@ export const remove = async <TContext extends Context>(
 
   await cascadingRemove(target, context)
   return context.collection.model.findOneAndDelete(filters)
-}
+})
+
