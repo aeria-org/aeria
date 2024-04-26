@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/core",
-  "version": "0.0.69",
+  "version": "0.0.70",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -40,11 +40,11 @@
   "license": "ISC",
   "devDependencies": {
     "@aeriajs/access-control": "^0.0.37",
-    "@aeriajs/builtins": "^0.0.69",
+    "@aeriajs/builtins": "^0.0.70",
     "@aeriajs/common": "^0.0.37",
     "@aeriajs/entrypoint": "^0.0.37",
     "@aeriajs/http": "^0.0.45",
-    "@aeriajs/security": "^0.0.69",
+    "@aeriajs/security": "^0.0.70",
     "@aeriajs/types": "^0.0.34",
     "@aeriajs/validation": "^0.0.40",
     "@types/jsonwebtoken": "^9.0.6",
@@ -54,11 +54,11 @@
   },
   "peerDependencies": {
     "@aeriajs/access-control": "^0.0.37",
-    "@aeriajs/builtins": "^0.0.69",
+    "@aeriajs/builtins": "^0.0.70",
     "@aeriajs/common": "^0.0.37",
     "@aeriajs/entrypoint": "^0.0.37",
     "@aeriajs/http": "^0.0.45",
-    "@aeriajs/security": "^0.0.69",
+    "@aeriajs/security": "^0.0.70",
     "@aeriajs/types": "^0.0.34",
     "@aeriajs/validation": "^0.0.40"
   },
