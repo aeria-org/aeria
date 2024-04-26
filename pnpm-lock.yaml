@@ -168,6 +168,9 @@ importers:
       '@aeriajs/core':
         specifier: ^0.0.70
         version: link:../core
+      '@aeriajs/entrypoint':
+        specifier: ^0.0.37
+        version: link:../entrypoint
       '@aeriajs/types':
         specifier: ^0.0.34
         version: link:../types

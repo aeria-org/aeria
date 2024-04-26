@@ -1,9 +1,8 @@
-import type { Collection } from '@aeriajs/types'
-import { right, dynamicImport } from '@aeriajs/common'
+import { right } from '@aeriajs/common'
+import { getCollections } from '@aeriajs/entrypoint'
 import { getDatabase, prepareCollectionName, getDatabaseCollection } from '@aeriajs/core'
 import { config as loadEnv } from 'dotenv'
 import { log } from './log.js'
-import path from 'path'
 
 export const migrate = async () => {
   if(
@@ -20,13 +19,7 @@ export const migrate = async () => {
     loadEnv()
   }
 
-  const { collections } = await dynamicImport(path.join(process.cwd(), 'dist', 'index.js')) as {
-    collections: Record<string,
-      | Collection
-      | (()=> Collection)
-    >
-  }
-
+  const collections = await getCollections()
   const session = await getDatabase()
 
   const createCollection = async (name: string) => {

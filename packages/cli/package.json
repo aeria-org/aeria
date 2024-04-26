@@ -43,12 +43,14 @@
     "@aeriajs/core": "^0.0.70",
     "@aeriajs/builtins": "^0.0.70",
     "@aeriajs/common": "^0.0.37",
+    "@aeriajs/entrypoint": "^0.0.37",
     "@aeriajs/types": "^0.0.34"
   },
   "peerDependencies": {
     "@aeriajs/core": "^0.0.70",
     "@aeriajs/builtins": "^0.0.70",
     "@aeriajs/common": "^0.0.37",
+    "@aeriajs/entrypoint": "^0.0.37",
     "@aeriajs/types": "^0.0.34"
   }
 }

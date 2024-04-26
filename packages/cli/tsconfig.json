@@ -9,6 +9,9 @@
       "@aeriajs/common": [
         "../common/dist"
       ],
+      "@aeriajs/entrypoint": [
+        "../entrypoint/dist"
+      ],
       "@aeriajs/types": [
         "../types/dist"
       ],
