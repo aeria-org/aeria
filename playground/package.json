@@ -1,21 +1,44 @@
 {
   "name": "api",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "start": "pnpm build && (cd dist && NODE_PATH=../node_modules node index.js)",
-    "postinstall": "node node_modules/@aeriajs/core/dist/__scripts__/postinstall.js"
+    "postinstall": "rm -rf ../node_modules/@aeriajs; ln -s $(realpath ../packages) ../node_modules/@aeriajs; rm -rf .aeria; mv ../.aeria .",
+    "build": "NODE_PATH=./node_modules aeria -ci",
+    "dev": "NODE_PATH=./node_modules aeria -w"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "aeriaSdk": {
+    "publicUrl": {
+      "development": "http://localhost:3000/api"
+    },
+    "storage": {
+      "strategy": "localStorage"
+    }
+  },
   "dependencies": {
+    "@aeriajs/access-control": "link:../packages/access-control",
+    "@aeriajs/builtins": "link:../packages/builtins",
+    "@aeriajs/builtins-icons": "link:../packages/builtins-icons",
+    "@aeriajs/cli": "link:../packages/cli",
+    "@aeriajs/common": "link:../packages/common",
+    "@aeriajs/core": "link:../packages/core",
+    "@aeriajs/entrypoint": "link:../packages/entrypoint",
+    "@aeriajs/http": "link:../packages/http",
+    "@aeriajs/node-http": "link:../packages/node-http",
+    "@aeriajs/security": "link:../packages/security",
+    "@aeriajs/server": "link:../packages/server",
+    "@aeriajs/types": "link:../packages/types",
+    "@aeriajs/validation": "link:../packages/validation",
     "api": "link:",
-    "aeria": "file:../packages/aeria"
+    "aeria": "link:../packages/aeria",
+    "aeria-sdk": "link:../packages/aeria-sdk"
   },
   "devDependencies": {
     "typescript": "^5.1.3"

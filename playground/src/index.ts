@@ -1,5 +1,5 @@
 import { init, createRouter, isLeft, unwrapEither, leftSchema } from 'aeria'
-export * as collections from './collections'
+export * as collections from './collections/index.js'
 
 const router = createRouter({
   exhaust: true,

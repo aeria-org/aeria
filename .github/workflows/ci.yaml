@@ -65,7 +65,5 @@ jobs:
 
       - name: Build playground
         run: |
-          cd playground
-          pnpm install .
-          pnpm build
+          pnpm --filter=playground build
 
