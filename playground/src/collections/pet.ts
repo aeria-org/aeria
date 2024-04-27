@@ -3,9 +3,7 @@ import { defineCollection } from 'aeria'
 export const pet = defineCollection({
   description: {
     $id: 'pet',
-    indexes: [
-      'name'
-    ],
+    indexes: ['name'],
     properties: {
       name: {
         type: 'string',
@@ -25,9 +23,7 @@ export const pet = defineCollection({
 export const petToy = defineCollection({
   description: {
     $id: 'petToy',
-    indexes: [
-      'name'
-    ],
+    indexes: ['name'],
     properties: {
       name: {
         type: 'string',

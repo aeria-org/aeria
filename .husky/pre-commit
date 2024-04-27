@@ -3,7 +3,7 @@
 
 if ! test $GITHUB_ACTIONS && ! test $SKIP; then
   pnpm i
-  for ws in $(git diff --name-only --cached | grep -oE 'packages/([^/]+)' | uniq); do
+  for ws in $(git diff --name-only --cached | grep -oP '^(packages|playground)(?=/)' | uniq); do
     pnpm --filter="./${ws}" lint:fix
   done
 else

@@ -50,11 +50,11 @@ export const person = defineCollection({
         type: 'object',
         properties: {
           name: {
-            type: 'string'
-          }
-        }
-      }
-    }
-  }
+            type: 'string',
+          },
+        },
+      },
+    },
+  },
 })
 

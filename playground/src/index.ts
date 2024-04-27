@@ -22,14 +22,12 @@ router.GET('/get-people', async (context) => {
   person.name
   person.job
 
-  if( person.pets ) {
-    for( const pet of person.pets ) {
-      pet.name
-      pet.toys.favorite.name
-      pet.toys.favorite.brand
-      // @ts-expect-error
-      pet.toys.favorite.invalid
-    }
+  for( const pet of person.pets ) {
+    pet.name
+    pet.toys.favorite.name
+    pet.toys.favorite.brand
+    // @ts-expect-error
+    pet.toys.favorite.invalid
   }
 
   return context.collections.person.functions.getAll()
