@@ -5,7 +5,7 @@
   "scripts": {
     "test": "NODE_PATH=../../playground/node_modules pnpm -r test",
     "preinstall": "unlink node_modules/@aeriajs || true",
-    "postinstall": "husky; rm -rf packages/*/node_modules/@aeriajs; rm -rf playground/.aeria; test -d .aeria && mv .aeria playground",
+    "postinstall": "husky; rm -rf packages/*/node_modules/@aeriajs; rm -rf playground/.aeria; if test -d .aeria; then mv .aeria playground; fi",
     "esm-transform": "./scripts/transform-import-extensions.ts",
     "write-icons": "NODE_PATH=./playground/node_modules ./scripts/compile-builtins-icons.ts"
   },
