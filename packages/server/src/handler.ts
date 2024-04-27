@@ -71,6 +71,9 @@ export const customVerbs = () => async (parentContext: RouteContext) => {
     context.token.authenticated
       ? context.token
       : undefined,
+    {
+      exposedOnly: true,
+    },
   )
 
   if( isLeft(fnEither) ) {

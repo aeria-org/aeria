@@ -1,9 +1,7 @@
 import { init, createRouter, isLeft, unwrapEither, leftSchema } from 'aeria'
 export * as collections from './collections/index.js'
 
-const router = createRouter({
-  exhaust: true,
-})
+const router = createRouter()
 
 router.GET('/get-people', async (context) => {
   const personEither = await context.collections.person.functions.insert({

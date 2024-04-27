@@ -31,11 +31,12 @@ export const person = defineCollection({
       obj.name
       // @ts-expect-error
       obj.invalid
+      return {
+        success: true,
+      }
     },
   },
-  exposedFunctions: [
-    'hello'
-  ],
+  exposedFunctions: ['hello'],
   accessControl: {
     roles: {
       root: {
@@ -54,6 +55,14 @@ export const person = defineCollection({
         properties: {
           name: {
             type: 'string',
+          },
+        },
+      },
+      response: {
+        type: 'object',
+        properties: {
+          success: {
+            type: 'boolean',
           },
         },
       },
