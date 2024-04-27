@@ -42,12 +42,6 @@ jobs:
             && pnpm --filter='./packages/cli' build \
             && pnpm --filter='./packages/aeria' build
 
-      - name: Patch node_modules
-        run: |
-          find packages -mindepth 1 -maxdepth 1 \
-            -exec bash -c 'a={}; cp -r $a/dist node_modules/@aeriajs/${a//packages\//} 2>/dev/null || true' \;
-          cp -r packages node_modules/@aeriajs
-
       - name: Generate packages/builtins-icons
         run: pnpm --filter='./packages/builtins' write-icons
 
