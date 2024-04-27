@@ -33,6 +33,9 @@ export const person = defineCollection({
       obj.invalid
     },
   },
+  exposedFunctions: [
+    'hello'
+  ],
   accessControl: {
     roles: {
       root: {

@@ -8,6 +8,45 @@ importers:
 
   .:
     devDependencies:
+      '@aeriajs/access-control':
+        specifier: link:./packages/access-control
+        version: link:packages/access-control
+      '@aeriajs/builtins':
+        specifier: link:./packages/builtins
+        version: link:packages/builtins
+      '@aeriajs/builtins-icons':
+        specifier: link:./packages/builtins-icons
+        version: link:packages/builtins-icons
+      '@aeriajs/cli':
+        specifier: link:./packages/cli
+        version: link:packages/cli
+      '@aeriajs/common':
+        specifier: link:./packages/common
+        version: link:packages/common
+      '@aeriajs/core':
+        specifier: link:./packages/core
+        version: link:packages/core
+      '@aeriajs/entrypoint':
+        specifier: link:./packages/entrypoint
+        version: link:packages/entrypoint
+      '@aeriajs/http':
+        specifier: link:./packages/http
+        version: link:packages/http
+      '@aeriajs/node-http':
+        specifier: link:./packages/node-http
+        version: link:packages/node-http
+      '@aeriajs/security':
+        specifier: link:./packages/security
+        version: link:packages/security
+      '@aeriajs/server':
+        specifier: link:./packages/server
+        version: link:packages/server
+      '@aeriajs/types':
+        specifier: link:./packages/types
+        version: link:packages/types
+      '@aeriajs/validation':
+        specifier: link:./packages/validation
+        version: link:packages/validation
       '@changesets/cli':
         specifier: ^2.27.1
         version: 2.27.1
@@ -26,6 +65,12 @@ importers:
       '@types/node':
         specifier: ^20.11.30
         version: 20.12.7
+      aeria:
+        specifier: link:./packages/aeria
+        version: link:packages/aeria
+      aeria-sdk:
+        specifier: link:./packages/aeria-sdk
+        version: link:packages/aeria-sdk
       esbuild:
         specifier: ^0.20.2
         version: 0.20.2
@@ -322,60 +367,7 @@ importers:
         specifier: ^0.0.34
         version: 0.0.34
 
-  playground:
-    dependencies:
-      '@aeriajs/access-control':
-        specifier: link:../packages/access-control
-        version: link:../packages/access-control
-      '@aeriajs/builtins':
-        specifier: link:../packages/builtins
-        version: link:../packages/builtins
-      '@aeriajs/builtins-icons':
-        specifier: link:../packages/builtins-icons
-        version: link:../packages/builtins-icons
-      '@aeriajs/cli':
-        specifier: link:../packages/cli
-        version: link:../packages/cli
-      '@aeriajs/common':
-        specifier: link:../packages/common
-        version: link:../packages/common
-      '@aeriajs/core':
-        specifier: link:../packages/core
-        version: link:../packages/core
-      '@aeriajs/entrypoint':
-        specifier: link:../packages/entrypoint
-        version: link:../packages/entrypoint
-      '@aeriajs/http':
-        specifier: link:../packages/http
-        version: link:../packages/http
-      '@aeriajs/node-http':
-        specifier: link:../packages/node-http
-        version: link:../packages/node-http
-      '@aeriajs/security':
-        specifier: link:../packages/security
-        version: link:../packages/security
-      '@aeriajs/server':
-        specifier: link:../packages/server
-        version: link:../packages/server
-      '@aeriajs/types':
-        specifier: link:../packages/types
-        version: link:../packages/types
-      '@aeriajs/validation':
-        specifier: link:../packages/validation
-        version: link:../packages/validation
-      aeria:
-        specifier: link:../packages/aeria
-        version: link:../packages/aeria
-      aeria-sdk:
-        specifier: link:../packages/aeria-sdk
-        version: link:../packages/aeria-sdk
-      api:
-        specifier: 'link:'
-        version: 'link:'
-    devDependencies:
-      typescript:
-        specifier: ^5.1.3
-        version: 5.4.5
+  playground: {}
 
 packages:
 

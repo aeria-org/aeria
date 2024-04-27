@@ -49,6 +49,11 @@ jobs:
         run: pnpm -r test
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Build playground
+        run: |
+          pnpm --filter=playground build
+
       - name: Create release PR
         uses: changesets/action@v1
         with:
@@ -56,8 +61,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Build playground
-        run: |
-          pnpm --filter=playground build
 
