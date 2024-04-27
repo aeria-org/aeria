@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "types": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo skipping",
     "postinstall": "rm -rf ../node_modules/@aeriajs; ln -s $(realpath ../packages) ../node_modules/@aeriajs; rm -rf .aeria; mv ../.aeria .",
     "build": "NODE_PATH=./node_modules aeria -ci",
     "dev": "NODE_PATH=./node_modules aeria -w"
