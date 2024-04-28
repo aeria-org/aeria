@@ -2,12 +2,12 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 if ! test $GITHUB_ACTIONS && ! test $SKIP; then
-  pnpm i
+  pnpm i --filter="!playground"
   for ws in $(git diff --name-only --cached | grep -oP '^(packages/([^/\.]+)|playground)(?=/)' | uniq); do
     pnpm --filter="./${ws}" lint:fix
   done
 else
-  pnpm i --no-frozen-lockfile
+  pnpm i --filter="!playground" --no-frozen-lockfile
 fi
 
 git add pnpm-lock.yaml
