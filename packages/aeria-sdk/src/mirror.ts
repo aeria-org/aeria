@@ -34,7 +34,7 @@ ${
     }\n`
 }
 declare module 'aeria-sdk' {
-  import { TopLevelObject, TLOFunctions } from 'aeria-sdk'
+  import { TopLevelObject, TLOFunctions, AuthenticationPayload } from 'aeria-sdk'
 
   type UnionToIntersection<T> = (T extends any ? ((x: T) => 0) : never) extends ((x: infer R) => 0)
     ? R
@@ -78,10 +78,12 @@ declare module 'aeria-sdk' {
     ? UnionToIntersection<Endpoints[keyof Endpoints]>
     : never
 
-  type StrongelyTypedTLO = TopLevelObject & Endpoints
+  type TopLevelFunction = (auth?: AuthenticationPayload) => TopLevelObject & Endpoints
+  declare const aeria: TopLevelFunction
 
   export const url: string
-  export const aeria: StrongelyTypedTLO
+  export const aeria: TopLevelFunction
+  export default aeria
 }
 \n`
 }
@@ -119,9 +121,9 @@ export const writeMirrorFiles = async (mirror: any, config: InstanceConfig, file
 }
 
 export const mirrorRemotely = async (config: InstanceConfig) => {
-  const api = topLevel(config)
+  const aeria = topLevel(config)
 
-  const mirror = deserialize(await api.describe.POST({
+  const mirror = deserialize(await aeria().describe.POST({
     router: true,
   }))
 

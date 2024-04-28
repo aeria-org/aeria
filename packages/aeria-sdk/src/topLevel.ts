@@ -1,60 +1,55 @@
 import type { RequestConfig } from '@aeriajs/common'
 import type { RequestMethod } from '@aeriajs/types'
 import type { InstanceConfig } from './types.js'
-import { authenticate, signout, type AuthenticationPayload } from './auth.js'
 import { request } from './http.js'
 import { publicUrl } from './utils.js'
-
-type UserFunctions = {
-  user: TLOFunctions & {
-    authenticate: (payload: AuthenticationPayload)=> Promise<any>
-    signout: ()=> Promise<void>
-  }
-}
 
 export type TLOFunctions = {
   [P: string]: Record<RequestMethod, ((payload?: any)=> Promise<any>) & TLOFunctions>
 }
 
-export type TopLevelObject = UserFunctions & {
+export type TopLevelObject = {
   describe: {
     POST: (...args: any)=> Promise<any>
   }
 }
 
-export const topLevel = (config: InstanceConfig) => {
-  const proxify = (target: any, parent?: string): TopLevelObject => new Proxy<TopLevelObject>(target, {
-    get: (_, key) => {
+const proxify = <TTarget extends ((...args: any)=> any) | Record<string | symbol, unknown>>(
+  config: InstanceConfig,
+  _target: TTarget,
+  bearerToken?: string,
+  parent?: string,
+): TTarget & TopLevelObject => {
+  return new Proxy(_target as any, {
+    get: (target, key) => {
       if( typeof key === 'symbol' ) {
         return target[key]
       }
 
-      switch( `${parent}/${key}` ) {
-        case 'user/authenticate': return authenticate(config)
-        case 'user/signout': return signout(config)
-      }
-
-      const endpoint = parent
-
       const fn = async (payload: any) => {
         const method = key as RequestMethod
-        const requestConfig: RequestConfig = {
+        const requestConfig = {
           params: {
             method,
+            headers: {} as Record<string, any>,
           },
-        }
+        } satisfies RequestConfig
 
         if( method !== 'GET' && method !== 'HEAD' ) {
           if( payload ) {
-            requestConfig.params!.headers = {
+            requestConfig.params.headers = {
               'content-type': 'application/json',
             }
           }
         }
 
+        if( bearerToken ) {
+          requestConfig.params.headers.authorization = `Bearer ${bearerToken}`
+        }
+
         const response = await request(
           config,
-          `${publicUrl(config)}/${endpoint}`,
+          `${publicUrl(config)}/${parent}`,
           payload,
           requestConfig,
         )
@@ -66,10 +61,14 @@ export const topLevel = (config: InstanceConfig) => {
         ? `${parent}/${key}`
         : key
 
-      return proxify(fn, path)
+      return proxify(config, fn, bearerToken, path)
     },
   })
+}
 
-  return proxify({})
+export const topLevel = (config: InstanceConfig) => {
+  return (bearerToken?: string): TopLevelObject => {
+    return proxify(config, {}, bearerToken)
+  }
 }
 

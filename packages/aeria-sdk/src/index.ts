@@ -7,6 +7,7 @@ export {
   unsafe,
 } from '@aeriajs/common/either'
 
+export * from './auth.js'
 export * from './topLevel.js'
 export * from './constants.js'
 export * from './http.js'

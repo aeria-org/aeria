@@ -19,14 +19,14 @@ export type ApiConfig = {
     username: string
     password: string
   }
-  allowSignup?: boolean
-  signupDefaults?: Partial<{
-    roles: string[]
-    active: boolean
-  }>
   security?: {
     logSuccessfulAuthentications?: boolean
     authenticationRateLimiting?: RateLimitingParams | null
+    allowSignup?: boolean
+    signupDefaults?: Partial<{
+      roles: string[]
+      active: boolean
+    }>
   }
   tokenUserProperties?: string[]
   errorHandler?: <TError extends Error>(

@@ -1,4 +1,4 @@
-import type { AssetType, Context, Collection, AuthenticatedToken } from '@aeriajs/types'
+import type { AssetType, Context, Collection, Token } from '@aeriajs/types'
 import { ACErrors } from '@aeriajs/types'
 import { left, right, isLeft, unwrapEither } from '@aeriajs/common'
 import { limitRate } from '@aeriajs/security'
@@ -61,7 +61,7 @@ export const getFunction = async <
 >(
   collectionName: TCollectionName,
   functionName: TFunctionName,
-  acProfile?: AuthenticatedToken,
+  acProfile?: Token,
   options = {
     exposedOnly: false,
   },
@@ -79,7 +79,7 @@ export const getFunction = async <
 
   const functions = unwrapEither(functionsEither)
   if( !(functionName in functions) ) {
-    return left(ACErrors.FunctionNotExposed)
+    return left(ACErrors.FunctionNotFound)
   }
 
   const collection = await getCollection(collectionName)
@@ -87,7 +87,7 @@ export const getFunction = async <
 
   if( options.exposedOnly ) {
     if( !fn.exposed && (!collection?.exposedFunctions || !collection.exposedFunctions.includes(functionName)) ) {
-      return left(ACErrors.FunctionNotFound)
+      return left(ACErrors.FunctionNotExposed)
     }
   }
 

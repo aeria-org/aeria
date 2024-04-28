@@ -1,4 +1,4 @@
-import type { AccessControl, Role, AuthenticatedToken } from '@aeriajs/types'
+import type { AccessControl, Role, UnauthenticatedToken, AuthenticatedToken } from '@aeriajs/types'
 import { getCollection, getCollections } from '@aeriajs/entrypoint'
 import { deepMerge } from '@aeriajs/common'
 import { DEFAULT_ACCESS_CONTROL } from './constants.js'
@@ -54,14 +54,22 @@ export const getAvailableRoles = async () => {
 export const isGranted = async (
   collectionName: keyof Collections,
   functionName: string,
-  acProfile: Pick<AuthenticatedToken, 'roles' | 'allowed_functions'>,
+  acProfile:
+    | UnauthenticatedToken
+    | Pick<AuthenticatedToken,
+      | 'authenticated'
+      | 'roles'
+      | 'allowed_functions'
+    >,
 ) => {
   const accessControl = await getAccessControl(collectionName)
   if( !accessControl ) {
     return false
   }
 
-  const userRoles = acProfile.roles
+  const userRoles = acProfile.authenticated
+    ? acProfile.roles
+    : ['guest']
 
   for( const roleName of userRoles ) {
     const targetRole = accessControl.roles?.[roleName]
@@ -74,9 +82,11 @@ export const isGranted = async (
       return false
     }
 
-    const allowedInToken = !acProfile.allowed_functions || (
-      acProfile.allowed_functions.includes(`/${collectionName}/${functionName}`)
-    )
+    const allowedInToken = acProfile.authenticated
+      ? !acProfile.allowed_functions || (
+        acProfile.allowed_functions.includes(`/${collectionName}/${functionName}`)
+      )
+      : true
 
     const result = allowedInToken && (
       currentRole.grantEverything
@@ -106,6 +116,7 @@ export const grantedFor = async <
   const roles = []
   for( const role in accessControl.roles ) {
     const granted = await isGranted(collectionName, functionName, {
+      authenticated: true,
       roles: [role],
     })
 
@@ -116,3 +127,4 @@ export const grantedFor = async <
 
   return roles
 }
+

@@ -5,11 +5,13 @@ import { getStorage } from './storage.js'
 export const request = <Return = any>(config: InstanceConfig, url: string, payload?: any, _requestConfig?: RequestConfig) => {
   const requestConfig = Object.assign({}, _requestConfig)
   requestConfig.requestTransformer ??= async (url, payload, _params) => {
-    const params = Object.assign({}, _params)
+    const params = Object.assign({
+      headers: {},
+    }, _params)
+
     const auth = getStorage(config).get('auth')
 
-    if( auth?.token ) {
-      params.headers ??= {}
+    if( auth?.token && !params.headers.authorization ) {
       switch( auth.token.type ) {
         case 'bearer': {
           params.headers.authorization = `Bearer ${auth.token.content}`
@@ -23,3 +25,4 @@ export const request = <Return = any>(config: InstanceConfig, url: string, paylo
 
   return originalRequest(url, payload, requestConfig) as Promise<Return>
 }
+

@@ -1,9 +1,12 @@
 import type { Context, SchemaWithId, PackReferences, RemoveAllPayload } from '@aeriajs/types'
 import type { description } from './description.js'
-import { removeAll as originalRemoveAll, type ObjectId } from '@aeriajs/core'
+import { defineExposedFunction, remove as originalRemoveAll, type ObjectId } from '@aeriajs/core'
 import fs from 'fs/promises'
 
-export const removeAll = async (payload: RemoveAllPayload, context: Context<typeof description>) => {
+export const removeAll = defineExposedFunction(async (
+  payload: RemoveAllPayload,
+  context: Context<typeof description>
+) => {
   const files = context.collection.model.find({
     _id: {
       $in: payload.filters as ObjectId[],
@@ -24,5 +27,5 @@ export const removeAll = async (payload: RemoveAllPayload, context: Context<type
   }
 
   return originalRemoveAll(payload, context)
-}
+})
 

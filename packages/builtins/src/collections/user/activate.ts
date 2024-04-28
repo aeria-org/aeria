@@ -1,6 +1,6 @@
 import type { Context } from '@aeriajs/types'
 import type { description } from './description.js'
-import { ObjectId } from '@aeriajs/core'
+import { defineExposedFunction, ObjectId } from '@aeriajs/core'
 import { left, right } from '@aeriajs/common'
 import bcrypt from 'bcrypt'
 
@@ -10,7 +10,7 @@ export enum ActivationErrors {
   InvalidLink = 'INVALID_LINK',
 }
 
-export const activate = async (
+export const activate = defineExposedFunction(async (
   payload: {
     password: string
   },
@@ -81,5 +81,5 @@ export const activate = async (
   return context.response.writeHead(302, {
     location: '/user/activation',
   })
-}
+})
 

@@ -33,3 +33,4 @@ export const authenticate = (config: InstanceConfig) => async (payload: Authenti
 export const signout = (config: InstanceConfig) => async () => {
   getStorage(config).remove('auth')
 }
+

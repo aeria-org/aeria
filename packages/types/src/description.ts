@@ -23,7 +23,6 @@ export type CollectionAction<TDescription extends Description> = Readonly<{
   selection?: boolean
   effect?: string
   button?: boolean
-  translate?: boolean
 
   // route namespace
   setItem?: boolean
@@ -90,7 +89,6 @@ export type LayoutOptions<TDescription extends Description=any> = {
   badge?: PropertiesWithId<TDescription>
   information?: PropertiesWithId<TDescription>
   active?: PropertiesWithId<TDescription>
-  translateBadge?: boolean
 }
 
 export type Layout<TDescription extends Description=any> = {
