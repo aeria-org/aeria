@@ -1,5 +1,14 @@
 # @aeriajs/security
 
+## 0.0.71
+
+### Patch Changes
+
+- Updated dependencies [1802694]
+  - @aeriajs/common@0.0.38
+  - @aeriajs/core@0.0.71
+  - @aeriajs/types@0.0.35
+
 ## 0.0.70
 
 ### Patch Changes

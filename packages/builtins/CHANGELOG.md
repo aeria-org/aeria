@@ -1,5 +1,18 @@
 # @aeriajs/builtins
 
+## 0.0.71
+
+### Patch Changes
+
+- 1802694: Release changes
+- Updated dependencies [1802694]
+  - @aeriajs/access-control@0.0.38
+  - @aeriajs/common@0.0.38
+  - @aeriajs/core@0.0.71
+  - @aeriajs/types@0.0.35
+  - @aeriajs/entrypoint@0.0.38
+  - @aeriajs/validation@0.0.41
+
 ## 0.0.70
 
 ### Patch Changes
