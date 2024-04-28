@@ -1,6 +1,6 @@
 import type { Context, SchemaWithId, Token, TokenRecipient } from '@aeriajs/types'
 import type { description } from './description.js'
-import { defineFunctionAttributes, ObjectId } from '@aeriajs/core'
+import { defineFunctionAttributes, type ObjectId } from '@aeriajs/core'
 import { compare as bcryptCompare } from 'bcrypt'
 import { signToken, decodeToken } from '@aeriajs/core'
 import { left, right } from '@aeriajs/common'
@@ -52,17 +52,16 @@ const getUser = async (
     userinfo: {},
   }
 
-  if( context.config.security ) {
-    if( context.config.security.authenticationRateLimiting ) {
-      //
-    }
-    if( context.config.security.logSuccessfulAuthentications ) {
-      await context.log('successful authentication', {
-        email: leanUser.email,
-        roles: leanUser.roles,
-        _id: leanUser._id,
-      })
-    }
+  if( context.config.security.authenticationRateLimiting ) {
+    //
+  }
+
+  if( context.config.security.logSuccessfulAuthentications ) {
+    await context.log('successful authentication', {
+      email: leanUser.email,
+      roles: leanUser.roles,
+      _id: leanUser._id,
+    })
   }
 
   if( context.config.tokenUserProperties ) {
@@ -164,6 +163,6 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
 }
 
 defineFunctionAttributes(authenticate, {
-  exposed: true
+  exposed: true,
 })
 

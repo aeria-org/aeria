@@ -102,19 +102,16 @@ export const description = defineDescription({
       picture: 'picture_file',
       information: 'email',
       active: 'active',
-      translateBadge: true,
     },
   },
   individualActions: {
     'ui:spawnEdit': {
       name: 'action.edit',
       icon: 'pencil',
-      translate: true,
     },
     'route:/dashboard/user/changepass': {
       name: 'change_password',
       icon: 'key',
-      translate: true,
       fetchItem: true,
     },
   },

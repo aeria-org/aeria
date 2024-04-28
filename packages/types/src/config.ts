@@ -19,7 +19,7 @@ export type ApiConfig = {
     username: string
     password: string
   }
-  security?: {
+  security: {
     logSuccessfulAuthentications?: boolean
     authenticationRateLimiting?: RateLimitingParams | null
     allowSignup?: boolean

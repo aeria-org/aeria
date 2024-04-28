@@ -5,7 +5,7 @@ import fs from 'fs/promises'
 
 export const remove = defineExposedFunction(async (
   payload: RemovePayload<SchemaWithId<typeof description>>,
-  context: Context<typeof description>
+  context: Context<typeof description>,
 ) => {
   const file = await context.collection.model.findOne({
     _id: <ObjectId>payload.filters._id,

@@ -6,7 +6,6 @@ export const remove = <const>{
       name: 'action.remove',
       icon: 'trash',
       ask: true,
-      translate: true,
     },
   },
 } satisfies Pick<Description, 'individualActions'>

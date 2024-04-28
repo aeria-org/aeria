@@ -5,7 +5,7 @@ import fs from 'fs/promises'
 
 export const removeAll = defineExposedFunction(async (
   payload: RemoveAllPayload,
-  context: Context<typeof description>
+  context: Context<typeof description>,
 ) => {
   const files = context.collection.model.find({
     _id: {

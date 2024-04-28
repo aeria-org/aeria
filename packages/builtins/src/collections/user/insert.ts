@@ -17,6 +17,6 @@ export const insert = async (
 }
 
 defineFunctionAttributes(insert, {
-  exposed: true
+  exposed: true,
 })
 

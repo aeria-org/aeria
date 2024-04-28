@@ -11,7 +11,7 @@ export const createAccount = defineExposedFunction(async (
 ) => {
   const user = Object.assign({}, payload)
 
-  if( !context.config.allowSignup ) {
+  if( !context.config.security.allowSignup ) {
     throw new Error('signup disallowed')
   }
 
@@ -48,8 +48,8 @@ export const createAccount = defineExposedFunction(async (
     return left(unwrapEither(validationEither))
   }
 
-  if( context.config.signupDefaults ) {
-    Object.assign(user, context.config.signupDefaults)
+  if( context.config.security.signupDefaults ) {
+    Object.assign(user, context.config.security.signupDefaults)
   }
 
   if( user.password ) {
