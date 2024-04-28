@@ -47,8 +47,6 @@ jobs:
 
       - name: Run tests
         run: pnpm -r test
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Build playground
         run: |
