@@ -67,7 +67,7 @@ export const getToken = async (request: GenericRequest, context: Context) => {
 
 export const init = (_options: InitOptions = {}) => {
   const options = Object.assign({
-    config: {}
+    config: {},
   }, _options)
 
   Object.assign(options.config, deepMerge(DEFAULT_API_CONFIG, options.config))
@@ -121,7 +121,7 @@ export const init = (_options: InitOptions = {}) => {
         })
       })
 
-      if( !options.config?.database?.noDatabase ) {
+      if( !options.config.database?.noDatabase ) {
         await getDatabase()
       }
 

@@ -108,11 +108,13 @@ export const description = defineDescription({
     'ui:spawnEdit': {
       name: 'action.edit',
       icon: 'pencil',
+      translate: true,
     },
     'route:/dashboard/user/changepass': {
       name: 'change_password',
       icon: 'key',
       fetchItem: true,
+      translate: true,
     },
   },
   icon: 'users',

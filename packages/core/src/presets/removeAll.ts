@@ -6,6 +6,7 @@ export const removeAll = <const>{
       name: 'action.removeAll',
       ask: true,
       selection: true,
+      translate: true,
     },
   },
 } satisfies Pick<Description, 'actions'>
