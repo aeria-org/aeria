@@ -1,6 +1,5 @@
 ---
 "@aeriajs/access-control": patch
-"aeria": patch
 "aeria-sdk": patch
 "@aeriajs/builtins": patch
 "@aeriajs/cli": patch
