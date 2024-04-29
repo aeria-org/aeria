@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.36
+
+### Patch Changes
+
+- 40e00d8: Add `maskedValue` property
+
 ## 0.0.35
 
 ### Patch Changes
