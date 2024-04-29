@@ -34,7 +34,7 @@ ${
     }\n`
 }
 declare module 'aeria-sdk' {
-  import { TopLevelObject, TLOFunctions, AuthenticationPayload } from 'aeria-sdk'
+  import { TopLevelObject, TLOFunctions } from 'aeria-sdk'
 
   type UnionToIntersection<T> = (T extends any ? ((x: T) => 0) : never) extends ((x: infer R) => 0)
     ? R
@@ -78,7 +78,7 @@ declare module 'aeria-sdk' {
     ? UnionToIntersection<Endpoints[keyof Endpoints]>
     : never
 
-  type TopLevelFunction = (auth?: AuthenticationPayload) => TopLevelObject & Endpoints
+  type TopLevelFunction = (bearerToken?: string) => TopLevelObject & Endpoints
   declare const aeria: TopLevelFunction
 
   export const url: string
