@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.61
+
+### Patch Changes
+
+- 2b62418: Fix `aeria` signature
+
 ## 0.0.60
 
 ### Patch Changes
