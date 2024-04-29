@@ -50,11 +50,9 @@
     "@aeriajs/common": "^0.0.39",
     "@aeriajs/entrypoint": "^0.0.39",
     "@aeriajs/http": "^0.0.47",
+    "@aeriajs/node-http": "^0.0.47",
     "@aeriajs/server": "^0.0.74",
     "@aeriajs/types": "^0.0.36",
     "mongodb": "^6.5.0"
-  },
-  "optionalDependencies": {
-    "@aeriajs/node-http": "^0.0.47"
   }
 }

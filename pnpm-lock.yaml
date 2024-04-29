@@ -319,10 +319,6 @@ importers:
         version: 6.5.0(socks@2.8.3)
 
   packages/server:
-    optionalDependencies:
-      '@aeriajs/node-http':
-        specifier: ^0.0.46
-        version: 0.0.46(@aeriajs/http@packages+http)
     devDependencies:
       '@aeriajs/access-control':
         specifier: link:../access-control
@@ -342,6 +338,9 @@ importers:
       '@aeriajs/http':
         specifier: link:../http
         version: link:../http
+      '@aeriajs/node-http':
+        specifier: link:../node-http
+        version: link:../node-http
       '@aeriajs/server':
         specifier: link:../server
         version: 'link:'
@@ -370,11 +369,6 @@ importers:
   playground: {}
 
 packages:
-
-  '@aeriajs/node-http@0.0.46':
-    resolution: {integrity: sha512-CA/NNM8L+GRHNt68wrVQ7qUQyOW7vmzHYWeIdExdjjq7lpX7Swjz6Vz+jIa2bfYu3ObZtwqq8q9fDRtfgdsw2Q==}
-    peerDependencies:
-      '@aeriajs/http': ^0.0.46
 
   '@babel/code-frame@7.24.2':
     resolution: {integrity: sha512-y5+tLQyV8pg3fsiln67BVLD1P13Eg4lh5RW9mF0zUuvLrv9uIQ4MCL+CRT+FTsBlBjcIan6PGsLcBN0m3ClUyQ==}
@@ -3201,11 +3195,6 @@ packages:
     engines: {node: '>=12.20'}
 
 snapshots:
-
-  '@aeriajs/node-http@0.0.46(@aeriajs/http@packages+http)':
-    dependencies:
-      '@aeriajs/http': link:packages/http
-    optional: true
 
   '@babel/code-frame@7.24.2':
     dependencies:
