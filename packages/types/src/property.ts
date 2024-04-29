@@ -97,6 +97,7 @@ export type StringProperty = {
   format?: PropertyFormat
   default?: string | Date
   mask?: string | ReadonlyArray<string>
+  maskedValue?: boolean
 
   placeholder?: string
   element?: 'textarea'
