@@ -21,7 +21,7 @@ export type PropertyFormat =
 export type PropertiesWithId<TSchema extends JsonSchema> =
   keyof TSchema['properties'] | '_id'
 
-export type RequiredProperties<TSchema extends JsonSchema> = ReadonlyArray<PropertiesWithId<TSchema>> | Partial<Record<
+export type RequiredProperties<TSchema extends JsonSchema> = readonly PropertiesWithId<TSchema>[] | Partial<Record<
   PropertiesWithId<TSchema>,
   Condition<TSchema> | boolean
 >>
@@ -40,11 +40,11 @@ export type NonCircularJsonSchema<TJsonSchema extends NonCircularJsonSchema = an
 export type RefProperty = {
   $ref: Exclude<keyof Collections, 'file'> & string
 
-  indexes?: ReadonlyArray<string>
-  populate?: ReadonlyArray<string>
-  select?: ReadonlyArray<string>
+  indexes?: readonly string[]
+  populate?: readonly string[]
+  select?: readonly string[]
   inline?: boolean
-  form?: ReadonlyArray<string>
+  form?: readonly string[]
   purge?: boolean
 
   constraints?: Condition
@@ -56,12 +56,12 @@ export type NonCircularRefProperty = Omit<RefProperty, '$ref'> & {
 
 export type FileProperty = Omit<RefProperty, '$ref'> & {
   $ref: 'file'
-  accept?: ReadonlyArray<string>
-  extensions?: ReadonlyArray<string>
+  accept?: readonly string[]
+  extensions?: readonly string[]
 }
 
 export type EnumProperty = {
-  enum: ReadonlyArray<any>
+  enum: readonly any[]
   default?: any
   element?: PropertyArrayElement
 }
@@ -77,8 +77,9 @@ export type ArrayProperty = {
 
 export type FixedObjectProperty = {
   properties: Record<string, Property>
-  form?: ReadonlyArray<string>
-  required?: ReadonlyArray<string>
+  form?: readonly string[]
+  required?: readonly string[]
+  writable?: readonly string[]
 }
 
 export type VariableObjectProperty =
@@ -96,7 +97,7 @@ export type StringProperty = {
   maxLength?: number
   format?: PropertyFormat
   default?: string | Date
-  mask?: string | ReadonlyArray<string>
+  mask?: string | readonly string[]
   maskedValue?: boolean
 
   placeholder?: string

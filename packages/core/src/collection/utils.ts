@@ -69,16 +69,18 @@ export const prepareInsert = (
       return a
     }
 
-    // it's a mongodb operation
-    if( key[0] === '$' && !description.writable ) {
-      a[key] = value
+    // it's a mongodb operator
+    if( key[0] === '$' ) {
+      // it's not possible to use mongodb operators when user specifies
+      // writable properties nor when it is a creation operation
+      if( !description.writable && docId ) {
+        a[key] = value
+      }
+
       return a
     }
 
-    if( [
-      undefined,
-      null,
-    ].includes(value as any) ) {
+    if( value === null || value === undefined ) {
       a.$unset[key] = 1
       return a
     }

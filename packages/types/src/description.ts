@@ -16,7 +16,7 @@ export type Icon =
   | PhosphorIcon['name']
   | `${IconStyle}:${PhosphorIcon['name']}`
 
-export type CollectionAction<TDescription extends Description> = Readonly<{
+export type CollectionAction<TDescription extends Description> = {
   name: string
   icon?: Icon
   ask?: boolean
@@ -33,7 +33,7 @@ export type CollectionAction<TDescription extends Description> = Readonly<{
   query?: Record<string, any>
 
   requires?: readonly PropertiesWithId<TDescription>[]
-}>
+}
 
 export type CollectionActions<TDescription extends Description> =
   Record<string, null | CollectionAction<TDescription>>
@@ -103,6 +103,20 @@ export type SearchOptions<TDescription extends Description> = {
   indexes: readonly (keyof TDescription['properties'])[]
 }
 
+export type RuntimeDescription<TDescription extends Description = any> = Pick<
+  TDescription,
+  | 'actions'
+  | 'individualActions'
+  | 'filters'
+  | 'filtersPresets'
+  | 'layout'
+  | 'table'
+  | 'tableMeta'
+  | 'form'
+  | 'tableLayout'
+  | 'formLayout'
+>
+
 export type Description<TDescription extends Description = any> = JsonSchema<TDescription> & {
   // unused
   title?: string
@@ -111,7 +125,7 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
   system?: boolean
   inline?: boolean
 
-  preferred?: Record<string, Partial<TDescription | Description>>
+  preferred?: Record<string, RuntimeDescription<TDescription>>
 
   icon?: Icon
   options?: CollectionOptions<TDescription>
