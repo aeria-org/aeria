@@ -35,3 +35,7 @@ export type ApiConfig = {
   )=> any | Promise<any>
 }
 
+export type InitApiConfig = Omit<ApiConfig, 'security'> & {
+  security?: ApiConfig['security']
+}
+

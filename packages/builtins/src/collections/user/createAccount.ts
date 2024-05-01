@@ -3,7 +3,7 @@ import type { description } from './description.js'
 import { defineExposedFunction } from '@aeriajs/core'
 import { isLeft, unwrapEither, left, right } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
-import bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt'
 
 export const createAccount = defineExposedFunction(async (
   payload: Omit<Schema<typeof description>, 'roles'>,

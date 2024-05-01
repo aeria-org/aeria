@@ -3,7 +3,7 @@ import { isLeft, unwrapEither, left } from '@aeriajs/common'
 import { validate, validator } from '@aeriajs/validation'
 import { defineExposedFunction } from '../utils.js'
 
-import path from 'path'
+import * as path from 'path'
 import { createWriteStream } from 'fs'
 import { createHash } from 'crypto'
 

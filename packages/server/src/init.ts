@@ -2,6 +2,7 @@ import type {
   Context,
   GenericRequest,
   ApiConfig,
+  InitApiConfig,
   Token,
   AuthenticatedToken,
   NonCircularJsonSchema,
@@ -19,7 +20,7 @@ import { warmup } from './warmup.js'
 import { registerRoutes } from './routes.js'
 
 export type InitOptions = {
-  config?: ApiConfig
+  config?: InitApiConfig
   setup?: (context: Context)=> any
   callback?: (context: Context)=> any
   collections?: Record<string, {
@@ -76,7 +77,7 @@ export const init = (_options: InitOptions = {}) => {
     options,
     listen: async () => {
       const parentContext = await createContext({
-        config: options.config,
+        config: <ApiConfig>options.config,
       })
 
       if( options.setup ) {

@@ -1,7 +1,7 @@
 import type { Collection, ApiConfig } from '@aeriajs/types'
+import * as path from 'path'
+import * as fs from 'fs/promises'
 import { dynamicImport } from '@aeriajs/common'
-import path from 'path'
-import fs from 'fs/promises'
 
 let collectionsMemo: Awaited<ReturnType<typeof internalGetCollections>> | undefined
 const collectionMemo: Record<string, Collection | undefined> = {}

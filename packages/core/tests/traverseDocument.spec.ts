@@ -1,4 +1,4 @@
-import assert from 'assert'
+import * as assert from 'assert'
 import { isRight } from '@aeriajs/common'
 import { traverseDocument, ObjectId } from '../dist'
 

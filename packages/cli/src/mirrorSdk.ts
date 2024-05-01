@@ -1,4 +1,4 @@
-import path from 'path'
+import * as path from 'path'
 import { systemFunctions } from '@aeriajs/builtins'
 import { right } from '@aeriajs/common'
 

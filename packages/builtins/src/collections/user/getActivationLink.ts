@@ -1,6 +1,6 @@
-import { type ObjectId } from '@aeriajs/core'
+import type { ObjectId } from '@aeriajs/core'
 import { getConfig } from '@aeriajs/entrypoint'
-import bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt'
 
 export const getActivationLink = async (userId: ObjectId) => {
   const config = await getConfig()

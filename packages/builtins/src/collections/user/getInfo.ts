@@ -2,7 +2,7 @@ import type { Context } from '@aeriajs/types'
 import type { description } from './description'
 import { defineExposedFunction, ObjectId } from '@aeriajs/core'
 import { left, right } from '@aeriajs/common'
-import bcrypt from 'bcrypt'
+import * as bcrypt from 'bcrypt'
 
 export enum ActivationErrors {
   UserNotFound = 'USER_NOT_FOUND',

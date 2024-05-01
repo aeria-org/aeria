@@ -1,10 +1,11 @@
-import { type Description, type Property, type Either, type ACErrors, type ValidationError, type Context, ValidationErrorCodes } from '@aeriajs/types'
+import type { Description, Property, Either, ACErrors, ValidationError, Context } from '@aeriajs/types'
+import { ValidationErrorCodes } from '@aeriajs/types'
 import { left, right, isLeft, unwrapEither, unsafe, pipe, isReference, getValueFromPath, isObjectId } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
 import { ObjectId } from 'mongodb'
 import { getCollectionAsset } from '../assets.js'
 import { preloadDescription } from './preload.js'
-import fs from 'fs/promises'
+import * as fs from 'fs/promises'
 
 export type TraverseOptions = {
   autoCast?: boolean
@@ -21,17 +22,20 @@ export type TraverseOptions = {
 
 export type TraverseNormalized = {
   description: Description
-  pipe: (value: unknown, phaseContext: PhaseContext)=> unknown
+  pipe: <T = unknown>(value: unknown, phaseContext: PhaseContext)=> T | Promise<T>
 }
 
 export enum TraverseErrors {
   InvalidDocumentId = 'INVALID_DOCUMENT_ID',
   InvalidTempfile = 'INVALID_TEMPFILE',
+  NonIterableValue = 'NON_ITERABLE_VALUE',
 }
 
 type PhaseContext = {
   target: any
-  root: any
+  root: {
+    _id?: string
+  }
   propName: string
   propPath: string
   property: Property
@@ -213,7 +217,17 @@ const validate = (value: any, ctx: PhaseContext) => {
   return value
 }
 
-const moveFiles = async (value: any, ctx: PhaseContext) => {
+const moveFiles = async (
+  value: (
+    | undefined
+    | ObjectId
+    | {
+      tempId: string
+    }
+  )
+  ,
+  ctx: PhaseContext,
+) => {
   if( !('$ref' in ctx.property) || ctx.property.$ref !== 'file' || value instanceof ObjectId ) {
     return value
   }
@@ -260,9 +274,13 @@ const recurseDeep = async (value: any, ctx: PhaseContext) => {
   }
 
   if( 'items' in ctx.property ) {
-    const items = []
+    if( !Array.isArray(value) ) {
+      return left(TraverseErrors.NonIterableValue)
+    }
+
+    const items: ObjectId[] = []
     for( const item of value ) {
-      const result = await ctx.options.pipe(item, {
+      const result = await ctx.options.pipe<ObjectId>(item, {
         ...ctx,
         property: ctx.property.items,
       })
@@ -476,7 +494,7 @@ export const traverseDocument = async <const TWhat extends Record<string, any>>(
 
   let validationError: Record<string, ValidationError> | undefined
 
-  const mutateTarget = (fn: (value: unknown, ctx: PhaseContext)=> unknown) => {
+  const mutateTarget = (fn: (value: any, ctx: PhaseContext)=> unknown) => {
     return async (value: unknown, ctx: PhaseContext) => {
       const result = await fn(value, ctx)
       ctx.target[ctx.propName] = result
@@ -492,7 +510,7 @@ export const traverseDocument = async <const TWhat extends Record<string, any>>(
         return value
       }
     },
-  })
+  }) as any
 
   const resultEither = await recurse(what, {
     root: what,

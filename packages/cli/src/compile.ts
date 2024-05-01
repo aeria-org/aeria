@@ -1,5 +1,5 @@
-import ts from 'typescript'
-import path from 'path'
+import * as ts from 'typescript'
+import * as path from 'path'
 import * as glob from 'glob'
 import * as transpile from './transpile.js'
 import { readFile } from 'fs/promises'

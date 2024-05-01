@@ -2,7 +2,7 @@ import type { Context } from '@aeriajs/types'
 import type { description } from './description.js'
 import { defineExposedFunction, ObjectId } from '@aeriajs/core'
 import { left } from '@aeriajs/common'
-import fs from 'fs'
+import * as fs from 'fs'
 
 export enum FileReadError {
   DocumentNotFound = 'DOCUMENT_NOT_FOUND',

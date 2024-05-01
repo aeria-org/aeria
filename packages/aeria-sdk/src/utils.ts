@@ -1,6 +1,6 @@
 import type { InstanceConfig } from './types.js'
 import { dynamicImport } from '@aeriajs/common'
-import path from 'path'
+import * as path from 'path'
 
 export const publicUrl = (config: InstanceConfig) => {
   if( typeof config.publicUrl === 'string' ) {

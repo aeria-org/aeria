@@ -1,5 +1,5 @@
 import type { InstanceConfig } from './types'
-import path from 'path'
+import * as path from 'path'
 import { deserialize } from '@aeriajs/common'
 import { writeFile, mkdir } from 'fs/promises'
 import { topLevel } from './topLevel.js'

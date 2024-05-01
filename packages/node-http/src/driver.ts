@@ -1,7 +1,7 @@
-import http from 'http'
-import { parse as parseUrl } from 'url'
 import type { GenericRequest, GenericResponse, RequestMethod } from '@aeriajs/types'
 import type { ServerOptions } from '@aeriajs/http'
+import * as http from 'http'
+import { parse as parseUrl } from 'url'
 
 const getBody = async ($req: http.IncomingMessage) => {
   const bodyParts: Buffer[] = []

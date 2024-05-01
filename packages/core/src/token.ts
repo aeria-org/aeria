@@ -1,5 +1,6 @@
+import type { SignOptions } from 'jsonwebtoken'
 import { getConfig } from '@aeriajs/entrypoint'
-import jwt, { type SignOptions } from 'jsonwebtoken'
+import * as jwt from 'jsonwebtoken'
 
 export const EXPIRES_IN = 36000
 
