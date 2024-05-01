@@ -43,7 +43,9 @@ export type AuthenticatedToken<TAcceptedRole extends AcceptedRole = null> = {
       : TAcceptedRole
   )[]
   allowed_functions?: readonly FunctionPath[]
-  userinfo: PackReferences<Collections['user']['item']>
+  userinfo:
+    | Collections['user']['item']
+    | PackReferences<Collections['user']['item']>
 }
 
 export type UnauthenticatedToken = {

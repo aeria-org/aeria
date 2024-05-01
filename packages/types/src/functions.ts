@@ -25,9 +25,9 @@ type DocumentFilter<TDocument> = PackReferences<TDocument> extends infer Documen
 
 type RemoveAny<T> = {
   [
-    P in keyof T as 0 extends (T[P] & 1)
-      ? never
-      : P
+  P in keyof T as 0 extends (T[P] & 1)
+    ? never
+    : P
   ]: T[P]
 }
 
@@ -50,7 +50,7 @@ export type Filters<TDocument> = StrictFilter<any> & Partial<{
 }>
 
 export type What<TDocument> =
-  | { _id: ObjectId | string } & Partial<PackReferences<TDocument> & StrictUpdateFilter<TDocument>>
+  | { _id: ObjectId | string } & Partial<PackReferences<TDocument>> & RemoveAny<StrictUpdateFilter<TDocument>>
   | { _id?: null } & Omit<PackReferences<TDocument>, '_id'>
 
 export type Projection<TDocument> =
