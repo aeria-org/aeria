@@ -6,7 +6,6 @@
     "target": "esnext",
     "module": "nodenext",
     "moduleResolution": "nodenext",
-    "skipLibCheck": true,
-    "esModuleInterop": true
+    "skipLibCheck": true
   }
 }

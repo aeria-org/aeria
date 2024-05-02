@@ -34,7 +34,7 @@ export enum TraverseErrors {
 type PhaseContext = {
   target: any
   root: {
-    _id?: string
+    _id?: ObjectId | string
   }
   propName: string
   propPath: string
@@ -503,14 +503,17 @@ export const traverseDocument = async <const TWhat extends Record<string, any>>(
   }
 
   options.description = description
-  options.pipe = pipe(functions.map(mutateTarget), {
-    returnFirst: (value) => {
-      if( value?._tag === 'Left' ) {
-        validationError = value.value
-        return value
-      }
-    },
-  }) as any
+
+  Object.assign(options, {
+    pipe: pipe(functions.map(mutateTarget), {
+      returnFirst: (value) => {
+        if( value?._tag === 'Left' ) {
+          validationError = value.value
+          return value
+        }
+      },
+    })
+  })
 
   const resultEither = await recurse(what, {
     root: what,

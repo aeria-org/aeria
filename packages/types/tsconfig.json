@@ -3,9 +3,6 @@
   "compilerOptions": {
     "outDir": "dist",
     "paths": {
-      "@phosphor-icons/core": [
-        "./node_modules/@phosphor-icons/core/dist"
-      ],
       "mongodb": [
         "../core/node_modules/mongodb"
       ]
