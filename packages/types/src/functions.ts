@@ -50,7 +50,7 @@ export type Filters<TDocument> = StrictFilter<any> & Partial<{
 }>
 
 export type What<TDocument> =
-  | { _id: ObjectId | string } & Partial<PackReferences<TDocument>> & RemoveAny<StrictUpdateFilter<TDocument>>
+  | { _id: ObjectId | string } & Partial<Omit<PackReferences<TDocument>, '_id'>> & RemoveAny<StrictUpdateFilter<PackReferences<TDocument>>>
   | { _id?: null } & Omit<PackReferences<TDocument>, '_id'>
 
 export type Projection<TDocument> =
