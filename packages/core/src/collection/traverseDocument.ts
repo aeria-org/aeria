@@ -218,14 +218,12 @@ const validate = (value: any, ctx: PhaseContext) => {
 }
 
 const moveFiles = async (
-  value: (
+  value:
     | undefined
     | ObjectId
     | {
       tempId: string
-    }
-  )
-  ,
+    },
   ctx: PhaseContext,
 ) => {
   if( !('$ref' in ctx.property) || ctx.property.$ref !== 'file' || value instanceof ObjectId ) {

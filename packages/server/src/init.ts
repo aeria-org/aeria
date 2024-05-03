@@ -2,7 +2,6 @@ import type {
   Context,
   GenericRequest,
   ApiConfig,
-  InitApiConfig,
   Token,
   AuthenticatedToken,
   NonCircularJsonSchema,
@@ -18,6 +17,11 @@ import { getDatabase } from '@aeriajs/core'
 import { DEFAULT_API_CONFIG } from './constants.js'
 import { warmup } from './warmup.js'
 import { registerRoutes } from './routes.js'
+
+type InitApiConfig = Omit<ApiConfig, keyof typeof DEFAULT_API_CONFIG> & Partial<Pick<
+  ApiConfig,
+  keyof typeof DEFAULT_API_CONFIG
+>>
 
 export type InitOptions = {
   config?: InitApiConfig
@@ -47,7 +51,7 @@ export const getToken = async (request: GenericRequest, context: Context) => {
       : '')
 
     if( authenticationGuard(decodedToken) ) {
-      if( decodedToken.sub ) {
+      if( typeof decodedToken.sub === 'string' ) {
         decodedToken.sub = new ObjectId(decodedToken.sub)
         Object.assign(decodedToken.userinfo, unsafe(await traverseDocument(decodedToken.userinfo, context.collections.user.description, {
           autoCast: true,
