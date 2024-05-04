@@ -55,14 +55,14 @@ export const description = defineDescription({
   },
   actions: {
     deleteAll: {
-      name: 'Remover',
+      label: 'Remover',
       ask: true,
       selection: true,
     },
   },
   individualActions: {
     remove: {
-      name: 'Remover',
+      label: 'Remover',
       icon: 'trash',
       ask: true,
     },
