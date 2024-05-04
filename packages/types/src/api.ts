@@ -21,7 +21,7 @@ export type Collection<TCollection extends Collection = any> = {
   item?: any
   security?: CollectionSecurityPolicy<TCollection>
   accessControl?: AccessControl<TCollection>
-  functions?: Record<string, ((payload: any, context: Context, ...args: any[])=> any) & Partial<FunctionAttributes>>
+  functions?: Record<string, ((payload: any, context: Context, ...args: any[])=> any) & FunctionAttributes>
   functionContracts?: Record<string, Contract>
   exposedFunctions?: string[]
 }

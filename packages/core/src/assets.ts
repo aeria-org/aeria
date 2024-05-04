@@ -4,6 +4,7 @@ import { left, right, isLeft, unwrapEither } from '@aeriajs/common'
 import { limitRate } from '@aeriajs/security'
 import { isGranted } from '@aeriajs/access-control'
 import { getCollection } from '@aeriajs/entrypoint'
+import { isFunctionExposed } from './endpoints.js'
 
 const assetsMemo: {
   assets: Record<string, Record<string, Awaited<ReturnType<typeof internalGetCollectionAsset>>> | undefined>
@@ -85,17 +86,17 @@ export const getFunction = async <
   const collection = await getCollection(collectionName)
   const fn = functions[functionName]
 
+  if( !collection ) {
+    return left(ACErrors.ResourceNotFound)
+  }
+
   if( options.exposedOnly ) {
-    if( !fn.exposed && (!collection?.exposedFunctions || !collection.exposedFunctions.includes(functionName)) ) {
+    if( !await isFunctionExposed(collection, functionName) ) {
       return left(ACErrors.FunctionNotExposed)
     }
   }
 
   const wrapper = async (payload: unknown, context: Context) => {
-    if( !collection ) {
-      return left(ACErrors.ResourceNotFound)
-    }
-
     const securityPolicy = collection.security?.functions?.[functionName]
 
     if( securityPolicy ) {

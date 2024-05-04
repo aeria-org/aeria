@@ -27,6 +27,7 @@ export type ApiConfig = {
       roles: string[]
       active: boolean
     }>
+    exposeFunctionsByDefault?: boolean
   }
   tokenUserProperties?: string[]
   errorHandler?: <TError extends Error>(

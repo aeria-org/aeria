@@ -1,9 +1,30 @@
 import type { RoutesMeta } from '@aeriajs/http'
-import type { ContractWithRoles, RouteUri } from '@aeriajs/types'
-import { getCollections, getRouter } from '@aeriajs/entrypoint'
+import type { Collection, ContractWithRoles, RouteUri } from '@aeriajs/types'
+import { getCollections, getRouter, getConfig } from '@aeriajs/entrypoint'
 import { grantedFor } from '@aeriajs/access-control'
 import { deepMerge } from '@aeriajs/common'
 import * as builtinFunctions from './functions/index.js'
+
+export const isFunctionExposed = async <TCollection extends Collection>(
+  collection: TCollection,
+  fnName: string,
+) => {
+  if( !collection.functions ) {
+    return false
+  }
+
+  const fn = collection.functions[fnName]
+  if( fn.exposed || collection.exposedFunctions?.includes(fnName) ) {
+    return true
+  }
+
+  const config = await getConfig()
+  if( config.security.exposeFunctionsByDefault ) {
+    return fn.exposed !== false
+  }
+
+  return false
+}
 
 export const getEndpoints = async (): Promise<RoutesMeta> => {
   const router = await getRouter()
@@ -25,8 +46,7 @@ export const getEndpoints = async (): Promise<RoutesMeta> => {
 
     if( collectionFunctions ) {
       for( const fnName in collectionFunctions ) {
-        const fn = collectionFunctions[fnName]
-        if( !fn.exposed && (!collection.exposedFunctions || !collection.exposedFunctions.includes(fnName)) ) {
+        if( !await isFunctionExposed(collection, fnName) ) {
           continue
         }
 
