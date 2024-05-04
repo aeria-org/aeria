@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.37
+
+### Patch Changes
+
+- b3d1a4c: Disable esModuleInterop
+
 ## 0.0.36
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # aeria-build
 
+## 0.0.11
+
+### Patch Changes
+
+- b3d1a4c: Disable esModuleInterop
+- Updated dependencies [b3d1a4c]
+  - @aeriajs/builtins@0.0.73
+  - @aeriajs/common@0.0.40
+  - @aeriajs/core@0.0.73
+  - @aeriajs/entrypoint@0.0.40
+  - @aeriajs/types@0.0.37
+
 ## 0.0.10
 
 ### Patch Changes

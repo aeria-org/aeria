@@ -1,5 +1,14 @@
 # aeria-sdk
 
+## 0.0.63
+
+### Patch Changes
+
+- b3d1a4c: Disable esModuleInterop
+- Updated dependencies [b3d1a4c]
+  - @aeriajs/common@0.0.40
+  - @aeriajs/types@0.0.37
+
 ## 0.0.62
 
 ### Patch Changes
