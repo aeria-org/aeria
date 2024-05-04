@@ -26,6 +26,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Test
+        env:
+          A: ${{ github.head_ref }}
+          B: ${{ github.ref_name  }}
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+        run: |
+          echo $A
+          echo $B
+          echo $BRANCH_NAME
+
       - name: Build packages
         run: |
           pnpm --filter='./packages/types' build \
@@ -52,16 +62,6 @@ jobs:
       - name: Build playground
         run: |
           pnpm --filter=playground build
-
-      - name: Test
-        env:
-          A: ${{ github.head_ref }}
-          B: ${{ github.ref_name  }}
-          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-        run: |
-          echo $A
-          echo $B
-          echo $BRANCH_NAME
 
       - name: Create release PR
         uses: changesets/action@v1

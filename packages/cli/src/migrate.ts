@@ -52,11 +52,11 @@ export const migrate = async () => {
       const searchIndexes = description.search.indexes
 
       const textIndex = indexes.find((index) => 'textIndexVersion' in index)
-      const invalidated = textIndex && !searchIndexes.every((key) => Object.keys(textIndex.weights).includes(key as string))
+      const invalidated = textIndex && !searchIndexes.every((key) => Object.keys(textIndex.weights!).includes(key as string))
 
       if( !textIndex || invalidated ) {
         if( textIndex ) {
-          await model.dropIndex(textIndex.name)
+          await model.dropIndex(textIndex.name!)
         }
 
         await model.createIndex(Object.fromEntries(searchIndexes.map((index) => [
