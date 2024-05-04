@@ -8,5 +8,4 @@ case $BRANCH_NAME in
     pnpm changeset publish
   ;;
 esac
-EOF
 
