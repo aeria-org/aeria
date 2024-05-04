@@ -66,8 +66,17 @@ jobs:
       - name: Create release PR
         uses: changesets/action@v1
         with:
-          publish: pnpm changeset publish
+          publish: |
+            case $BRANCH_NAME in
+              develop)
+                pnpm changeset publish --tag nightly
+              ;;
+              *)
+                pnpm changeset publish
+              ;;
+            esac
         env:
+          BRANCH_NAME: ${{ github.ref_name  }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
