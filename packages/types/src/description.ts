@@ -17,7 +17,7 @@ export type Icon =
   | `${IconStyle}:${PhosphorIcon['name']}`
 
 export type CollectionAction<TDescription extends Description> = {
-  name: string
+  label: string
   icon?: Icon
   ask?: boolean
   selection?: boolean
