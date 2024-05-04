@@ -510,7 +510,7 @@ export const traverseDocument = async <const TWhat extends Record<string, any>>(
           return value
         }
       },
-    })
+    }),
   })
 
   const resultEither = await recurse(what, {
