@@ -1,5 +1,15 @@
 # @aeriajs/access-control
 
+## 0.0.40
+
+### Patch Changes
+
+- b3d1a4c: Disable esModuleInterop
+- Updated dependencies [b3d1a4c]
+  - @aeriajs/common@0.0.40
+  - @aeriajs/entrypoint@0.0.40
+  - @aeriajs/types@0.0.37
+
 ## 0.0.39
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @aeriajs/node-http
 
+## 0.0.48
+
+### Patch Changes
+
+- b3d1a4c: Disable esModuleInterop
+- Updated dependencies [b3d1a4c]
+  - @aeriajs/http@0.0.48
+
 ## 0.0.47
 
 ### Patch Changes

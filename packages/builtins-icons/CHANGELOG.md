@@ -1,5 +1,11 @@
 # @aeriajs/builtins-icons
 
+## 0.0.5
+
+### Patch Changes
+
+- b3d1a4c: Disable esModuleInterop
+
 ## 0.0.4
 
 ### Patch Changes
