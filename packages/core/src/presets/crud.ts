@@ -3,7 +3,7 @@ import type { Description } from '@aeriajs/types'
 export const crud = <const>{
   actions: {
     'ui:spawnAdd': {
-      name: 'action.add',
+      label: 'action.add',
       icon: 'plus',
       button: true,
       translate: true,
@@ -11,12 +11,12 @@ export const crud = <const>{
   },
   individualActions: {
     'ui:spawnEdit': {
-      name: 'action.edit',
+      label: 'action.edit',
       icon: 'pencil-simple',
       translate: true,
     },
     'remove': {
-      name: 'action.remove',
+      label: 'action.remove',
       icon: 'trash',
       ask: true,
       translate: true,
