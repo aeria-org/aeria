@@ -56,9 +56,9 @@ jobs:
       - name: Create release PR
         uses: changesets/action@v1
         with:
-          publish: |
+          publish: |2
             bash -c "$(cat <<EOF
-            case $BRANCH_NAME in
+            case \$BRANCH_NAME in
               develop)
                 pnpm changeset publish --tag nightly
               ;;
