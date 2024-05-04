@@ -32,9 +32,17 @@ jobs:
           B: ${{ github.ref_name  }}
           BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
         run: |
-          echo $A
-          echo $B
-          echo $BRANCH_NAME
+            bash <<< $(cat <<EOF
+            case $BRANCH_NAME in
+              develop)
+                echo BANANA $BRACH_NAME
+              ;;
+              *)
+                echo LARANJA $BRACH_NAME
+              ;;
+            esac
+            EOF
+            )
 
       - name: Build packages
         run: |
@@ -67,6 +75,7 @@ jobs:
         uses: changesets/action@v1
         with:
           publish: |
+            bash <<< $(cat <<EOF
             case $BRANCH_NAME in
               develop)
                 pnpm changeset publish --tag nightly
@@ -75,6 +84,8 @@ jobs:
                 pnpm changeset publish
               ;;
             esac
+            EOF
+            )
         env:
           BRANCH_NAME: ${{ github.ref_name  }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
