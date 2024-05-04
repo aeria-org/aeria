@@ -1,5 +1,15 @@
 # @aeriajs/security
 
+## 0.0.75
+
+### Patch Changes
+
+- 1cf004c: Bump versions
+- Updated dependencies [1cf004c]
+  - @aeriajs/common@0.0.42
+  - @aeriajs/types@0.0.39
+  - @aeriajs/core@0.0.75
+
 ## 0.0.74
 
 ### Patch Changes
