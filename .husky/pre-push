@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-if ! test $GITHUB_ACTIONS && ! test $SKIP; then
+if ! test $GITHUB_ACTIONS && ! test $SKIP && [ $(git branch --show-current) == "master" ]; then
   pnpm -r lint
 fi
 
