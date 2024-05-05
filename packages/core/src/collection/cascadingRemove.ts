@@ -3,6 +3,7 @@ import type { ObjectId } from 'mongodb'
 import { isRight, unwrapEither } from '@aeriajs/common'
 import { createContext } from '../context.js'
 import { getFunction } from '../assets.js'
+import * as functions from '../functions/builtin/index.js'
 import { getDatabaseCollection } from '../database.js'
 import { getReferences, type ReferenceMap, type Reference } from './reference.js'
 
@@ -20,7 +21,7 @@ const preferredRemove = async (targetId: ObjectId | ObjectId[], reference: Refer
   if( Array.isArray(targetId) ) {
     const removeAllEither = await getFunction(reference.referencedCollection, 'removeAll')
     if( isRight(removeAllEither) ) {
-      const removeAll = unwrapEither(removeAllEither)
+      const removeAll: typeof functions.removeAll = unwrapEither(removeAllEither)
       return removeAll({
         filters: targetId,
       }, context)
@@ -35,7 +36,7 @@ const preferredRemove = async (targetId: ObjectId | ObjectId[], reference: Refer
 
   const removeEither = await getFunction(reference.referencedCollection, 'remove')
   if( isRight(removeEither) ) {
-    const remove = unwrapEither(removeEither)
+    const remove: typeof functions.remove = unwrapEither(removeEither)
     return remove({
       filters: {
         _id: targetId,
