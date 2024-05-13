@@ -1,5 +1,3 @@
-import type { Collection } from '.'
-
 export enum ACErrors {
   AssetNotFound = 'ASSET_NOT_FOUND',
   AuthenticationError = 'AUTHENTICATION_ERROR',
@@ -26,39 +24,5 @@ export const ACErrorMessages: Record<ACErrors, string> = {
   [ACErrors.InvalidLimit]: 'specified limit is invalid',
   [ACErrors.OwnershipError]: 'you have insufficient privileges',
   [ACErrors.ResourceNotFound]: 'collection not found',
-}
-
-export type Role<
-  TCollection extends Collection = any,
-  TAccessControl extends AccessControl<TCollection> = any,
-> = {
-  inherit?: readonly (keyof TAccessControl['roles'])[]
-  grantEverything?: boolean
-  grant?: readonly (keyof TCollection['functions'])[]
-  forbid?: readonly (keyof TCollection['functions'])[]
-}
-
-export type AccessControl<
-  TCollection extends Collection = any,
-  TAccessControl extends AccessControl<TCollection, TAccessControl> = any,
-> = {
-  roles?: Partial<Record<
-    string,
-    Role<TCollection, TAccessControl>
-  >>
-  availableRoles?: keyof TAccessControl['roles']
-  parent?: TAccessControl['roles']
-}
-
-export type NonCircularAccessControl<
-  TCollection extends Collection = any,
-  TAccessControl extends AccessControl<TCollection, TAccessControl> = any,
-> = {
-  roles?: Record<
-    string,
-    Role<TCollection, TAccessControl>
-  >
-  availableRoles?: keyof TAccessControl['roles']
-  parent?: TAccessControl['roles']
 }
 

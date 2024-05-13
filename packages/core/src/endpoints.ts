@@ -1,7 +1,6 @@
 import type { RoutesMeta } from '@aeriajs/http'
 import type { Collection, ContractWithRoles, RouteUri } from '@aeriajs/types'
-import { getCollections, getRouter, getConfig } from '@aeriajs/entrypoint'
-import { grantedFor } from '@aeriajs/access-control'
+import { getCollections, getRouter, getConfig, getAvailableRoles } from '@aeriajs/entrypoint'
 import { deepMerge } from '@aeriajs/common'
 import * as builtinFunctions from './functions/index.js'
 
@@ -14,7 +13,7 @@ export const isFunctionExposed = async <TCollection extends Collection>(
   }
 
   const fn = collection.functions[fnName]
-  if( fn.exposed || collection.exposedFunctions?.includes(fnName) ) {
+  if( fn.exposed || (collection.exposedFunctions && fnName in collection.exposedFunctions) ) {
     return true
   }
 
@@ -42,6 +41,7 @@ export const getEndpoints = async (): Promise<RoutesMeta> => {
       description,
       functions: collectionFunctions,
       functionContracts,
+      exposedFunctions = {},
     } = collection
 
     if( collectionFunctions ) {
@@ -51,7 +51,12 @@ export const getEndpoints = async (): Promise<RoutesMeta> => {
         }
 
         const endpoint = `/${description.$id}/${fnName}`
-        const roles = await grantedFor(description.$id, fnName)
+        const exposed = exposedFunctions[fnName]
+        const roles = Array.isArray(exposed)
+          ? exposed
+          : exposed
+            ? await getAvailableRoles() 
+            : []
 
         const contracts: Record<'POST', ContractWithRoles | null> = {
           POST: null,

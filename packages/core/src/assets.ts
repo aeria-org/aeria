@@ -2,7 +2,6 @@ import type { AssetType, Context, Collection, Token } from '@aeriajs/types'
 import { ACErrors } from '@aeriajs/types'
 import { left, right, isLeft, unwrapEither } from '@aeriajs/common'
 import { limitRate } from '@aeriajs/security'
-import { isGranted } from '@aeriajs/access-control'
 import { getCollection } from '@aeriajs/entrypoint'
 import { isFunctionExposed } from './endpoints.js'
 
@@ -67,12 +66,6 @@ export const getFunction = async <
     exposedOnly: false,
   },
 ) => {
-  if( acProfile ) {
-    if( !await isGranted(collectionName, functionName, acProfile) ) {
-      return left(ACErrors.AuthorizationError)
-    }
-  }
-
   const functionsEither = await getCollectionAsset(collectionName, 'functions')
   if( isLeft(functionsEither) ) {
     return functionsEither
@@ -95,6 +88,13 @@ export const getFunction = async <
       return left(ACErrors.FunctionNotExposed)
     }
   }
+
+  // if( acProfile ) {
+  //   if( !await isGranted(collectionName, functionName, acProfile) ) {
+  //     return left(ACErrors.AuthorizationError)
+  //   }
+  // }
+  //
 
   const wrapper = async (payload: unknown, context: Context) => {
     const securityPolicy = collection.security?.functions?.[functionName]

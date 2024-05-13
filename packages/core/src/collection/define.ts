@@ -5,7 +5,6 @@ import type {
   Contract,
   ContractToFunction,
   Description,
-  AccessControl,
   CollectionSecurityPolicy,
 } from '@aeriajs/types'
 
@@ -27,7 +26,6 @@ export const defineCollection = <
       | 'functions'
       | 'exposedFunctions'
       | 'security'
-      | 'accessControl'
     >
     : never,
   const TDescription extends Description<TDescription>,
@@ -45,11 +43,7 @@ export const defineCollection = <
     description: TDescription
     functions?: TFunctions
     functionContracts?: TFunctionContracts
-    exposedFunctions?: (keyof TFunctions)[]
-    accessControl?: AccessControl<{
-      description: NoInfer<TDescription>
-      functions: TFunctions
-    }>
+    exposedFunctions?: Partial<Record<keyof TFunctions, readonly string[] | boolean>>
     security?: CollectionSecurityPolicy<{
       description: NoInfer<TDescription>
       functions: TFunctions

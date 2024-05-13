@@ -96,23 +96,8 @@ importers:
         specifier: ^5.4.3
         version: 5.4.5
 
-  packages/access-control:
-    devDependencies:
-      '@aeriajs/common':
-        specifier: link:../common
-        version: link:../common
-      '@aeriajs/entrypoint':
-        specifier: link:../entrypoint
-        version: link:../entrypoint
-      '@aeriajs/types':
-        specifier: link:../types
-        version: link:../types
-
   packages/aeria:
     devDependencies:
-      '@aeriajs/access-control':
-        specifier: link:../access-control
-        version: link:../access-control
       '@aeriajs/builtins':
         specifier: link:../builtins
         version: link:../builtins
@@ -162,9 +147,6 @@ importers:
         specifier: ^5.1.1
         version: 5.1.1
     devDependencies:
-      '@aeriajs/access-control':
-        specifier: link:../access-control
-        version: link:../access-control
       '@aeriajs/common':
         specifier: link:../common
         version: link:../common
@@ -242,9 +224,6 @@ importers:
         specifier: ^9.2.0
         version: 9.2.0
     devDependencies:
-      '@aeriajs/access-control':
-        specifier: link:../access-control
-        version: link:../access-control
       '@aeriajs/builtins':
         specifier: link:../builtins
         version: link:../builtins
@@ -281,9 +260,6 @@ importers:
 
   packages/http:
     devDependencies:
-      '@aeriajs/access-control':
-        specifier: link:../access-control
-        version: link:../access-control
       '@aeriajs/common':
         specifier: link:../common
         version: link:../common
@@ -320,9 +296,6 @@ importers:
 
   packages/server:
     devDependencies:
-      '@aeriajs/access-control':
-        specifier: link:../access-control
-        version: link:../access-control
       '@aeriajs/builtins':
         specifier: link:../builtins
         version: link:../builtins

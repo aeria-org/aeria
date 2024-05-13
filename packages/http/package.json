@@ -32,14 +32,12 @@
     "dist"
   ],
   "devDependencies": {
-    "@aeriajs/access-control": "link:../access-control",
     "@aeriajs/common": "link:../common",
     "@aeriajs/entrypoint": "link:../entrypoint",
     "@aeriajs/types": "link:../types",
     "@aeriajs/validation": "link:../validation"
   },
   "peerDependencies": {
-    "@aeriajs/access-control": "^0.0.42",
     "@aeriajs/common": "^0.0.42",
     "@aeriajs/entrypoint": "^0.0.42",
     "@aeriajs/types": "^0.0.39",

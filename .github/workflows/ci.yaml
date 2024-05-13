@@ -34,7 +34,6 @@ jobs:
             && pnpm --filter='./packages/validation' build \
             && pnpm --filter='./packages/http' build \
             && pnpm --filter='./packages/node-http' build \
-            && pnpm --filter='./packages/access-control' build \
             && pnpm --filter='./packages/security' build \
             && pnpm --filter='./packages/core' build \
             && pnpm --filter='./packages/builtins' build \

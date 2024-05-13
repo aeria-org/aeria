@@ -4,7 +4,6 @@ import type {
   Contract,
   Description,
   CollectionSecurityPolicy,
-  AccessControl,
   PackReferences,
   FunctionAttributes,
 
@@ -20,10 +19,9 @@ export type Collection<TCollection extends Collection = any> = {
   description: Description
   item?: any
   security?: CollectionSecurityPolicy<TCollection>
-  accessControl?: AccessControl<TCollection>
   functions?: Record<string, ((payload: any, context: Context, ...args: any[])=> any) & FunctionAttributes>
   functionContracts?: Record<string, Contract>
-  exposedFunctions?: string[]
+  exposedFunctions?: Record<string, readonly string[] | boolean>
 }
 
 export type AssetType = keyof Collection

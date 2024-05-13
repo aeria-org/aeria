@@ -9,9 +9,6 @@
       "@aeriajs/core/*": [
         "../core/dist/*"
       ],
-      "@aeriajs/access-control": [
-        "../access-control/dist"
-      ],
       "@aeriajs/common": [
         "../common/dist"
       ],

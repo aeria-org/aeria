@@ -1,4 +1,5 @@
 import { defineCollection, get, getAll, remove, upload, removeFile } from '@aeriajs/core'
+import { leftSchema, rightSchema } from '@aeriajs/common'
 import { description } from './description.js'
 import { authenticate } from './authenticate.js'
 import { activate } from './activate.js'
@@ -24,15 +25,33 @@ export const user = defineCollection({
     getCurrentUser,
     getActivationLink,
   },
-  accessControl: {
-    roles: {
-      root: {
-        grantEverything: true,
-      },
-      guest: {
-        grant: ['authenticate'],
-      },
-    },
+  functionContracts: {
+    getCurrentUser: {
+      response: [
+        leftSchema({
+          type: 'object',
+          variable: true,
+        }),
+        rightSchema({
+          $ref: 'user',
+        })
+      ]
+    }
   },
+  exposedFunctions: {
+    insert: [
+      'user'
+    ]
+  }
+  // accessControl: {
+  //   roles: {
+  //     root: {
+  //       grantEverything: true,
+  //     },
+  //     guest: {
+  //       grant: ['authenticate'],
+  //     },
+  //   },
+  // },
 })
 

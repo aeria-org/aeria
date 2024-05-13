@@ -10,7 +10,7 @@ export enum ActivationErrors {
 }
 
 export const getCurrentUser = defineExposedFunction(async (
-  _payload: null,
+  _payload: undefined,
   context: Context<typeof description>,
 ) => {
   if( !context.token.authenticated ) {

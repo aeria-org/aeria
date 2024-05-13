@@ -33,7 +33,6 @@
     "dist"
   ],
   "devDependencies": {
-    "@aeriajs/access-control": "link:../access-control",
     "@aeriajs/cli": "link:../cli",
     "@aeriajs/core": "link:../core",
     "@aeriajs/common": "link:../common",
@@ -47,7 +46,6 @@
     "@aeriajs/validation": "link:../validation"
   },
   "peerDependencies": {
-    "@aeriajs/access-control": "^0.0.42",
     "@aeriajs/cli": "^0.0.13",
     "@aeriajs/core": "^0.0.75",
     "@aeriajs/common": "^0.0.42",

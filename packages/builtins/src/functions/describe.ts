@@ -1,9 +1,8 @@
 import type { RouteContext, Either, StringProperty, EnumProperty } from '@aeriajs/types'
 import type { Description } from '@aeriajs/types'
 import { createContext, preloadDescription, getEndpoints } from '@aeriajs/core'
-import { getCollections } from '@aeriajs/entrypoint'
+import { getCollections, getAvailableRoles } from '@aeriajs/entrypoint'
 import { serialize, isLeft, left, unwrapEither } from '@aeriajs/common'
-import { getAvailableRoles } from '@aeriajs/access-control'
 import { authenticate } from '../collections/user/authenticate.js'
 
 type Payload = {

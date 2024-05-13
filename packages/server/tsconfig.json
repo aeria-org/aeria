@@ -3,9 +3,6 @@
   "compilerOptions": {
     "outDir": "dist",
     "paths": {
-      "@aeriajs/access-control": [
-        "../access-control/dist"
-      ],
       "@aeriajs/common": [
         "../common/dist"
       ],

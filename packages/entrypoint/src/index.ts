@@ -4,6 +4,7 @@ import * as fs from 'fs/promises'
 import { dynamicImport } from '@aeriajs/common'
 
 let collectionsMemo: Awaited<ReturnType<typeof internalGetCollections>> | undefined
+let availableRolesMemo: string[] | undefined
 const collectionMemo: Record<string, Collection | undefined> = {}
 
 export const getEntrypointPath = async () => {
@@ -47,11 +48,7 @@ export const getCollection = async (collectionName: string): Promise<Collection 
   }
 
   const collections = await getCollections()
-  const candidate: any = collections[collectionName]
-  if( !candidate ) {
-    return
-  }
-
+  const candidate = collections[collectionName]
   const collection = typeof candidate === 'function'
     ? candidate()
     : candidate
@@ -71,5 +68,35 @@ export const getConfig = async (): Promise<ApiConfig> => {
   return entrypoint.default
     ? entrypoint.default.options.config
     : {}
+}
+
+export const getAvailableRoles = async () => {
+  if( availableRolesMemo ) {
+    return availableRolesMemo
+  }
+
+  const collections = await getCollections()
+  const availableRoles = []
+
+  for( const collectionName in collections ) {
+    const candidate = collections[collectionName]
+    const collection = typeof candidate === 'function'
+      ? candidate()
+      : candidate
+
+    if( !collection.exposedFunctions ) {
+      continue
+    }
+
+    for( const fnName in collection.exposedFunctions ) {
+      const exposed = collection.exposedFunctions[fnName]
+      if( Array.isArray(exposed) ) {
+        availableRoles.push(...exposed)
+      }
+    }
+  }
+
+  availableRolesMemo = Array.from(new Set(availableRoles))
+  return availableRolesMemo
 }
 
