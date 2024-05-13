@@ -3,7 +3,7 @@ import type { ObjectId } from 'mongodb'
 import { isRight, unwrapEither } from '@aeriajs/common'
 import { createContext } from '../context.js'
 import { getFunction } from '../assets.js'
-import * as functions from '../functions/builtin/index.js'
+import type * as functions from '../functions/builtin/index.js'
 import { getDatabaseCollection } from '../database.js'
 import { getReferences, type ReferenceMap, type Reference } from './reference.js'
 

@@ -31,6 +31,10 @@ export const get = defineExposedFunction(async <TContext extends Context>(
     ? unsafe(await security.beforeRead(payload))
     : payload
 
+  if( Object.keys(filters).length === 0 ) {
+    throw new Error('no filters were passed')
+  }
+
   const pipeline: Document[] = []
   const references = await getReferences(context.description.properties, {
     memoize: context.description.$id,

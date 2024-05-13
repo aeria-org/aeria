@@ -5,6 +5,7 @@ import { activate } from './activate.js'
 import { insert } from './insert.js'
 import { createAccount } from './createAccount.js'
 import { getInfo } from './getInfo.js'
+import { getCurrentUser } from './getCurrentUser.js'
 import { getActivationLink } from './getActivationLink.js'
 
 export const user = defineCollection({
@@ -20,6 +21,7 @@ export const user = defineCollection({
     activate,
     createAccount,
     getInfo,
+    getCurrentUser,
     getActivationLink,
   },
   accessControl: {

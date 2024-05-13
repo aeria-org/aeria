@@ -49,9 +49,17 @@ export type Filters<TDocument> = StrictFilter<any> & Partial<{
     : never
 }>
 
-export type What<TDocument> =
-  | { _id: ObjectId | string } & Partial<Omit<PackReferences<TDocument>, '_id'>> & RemoveAny<StrictUpdateFilter<PackReferences<TDocument>>>
+export type What<TDocument> = (
+  | { _id: ObjectId | string } & Partial<
+    & Omit<PackReferences<TDocument>, '_id'>>
+    & RemoveAny<StrictUpdateFilter<PackReferences<TDocument>>
+  >
   | { _id?: null } & Omit<PackReferences<TDocument>, '_id'>
+) extends infer Document
+  ? {
+    [P in keyof Document]: Document[P] | null
+  }
+  : never
 
 export type Projection<TDocument> =
   keyof TDocument | '_id' extends infer DocumentProp
