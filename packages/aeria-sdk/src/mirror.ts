@@ -78,11 +78,14 @@ declare module 'aeria-sdk' {
     ? UnionToIntersection<Endpoints[keyof Endpoints]>
     : never
 
-  type TopLevelFunction = (bearerToken?: string) => TopLevelObject & Endpoints
-  declare const aeria: TopLevelFunction
+  type TopLevelAeria = 
+    & ((bearerToken?: string) => TopLevelObject & Endpoints)
+    & TopLevelObject & Endpoints
+
+  declare const aeria: TopLevelAeria
 
   export const url: string
-  export const aeria: TopLevelFunction
+  export const aeria: TopLevelAeria
   export default aeria
 }
 \n`

@@ -1,7 +1,7 @@
 {
   "name": "aeria-monorepo",
   "private": true,
-  "packageManager": "pnpm@9.0.6",
+  "packageManager": "pnpm@9.1.0",
   "scripts": {
     "test": "NODE_PATH=../../playground/node_modules pnpm -r test",
     "preinstall": "unlink node_modules/@aeriajs || true",

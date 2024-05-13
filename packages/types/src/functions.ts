@@ -53,7 +53,7 @@ export type What<TDocument> = (
   | { _id: ObjectId | string } & Partial<
     & Omit<PackReferences<TDocument>, '_id'>>
     & RemoveAny<StrictUpdateFilter<PackReferences<TDocument>>
-  >
+    >
   | { _id?: null } & Omit<PackReferences<TDocument>, '_id'>
 ) extends infer Document
   ? {

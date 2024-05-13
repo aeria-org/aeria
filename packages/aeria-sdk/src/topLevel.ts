@@ -67,8 +67,10 @@ const proxify = <TTarget extends ((...args: any)=> any) | Record<string | symbol
 }
 
 export const topLevel = (config: InstanceConfig) => {
-  return (bearerToken?: string): TopLevelObject => {
+  const fn = (bearerToken?: string): TopLevelObject => {
     return proxify(config, {}, bearerToken)
   }
+
+  return proxify(config, fn)
 }
 

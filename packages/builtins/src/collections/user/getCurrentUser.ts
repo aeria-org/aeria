@@ -19,10 +19,10 @@ export const getCurrentUser = defineExposedFunction(async (
 
   const user = await context.collections.user.functions.get({
     filters: {
-      _id: context.token.sub
-    }
+      _id: context.token.sub,
+    },
   })
-  
+
   if( !user ) {
     throw new Error()
   }
