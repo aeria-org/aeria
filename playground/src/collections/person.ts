@@ -36,7 +36,9 @@ export const person = defineCollection({
       }
     },
   },
-  exposedFunctions: ['hello'],
+  exposedFunctions: {
+    hello: true,
+  },
   accessControl: {
     roles: {
       root: {
