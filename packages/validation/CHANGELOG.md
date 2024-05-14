@@ -1,5 +1,14 @@
 # @aeriajs/validation
 
+## 0.0.46
+
+### Patch Changes
+
+- d2da9ea: New access control API
+- Updated dependencies [d2da9ea]
+  - @aeriajs/common@0.0.43
+  - @aeriajs/types@0.0.40
+
 ## 0.0.45
 
 ### Patch Changes
