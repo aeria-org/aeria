@@ -3,7 +3,7 @@ import { ACErrors } from '@aeriajs/types'
 import { left, right, isLeft, unwrapEither } from '@aeriajs/common'
 import { limitRate } from '@aeriajs/security'
 import { getCollection } from '@aeriajs/entrypoint'
-import { isFunctionExposed } from './endpoints.js'
+import { isFunctionExposed, FunctionExposedStatus } from './endpoints.js'
 
 const assetsMemo: {
   assets: Record<string, Record<string, Awaited<ReturnType<typeof internalGetCollectionAsset>>> | undefined>
@@ -61,7 +61,7 @@ export const getFunction = async <
 >(
   collectionName: TCollectionName,
   functionName: TFunctionName,
-  acProfile?: Token,
+  token?: Token,
   options = {
     exposedOnly: false,
   },
@@ -84,17 +84,19 @@ export const getFunction = async <
   }
 
   if( options.exposedOnly ) {
-    if( !await isFunctionExposed(collection, functionName) ) {
-      return left(ACErrors.FunctionNotExposed)
+    const exposedStatus = await isFunctionExposed(collection, functionName, token)
+
+    console.log({
+      functionName,
+      token,
+      exposedStatus,
+    })
+
+    switch( exposedStatus ) {
+      case FunctionExposedStatus.FunctionNotExposed: return left(ACErrors.FunctionNotExposed)
+      case FunctionExposedStatus.FunctionNotGranted: return left(ACErrors.AuthorizationError)
     }
   }
-
-  // if( acProfile ) {
-  //   if( !await isGranted(collectionName, functionName, acProfile) ) {
-  //     return left(ACErrors.AuthorizationError)
-  //   }
-  // }
-  //
 
   const wrapper = async (payload: unknown, context: Context) => {
     const securityPolicy = collection.security?.functions?.[functionName]

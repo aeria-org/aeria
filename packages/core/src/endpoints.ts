@@ -1,28 +1,56 @@
 import type { RoutesMeta } from '@aeriajs/http'
-import type { Collection, ContractWithRoles, RouteUri } from '@aeriajs/types'
+import type { Collection, ContractWithRoles, RouteUri, Token } from '@aeriajs/types'
 import { getCollections, getRouter, getConfig, getAvailableRoles } from '@aeriajs/entrypoint'
-import { deepMerge } from '@aeriajs/common'
+import { deepMerge, arraysIntersects } from '@aeriajs/common'
 import * as builtinFunctions from './functions/index.js'
 
-export const isFunctionExposed = async <TCollection extends Collection>(
-  collection: TCollection,
-  fnName: string,
-) => {
+export enum FunctionExposedStatus {
+  FunctionNotExposed = 'FUNCTION_NOT_EXPOSED',
+  FunctionNotGranted = 'FUNCTION_NOT_GRANTED',
+  FunctionAccessible = 'FUNCTION_ACCESSIBLE',
+}
+
+export const isFunctionExposed = async (collection: Collection, fnName: string, token?: Token) => {
   if( !collection.functions ) {
-    return false
+    return FunctionExposedStatus.FunctionNotExposed
   }
 
   const fn = collection.functions[fnName]
-  if( fn.exposed || (collection.exposedFunctions && fnName in collection.exposedFunctions) ) {
-    return true
+  const config = await getConfig()
+
+  if( collection.exposedFunctions && fnName in collection.exposedFunctions ) {
+    const exposed = collection.exposedFunctions[fnName]
+
+    if( Array.isArray(exposed) ) {
+      if( !token ) {
+        return FunctionExposedStatus.FunctionAccessible
+      }
+
+      const roleIntersects = token.authenticated
+        ? arraysIntersects(token.roles, exposed)
+        : exposed.includes('guest')
+
+      return roleIntersects
+        ? FunctionExposedStatus.FunctionAccessible
+        : FunctionExposedStatus.FunctionNotGranted
+    }
+
+    return exposed
+      ? FunctionExposedStatus.FunctionAccessible
+      : FunctionExposedStatus.FunctionNotExposed
   }
 
-  const config = await getConfig()
+  if( fn.exposed ) {
+    return FunctionExposedStatus.FunctionAccessible
+  }
+
   if( config.security.exposeFunctionsByDefault ) {
     return fn.exposed !== false
+      ? FunctionExposedStatus.FunctionAccessible
+      : FunctionExposedStatus.FunctionNotExposed
   }
 
-  return false
+  return FunctionExposedStatus.FunctionNotExposed
 }
 
 export const getEndpoints = async (): Promise<RoutesMeta> => {
@@ -46,7 +74,8 @@ export const getEndpoints = async (): Promise<RoutesMeta> => {
 
     if( collectionFunctions ) {
       for( const fnName in collectionFunctions ) {
-        if( !await isFunctionExposed(collection, fnName) ) {
+        const exposedStatus = await isFunctionExposed(collection, fnName)
+        if( exposedStatus !== FunctionExposedStatus.FunctionAccessible ) {
           continue
         }
 
@@ -55,7 +84,7 @@ export const getEndpoints = async (): Promise<RoutesMeta> => {
         const roles = Array.isArray(exposed)
           ? exposed
           : exposed
-            ? await getAvailableRoles() 
+            ? await getAvailableRoles()
             : []
 
         const contracts: Record<'POST', ContractWithRoles | null> = {

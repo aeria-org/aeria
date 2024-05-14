@@ -34,24 +34,12 @@ export const user = defineCollection({
         }),
         rightSchema({
           $ref: 'user',
-        })
-      ]
-    }
+        }),
+      ],
+    },
   },
   exposedFunctions: {
-    insert: [
-      'user'
-    ]
-  }
-  // accessControl: {
-  //   roles: {
-  //     root: {
-  //       grantEverything: true,
-  //     },
-  //     guest: {
-  //       grant: ['authenticate'],
-  //     },
-  //   },
-  // },
+    authenticate: true,
+  },
 })
 
