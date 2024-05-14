@@ -1,5 +1,13 @@
 # @aeriajs/node-http
 
+## 0.0.51
+
+### Patch Changes
+
+- d2da9ea: New access control API
+- Updated dependencies [d2da9ea]
+  - @aeriajs/http@0.0.51
+
 ## 0.0.50
 
 ### Patch Changes

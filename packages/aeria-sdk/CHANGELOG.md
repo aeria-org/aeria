@@ -1,5 +1,14 @@
 # aeria-sdk
 
+## 0.0.66
+
+### Patch Changes
+
+- d2da9ea: New access control API
+- Updated dependencies [d2da9ea]
+  - @aeriajs/common@0.0.43
+  - @aeriajs/types@0.0.40
+
 ## 0.0.65
 
 ### Patch Changes

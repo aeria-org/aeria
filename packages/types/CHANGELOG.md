@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.40
+
+### Patch Changes
+
+- d2da9ea: New access control API
+
 ## 0.0.39
 
 ### Patch Changes

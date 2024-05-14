@@ -1,5 +1,20 @@
 # @aeriajs/server
 
+## 0.0.78
+
+### Patch Changes
+
+- d2da9ea: New access control API
+- Updated dependencies [d2da9ea]
+  - @aeriajs/builtins@0.0.76
+  - @aeriajs/core@0.0.76
+  - @aeriajs/common@0.0.43
+  - @aeriajs/entrypoint@0.0.43
+  - @aeriajs/http@0.0.51
+  - @aeriajs/node-http@0.0.51
+  - @aeriajs/server@0.0.78
+  - @aeriajs/types@0.0.40
+
 ## 0.0.77
 
 ### Patch Changes
