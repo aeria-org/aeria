@@ -1,57 +1,9 @@
 import type { RoutesMeta } from '@aeriajs/http'
-import type { Collection, ContractWithRoles, RouteUri, Token } from '@aeriajs/types'
-import { getCollections, getRouter, getConfig, getAvailableRoles } from '@aeriajs/entrypoint'
-import { deepMerge, arraysIntersects } from '@aeriajs/common'
+import type { ContractWithRoles, RouteUri } from '@aeriajs/types'
+import { getCollections, getRouter, getAvailableRoles } from '@aeriajs/entrypoint'
+import { deepMerge } from '@aeriajs/common'
+import { isFunctionExposed, FunctionExposedStatus } from './accessControl.js'
 import * as builtinFunctions from './functions/index.js'
-
-export enum FunctionExposedStatus {
-  FunctionNotExposed = 'FUNCTION_NOT_EXPOSED',
-  FunctionNotGranted = 'FUNCTION_NOT_GRANTED',
-  FunctionAccessible = 'FUNCTION_ACCESSIBLE',
-}
-
-export const isFunctionExposed = async (collection: Collection, fnName: string, token?: Token) => {
-  if( !collection.functions ) {
-    return FunctionExposedStatus.FunctionNotExposed
-  }
-
-  const fn = collection.functions[fnName]
-  const config = await getConfig()
-
-  if( collection.exposedFunctions && fnName in collection.exposedFunctions ) {
-    const exposed = collection.exposedFunctions[fnName]
-
-    if( Array.isArray(exposed) ) {
-      if( !token ) {
-        return FunctionExposedStatus.FunctionAccessible
-      }
-
-      const roleIntersects = token.authenticated
-        ? arraysIntersects(token.roles, exposed)
-        : exposed.includes('guest')
-
-      return roleIntersects
-        ? FunctionExposedStatus.FunctionAccessible
-        : FunctionExposedStatus.FunctionNotGranted
-    }
-
-    return exposed
-      ? FunctionExposedStatus.FunctionAccessible
-      : FunctionExposedStatus.FunctionNotExposed
-  }
-
-  if( fn.exposed ) {
-    return FunctionExposedStatus.FunctionAccessible
-  }
-
-  if( config.security.exposeFunctionsByDefault ) {
-    return fn.exposed !== false
-      ? FunctionExposedStatus.FunctionAccessible
-      : FunctionExposedStatus.FunctionNotExposed
-  }
-
-  return FunctionExposedStatus.FunctionNotExposed
-}
 
 export const getEndpoints = async (): Promise<RoutesMeta> => {
   const router = await getRouter()

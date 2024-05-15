@@ -3,7 +3,7 @@ import { ACErrors } from '@aeriajs/types'
 import { left, right, isLeft, unwrapEither } from '@aeriajs/common'
 import { limitRate } from '@aeriajs/security'
 import { getCollection } from '@aeriajs/entrypoint'
-import { isFunctionExposed, FunctionExposedStatus } from './endpoints.js'
+import { isFunctionExposed, FunctionExposedStatus } from './accessControl.js'
 
 const assetsMemo: {
   assets: Record<string, Record<string, Awaited<ReturnType<typeof internalGetCollectionAsset>>> | undefined>
@@ -85,12 +85,6 @@ export const getFunction = async <
 
   if( options.exposedOnly ) {
     const exposedStatus = await isFunctionExposed(collection, functionName, token)
-
-    console.log({
-      functionName,
-      token,
-      exposedStatus,
-    })
 
     switch( exposedStatus ) {
       case FunctionExposedStatus.FunctionNotExposed: return left(ACErrors.FunctionNotExposed)

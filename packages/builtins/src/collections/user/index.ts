@@ -38,8 +38,5 @@ export const user = defineCollection({
       ],
     },
   },
-  exposedFunctions: {
-    authenticate: true,
-  },
 })
 

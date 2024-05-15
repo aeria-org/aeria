@@ -109,6 +109,9 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
     collectionName,
     functionName,
     context.token,
+    {
+      exposedOnly: true,
+    },
   )
 
   if( isLeft(fnEither) ) {

@@ -2,6 +2,7 @@ import type { BuildContext } from 'esbuild'
 import * as path from 'path'
 import * as chokidar from 'chokidar'
 import * as ts from 'typescript'
+import { isLeft, unwrapEither } from '@aeriajs/common'
 import { spawn, fork, type ChildProcessWithoutNullStreams } from 'child_process'
 import { log } from './log.js'
 import { mirrorSdk } from './mirrorSdk.js'
@@ -96,7 +97,14 @@ export const watch = async (options: CompileOptions = {}) => {
 
   if( initialCompilationResult.success ) {
     runningApi = await spawnApi()
-    await mirrorSdk()
+
+    const resultEither = await mirrorSdk()
+    log(
+      isLeft(resultEither)
+        ? 'error'
+        : 'info',
+      unwrapEither(resultEither)
+    )
   }
 
   const srcWatcher = chokidar.watch([

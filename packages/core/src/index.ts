@@ -1,3 +1,4 @@
+export * from './accessControl.js'
 export * from './assets.js'
 export * from './collection/index.js'
 export * from './context.js'
