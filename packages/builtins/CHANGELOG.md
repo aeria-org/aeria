@@ -1,5 +1,17 @@
 # @aeriajs/builtins
 
+## 0.0.78
+
+### Patch Changes
+
+- f1ce719: Refactor Access Control API
+- Updated dependencies [f1ce719]
+  - @aeriajs/types@0.0.42
+  - @aeriajs/core@0.0.78
+  - @aeriajs/common@0.0.45
+  - @aeriajs/entrypoint@0.0.45
+  - @aeriajs/validation@0.0.48
+
 ## 0.0.77
 
 ### Patch Changes
