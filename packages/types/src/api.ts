@@ -20,7 +20,13 @@ export type Collection<TCollection extends Collection = any> = {
   security?: CollectionSecurityPolicy<TCollection>
   functions?: Record<string, (payload: any, context: Context, ...args: any[])=> any>
   functionContracts?: Record<string, Contract>
-  exposedFunctions?: Record<string, readonly string[] | boolean>
+  exposedFunctions?: Record<
+    string,
+    | readonly string[]
+    | boolean
+    | 'unauthenticated'
+    | 'unauthenticated-only'
+  >
 }
 
 export type AssetType = keyof Collection

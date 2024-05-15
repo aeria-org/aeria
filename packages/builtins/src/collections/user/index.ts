@@ -38,5 +38,19 @@ export const user = defineCollection({
       ],
     },
   },
+  exposedFunctions: {
+    get: true,
+    getAll: true,
+    remove: true,
+    upload: true,
+    removeFile: true,
+    insert: true,
+    authenticate: 'unauthenticated',
+    activate: 'unauthenticated-only',
+    createAccount: 'unauthenticated-only',
+    getInfo: 'unauthenticated',
+    getCurrentUser: true,
+    getActivationLink: true,
+  },
 })
 

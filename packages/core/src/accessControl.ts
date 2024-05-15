@@ -35,8 +35,14 @@ export const isFunctionExposed = async (collection: Collection, fnName: string, 
       return FunctionExposedStatus.FunctionNotExposed
     }
 
-    if( !token.authenticated ) {
-      return FunctionExposedStatus.FunctionNotGranted
+    if( token.authenticated ) {
+      if( exposed === 'unauthenticated-only' ) {
+        return FunctionExposedStatus.FunctionNotGranted
+      }
+    } else {
+      if( exposed !== 'unauthenticated' ) {
+        return FunctionExposedStatus.FunctionNotGranted
+      }
     }
 
     return FunctionExposedStatus.FunctionAccessible

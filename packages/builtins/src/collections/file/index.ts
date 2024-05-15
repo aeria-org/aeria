@@ -45,5 +45,12 @@ export const file = defineCollection({
     remove,
     removeAll,
   },
+  exposedFunctions: {
+    get: 'unauthenticated',
+    insert: true,
+    download: 'unauthenticated',
+    remove: true,
+    removeAll: true,
+  },
 })
 

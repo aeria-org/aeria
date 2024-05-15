@@ -41,4 +41,9 @@ export const log = defineCollection({
     getAll,
     insert,
   },
+  exposedFunctions: {
+    get: true,
+    getAll: true,
+    insert: true,
+  },
 })

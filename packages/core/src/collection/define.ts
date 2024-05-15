@@ -48,6 +48,8 @@ export const defineCollection = <
         keyof TFunctions,
         | readonly string[]
         | boolean
+        | 'unauthenticated'
+        | 'unauthenticated-only'
       >
     >
     security?: CollectionSecurityPolicy<{
