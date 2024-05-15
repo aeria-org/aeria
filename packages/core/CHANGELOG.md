@@ -1,5 +1,22 @@
 # @aeriajs/api
 
+## 0.0.77
+
+### Patch Changes
+
+- c26b76b: Fix array iteration bug in `traverseDocument()`
+- 1e1f03e: Remove function attributes
+- 92989fb: Refactor Access Control API
+- Updated dependencies [1e1f03e]
+- Updated dependencies [92989fb]
+  - @aeriajs/builtins@0.0.77
+  - @aeriajs/types@0.0.41
+  - @aeriajs/security@0.0.77
+  - @aeriajs/common@0.0.44
+  - @aeriajs/entrypoint@0.0.44
+  - @aeriajs/http@0.0.52
+  - @aeriajs/validation@0.0.47
+
 ## 0.0.76
 
 ### Patch Changes

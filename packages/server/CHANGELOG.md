@@ -1,5 +1,22 @@
 # @aeriajs/server
 
+## 0.0.79
+
+### Patch Changes
+
+- 92989fb: Refactor Access Control API
+- Updated dependencies [c26b76b]
+- Updated dependencies [1e1f03e]
+- Updated dependencies [92989fb]
+  - @aeriajs/core@0.0.77
+  - @aeriajs/builtins@0.0.77
+  - @aeriajs/types@0.0.41
+  - @aeriajs/server@0.0.79
+  - @aeriajs/common@0.0.44
+  - @aeriajs/entrypoint@0.0.44
+  - @aeriajs/http@0.0.52
+  - @aeriajs/node-http@0.0.52
+
 ## 0.0.78
 
 ### Patch Changes
