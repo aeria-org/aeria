@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.41
+
+### Patch Changes
+
+- 1e1f03e: Remove function attributes
+
 ## 0.0.40
 
 ### Patch Changes
