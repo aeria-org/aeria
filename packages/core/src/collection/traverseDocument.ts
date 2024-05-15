@@ -28,7 +28,6 @@ export type TraverseNormalized = {
 export enum TraverseErrors {
   InvalidDocumentId = 'INVALID_DOCUMENT_ID',
   InvalidTempfile = 'INVALID_TEMPFILE',
-  NonIterableValue = 'NON_ITERABLE_VALUE',
 }
 
 type PhaseContext = {
@@ -273,7 +272,7 @@ const recurseDeep = async (value: any, ctx: PhaseContext) => {
 
   if( 'items' in ctx.property ) {
     if( !Array.isArray(value) ) {
-      return left(TraverseErrors.NonIterableValue)
+      return value
     }
 
     const items: ObjectId[] = []

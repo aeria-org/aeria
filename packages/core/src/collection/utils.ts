@@ -64,11 +64,8 @@ export const prepareInsert = (
       || (description.writable && !description.writable.includes(key)
       )
   }
-  const prepareUpdate = () => Object.entries(rest).reduce((a: Record<string, any>, [key, value]) => {
-    if( forbidden(key) ) {
-      return a
-    }
 
+  const prepareUpdate = () => Object.entries(rest).reduce((a: Record<string, any>, [key, value]) => {
     // it's a mongodb operator
     if( key[0] === '$' ) {
       // it's not possible to use mongodb operators when user specifies
@@ -77,6 +74,10 @@ export const prepareInsert = (
         a[key] = value
       }
 
+      return a
+    }
+
+    if( forbidden(key) ) {
       return a
     }
 
