@@ -1,6 +1,6 @@
 import type { Context, SchemaWithId, Token, TokenRecipient } from '@aeriajs/types'
 import type { description } from './description.js'
-import { defineFunctionAttributes, type ObjectId } from '@aeriajs/core'
+import { type ObjectId } from '@aeriajs/core'
 import { compare as bcryptCompare } from 'bcrypt'
 import { signToken, decodeToken } from '@aeriajs/core'
 import { left, right } from '@aeriajs/common'
@@ -161,8 +161,4 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
 
   return right(await getUser(user._id, context))
 }
-
-defineFunctionAttributes(authenticate, {
-  exposed: true,
-})
 

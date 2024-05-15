@@ -1,9 +1,8 @@
 import type { Context, RemoveAllPayload } from '@aeriajs/types'
 import { unsafe } from '@aeriajs/common'
-import { defineExposedFunction } from '../utils.js'
 import { traverseDocument, cascadingRemove } from '../../collection/index.js'
 
-export const removeAll = defineExposedFunction(async <TContext extends Context>(payload: RemoveAllPayload, context: TContext) => {
+export const removeAll = async <TContext extends Context>(payload: RemoveAllPayload, context: TContext) => {
   const filtersWithId = {
     ...payload.filters,
     _id: {
@@ -23,5 +22,5 @@ export const removeAll = defineExposedFunction(async <TContext extends Context>(
   }
 
   return context.collection.model.deleteMany(filters)
-})
+}
 

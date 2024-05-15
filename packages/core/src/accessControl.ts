@@ -9,12 +9,10 @@ export enum FunctionExposedStatus {
 }
 
 export const isFunctionExposed = async (collection: Collection, fnName: string, token?: Token) => {
+  const config = await getConfig()
   if( !collection.functions ) {
     return FunctionExposedStatus.FunctionNotExposed
   }
-
-  const fn = collection.functions[fnName]
-  const config = await getConfig()
 
   if( !token ) {
     return FunctionExposedStatus.FunctionAccessible
@@ -44,15 +42,8 @@ export const isFunctionExposed = async (collection: Collection, fnName: string, 
     return FunctionExposedStatus.FunctionAccessible
   }
 
-  if( fn.exposed ) {
-    return FunctionExposedStatus.FunctionAccessible
-  }
-
   if( config.security.exposeFunctionsByDefault ) {
-    if( fn.exposed === false ) {
-      return FunctionExposedStatus.FunctionNotExposed
-    }
-    if( !token.authenticated ) {
+    if( config.security.exposeFunctionsByDefault !== 'unauthenticated' && !token.authenticated ) {
       return FunctionExposedStatus.FunctionNotGranted
     }
 

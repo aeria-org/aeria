@@ -1,6 +1,6 @@
 import type { Context } from '@aeriajs/types'
 import type { description } from './description.js'
-import { defineExposedFunction, ObjectId } from '@aeriajs/core'
+import { ObjectId } from '@aeriajs/core'
 import { left } from '@aeriajs/common'
 import * as fs from 'fs'
 
@@ -9,7 +9,7 @@ export enum FileReadError {
   FileNotFound = 'FILE_NOT_FOUND',
 }
 
-export const download = defineExposedFunction(async (
+export const download = async (
   payload: {
     fileId: string
     options: readonly (
@@ -88,5 +88,5 @@ export const download = defineExposedFunction(async (
   }
 
   return fs.createReadStream(file.absolute_path)
-})
+}
 

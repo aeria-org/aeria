@@ -5,7 +5,6 @@ import type {
   Description,
   CollectionSecurityPolicy,
   PackReferences,
-  FunctionAttributes,
 
 } from '.'
 
@@ -19,7 +18,7 @@ export type Collection<TCollection extends Collection = any> = {
   description: Description
   item?: any
   security?: CollectionSecurityPolicy<TCollection>
-  functions?: Record<string, ((payload: any, context: Context, ...args: any[])=> any) & FunctionAttributes>
+  functions?: Record<string, (payload: any, context: Context, ...args: any[])=> any>
   functionContracts?: Record<string, Contract>
   exposedFunctions?: Record<string, readonly string[] | boolean>
 }

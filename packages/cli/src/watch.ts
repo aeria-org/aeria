@@ -103,7 +103,7 @@ export const watch = async (options: CompileOptions = {}) => {
       isLeft(resultEither)
         ? 'error'
         : 'info',
-      unwrapEither(resultEither)
+      unwrapEither(resultEither),
     )
   }
 

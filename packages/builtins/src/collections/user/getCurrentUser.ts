@@ -1,6 +1,5 @@
 import type { Context, SchemaWithId } from '@aeriajs/types'
 import type { description } from './description'
-import { defineExposedFunction } from '@aeriajs/core'
 import { left, right } from '@aeriajs/common'
 
 export enum ActivationErrors {
@@ -9,7 +8,7 @@ export enum ActivationErrors {
   InvalidLink = 'INVALID_LINK',
 }
 
-export const getCurrentUser = defineExposedFunction(async (
+export const getCurrentUser = async (
   _payload: undefined,
   context: Context<typeof description>,
 ) => {
@@ -29,5 +28,5 @@ export const getCurrentUser = defineExposedFunction(async (
 
   const nonNullableUser: SchemaWithId<typeof description> = user
   return right(nonNullableUser)
-})
+}
 

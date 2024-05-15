@@ -1,6 +1,6 @@
 import type { Context } from '@aeriajs/types'
 import type { description } from './description'
-import { defineExposedFunction, ObjectId } from '@aeriajs/core'
+import { ObjectId } from '@aeriajs/core'
 import { left, right } from '@aeriajs/common'
 import * as bcrypt from 'bcrypt'
 
@@ -10,7 +10,7 @@ export enum ActivationErrors {
   InvalidLink = 'INVALID_LINK',
 }
 
-export const getInfo = defineExposedFunction(async (
+export const getInfo = async (
   payload: {
     userId: string
     token: string
@@ -46,5 +46,5 @@ export const getInfo = defineExposedFunction(async (
     name: user.name,
     email: user.email,
   })
-})
+}
 

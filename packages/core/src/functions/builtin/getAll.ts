@@ -2,7 +2,6 @@ import type { Context, SchemaWithId, GetAllPayload } from '@aeriajs/types'
 import type { Document } from 'mongodb'
 import { useSecurity } from '@aeriajs/security'
 import { unsafe } from '@aeriajs/common'
-import { defineExposedFunction } from '../utils.js'
 import {
   traverseDocument,
   normalizeProjection,
@@ -15,7 +14,7 @@ export type GetAllOptions = {
   bypassSecurity?: boolean
 }
 
-export const getAll = defineExposedFunction(async <TContext extends Context>(
+export const getAll = async <TContext extends Context>(
   _payload: GetAllPayload<SchemaWithId<Context['description']>> | undefined,
   context: TContext,
   options: GetAllOptions = {},
@@ -113,5 +112,5 @@ export const getAll = defineExposedFunction(async <TContext extends Context>(
   }
 
   return documents
-})
+}
 

@@ -1,14 +1,13 @@
 import type { Context, SchemaWithId, InsertPayload } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
 import { left, right, isLeft, unwrapEither, unsafe } from '@aeriajs/common'
-import { defineExposedFunction } from '../utils.js'
 import { traverseDocument, normalizeProjection, prepareInsert } from '../../collection/index.js'
 
 export type InsertOptions = {
   bypassSecurity?: boolean
 }
 
-export const insert = defineExposedFunction(async <TContext extends Context>(
+export const insert = async <TContext extends Context>(
   payload: InsertPayload<SchemaWithId<TContext['description']>>,
   context: TContext,
   options?: InsertOptions,
@@ -91,5 +90,5 @@ export const insert = defineExposedFunction(async <TContext extends Context>(
   }))
 
   return right(result)
-})
+}
 

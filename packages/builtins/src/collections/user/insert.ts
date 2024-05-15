@@ -1,6 +1,6 @@
 import type { Context, SchemaWithId, PackReferences } from '@aeriajs/types'
 import type { description } from './description'
-import { defineFunctionAttributes, insert as originalInsert } from '@aeriajs/core'
+import { insert as originalInsert } from '@aeriajs/core'
 import * as bcrypt from 'bcrypt'
 
 export const insert = async (
@@ -15,8 +15,4 @@ export const insert = async (
 
   return originalInsert(payload, context)
 }
-
-defineFunctionAttributes(insert, {
-  exposed: true,
-})
 

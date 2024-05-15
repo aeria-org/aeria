@@ -43,7 +43,13 @@ export const defineCollection = <
     description: TDescription
     functions?: TFunctions
     functionContracts?: TFunctionContracts
-    exposedFunctions?: Partial<Record<keyof TFunctions, readonly string[] | boolean>>
+    exposedFunctions?: Partial<
+      Record<
+        keyof TFunctions,
+        | readonly string[]
+        | boolean
+      >
+    >
     security?: CollectionSecurityPolicy<{
       description: NoInfer<TDescription>
       functions: TFunctions

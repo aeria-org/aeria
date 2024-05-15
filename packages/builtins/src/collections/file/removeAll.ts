@@ -1,9 +1,9 @@
 import type { Context, SchemaWithId, PackReferences, RemoveAllPayload } from '@aeriajs/types'
 import type { description } from './description.js'
-import { defineExposedFunction, remove as originalRemoveAll, type ObjectId } from '@aeriajs/core'
+import { remove as originalRemoveAll, type ObjectId } from '@aeriajs/core'
 import * as fs from 'fs/promises'
 
-export const removeAll = defineExposedFunction(async (
+export const removeAll = async (
   payload: RemoveAllPayload,
   context: Context<typeof description>,
 ) => {
@@ -27,5 +27,5 @@ export const removeAll = defineExposedFunction(async (
   }
 
   return originalRemoveAll(payload, context)
-})
+}
 
