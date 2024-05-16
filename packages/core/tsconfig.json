@@ -2,6 +2,7 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
+    "esModuleInterop": true,
     "paths": {
       "@aeriajs/common": [
         "../common/dist"
