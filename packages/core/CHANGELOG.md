@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.79
+
+### Patch Changes
+
+- 32d6507: Fix jwt default import
+  - @aeriajs/builtins@0.0.79
+  - @aeriajs/security@0.0.79
+
 ## 0.0.78
 
 ### Patch Changes
