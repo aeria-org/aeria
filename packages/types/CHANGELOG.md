@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.42
+
+### Patch Changes
+
+- f1ce719: Refactor Access Control API
+
 ## 0.0.41
 
 ### Patch Changes
