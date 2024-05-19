@@ -9,7 +9,7 @@ export const isGranted = (condition: AccessCondition, token: Token) => {
   }
 
   switch( condition ) {
-    case false: return condition
+    case false: return false
     case true: return token.authenticated
     case 'unauthenticated':
       return true
