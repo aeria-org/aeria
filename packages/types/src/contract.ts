@@ -3,7 +3,7 @@ import type {
   InferProperty,
   InferResponse,
   Context,
-  UserRole
+  UserRole,
 } from '.'
 
 export type ContractBase = {

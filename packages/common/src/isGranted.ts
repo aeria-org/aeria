@@ -1,4 +1,4 @@
-import type { AccessCondition, Token } from '@aeriajs/types' 
+import type { AccessCondition, Token } from '@aeriajs/types'
 import { arraysIntersects } from './arraysIntersects.js'
 
 export const isGranted = (condition: AccessCondition, token: Token) => {
@@ -9,9 +9,8 @@ export const isGranted = (condition: AccessCondition, token: Token) => {
   }
 
   switch( condition ) {
-    case true:
-    case false:
-      return condition
+    case false: return condition
+    case true: return token.authenticated
     case 'unauthenticated':
       return true
     case 'unauthenticated-only':

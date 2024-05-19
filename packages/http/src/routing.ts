@@ -9,6 +9,7 @@ import type {
   PackReferences,
   ContractWithRoles,
   ApiConfig,
+  UserRole,
 } from '@aeriajs/types'
 
 import { Stream } from 'stream'
@@ -35,9 +36,19 @@ export type RouteGroupOptions = {
 }
 
 type TypedContext<TContractWithRoles extends ContractWithRoles> = RouteContext<
-  number extends keyof TContractWithRoles['roles']
-    ? TContractWithRoles['roles'][number]
-    : null
+  TContractWithRoles['roles'] extends infer AccessRule
+    ? number extends keyof AccessRule
+      ? AccessRule[number]
+      : AccessRule extends true
+        ? UserRole
+        : AccessRule extends false
+          ? never
+          : AccessRule extends 'unauthenticated-only'
+            ? 'guest'
+            : AccessRule extends 'unauthenticated'
+              ? UserRole
+              : null
+    : never
 > & {
   request: Omit<RouteContext['request'], 'payload' | 'query'> & {
     payload: TContractWithRoles extends { payload: infer Payload }
@@ -58,13 +69,11 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
         ? InferResponse<Response>
         : any
     ) extends infer Response
-      ? TContractWithRoles['roles'] extends unknown[]
-        ? TContractWithRoles['roles'][number] extends infer Role
-          ? 'guest' extends Role
-            ? (context: TypedContext<TContractWithRoles>)=> Response
-            : (context: TypedContext<TContractWithRoles> & { token: { authenticated: true } })=> Response
-          : never
-        : (context: TypedContext<TContractWithRoles>)=> Response
+      ? TContractWithRoles['roles'] extends infer AccessRule
+        ? AccessRule extends true
+          ? (context: TypedContext<TContractWithRoles> & { token: { authenticated: true } }) => Response
+          : (context: TypedContext<TContractWithRoles>) => Response
+        : never
       : never,
   >(
     exp: RouteUri,

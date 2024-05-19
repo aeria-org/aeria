@@ -1,6 +1,6 @@
 import type { ContractWithRoles, RouteUri } from '@aeriajs/types'
 import { getEndpoints } from '@aeriajs/core'
-import { getConfig } from '@aeriajs/entrypoint'
+import { getConfig, getAvailableRoles } from '@aeriajs/entrypoint'
 
 type EscapeCode = `[${string}m`
 
@@ -42,8 +42,23 @@ const colorizedRoute = async (
     hasContractLine = escape(AnsiColors.Yellow, 'x')
 
   if( endpoint ) {
-    if( endpoint.roles ) {
-      rolesLine = ` ${escape('[90m', `[${endpoint.roles.join('|')}]`)}`
+    if( 'roles' in endpoint ) {
+      const roles = await (async () => {
+        const availableRoles = await getAvailableRoles()
+
+        switch( endpoint.roles ) {
+          case false:
+          case undefined:
+            return []
+          case true: return []
+          case 'unauthenticated': return availableRoles
+          case 'unauthenticated-only': return ['guest']
+        }
+
+        return endpoint.roles
+      })()
+
+      rolesLine = ` ${escape('[90m', `[${roles.join('|')}]`)}`
     }
     if( 'response' in endpoint || endpoint.builtin ) {
       hasContractLine = escape(AnsiColors.Green, '✓')
