@@ -36,16 +36,16 @@ export type RouteGroupOptions = {
 }
 
 type TypedContext<TContractWithRoles extends ContractWithRoles> = RouteContext<
-  TContractWithRoles['roles'] extends infer AccessRule
-    ? number extends keyof AccessRule
-      ? AccessRule[number]
-      : AccessRule extends true
+  TContractWithRoles['roles'] extends infer AccessCondition
+    ? number extends keyof AccessCondition
+      ? AccessCondition[number]
+      : AccessCondition extends true
         ? UserRole
-        : AccessRule extends false
+        : AccessCondition extends false
           ? never
-          : AccessRule extends 'unauthenticated-only'
+          : AccessCondition extends 'unauthenticated-only'
             ? 'guest'
-            : AccessRule extends 'unauthenticated'
+            : AccessCondition extends 'unauthenticated'
               ? UserRole
               : null
     : never
@@ -69,10 +69,10 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
         ? InferResponse<Response>
         : any
     ) extends infer Response
-      ? TContractWithRoles['roles'] extends infer AccessRule
-        ? AccessRule extends true
-          ? (context: TypedContext<TContractWithRoles> & { token: { authenticated: true } }) => Response
-          : (context: TypedContext<TContractWithRoles>) => Response
+      ? TContractWithRoles['roles'] extends infer AccessCondition
+        ? AccessCondition extends true
+          ? (context: TypedContext<TContractWithRoles> & { token: { authenticated: true } })=> Response
+          : (context: TypedContext<TContractWithRoles>)=> Response
         : never
       : never,
   >(
@@ -274,13 +274,11 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
         ? InferResponse<Response>
         : any
     ) extends infer Response
-      ? TContractWithRoles['roles'] extends unknown[]
-        ? TContractWithRoles['roles'][number] extends infer Role
-          ? 'guest' extends Role
-            ? (context: TypedContext<TContractWithRoles>)=> Response
-            : (context: TypedContext<TContractWithRoles> & { token: { authenticated: true } })=> Response
-          : never
-        : (context: TypedContext<TContractWithRoles>)=> Response
+      ? TContractWithRoles['roles'] extends infer AccessCondition
+        ? AccessCondition extends true
+          ? (context: TypedContext<TContractWithRoles> & { token: { authenticated: true } })=> Response
+          : (context: TypedContext<TContractWithRoles>)=> Response
+        : never
       : never,
   >(
     method: RequestMethod | RequestMethod[],
