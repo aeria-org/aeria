@@ -5,20 +5,10 @@ import type {
   Description,
   CollectionSecurityPolicy,
   PackReferences,
+  AcceptedRole,
+  AccessCondition,
 
 } from '.'
-
-export type AcceptedRole =
-  | UserRole
-  | UserRole[]
-  | null
-  | unknown
-
-export type AccessCondition =
-  | readonly string[]
-  | boolean
-  | 'unauthenticated'
-  | 'unauthenticated-only'
 
 export type Collection<TCollection extends Collection = any> = {
   description: Description
@@ -31,11 +21,6 @@ export type Collection<TCollection extends Collection = any> = {
 
 export type AssetType = keyof Collection
 export type FunctionPath = `/${string}/${string}`
-
-export type UserRole =
-  | Collections['user']['item']['roles'][number]
-  | 'root'
-  | 'guest'
 
 export type AuthenticatedToken<TAcceptedRole extends AcceptedRole = null> = {
   authenticated: true

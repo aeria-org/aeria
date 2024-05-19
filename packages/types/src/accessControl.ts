@@ -1,3 +1,20 @@
+export type UserRole =
+  | Collections['user']['item']['roles'][number]
+  | 'root'
+  | 'guest'
+
+export type AcceptedRole =
+  | UserRole
+  | UserRole[]
+  | null
+  | unknown
+
+export type AccessCondition =
+  | readonly UserRole[]
+  | boolean
+  | 'unauthenticated'
+  | 'unauthenticated-only'
+
 export enum ACErrors {
   AssetNotFound = 'ASSET_NOT_FOUND',
   AuthenticationError = 'AUTHENTICATION_ERROR',

@@ -6,6 +6,7 @@ import type {
   ContractToFunction,
   Description,
   CollectionSecurityPolicy,
+  AccessCondition,
 } from '@aeriajs/types'
 
 import { deepMerge, freshItem } from '@aeriajs/common'
@@ -46,10 +47,7 @@ export const defineCollection = <
     exposedFunctions?: Partial<
       Record<
         keyof TFunctions,
-        | readonly string[]
-        | boolean
-        | 'unauthenticated'
-        | 'unauthenticated-only'
+        AccessCondition
       >
     >
     security?: CollectionSecurityPolicy<{
