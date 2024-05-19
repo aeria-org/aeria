@@ -1,6 +1,6 @@
 import type { Collection, Token } from '@aeriajs/types'
 import { getConfig } from '@aeriajs/entrypoint'
-import { arraysIntersects } from '@aeriajs/common'
+import { isGranted } from '@aeriajs/common'
 
 export enum FunctionExposedStatus {
   FunctionNotExposed = 'FUNCTION_NOT_EXPOSED',
@@ -21,31 +21,13 @@ export const isFunctionExposed = async (collection: Collection, fnName: string, 
   if( collection.exposedFunctions && fnName in collection.exposedFunctions ) {
     const exposed = collection.exposedFunctions[fnName]
 
-    if( Array.isArray(exposed) ) {
-      const roleIntersects = token.authenticated
-        ? arraysIntersects(token.roles, exposed)
-        : exposed.includes('guest')
-
-      return roleIntersects
-        ? FunctionExposedStatus.FunctionAccessible
-        : FunctionExposedStatus.FunctionNotGranted
-    }
-
-    if( !exposed ) {
+    if( exposed === false ) {
       return FunctionExposedStatus.FunctionNotExposed
     }
 
-    if( token.authenticated ) {
-      if( exposed === 'unauthenticated-only' ) {
-        return FunctionExposedStatus.FunctionNotGranted
-      }
-    } else {
-      if( exposed !== 'unauthenticated' ) {
-        return FunctionExposedStatus.FunctionNotGranted
-      }
-    }
-
-    return FunctionExposedStatus.FunctionAccessible
+    return isGranted(exposed, token)
+      ? FunctionExposedStatus.FunctionAccessible
+      : FunctionExposedStatus.FunctionNotGranted
   }
 
   if( config.security.exposeFunctionsByDefault ) {

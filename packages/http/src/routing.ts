@@ -13,7 +13,7 @@ import type {
 
 import { Stream } from 'stream'
 import { ACErrors, REQUEST_METHODS } from '@aeriajs/types'
-import { pipe, arraysIntersects, left, isLeft, unwrapEither, deepMerge } from '@aeriajs/common'
+import { pipe, isGranted, left, isLeft, unwrapEither, deepMerge } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
 import { getConfig } from '@aeriajs/entrypoint'
 import { safeJson } from './payload.js'
@@ -170,11 +170,8 @@ export const registerRoute = async (
 
     if( contract ) {
       if( contract.roles ) {
-        if( !context.token.authenticated ) {
-          if( !contract.roles.includes('guest') ) {
-            return unsufficientRoles(context)
-          }
-        } else if( !arraysIntersects(context.token.roles, contract.roles) ) {
+        const granted = isGranted(contract.roles, context.token)
+        if( !granted ) {
           return unsufficientRoles(context)
         }
       }

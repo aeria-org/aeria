@@ -32,7 +32,7 @@ export const defineCollection = <
   const TFunctionContracts extends {
     [P in keyof TFunctions]?: Contract
   },
-  const TFunctions extends Record<string, unknown> & {
+  const TFunctions extends Record<string, (payload: any, context: Context) => any> & {
     [P in keyof TFunctionContracts]: ContractToFunction<
       NonNullable<TFunctionContracts[P]>,
       Context<TDescription>

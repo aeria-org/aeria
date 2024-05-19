@@ -14,19 +14,19 @@ export type AcceptedRole =
   | null
   | unknown
 
+export type AccessCondition =
+  | readonly string[]
+  | boolean
+  | 'unauthenticated'
+  | 'unauthenticated-only'
+
 export type Collection<TCollection extends Collection = any> = {
   description: Description
   item?: any
   security?: CollectionSecurityPolicy<TCollection>
   functions?: Record<string, (payload: any, context: Context, ...args: any[])=> any>
   functionContracts?: Record<string, Contract>
-  exposedFunctions?: Record<
-    string,
-    | readonly string[]
-    | boolean
-    | 'unauthenticated'
-    | 'unauthenticated-only'
-  >
+  exposedFunctions?: Record<string, AccessCondition>
 }
 
 export type AssetType = keyof Collection

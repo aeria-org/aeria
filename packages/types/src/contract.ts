@@ -1,4 +1,10 @@
-import type { Property, InferProperty, InferResponse, Context, UserRole } from '.'
+import type {
+  Property,
+  InferProperty,
+  InferResponse,
+  Context,
+  UserRole
+} from '.'
 
 export type ContractBase = {
   // used internally to indicate the contract belongs to a builtin function
@@ -6,7 +12,11 @@ export type ContractBase = {
 }
 
 export type ContractRoles = {
-  roles?: UserRole[]
+  roles?:
+    | readonly UserRole[]
+    | boolean
+    | 'unauthenticated'
+    | 'unauthenticated-only'
 }
 
 export type Contract = ContractBase & (
