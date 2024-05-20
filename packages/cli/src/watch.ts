@@ -98,7 +98,10 @@ export const watch = async (options: CompileOptions = {}) => {
   if( initialCompilationResult.success ) {
     runningApi = await spawnApi()
 
-    const resultEither = await mirrorSdk()
+    const resultEither = await mirrorSdk({
+      environment: 'development',
+    })
+
     log(
       isLeft(resultEither)
         ? 'error'

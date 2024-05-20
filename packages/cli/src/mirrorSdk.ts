@@ -1,8 +1,9 @@
+import type { InstanceConfig } from 'aeria-sdk'
 import * as path from 'path'
 import { systemFunctions } from '@aeriajs/builtins'
 import { right } from '@aeriajs/common'
 
-export const mirrorSdk = async () => {
+export const mirrorSdk = async (defaultConfig: Partial<InstanceConfig>) => {
   try {
     const { getConfig } = await import('aeria-sdk/utils')
     const { writeMirrorFiles } = await import('aeria-sdk/mirror')
@@ -11,8 +12,10 @@ export const mirrorSdk = async () => {
       router: true,
     })
 
-    const config = await getConfig()
-    config.environment = 'development'
+    const config = Object.assign(
+      defaultConfig,
+      await getConfig(),
+    )
 
     await writeMirrorFiles(mirror, config, path.join(process.cwd(), '.aeria'))
 
