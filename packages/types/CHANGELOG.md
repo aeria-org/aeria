@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.43
+
+### Patch Changes
+
+- 2c7001e: Bug fixes
+
 ## 0.0.42
 
 ### Patch Changes
