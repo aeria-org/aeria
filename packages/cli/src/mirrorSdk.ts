@@ -3,7 +3,7 @@ import * as path from 'path'
 import { systemFunctions } from '@aeriajs/builtins'
 import { right } from '@aeriajs/common'
 
-export const mirrorSdk = async (defaultConfig: Partial<InstanceConfig>) => {
+export const mirrorSdk = async (defaultConfig?: Partial<InstanceConfig>) => {
   try {
     const { getConfig } = await import('aeria-sdk/utils')
     const { writeMirrorFiles } = await import('aeria-sdk/mirror')
@@ -13,7 +13,7 @@ export const mirrorSdk = async (defaultConfig: Partial<InstanceConfig>) => {
     })
 
     const config = Object.assign(
-      defaultConfig,
+      defaultConfig || {},
       await getConfig(),
     )
 
