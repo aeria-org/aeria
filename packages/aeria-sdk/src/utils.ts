@@ -7,12 +7,12 @@ export const publicUrl = (config: InstanceConfig) => {
     return config.publicUrl
   }
 
-  return process.env.NODE_ENV === 'production'
-    ? config.publicUrl.production
-    : config.publicUrl.development
+  return config.environment === 'development'
+    ? config.publicUrl.development
+    : config.publicUrl.production
 }
 
-export const getConfig = async () => {
+export const getConfig = async (): Promise<InstanceConfig> => {
   const { aeriaSdk } = await dynamicImport(path.join(process.cwd(), 'package.json'))
   if( typeof aeriaSdk !== 'object' || !aeriaSdk ) {
     throw new Error('aeriaSdk is absent in package.json')

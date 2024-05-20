@@ -12,6 +12,8 @@ export const mirrorSdk = async () => {
     })
 
     const config = await getConfig()
+    config.environment = 'development'
+
     await writeMirrorFiles(mirror, config, path.join(process.cwd(), '.aeria'))
 
   } catch( err: any ) {

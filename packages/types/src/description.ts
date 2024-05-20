@@ -64,7 +64,7 @@ export type TableLayout<TDescription extends Description> = {
 }
 
 export type FiltersPreset<TDescription extends Description> = {
-  name?: string
+  label?: string
   icon?: Icon
   filters?: Partial<Record<PropertiesWithId<TDescription> | `$${string}`, any>>
   table?: readonly PropertiesWithId<TDescription>[]

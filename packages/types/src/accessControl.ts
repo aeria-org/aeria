@@ -3,17 +3,17 @@ export type UserRole =
   | 'root'
   | 'guest'
 
-export type AcceptedRole =
-  | UserRole
-  | UserRole[]
-  | null
-  | unknown
-
 export type AccessCondition =
   | readonly UserRole[]
   | boolean
   | 'unauthenticated'
   | 'unauthenticated-only'
+
+export type AcceptedRole =
+  | UserRole
+  | UserRole[]
+  | null
+  | unknown
 
 export enum ACErrors {
   AssetNotFound = 'ASSET_NOT_FOUND',

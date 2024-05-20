@@ -12,6 +12,9 @@ export type InstanceConfig = {
     strategy?: StorageStrategy
     namespace?: string
   }
+  environment?:
+    | 'production'
+    | 'development'
   integrated?: boolean
 }
 
