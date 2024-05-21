@@ -19,6 +19,8 @@ export type Collection<TCollection extends Collection = any> = {
   exposedFunctions?: Record<string, AccessCondition>
 }
 
+export type CollectionItem<TCollectionName extends keyof Collections> = Collections[TCollectionName]['item']
+
 export type AssetType = keyof Collection
 export type FunctionPath = `/${string}/${string}`
 

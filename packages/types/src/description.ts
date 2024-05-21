@@ -140,7 +140,9 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
     expireAfterSeconds: number
   }
   timestamps?: false
-  immutable?: boolean | readonly string[]
+  immutable?:
+    | boolean
+    | readonly string[]
 
   // takes an array of something
   route?: readonly string[]
