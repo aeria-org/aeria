@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.19
+
+### Patch Changes
+
+- 39f2b9f: Fix Aeria SDK environment bug
+
 ## 0.0.18
 
 ### Patch Changes
