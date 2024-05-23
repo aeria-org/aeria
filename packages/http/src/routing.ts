@@ -14,10 +14,11 @@ import type {
 
 import { Stream } from 'stream'
 import { ACErrors, REQUEST_METHODS } from '@aeriajs/types'
-import { pipe, isGranted, left, isLeft, unwrapEither, deepMerge } from '@aeriajs/common'
+import { pipe, isGranted, isLeft, deepMerge, endpointError } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
 import { getConfig } from '@aeriajs/entrypoint'
 import { safeJson } from './payload.js'
+import { isNext } from './next.js'
 
 export type RouterOptions = {
   exhaust?: boolean
@@ -166,12 +167,11 @@ export const registerRoute = async (
         )
 
       } catch( err ) {
-        context.response.writeHead(500)
-        context.response.end(left({
+        return context.error({
           httpCode: 500,
+          code: 'INVALID_JSON',
           message: 'Invalid JSON',
-        }))
-        return null
+        })
       }
     }
 
@@ -212,51 +212,45 @@ export const registerRoute = async (
   }
 }
 
-export const wrapRouteExecution = async (res: GenericResponse, cb: ()=> any | Promise<any>) => {
+export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> any | Promise<any>) => {
   try {
     const result = await cb()
     if( result === null ) {
-      if( !res.headersSent ) {
-        res.writeHead(204)
-        res.end()
+      if( !response.headersSent ) {
+        response.writeHead(204)
+        response.end()
       }
       return
     }
 
-    if( !res.headersSent && result && isLeft(result) ) {
-      const error: any = unwrapEither(result)
-      if( error.httpCode ) {
-        res.writeHead(error.httpCode)
-      }
-    }
-
     if( result instanceof Stream ) {
       try {
-        result.pipe(res)
+        result.pipe(response)
       } catch( err ) {
       }
       return
     }
 
-    if( !res.writableEnded ) {
-      res.end(result)
+    if( !response.writableEnded ) {
+      response.end(result)
     }
 
     return result
 
   } catch( e ) {
     console.trace(e)
-    if( !res.headersSent ) {
-      res.writeHead(500)
+    if( !response.headersSent ) {
+      response.writeHead(500)
     }
 
-    if( !res.writableEnded ) {
-      const error = left({
+    if( !response.writableEnded ) {
+      return endpointError({
         httpCode: 500,
+        code: 'UNKNOWN_ERROR',
         message: 'Internal server error',
+      }, {
+        response
       })
-
-      res.end(error)
     }
   }
 }
@@ -348,7 +342,11 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
   }
 
   const routerPipe = pipe(routes, {
-    returnFirst: true,
+    returnFirst: (value) => {
+      if( value && !isNext(value) ) {
+        return value
+      }
+    },
   })
 
   const router = {
@@ -363,9 +361,10 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
 
   router.install = async (context: RouteContext, options?: RouterOptions) => {
     const result = await routerPipe(undefined, context, options)
-    if( exhaust && result === undefined ) {
-      return left({
+    if( exhaust && (result === undefined || isNext(result)) ) {
+      return context.error({
         httpCode: 404,
+        code: 'NOT_FOUND',
         message: 'Not found',
       })
     }

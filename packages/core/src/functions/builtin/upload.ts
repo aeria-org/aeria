@@ -46,7 +46,7 @@ const streamToFs = (metadata: typeof FileMetadata, context: Context) => {
 export const upload = async <TContext extends Context>(_props: unknown, context: TContext) => {
   const tempFileCollection = await getCollection('tempFile')
   if( !tempFileCollection ) {
-    throw new Error(`The "tempFile" collection is absent, yet it is required to upload files.`)
+    throw new Error('The "tempFile" collection is absent, yet it is required to upload files.')
   }
 
   const headersEither = validate(context.request.headers, {

@@ -1,6 +1,7 @@
 import * as ts from 'typescript'
 import * as path from 'path'
 import * as glob from 'glob'
+import * as JSON5 from 'json5'
 import * as transpile from './transpile.js'
 import { readFile } from 'fs/promises'
 import { left, right, deepMerge } from '@aeriajs/common'
@@ -24,7 +25,7 @@ export const getUserTsconfig = async () => {
     return tsConfigMemo
   }
 
-  const tsConfig: TsConfig = JSON.parse(await readFile(`${process.cwd()}/tsconfig.json`, {
+  const tsConfig: TsConfig = JSON5.parse(await readFile(`${process.cwd()}/tsconfig.json`, {
     encoding: 'utf-8',
   }))
 
@@ -37,7 +38,7 @@ export const getUserTsconfig = async () => {
     Object.assign(
       tsConfig,
       deepMerge(
-        JSON.parse(await readFile(resolvedPath, {
+        JSON5.parse(await readFile(resolvedPath, {
           encoding: 'utf-8',
         })),
         tsConfig,

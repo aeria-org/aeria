@@ -61,7 +61,7 @@ export const createAccount = async (
     })
   }
 
-  const { insertedId } = await context.collection.model.insertOne(user as any)
+  const { insertedId } = await context.collection.model.insertOne(user)
   const newUser = await context.collection.model.findOne({
     _id: insertedId,
   })

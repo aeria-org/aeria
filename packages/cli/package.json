@@ -37,19 +37,20 @@
     "chokidar": "^3.6.0",
     "dotenv": "^16.4.5",
     "esbuild": "^0.20.2",
-    "glob": "^10.3.10"
+    "glob": "^10.3.10",
+    "json5": "^2.2.3"
   },
   "devDependencies": {
-    "@aeriajs/core": "link:../core",
     "@aeriajs/builtins": "link:../builtins",
     "@aeriajs/common": "link:../common",
+    "@aeriajs/core": "link:../core",
     "@aeriajs/entrypoint": "link:../entrypoint",
     "@aeriajs/types": "link:../types"
   },
   "peerDependencies": {
-    "@aeriajs/core": "^0.0.83",
     "@aeriajs/builtins": "^0.0.83",
     "@aeriajs/common": "^0.0.49",
+    "@aeriajs/core": "^0.0.83",
     "@aeriajs/entrypoint": "^0.0.49",
     "@aeriajs/types": "^0.0.46"
   }

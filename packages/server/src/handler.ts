@@ -1,16 +1,21 @@
 import type { RouteContext } from '@aeriajs/types'
 import type { functions } from '@aeriajs/core'
 import { createContext, getFunction } from '@aeriajs/core'
-import { type ACErrors, ACErrorMessages } from '@aeriajs/types'
+import { getCollection } from '@aeriajs/entrypoint'
+import { next } from '@aeriajs/http'
+import { ACErrors, ACErrorMessages } from '@aeriajs/types'
 import { isLeft, unwrapEither, pipe } from '@aeriajs/common'
 import { appendPagination } from './appendPagination.js'
 
 const postPipe = pipe([appendPagination])
 
-const getNormalizedACError = (code: ACErrors) => {
-  return {
-    code,
-    message: ACErrorMessages[code],
+const getACErrorHttpCode = (code: ACErrors) => {
+  switch( code ) {
+    case ACErrors.FunctionNotFound: return 404
+    case ACErrors.FunctionNotExposed: return 403
+    case ACErrors.AuthorizationError: return 401
+    case ACErrors.AuthenticationError: return 403
+    default: return 500
   }
 }
 
@@ -47,17 +52,21 @@ export const safeHandle = (
       return response
     }
 
-    error.httpCode ??= 500
-    context.response.writeHead(error.httpCode, {
-      'content-type': 'application/json',
+    return context.error({
+      httpCode: error.httpCode || 500,
+      code: error.code,
+      message: error.message,
     })
-
-    context.response.end(response)
   }
 }
 
 export const customVerbs = () => async (parentContext: RouteContext) => {
   const { fragments: [collectionName, functionName] } = parentContext.request
+
+  const collection = await getCollection(collectionName)
+  if( !collection ) {
+    return next()
+  }
 
   const context = await createContext({
     parentContext,
@@ -75,8 +84,12 @@ export const customVerbs = () => async (parentContext: RouteContext) => {
   )
 
   if( isLeft(fnEither) ) {
-    const error = unwrapEither(fnEither)
-    return getNormalizedACError(error)
+    const code = unwrapEither(fnEither)
+    return context.error({
+      httpCode: getACErrorHttpCode(code),
+      code,
+      message: ACErrorMessages[code],
+    })
   }
 
   const fn = unwrapEither(fnEither)
@@ -87,6 +100,11 @@ export const customVerbs = () => async (parentContext: RouteContext) => {
 
 export const regularVerb = (functionName: keyof typeof functions) => async (parentContext: RouteContext) => {
   const { fragments: [collectionName, id] } = parentContext.request
+
+  const collection = await getCollection(collectionName)
+  if( !collection ) {
+    return next()
+  }
 
   const context = await createContext({
     parentContext,
@@ -115,10 +133,12 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
   )
 
   if( isLeft(fnEither) ) {
-    const error = unwrapEither(fnEither)
-    return {
-      error,
-    }
+    const code = unwrapEither(fnEither)
+    return context.error({
+      httpCode: getACErrorHttpCode(code),
+      code,
+      message: ACErrorMessages[code],
+    })
   }
 
   const fn = unwrapEither(fnEither)

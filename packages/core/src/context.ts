@@ -7,7 +7,7 @@ import type {
   Collection,
 } from '@aeriajs/types'
 
-import { unsafe } from '@aeriajs/common'
+import { unsafe, endpointError  } from '@aeriajs/common'
 import { getCollections } from '@aeriajs/entrypoint'
 import { limitRate } from '@aeriajs/security'
 import { getDatabaseCollection } from './database.js'
@@ -72,6 +72,10 @@ export const createContext = async (options: ContextOptions = {}) => {
         : options.parentContext?.token.sub,
       created_at: new Date(),
     })
+  }
+
+  context.error = (error) => {
+    return endpointError(error, context)
   }
 
   context.limitRate = (params) => {

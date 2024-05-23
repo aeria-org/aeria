@@ -2,6 +2,7 @@ import type { Collection as MongoCollection } from 'mongodb'
 import type { GenericRequest, GenericResponse } from './http.js'
 import type {
   Either,
+  EndpointError,
   Description,
   PackReferences,
   SchemaWithId,
@@ -83,6 +84,7 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
   response: GenericResponse
 
   log: (message: string, details?: any)=> Promise<any>
+  error: (error: EndpointError) => EndpointError
   limitRate: (params: RateLimitingParams)=> Promise<Either<RateLimitingErrors, {
     hits: number
     points: number
