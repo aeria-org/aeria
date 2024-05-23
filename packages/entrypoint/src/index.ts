@@ -48,7 +48,10 @@ export const getCollection = async (collectionName: string): Promise<Collection 
   }
 
   const collections = await getCollections()
-  const candidate = collections[collectionName]
+  const candidate = collectionName in collections
+    ? collections[collectionName]
+    : undefined
+
   const collection = typeof candidate === 'function'
     ? candidate()
     : candidate
