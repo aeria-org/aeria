@@ -1,5 +1,20 @@
 # @aeriajs/api
 
+## 0.0.84
+
+### Patch Changes
+
+- b2692e2: Release
+- 5b999cc: Detect absence of `tempFile` collection on upload
+- Updated dependencies [b2692e2]
+  - @aeriajs/common@0.0.50
+  - @aeriajs/types@0.0.47
+  - @aeriajs/http@0.0.58
+  - @aeriajs/builtins@0.0.84
+  - @aeriajs/entrypoint@0.0.50
+  - @aeriajs/security@0.0.84
+  - @aeriajs/validation@0.0.53
+
 ## 0.0.83
 
 ### Patch Changes
