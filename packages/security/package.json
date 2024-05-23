@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/security",
-  "version": "0.0.80",
+  "version": "0.0.81",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -38,9 +38,9 @@
     "mongodb": "^6.5.0"
   },
   "peerDependencies": {
-    "@aeriajs/core": "^0.0.80",
-    "@aeriajs/common": "^0.0.46",
-    "@aeriajs/types": "^0.0.43",
+    "@aeriajs/core": "^0.0.81",
+    "@aeriajs/common": "^0.0.47",
+    "@aeriajs/types": "^0.0.44",
     "mongodb": "^6.5.0"
   }
 }

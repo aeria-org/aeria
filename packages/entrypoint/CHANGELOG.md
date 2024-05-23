@@ -1,5 +1,14 @@
 # @aeriajs/entrypoint
 
+## 0.0.47
+
+### Patch Changes
+
+- 8435b00: Quickfix
+- Updated dependencies [79c9831]
+  - @aeriajs/types@0.0.44
+  - @aeriajs/common@0.0.47
+
 ## 0.0.46
 
 ### Patch Changes
