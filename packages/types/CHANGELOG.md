@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.46
+
+### Patch Changes
+
+- 31e3709: Prefer `unknown` over `any`
+
 ## 0.0.45
 
 ### Patch Changes
