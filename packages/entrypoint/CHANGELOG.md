@@ -1,5 +1,14 @@
 # @aeriajs/entrypoint
 
+## 0.0.48
+
+### Patch Changes
+
+- f154649: Fix memoization bug
+- Updated dependencies [4514037]
+  - @aeriajs/types@0.0.45
+  - @aeriajs/common@0.0.48
+
 ## 0.0.47
 
 ### Patch Changes

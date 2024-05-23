@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/builtins",
-  "version": "0.0.81",
+  "version": "0.0.82",
   "description": "## Installation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -56,10 +56,10 @@
     "mongodb": "^6.5.0"
   },
   "peerDependencies": {
-    "@aeriajs/core": "^0.0.81",
-    "@aeriajs/common": "^0.0.47",
-    "@aeriajs/entrypoint": "^0.0.47",
-    "@aeriajs/types": "^0.0.44",
-    "@aeriajs/validation": "^0.0.50"
+    "@aeriajs/core": "^0.0.82",
+    "@aeriajs/common": "^0.0.48",
+    "@aeriajs/entrypoint": "^0.0.48",
+    "@aeriajs/types": "^0.0.45",
+    "@aeriajs/validation": "^0.0.51"
   }
 }
