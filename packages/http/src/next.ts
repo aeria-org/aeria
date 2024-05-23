@@ -6,7 +6,7 @@ type NextObject = {
 
 export const next = () => {
   return {
-    [NEXT_SYMBOL]: null
+    [NEXT_SYMBOL]: null,
   }
 }
 

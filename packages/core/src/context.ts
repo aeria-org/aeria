@@ -7,7 +7,7 @@ import type {
   Collection,
 } from '@aeriajs/types'
 
-import { unsafe, endpointError  } from '@aeriajs/common'
+import { unsafe, endpointError } from '@aeriajs/common'
 import { getCollections } from '@aeriajs/entrypoint'
 import { limitRate } from '@aeriajs/security'
 import { getDatabaseCollection } from './database.js'

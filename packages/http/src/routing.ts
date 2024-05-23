@@ -249,7 +249,7 @@ export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> any
         code: 'UNKNOWN_ERROR',
         message: 'Internal server error',
       }, {
-        response
+        response,
       })
     }
   }
