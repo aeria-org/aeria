@@ -53,7 +53,9 @@ export const getCollection = async (collectionName: string): Promise<Collection 
     ? candidate()
     : candidate
 
-  collectionsMemo![collectionName] = candidate
+  if( collection ) {
+    collectionsMemo![collectionName] = collection
+  }
 
   return collection
 }

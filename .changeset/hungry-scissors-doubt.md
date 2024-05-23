@@ -1,0 +1,5 @@
+---
+"@aeriajs/entrypoint": patch
+---
+
+Quickfix
