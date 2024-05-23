@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.45
+
+### Patch Changes
+
+- 4514037: Add `CollectionItemWithId<T>` auxilliary type'
+
 ## 0.0.44
 
 ### Patch Changes
