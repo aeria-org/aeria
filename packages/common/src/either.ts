@@ -22,9 +22,6 @@ export const unwrapEither = <L, R>(either: Either<L, R>) => {
   return either.value
 }
 
-export const error = left
-export const ok = right
-
 export const unsafe = <L, R>(either: Either<L, R>, message?: any) => {
   if( either._tag !== 'Right' ) {
     if( process.env.NODE_ENV !== 'production' ) {

@@ -84,7 +84,10 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
   response: GenericResponse
 
   log: (message: string, details?: any)=> Promise<any>
-  error: (error: EndpointError)=> EndpointError
+  error: (error: EndpointError)=> {
+    $isError: true
+    error: EndpointError
+  }
   limitRate: (params: RateLimitingParams)=> Promise<Either<RateLimitingErrors, {
     hits: number
     points: number

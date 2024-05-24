@@ -14,7 +14,7 @@ import type {
 
 import { Stream } from 'stream'
 import { ACErrors, REQUEST_METHODS } from '@aeriajs/types'
-import { pipe, isGranted, isLeft, deepMerge, endpointError } from '@aeriajs/common'
+import { pipe, isGranted, isLeft, deepMerge, error } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
 import { getConfig } from '@aeriajs/entrypoint'
 import { safeJson } from './payload.js'
@@ -244,7 +244,7 @@ export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> any
     }
 
     if( !response.writableEnded ) {
-      return endpointError({
+      return error({
         httpCode: 500,
         code: 'UNKNOWN_ERROR',
         message: 'Internal server error',
