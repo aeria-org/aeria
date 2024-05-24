@@ -1,5 +1,13 @@
 # @aeriajs/common
 
+## 0.0.51
+
+### Patch Changes
+
+- 335d064: New `error()` and `isError()` functions
+- Updated dependencies [335d064]
+  - @aeriajs/types@0.0.48
+
 ## 0.0.50
 
 ### Patch Changes

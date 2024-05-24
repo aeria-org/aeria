@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.48
+
+### Patch Changes
+
+- 335d064: New `error()` and `isError()` functions
+
 ## 0.0.47
 
 ### Patch Changes
