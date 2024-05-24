@@ -1,5 +1,13 @@
 # @aeriajs/validation
 
+## 0.0.54
+
+### Patch Changes
+
+- Updated dependencies [335d064]
+  - @aeriajs/common@0.0.51
+  - @aeriajs/types@0.0.48
+
 ## 0.0.53
 
 ### Patch Changes
