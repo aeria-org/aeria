@@ -39,18 +39,7 @@ export const person = defineCollection({
   exposedFunctions: {
     hello: true,
   },
-  accessControl: {
-    roles: {
-      root: {
-        grantEverything: true,
-      },
-      guest: {
-        inherit: ['root'],
-        grant: ['getAll'],
-      },
-    },
-  },
-  functionContracts: {
+  contracts: {
     hello: {
       payload: {
         type: 'object',

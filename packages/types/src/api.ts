@@ -34,9 +34,11 @@ export type AuthenticatedToken<TAcceptedRole extends AcceptedRole = null> = {
       : TAcceptedRole
   )[]
   allowed_functions?: readonly FunctionPath[]
-  userinfo:
-    | Collections['user']['item']
-    | PackReferences<Collections['user']['item']>
+  userinfo: Omit<Collections['user']['item'], '_id' | 'roles'> extends infer UserItem
+    ?
+      | UserItem
+      | PackReferences<UserItem>
+    : never
 }
 
 export type UnauthenticatedToken = {
@@ -49,15 +51,10 @@ export type TokenRecipient = {
   content: string
 }
 
-export type Token<TAcceptedRole extends AcceptedRole = null> = (
-  TAcceptedRole extends any[]
-    ? TAcceptedRole[number]
-    : TAcceptedRole
-) extends infer NormalizedRole
-  ? NormalizedRole extends null | 'guest'
-    ?
-      | AuthenticatedToken
-      | UnauthenticatedToken
-    : AuthenticatedToken<NormalizedRole>
-  : never
+// disable distributive conditional type by wrapping TAcceptedRole in a tuple
+export type Token<TAcceptedRole extends AcceptedRole = null> = [TAcceptedRole] extends [null | 'unauthenticated']
+  ?
+    | AuthenticatedToken
+    | UnauthenticatedToken
+  : AuthenticatedToken<TAcceptedRole>
 

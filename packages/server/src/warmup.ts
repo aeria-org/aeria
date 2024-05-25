@@ -52,7 +52,7 @@ const colorizedRoute = async (
             return []
           case true: return []
           case 'unauthenticated': return availableRoles
-          case 'unauthenticated-only': return ['guest']
+          case 'unauthenticated-only': return ['unauthenticated']
         }
 
         return endpoint.roles

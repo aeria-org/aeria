@@ -40,7 +40,7 @@ export const defineCollection = <
       AccessCondition
     >
   >,
-  const TFunctions extends {
+  const TFunctions extends Record<string, (payload: any, context: StrictContext<any>)=> any> & {
     [P in keyof TContracts | keyof TExposedFunctions]: ContractToFunction<
       P extends keyof TContracts
         ? NonNullable<TContracts[P]>
@@ -77,46 +77,6 @@ export const defineCollection = <
     contracts: TContracts
   }
 }
-
-import { type RouteContext } from '@aeriajs/types'
-declare const fn: (context: RouteContext<'root'>)=> void
-
-defineCollection({
-  description: {
-    $id: 'test',
-    properties: {
-      name: {
-        type: 'string',
-      },
-    },
-  },
-  functions: {
-    teste: (payload, context) => {
-      fn(context)
-      // context.token.roles.includes('root')
-    },
-  },
-  security: {
-    functions: {
-      teste: {},
-    },
-  },
-  contracts: {
-    teste: {
-      payload: {
-        type: 'object',
-        properties: {
-          name: {
-            type: 'boolean',
-          },
-        },
-      },
-    },
-  },
-  exposedFunctions: {
-    teste: ['root2'],
-  },
-})
 
 export const extendCollection = <
   const TLeftCollection extends Collection,

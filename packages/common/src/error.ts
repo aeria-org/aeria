@@ -8,12 +8,12 @@ export const error = (error: EndpointError, context: Pick<RouteContext, 'respons
   })
 
   return <const>{
-    $isError: true,
+    _tag: 'Error',
     error,
   }
 }
 
 export const isError = (object: any): object is EndpointError => {
-  return object.$isError === true
+  return object._tag === 'Error'
 }
 

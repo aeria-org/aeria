@@ -9,8 +9,7 @@ export type UserRole =
       : never
   )
   | 'root'
-  | 'root2'
-  | 'guest'
+  | 'unauthenticated'
 
 export type AccessCondition =
   | readonly UserRole[]
@@ -24,17 +23,19 @@ export type AcceptedRole =
   | null
   | unknown
 
-export type RoleFromAccessCondition<TAccessCondition extends AccessCondition | undefined> = number extends keyof TAccessCondition
-  ? TAccessCondition[number]
-  : TAccessCondition extends true
-    ? Exclude<UserRole, 'guest'>
-    : TAccessCondition extends false
-      ? never
-      : TAccessCondition extends 'unauthenticated-only'
-        ? 'guest'
-        : TAccessCondition extends 'unauthenticated'
-          ? UserRole
-          : never
+export type RoleFromAccessCondition<TAccessCondition extends AccessCondition | undefined> = undefined extends TAccessCondition
+  ? null
+  : number extends keyof TAccessCondition
+    ? TAccessCondition[number]
+    : TAccessCondition extends true
+      ? Exclude<UserRole, 'unauthenticated'>
+      : TAccessCondition extends false
+        ? never
+        : TAccessCondition extends 'unauthenticated-only'
+          ? 'unauthenticated'
+          : TAccessCondition extends 'unauthenticated'
+            ? UserRole
+            : never
 
 export enum ACErrors {
   AssetNotFound = 'ASSET_NOT_FOUND',
