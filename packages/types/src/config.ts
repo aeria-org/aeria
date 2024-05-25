@@ -1,4 +1,6 @@
-import type { RouteContext, RouteUri, RateLimitingParams } from '.'
+import type { RouteContext } from './context.js'
+import type { RouteUri } from './http.js'
+import type { RateLimitingParams } from './security.js'
 
 export type ApiConfig = {
   secret?: string

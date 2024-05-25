@@ -1,4 +1,4 @@
-import type { Property, ObjectToSchema, EndpointError } from '@aeriajs/types'
+import type { Property, ObjectToSchema, EndpointErrorContent } from '@aeriajs/types'
 
 const mapValueToProperty = (value: any): any => {
   if( value.constructor === Object ) {
@@ -81,7 +81,7 @@ export const rightSchema = <const TObject extends Property>(object: TObject) => 
   } satisfies Property
 }
 
-export const endpointErrorSchema = (error: EndpointError) => {
+export const endpointErrorSchema = (error: EndpointErrorContent) => {
   return <const>{
     type: 'object',
     properties: {

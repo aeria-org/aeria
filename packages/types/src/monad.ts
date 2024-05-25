@@ -8,6 +8,19 @@ export type Right<T> = {
   readonly value: T
 }
 
+export type EndpointErrorContent = {
+  httpCode?: number
+  code: string
+  message: string
+  details?: Record<string, any>
+}
+
+export type EndpointError<T extends EndpointErrorContent> = {
+  readonly _tag: 'Error'
+  readonly error: T
+}
+
+
 export type ExtractLeft<T> = T extends Left<infer L>
   ? L
   : never

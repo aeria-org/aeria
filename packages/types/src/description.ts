@@ -1,6 +1,6 @@
 import type { IconStyle, PhosphorIcon } from '@phosphor-icons/core'
-import type { JsonSchema, PropertiesWithId } from './property.js'
 import type { Condition } from './condition.js'
+import type { JsonSchema, PropertiesWithId } from './property.js'
 import type { OwnershipMode } from './security.js'
 
 export type CollectionPresets =

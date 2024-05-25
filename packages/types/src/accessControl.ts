@@ -11,17 +11,17 @@ export type UserRole =
   | 'root'
   | 'unauthenticated'
 
-export type AccessCondition =
-  | readonly UserRole[]
-  | boolean
-  | 'unauthenticated'
-  | 'unauthenticated-only'
-
 export type AcceptedRole =
   | UserRole
   | UserRole[]
   | null
   | unknown
+
+export type AccessCondition =
+  | readonly UserRole[]
+  | boolean
+  | 'unauthenticated'
+  | 'unauthenticated-only'
 
 export type RoleFromAccessCondition<TAccessCondition extends AccessCondition | undefined> = undefined extends TAccessCondition
   ? null

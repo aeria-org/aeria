@@ -1,5 +1,5 @@
 import type { ServerResponse, IncomingMessage } from 'http'
-import type { MapSchemaUnion } from '.'
+import type { MapSchemaUnion } from './schema.js'
 
 export const REQUEST_METHODS = <const>[
   'GET',

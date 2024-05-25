@@ -1,5 +1,8 @@
 import type { FilterOperators, StrictFilter as Filter, StrictUpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
-import type { PackReferences, Either, ValidationError, ACErrors } from '.'
+import type { ACErrors } from './accessControl.js'
+import type { Either } from './monad.js'
+import type { PackReferences } from './schema.js'
+import type { ValidationError } from './validation.js'
 
 export type UploadAuxProps = {
   parentId: string
