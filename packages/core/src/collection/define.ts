@@ -7,7 +7,7 @@ import type {
   Description,
   CollectionSecurityPolicy,
   AccessCondition,
-  RoleFromAccessCondition
+  RoleFromAccessCondition,
 } from '@aeriajs/types'
 
 import { deepMerge, freshItem } from '@aeriajs/common'
@@ -78,28 +78,28 @@ export const defineCollection = <
   }
 }
 
-import { RouteContext } from '@aeriajs/types'
-declare const fn: (context: RouteContext<'root'>) => void
+import { type RouteContext } from '@aeriajs/types'
+declare const fn: (context: RouteContext<'root'>)=> void
 
 defineCollection({
   description: {
     $id: 'test',
     properties: {
       name: {
-        type: 'string'
-      }
-    }
+        type: 'string',
+      },
+    },
   },
   functions: {
     teste: (payload, context) => {
       fn(context)
       // context.token.roles.includes('root')
-    }
+    },
   },
   security: {
     functions: {
-      teste: {}
-    }
+      teste: {},
+    },
   },
   contracts: {
     teste: {
@@ -107,17 +107,15 @@ defineCollection({
         type: 'object',
         properties: {
           name: {
-            type: 'boolean'
-          }
-        }
-      }
-    }
+            type: 'boolean',
+          },
+        },
+      },
+    },
   },
   exposedFunctions: {
-    teste: [
-      'root2',
-    ]
-  }
+    teste: ['root2'],
+  },
 })
 
 export const extendCollection = <

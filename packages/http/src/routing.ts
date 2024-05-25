@@ -251,7 +251,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
         : any
     ) extends infer Response
       ? (context: TypedContext<TContractWithRoles>)=> Response
-      : never
+      : never,
   >(
     method: RequestMethod | RequestMethod[],
     exp: RouteUri,
