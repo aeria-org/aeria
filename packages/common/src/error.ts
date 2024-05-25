@@ -13,7 +13,7 @@ export const error = <TEndpointErrorContent extends EndpointErrorContent>(error:
   } satisfies EndpointError<TEndpointErrorContent>
 }
 
-export const isError = <TEndpointErrorContent extends EndpointErrorContent>(object: EndpointError<TEndpointErrorContent>): object is EndpointError<TEndpointErrorContent> => {
+export const isError = (object: any): object is EndpointError<any> => {
   return object._tag === 'Error'
 }
 

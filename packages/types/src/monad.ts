@@ -20,7 +20,6 @@ export type EndpointError<T extends EndpointErrorContent> = {
   readonly error: T
 }
 
-
 export type ExtractLeft<T> = T extends Left<infer L>
   ? L
   : never
