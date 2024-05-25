@@ -20,7 +20,7 @@ export const getEndpoints = async (): Promise<RoutesMeta> => {
     const {
       description,
       functions: collectionFunctions,
-      functionContracts,
+      contracts,
       exposedFunctions = {},
     } = collection
 
@@ -39,26 +39,26 @@ export const getEndpoints = async (): Promise<RoutesMeta> => {
             ? await getAvailableRoles()
             : []
 
-        const contracts: Record<'POST', ContractWithRoles | null> = {
+        const endpointContracts: Record<'POST', ContractWithRoles | null> = {
           POST: null,
         }
 
         if( roles.length ) {
-          contracts.POST ??= {}
-          contracts.POST.roles = roles
+          endpointContracts.POST ??= {}
+          endpointContracts.POST.roles = roles
         }
 
-        if( functionContracts && fnName in functionContracts ) {
-          contracts.POST ??= {}
-          Object.assign(contracts.POST, functionContracts[fnName])
+        if( contracts && fnName in contracts ) {
+          endpointContracts.POST ??= {}
+          Object.assign(endpointContracts.POST, contracts[fnName])
         }
 
         if( fnName in builtinFunctions ) {
-          contracts.POST ??= {}
-          contracts.POST.builtin = true
+          endpointContracts.POST ??= {}
+          endpointContracts.POST.builtin = true
         }
 
-        functions[endpoint as RouteUri] = contracts
+        functions[endpoint as RouteUri] = endpointContracts
       }
     }
   }

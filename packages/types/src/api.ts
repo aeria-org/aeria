@@ -15,7 +15,7 @@ export type Collection<TCollection extends Collection = any> = {
   item?: any
   security?: CollectionSecurityPolicy<TCollection>
   functions?: Record<string, (payload: any, context: Context, ...args: any[])=> any>
-  functionContracts?: Record<string, Contract>
+  contracts?: Record<string, Contract>
   exposedFunctions?: Record<string, AccessCondition>
 }
 

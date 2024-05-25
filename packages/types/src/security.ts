@@ -1,5 +1,3 @@
-import type { Collection } from './api.js'
-
 export type OwnershipMode =
   | boolean
   | 'always'
@@ -48,7 +46,11 @@ export type SecurityPolicy = {
   logging?: LoggingParams
 }
 
-export type CollectionSecurityPolicy<TCollection extends Collection = any> = {
+export type CollectionSecurityPolicy<
+  TCollection extends {
+    functions?: Record<string, (...args: any[]) => unknown>
+  }
+> = {
   functions?: Partial<
     Record<
       keyof TCollection['functions'],

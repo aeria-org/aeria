@@ -1,6 +1,15 @@
 export type UserRole =
-  | Collections['user']['item']['roles'][number]
+  | (
+    Collections['user']['item']['roles'][number] extends infer UserDefinedRole
+      ? UserDefinedRole extends string
+        ? `${UserDefinedRole}${UserDefinedRole}` extends UserDefinedRole
+          ? 'root'
+          : UserDefinedRole
+        : never
+      : never
+  )
   | 'root'
+  | 'root2'
   | 'guest'
 
 export type AccessCondition =
@@ -14,6 +23,18 @@ export type AcceptedRole =
   | UserRole[]
   | null
   | unknown
+
+export type RoleFromAccessCondition<TAccessCondition extends AccessCondition | undefined> = number extends keyof TAccessCondition
+  ? TAccessCondition[number]
+  : TAccessCondition extends true
+    ? Exclude<UserRole, 'guest'>
+    : TAccessCondition extends false
+      ? never
+      : TAccessCondition extends 'unauthenticated-only'
+        ? 'guest'
+        : TAccessCondition extends 'unauthenticated'
+          ? UserRole
+          : never
 
 export enum ACErrors {
   AssetNotFound = 'ASSET_NOT_FOUND',

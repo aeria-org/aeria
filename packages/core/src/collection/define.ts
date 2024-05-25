@@ -1,12 +1,13 @@
 import type {
   SchemaWithId,
   Collection,
-  Context,
+  StrictContext,
   Contract,
   ContractToFunction,
   Description,
   CollectionSecurityPolicy,
   AccessCondition,
+  RoleFromAccessCondition
 } from '@aeriajs/types'
 
 import { deepMerge, freshItem } from '@aeriajs/common'
@@ -30,29 +31,37 @@ export const defineCollection = <
     >
     : never,
   const TDescription extends Description<TDescription>,
-  const TFunctionContracts extends {
+  const TContracts extends {
     [P in keyof TFunctions]?: Contract
   },
-  const TFunctions extends Record<string, (payload: any, context: Context)=> any> & {
-    [P in keyof TFunctionContracts]: ContractToFunction<
-      NonNullable<TFunctionContracts[P]>,
-      Context<TDescription>
+  const TExposedFunctions extends Partial<
+    Record<
+      keyof TFunctions,
+      AccessCondition
+    >
+  >,
+  const TFunctions extends {
+    [P in keyof TContracts | keyof TExposedFunctions]: ContractToFunction<
+      P extends keyof TContracts
+        ? NonNullable<TContracts[P]>
+        : any,
+      StrictContext<
+        P extends keyof TExposedFunctions
+          ? RoleFromAccessCondition<TExposedFunctions[P]>
+          : never,
+        TDescription
+      >
     >
   },
 >(
   collection: TCollection & {
     description: TDescription
     functions?: TFunctions
-    functionContracts?: TFunctionContracts
-    exposedFunctions?: Partial<
-      Record<
-        keyof TFunctions,
-        AccessCondition
-      >
-    >
+    contracts?: TContracts
+    exposedFunctions?: TExposedFunctions
     security?: CollectionSecurityPolicy<{
       description: NoInfer<TDescription>
-      functions: TFunctions
+      functions: NoInfer<TFunctions>
     }>
   },
 ) => {
@@ -65,9 +74,51 @@ export const defineCollection = <
     item: SchemaWithId<TDescription>
     description: TDescription
     functions: TFunctions
-    functionContracts: TFunctionContracts
+    contracts: TContracts
   }
 }
+
+import { RouteContext } from '@aeriajs/types'
+declare const fn: (context: RouteContext<'root'>) => void
+
+defineCollection({
+  description: {
+    $id: 'test',
+    properties: {
+      name: {
+        type: 'string'
+      }
+    }
+  },
+  functions: {
+    teste: (payload, context) => {
+      fn(context)
+      // context.token.roles.includes('root')
+    }
+  },
+  security: {
+    functions: {
+      teste: {}
+    }
+  },
+  contracts: {
+    teste: {
+      payload: {
+        type: 'object',
+        properties: {
+          name: {
+            type: 'boolean'
+          }
+        }
+      }
+    }
+  },
+  exposedFunctions: {
+    teste: [
+      'root2',
+    ]
+  }
+})
 
 export const extendCollection = <
   const TLeftCollection extends Collection,

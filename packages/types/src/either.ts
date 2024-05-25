@@ -8,5 +8,13 @@ export type Right<T> = {
   readonly value: T
 }
 
+export type ExtractLeft<T> = T extends Left<infer L>
+  ? L
+  : never
+
+export type ExtractRight<T> = T extends Right<infer R>
+  ? R
+  : never
+
 export type Either<L, R> = Left<L> | Right<R>
 

@@ -41,7 +41,7 @@ export const user = defineCollection({
     getCurrentUser,
     getActivationLink,
   },
-  functionContracts: {
+  contracts: {
     getCurrentUser: {
       response: [
         leftSchema({

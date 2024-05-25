@@ -9,7 +9,7 @@ import type {
   PackReferences,
   ContractWithRoles,
   ApiConfig,
-  UserRole,
+  RoleFromAccessCondition,
 } from '@aeriajs/types'
 
 import { Stream } from 'stream'
@@ -36,21 +36,7 @@ export type RouteGroupOptions = {
   base?: RouteUri
 }
 
-type TypedContext<TContractWithRoles extends ContractWithRoles> = RouteContext<
-  TContractWithRoles['roles'] extends infer AccessCondition
-    ? number extends keyof AccessCondition
-      ? AccessCondition[number]
-      : AccessCondition extends true
-        ? UserRole
-        : AccessCondition extends false
-          ? never
-          : AccessCondition extends 'unauthenticated-only'
-            ? 'guest'
-            : AccessCondition extends 'unauthenticated'
-              ? UserRole
-              : null
-    : never
-> & {
+type TypedContext<TContractWithRoles extends ContractWithRoles> = RouteContext<RoleFromAccessCondition<TContractWithRoles['roles']>> & {
   request: Omit<RouteContext['request'], 'payload' | 'query'> & {
     payload: TContractWithRoles extends { payload: infer Payload }
       ? PackReferences<InferProperty<Payload>>
@@ -70,11 +56,7 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
         ? InferResponse<Response>
         : any
     ) extends infer Response
-      ? TContractWithRoles['roles'] extends infer AccessCondition
-        ? AccessCondition extends true
-          ? (context: TypedContext<TContractWithRoles> & { token: { authenticated: true } })=> Response
-          : (context: TypedContext<TContractWithRoles>)=> Response
-        : never
+      ? (context: TypedContext<TContractWithRoles>)=> Response
       : never,
   >(
     exp: RouteUri,
@@ -268,12 +250,8 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
         ? InferResponse<Response>
         : any
     ) extends infer Response
-      ? TContractWithRoles['roles'] extends infer AccessCondition
-        ? AccessCondition extends true
-          ? (context: TypedContext<TContractWithRoles> & { token: { authenticated: true } })=> Response
-          : (context: TypedContext<TContractWithRoles>)=> Response
-        : never
-      : never,
+      ? (context: TypedContext<TContractWithRoles>)=> Response
+      : never
   >(
     method: RequestMethod | RequestMethod[],
     exp: RouteUri,
