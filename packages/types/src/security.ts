@@ -48,7 +48,7 @@ export type SecurityPolicy = {
 
 export type CollectionSecurityPolicy<
   TCollection extends {
-    functions?: Record<string, (...args: any[])=> unknown>
+    functions?: Record<string, unknown>
   },
 > = {
   functions?: Partial<

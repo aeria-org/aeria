@@ -60,8 +60,7 @@ export const defineCollection = <
     contracts?: TContracts
     exposedFunctions?: TExposedFunctions
     security?: CollectionSecurityPolicy<{
-      description: NoInfer<TDescription>
-      functions: NoInfer<TFunctions>
+      functions: TFunctions
     }>
   },
 ) => {
