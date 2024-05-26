@@ -82,6 +82,23 @@ export const rightSchema = <const TObject extends Property>(object: TObject) => 
 }
 
 export const endpointErrorSchema = (error: EndpointErrorContent) => {
+  if( error.message ) {
+    return <const>{
+      type: 'object',
+      properties: {
+        httpCode: {
+          const: error.code,
+        },
+        code: {
+          const: error.code,
+        },
+        message: {
+          const: error.message,
+        },
+      },
+    } satisfies Property
+  }
+
   return <const>{
     type: 'object',
     properties: {
@@ -90,9 +107,6 @@ export const endpointErrorSchema = (error: EndpointErrorContent) => {
       },
       code: {
         const: error.code,
-      },
-      message: {
-        const: error.message,
       },
     },
   } satisfies Property
