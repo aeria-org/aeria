@@ -1,6 +1,5 @@
 import type { ObjectId } from 'mongodb'
 import type { PackReferences } from './schema.js'
-import type { FunctionPath } from './collection.js'
 
 export type UserRole =
   | (
@@ -29,7 +28,6 @@ export type AuthenticatedToken<TAcceptedRole extends AcceptedRole = null> = {
       ? string
       : TAcceptedRole
   )[]
-  allowed_functions?: readonly FunctionPath[]
   userinfo: Omit<Collections['user']['item'], '_id' | 'roles'> extends infer UserItem
     ?
       | UserItem

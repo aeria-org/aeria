@@ -17,5 +17,4 @@ export type CollectionItem<TCollectionName extends keyof Collections> = Omit<Col
 export type CollectionItemWithId<TCollectionName extends keyof Collections> = Collections[TCollectionName]['item']
 
 export type AssetType = keyof Collection
-export type FunctionPath = `/${string}/${string}`
 

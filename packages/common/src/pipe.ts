@@ -1,5 +1,5 @@
 export type PipeOptions = {
-  returnFirst?: boolean | ((value: any)=> boolean)
+  returnFirst?: boolean | ((value: any)=> any)
 }
 
 export const pipe = <TFunction extends (...args: any)=> any>(functions: TFunction[], options?: PipeOptions) => {
@@ -17,7 +17,7 @@ export const pipe = <TFunction extends (...args: any)=> any>(functions: TFunctio
         switch( typeof returnFirst ) {
           case 'function': {
             const result = returnFirst(ret)
-            if( result ) {
+            if( result !== undefined ) {
               return result
             }
             break

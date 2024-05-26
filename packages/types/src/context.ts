@@ -4,7 +4,6 @@ import type { ApiConfig } from './config.js'
 import type { CollectionDocument, CollectionFunctions } from './functions.js'
 import type { Description } from './description.js'
 import type { Either, EndpointError, EndpointErrorContent } from './monad.js'
-import type { FunctionPath } from './collection.js'
 import type { GenericRequest, GenericResponse, HTTPStatus } from './http.js'
 import type { PackReferences, SchemaWithId } from './schema.js'
 import type { RateLimitingParams, RateLimitingErrors } from './security.js'
@@ -71,7 +70,6 @@ export type ContextOptions = {
 
 export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
   collections: IndepthCollections
-  functionPath: FunctionPath
   token: Token<TAcceptedRole>
 
   request: GenericRequest

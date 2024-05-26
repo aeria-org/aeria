@@ -11,6 +11,10 @@ export const next = () => {
 }
 
 export const isNext = (object: any): object is NextObject => {
+  if( !object ) {
+    return false
+  }
+
   const sym = Object.getOwnPropertyDescriptor(object, NEXT_SYMBOL)
   return !!sym
 }

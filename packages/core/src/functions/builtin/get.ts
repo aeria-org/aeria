@@ -61,6 +61,11 @@ export const get = async <TContext extends Context>(
 
   const result = await context.collection.model.aggregate(pipeline).next()
   if( !result ) {
+    if( !context.inherited ) {
+      context.response.writeHead(404, {
+        'content-type': 'application/json',
+      })
+    }
     return null
   }
 

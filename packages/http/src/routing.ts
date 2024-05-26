@@ -194,8 +194,8 @@ export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> any
     if( result === null ) {
       if( !response.headersSent ) {
         response.writeHead(204)
-        response.end()
       }
+      response.end(result)
       return
     }
 
@@ -315,7 +315,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
 
   const routerPipe = pipe(routes, {
     returnFirst: (value) => {
-      if( value && !isNext(value) ) {
+      if( value !== undefined && !isNext(value) ) {
         return value
       }
     },
