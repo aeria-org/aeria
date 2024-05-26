@@ -13,6 +13,16 @@ export const REQUEST_METHODS = <const>[
   'SEARCH',
 ]
 
+export enum HTTPStatus {
+  BadRequest = 400,
+  Unauthorized = 401,
+  Forbidden = 403,
+  NotFound = 404,
+  UnprocessableContent = 422,
+  TooManyRequests = 429,
+  InternalServerError = 500,
+}
+
 export type RouteUri = `/${string}`
 
 export type RequestMethod = (typeof REQUEST_METHODS)[number]

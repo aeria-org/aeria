@@ -13,8 +13,8 @@ import type {
 } from '@aeriajs/types'
 
 import { Stream } from 'stream'
-import { ACErrors, REQUEST_METHODS } from '@aeriajs/types'
-import { pipe, isGranted, isLeft, deepMerge, error } from '@aeriajs/common'
+import { ACError, HTTPStatus, REQUEST_METHODS } from '@aeriajs/types'
+import { pipe, isGranted, isLeft, unwrapEither, deepMerge, error } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
 import { getConfig } from '@aeriajs/entrypoint'
 import { safeJson } from './payload.js'
@@ -67,20 +67,12 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
 
 const checkUnprocessable = (validationEither: ReturnType<typeof validate>, context: RouteContext) => {
   if( isLeft(validationEither) ) {
-    context.response.writeHead(422, {
-      'content-type': 'application/json',
+    const validationError = unwrapEither(validationEither)
+    return context.error(HTTPStatus.UnprocessableContent, {
+      code: 'UNPROCESSABLE_ENTITY',
+      message: 'the provided payload is unprocessable',
+      details: validationError,
     })
-    return validationEither
-  }
-}
-
-const unsufficientRoles = (context: RouteContext) => {
-  context.response.writeHead(403, {
-    'content-type': 'application/json',
-  })
-
-  return {
-    error: ACErrors.AuthorizationError,
   }
 }
 
@@ -149,8 +141,7 @@ export const registerRoute = async (
         )
 
       } catch( err ) {
-        return context.error({
-          httpCode: 500,
+        return context.error(HTTPStatus.UnprocessableContent, {
           code: 'INVALID_JSON',
           message: 'Invalid JSON',
         })
@@ -163,7 +154,10 @@ export const registerRoute = async (
       if( contract.roles ) {
         const granted = isGranted(contract.roles, context.token)
         if( !granted ) {
-          return unsufficientRoles(context)
+          return context.error(HTTPStatus.Unauthorized, {
+            code: ACError.AuthorizationError,
+            message: 'your roles dont grant access to this route',
+          })
         }
       }
 
@@ -340,8 +334,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
   router.install = async (context: RouteContext, options?: RouterOptions) => {
     const result = await routerPipe(undefined, context, options)
     if( exhaust && (result === undefined || isNext(result)) ) {
-      return context.error({
-        httpCode: 404,
+      return context.error(HTTPStatus.NotFound, {
         code: 'NOT_FOUND',
         message: 'Not found',
       })

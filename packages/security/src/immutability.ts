@@ -1,6 +1,6 @@
 import type { Context } from '@aeriajs/types'
 import type { SecurityCheckProps, SecurityCheckReadPayload, SecurityCheckWritePayload } from './types.js'
-import { ACErrors } from '@aeriajs/types'
+import { ACError } from '@aeriajs/types'
 import { ObjectId } from 'mongodb'
 import { left, right, isLeft } from '@aeriajs/common'
 
@@ -35,7 +35,7 @@ const internalCheckImmutability = async (
   })
 
   if( !currentDocument ) {
-    return left(ACErrors.ImmutabilityParentNotFound)
+    return left(ACError.ImmutabilityParentNotFound)
   }
 
   if( childId ) {
@@ -43,7 +43,7 @@ const internalCheckImmutability = async (
       (Array.isArray(currentDocument[propertyName]) && !currentDocument[propertyName].some((child: any) => child.toString() === childId))
       || (!Array.isArray(currentDocument[propertyName]) && currentDocument[propertyName] && currentDocument[propertyName] !== childId.toString())
     ) {
-      return left(ACErrors.ImmutabilityIncorrectChild)
+      return left(ACError.ImmutabilityIncorrectChild)
     }
   }
 
@@ -55,7 +55,7 @@ const internalCheckImmutability = async (
     && fulfilled
     && ( property.inline || (currentDocument[propertyName]).toString() !== source[propertyName] )
   ) {
-    return left(ACErrors.ImmutabilityTargetImmutable)
+    return left(ACError.ImmutabilityTargetImmutable)
   }
 
   return right(props.payload)

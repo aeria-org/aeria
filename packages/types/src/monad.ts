@@ -9,7 +9,7 @@ export type Right<T> = {
 }
 
 export type EndpointErrorContent = {
-  httpCode?: number
+  httpStatus?: number
   code: string
   message: string
   details?: Record<string, any>

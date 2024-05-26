@@ -74,8 +74,10 @@ export const createContext = async (options: ContextOptions = {}) => {
     })
   }
 
-  context.error = (endpointError) => {
-    return error(endpointError, context)
+  context.error = (httpStatus, endpointError) => {
+    return error(Object.assign({
+      httpStatus,
+    }, endpointError), context)
   }
 
   context.limitRate = (params) => {

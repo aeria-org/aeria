@@ -1,11 +1,11 @@
 import type { Collection as MongoCollection } from 'mongodb'
-import type { AcceptedRole } from './accessControl.js'
+import type { AcceptedRole } from './token.js'
 import type { ApiConfig } from './config.js'
 import type { CollectionDocument, CollectionFunctions } from './functions.js'
 import type { Description } from './description.js'
 import type { Either, EndpointError, EndpointErrorContent } from './monad.js'
 import type { FunctionPath } from './collection.js'
-import type { GenericRequest, GenericResponse } from './http.js'
+import type { GenericRequest, GenericResponse, HTTPStatus } from './http.js'
 import type { PackReferences, SchemaWithId } from './schema.js'
 import type { RateLimitingParams, RateLimitingErrors } from './security.js'
 import type { Token } from './token.js'
@@ -78,7 +78,11 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
   response: GenericResponse
 
   log: (message: string, details?: any)=> Promise<any>
-  error: <TEndpointErrorContent extends EndpointErrorContent>(error: TEndpointErrorContent)=> EndpointError<TEndpointErrorContent>
+  error: <TEndpointErrorContent extends Omit<EndpointErrorContent, 'httpStatus'>>(
+    httpStatus: HTTPStatus,
+    error: TEndpointErrorContent
+  )=> EndpointError<TEndpointErrorContent>
+
   limitRate: (params: RateLimitingParams)=> Promise<Either<RateLimitingErrors, {
     hits: number
     points: number

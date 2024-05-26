@@ -1,21 +1,4 @@
-export type UserRole =
-  | (
-    Collections['user']['item']['roles'][number] extends infer UserDefinedRole
-      ? UserDefinedRole extends string
-        ? `${UserDefinedRole}${UserDefinedRole}` extends UserDefinedRole
-          ? 'root'
-          : UserDefinedRole
-        : never
-      : never
-  )
-  | 'root'
-  | 'unauthenticated'
-
-export type AcceptedRole =
-  | UserRole
-  | UserRole[]
-  | null
-  | unknown
+import type { UserRole } from './token.js'
 
 export type AccessCondition =
   | readonly UserRole[]
@@ -25,8 +8,8 @@ export type AccessCondition =
 
 export type RoleFromAccessCondition<TAccessCondition extends AccessCondition | undefined> = undefined extends TAccessCondition
   ? null
-  : number extends keyof TAccessCondition
-    ? TAccessCondition[number]
+  : TAccessCondition extends readonly (infer Role)[]
+    ? Role
     : TAccessCondition extends true
       ? Exclude<UserRole, 'unauthenticated'>
       : TAccessCondition extends false
@@ -37,7 +20,7 @@ export type RoleFromAccessCondition<TAccessCondition extends AccessCondition | u
             ? UserRole
             : never
 
-export enum ACErrors {
+export enum ACError {
   AssetNotFound = 'ASSET_NOT_FOUND',
   AuthenticationError = 'AUTHENTICATION_ERROR',
   AuthorizationError = 'AUTHORIZATION_ERROR',
@@ -51,17 +34,17 @@ export enum ACErrors {
   ResourceNotFound = 'RESOURCE_NOT_FOUND',
 }
 
-export const ACErrorMessages: Record<ACErrors, string> = {
-  [ACErrors.AssetNotFound]: 'collection has no registered functions',
-  [ACErrors.AuthenticationError]: 'you have insufficient privileges',
-  [ACErrors.AuthorizationError]: 'you have insufficient privileges',
-  [ACErrors.FunctionNotFound]: 'function not found',
-  [ACErrors.FunctionNotExposed]: 'function not exposed',
-  [ACErrors.ImmutabilityIncorrectChild]: 'specified limit is invalid',
-  [ACErrors.ImmutabilityParentNotFound]: 'specified limit is invalid',
-  [ACErrors.ImmutabilityTargetImmutable]: 'specified limit is invalid',
-  [ACErrors.InvalidLimit]: 'specified limit is invalid',
-  [ACErrors.OwnershipError]: 'you have insufficient privileges',
-  [ACErrors.ResourceNotFound]: 'collection not found',
+export const ACErrorMessages: Record<ACError, string> = {
+  [ACError.AssetNotFound]: 'collection has no registered functions',
+  [ACError.AuthenticationError]: 'you have insufficient privileges',
+  [ACError.AuthorizationError]: 'you have insufficient privileges',
+  [ACError.FunctionNotFound]: 'function not found',
+  [ACError.FunctionNotExposed]: 'function not exposed',
+  [ACError.ImmutabilityIncorrectChild]: 'specified limit is invalid',
+  [ACError.ImmutabilityParentNotFound]: 'specified limit is invalid',
+  [ACError.ImmutabilityTargetImmutable]: 'specified limit is invalid',
+  [ACError.InvalidLimit]: 'specified limit is invalid',
+  [ACError.OwnershipError]: 'you have insufficient privileges',
+  [ACError.ResourceNotFound]: 'collection not found',
 }
 

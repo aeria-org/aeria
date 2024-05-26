@@ -1,6 +1,6 @@
 import type { Context, InsertPayload } from '@aeriajs/types'
 import type { SecurityCheckProps, SecurityCheckReadPayload } from './types.js'
-import { ACErrors } from '@aeriajs/types'
+import { ACError } from '@aeriajs/types'
 import { left, right } from '@aeriajs/common'
 
 export const checkOwnershipRead = async (props: SecurityCheckProps<SecurityCheckReadPayload>, context: Context) => {
@@ -31,7 +31,7 @@ export const checkOwnershipWrite = async (props: SecurityCheckProps<InsertPayloa
   }
 
   if( (!payload.what.owner && !parentId) && context.description.owned ) {
-    return left(ACErrors.OwnershipError)
+    return left(ACError.OwnershipError)
   }
 
   return right(payload)

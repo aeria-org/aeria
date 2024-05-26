@@ -1,4 +1,4 @@
-import type { Description, Property, Either, ACErrors, ValidationError, Context } from '@aeriajs/types'
+import type { Description, Property, Either, ACError, ValidationError, Context } from '@aeriajs/types'
 import { ValidationErrorCodes } from '@aeriajs/types'
 import { left, right, isLeft, unwrapEither, unsafe, pipe, isReference, getValueFromPath, isObjectId } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
@@ -307,7 +307,7 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
       | 'propPath'
   >,
 
-): Promise<Either<ValidationError | ACErrors, TRecursionTarget>> => {
+): Promise<Either<ValidationError | ACError, TRecursionTarget>> => {
   const entries = []
   const entrypoint = ctx.options.fromProperties && 'properties' in ctx.property
     ? {

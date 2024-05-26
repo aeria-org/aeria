@@ -2,7 +2,7 @@ import type { Context } from './context.js'
 import type { InferProperty } from './schema.js'
 import type { InferResponse } from './http.js'
 import type { Property } from './property.js'
-import type { UserRole } from './accessControl.js'
+import type { UserRole } from './token.js'
 
 export type ContractBase = {
   // used internally to indicate the contract belongs to a builtin function

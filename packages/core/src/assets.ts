@@ -1,5 +1,5 @@
 import type { AssetType, Context, Collection, Token } from '@aeriajs/types'
-import { ACErrors } from '@aeriajs/types'
+import { ACError, HTTPStatus } from '@aeriajs/types'
 import { left, right, isLeft, unwrapEither } from '@aeriajs/common'
 import { limitRate } from '@aeriajs/security'
 import { getCollection } from '@aeriajs/entrypoint'
@@ -23,9 +23,9 @@ export const internalGetCollectionAsset = async <
 
   if( !asset ) {
     if( !collection ) {
-      return left(ACErrors.ResourceNotFound)
+      return left(ACError.ResourceNotFound)
     }
-    return left(ACErrors.AssetNotFound)
+    return left(ACError.AssetNotFound)
   }
 
   return right(asset)
@@ -73,22 +73,22 @@ export const getFunction = async <
 
   const functions = unwrapEither(functionsEither)
   if( !(functionName in functions) ) {
-    return left(ACErrors.FunctionNotFound)
+    return left(ACError.FunctionNotFound)
   }
 
   const collection = await getCollection(collectionName)
   const fn = functions[functionName]
 
   if( !collection ) {
-    return left(ACErrors.ResourceNotFound)
+    return left(ACError.ResourceNotFound)
   }
 
   if( options.exposedOnly ) {
     const exposedStatus = await isFunctionExposed(collection, functionName, token)
 
     switch( exposedStatus ) {
-      case FunctionExposedStatus.FunctionNotExposed: return left(ACErrors.FunctionNotExposed)
-      case FunctionExposedStatus.FunctionNotGranted: return left(ACErrors.AuthorizationError)
+      case FunctionExposedStatus.FunctionNotExposed: return left(ACError.FunctionNotExposed)
+      case FunctionExposedStatus.FunctionNotGranted: return left(ACError.AuthorizationError)
     }
   }
 
@@ -99,9 +99,10 @@ export const getFunction = async <
       if( securityPolicy.rateLimiting ) {
         const rateLimitingEither = await limitRate(securityPolicy.rateLimiting, context)
         if( isLeft(rateLimitingEither) ) {
-          return left({
-            error: unwrapEither(rateLimitingEither),
-            httpCode: 429,
+          const error = unwrapEither(rateLimitingEither)
+          return context.error(HTTPStatus.TooManyRequests, {
+            code: error,
+            message: 'rate limit was achieved for this resource',
           })
         }
       }

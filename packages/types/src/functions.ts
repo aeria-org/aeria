@@ -1,5 +1,5 @@
 import type { FilterOperators, StrictFilter as Filter, StrictUpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
-import type { ACErrors } from './accessControl.js'
+import type { ACError } from './accessControl.js'
 import type { Either } from './monad.js'
 import type { PackReferences } from './schema.js'
 import type { ValidationError } from './validation.js'
@@ -117,7 +117,7 @@ export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<
   count: (payload: CountPayload<TDocument>)=> Promise<number>
   get: (payload: GetPayload<TDocument>)=> Promise<TDocument | null>
   getAll: (payload?: GetAllPayload<TDocument>)=> Promise<TDocument[]>
-  insert: (payload: InsertPayload<TDocument>)=> Promise<Either<ValidationError | ACErrors, TDocument>>
+  insert: (payload: InsertPayload<TDocument>)=> Promise<Either<ValidationError | ACError, TDocument>>
   remove: (payload: RemovePayload<TDocument>)=> Promise<TDocument>
   removeAll: (payload: RemoveAllPayload)=> Promise<any>
   removeFile: (payload: RemoveFilePayload)=> Promise<any>

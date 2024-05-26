@@ -3,19 +3,19 @@ import type { functions } from '@aeriajs/core'
 import { createContext, getFunction } from '@aeriajs/core'
 import { getCollection } from '@aeriajs/entrypoint'
 import { next } from '@aeriajs/http'
-import { ACErrors, ACErrorMessages } from '@aeriajs/types'
+import { ACError, ACErrorMessages, HTTPStatus } from '@aeriajs/types'
 import { isLeft, unwrapEither, pipe } from '@aeriajs/common'
 import { appendPagination } from './appendPagination.js'
 
 const postPipe = pipe([appendPagination])
 
-const getACErrorHttpCode = (code: ACErrors) => {
+const getACErrorHttpCode = (code: ACError) => {
   switch( code ) {
-    case ACErrors.FunctionNotFound: return 404
-    case ACErrors.FunctionNotExposed: return 403
-    case ACErrors.AuthorizationError: return 401
-    case ACErrors.AuthenticationError: return 403
-    default: return 500
+    case ACError.FunctionNotFound: return HTTPStatus.NotFound
+    case ACError.FunctionNotExposed: return HTTPStatus.Forbidden
+    case ACError.AuthorizationError: return HTTPStatus.Unauthorized
+    case ACError.AuthenticationError: return HTTPStatus.Forbidden
+    default: return HTTPStatus.InternalServerError
   }
 }
 
@@ -44,7 +44,7 @@ export const safeHandle = (
         details: error.details,
         silent: error.silent,
         logout: error.logout,
-        httpCode: error.httpCode,
+        httpStatus: error.httpStatus,
       },
     }
 
@@ -52,8 +52,7 @@ export const safeHandle = (
       return response
     }
 
-    return context.error({
-      httpCode: error.httpCode || 500,
+    return context.error(error.httpStatus || HTTPStatus.InternalServerError, {
       code: error.code,
       message: error.message,
     })
@@ -85,8 +84,7 @@ export const customVerbs = () => async (parentContext: RouteContext) => {
 
   if( isLeft(fnEither) ) {
     const code = unwrapEither(fnEither)
-    return context.error({
-      httpCode: getACErrorHttpCode(code),
+    return context.error(getACErrorHttpCode(code), {
       code,
       message: ACErrorMessages[code],
     })
@@ -134,8 +132,7 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
 
   if( isLeft(fnEither) ) {
     const code = unwrapEither(fnEither)
-    return context.error({
-      httpCode: getACErrorHttpCode(code),
+    return context.error(getACErrorHttpCode(code), {
       code,
       message: ACErrorMessages[code],
     })

@@ -1,9 +1,9 @@
 import type { EndpointError, EndpointErrorContent, RouteContext } from '@aeriajs/types'
 
 export const error = <TEndpointErrorContent extends EndpointErrorContent>(error: TEndpointErrorContent, context: Pick<RouteContext, 'response'>) => {
-  const { httpCode = 500 } = error
+  const { httpStatus = 500 } = error
 
-  context.response.writeHead(httpCode, {
+  context.response.writeHead(httpStatus, {
     'content-type': 'application/json',
   })
 

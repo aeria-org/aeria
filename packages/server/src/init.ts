@@ -7,7 +7,7 @@ import type {
   NonCircularJsonSchema,
 } from '@aeriajs/types'
 
-import { ACErrors } from '@aeriajs/types'
+import { ACError } from '@aeriajs/types'
 import { right, left, isLeft, unwrapEither, unsafe, deepMerge } from '@aeriajs/common'
 import { defineServerOptions, cors, wrapRouteExecution } from '@aeriajs/http'
 import { registerServer } from '@aeriajs/node-http'
@@ -66,7 +66,7 @@ export const getToken = async (request: GenericRequest, context: Context) => {
       console.trace(err)
     }
 
-    return left(ACErrors.AuthenticationError)
+    return left(ACError.AuthenticationError)
   }
 }
 
