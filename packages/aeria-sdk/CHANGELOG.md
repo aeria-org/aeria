@@ -1,5 +1,15 @@
 # aeria-sdk
 
+## 0.0.77
+
+### Patch Changes
+
+- 8f6bc15: Fix runtime bugs
+- Updated dependencies [fcd8537]
+- Updated dependencies [c28cae9]
+  - @aeriajs/types@0.0.51
+  - @aeriajs/common@0.0.54
+
 ## 0.0.76
 
 ### Patch Changes

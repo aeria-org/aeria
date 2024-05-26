@@ -1,5 +1,12 @@
 # @aeriajs/types
 
+## 0.0.51
+
+### Patch Changes
+
+- fcd8537: Refactor errors
+- c28cae9: Fix type bugs
+
 ## 0.0.50
 
 ### Patch Changes

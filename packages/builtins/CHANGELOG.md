@@ -1,5 +1,19 @@
 # @aeriajs/builtins
 
+## 0.0.88
+
+### Patch Changes
+
+- fcd8537: Refactor errors
+- Updated dependencies [fcd8537]
+- Updated dependencies [8f6bc15]
+- Updated dependencies [c28cae9]
+  - @aeriajs/types@0.0.51
+  - @aeriajs/core@0.0.88
+  - @aeriajs/entrypoint@0.0.54
+  - @aeriajs/common@0.0.54
+  - @aeriajs/validation@0.0.57
+
 ## 0.0.87
 
 ### Patch Changes
