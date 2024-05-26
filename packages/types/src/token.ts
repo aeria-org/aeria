@@ -15,7 +15,6 @@ export type UserRole =
   | 'root'
   | 'unauthenticated'
 
-
 export type AcceptedRole =
   | UserRole
   | UserRole[]
