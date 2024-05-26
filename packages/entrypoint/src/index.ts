@@ -30,7 +30,7 @@ const internalGetCollections = async (): Promise<Record<string, Collection | (()
     ? entrypoint.collections
     : entrypoint.default.options.collections
 
-  return collections
+  return Object.assign({}, collections)
 }
 
 export const getCollections = async () => {
@@ -39,8 +39,7 @@ export const getCollections = async () => {
   }
 
   collectionsMemo = await internalGetCollections()
-  Object.freeze(collectionsMemo)
-  return collectionsMemo
+  return Object.freeze(collectionsMemo)
 }
 
 export const getCollection = async (collectionName: string): Promise<Collection | undefined> => {
