@@ -77,13 +77,6 @@ export const description = defineDescription({
       type: 'boolean',
       readOnly: true,
     },
-    // resources_usage: {
-    //   type: 'object',
-    //   additionalProperties: {
-    //     $ref: 'resourceUsage',
-    //     inline: true,
-    //   },
-    // },
     updated_at: {
       type: 'string',
       format: 'date-time',

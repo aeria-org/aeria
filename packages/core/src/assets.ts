@@ -22,10 +22,7 @@ export const internalGetCollectionAsset = async <
   const asset = collection?.[assetName as AssetType]
 
   if( !asset ) {
-    if( !collection ) {
-      return left(ACError.ResourceNotFound)
-    }
-    return left(ACError.AssetNotFound)
+    return left(ACError.ResourceNotFound)
   }
 
   return right(asset)

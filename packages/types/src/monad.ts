@@ -11,7 +11,7 @@ export type Right<T> = {
 export type EndpointErrorContent = {
   httpStatus?: number
   code: string
-  message: string
+  message?: string
   details?: Record<string, any>
 }
 

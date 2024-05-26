@@ -21,7 +21,6 @@ export type RoleFromAccessCondition<TAccessCondition extends AccessCondition | u
             : never
 
 export enum ACError {
-  AssetNotFound = 'ASSET_NOT_FOUND',
   AuthenticationError = 'AUTHENTICATION_ERROR',
   AuthorizationError = 'AUTHORIZATION_ERROR',
   FunctionNotFound = 'FUNCTION_NOT_FOUND',
@@ -35,7 +34,6 @@ export enum ACError {
 }
 
 export const ACErrorMessages: Record<ACError, string> = {
-  [ACError.AssetNotFound]: 'collection has no registered functions',
   [ACError.AuthenticationError]: 'you have insufficient privileges',
   [ACError.AuthorizationError]: 'you have insufficient privileges',
   [ACError.FunctionNotFound]: 'function not found',
