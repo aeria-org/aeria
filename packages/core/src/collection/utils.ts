@@ -10,7 +10,7 @@ export const normalizeProjection = <
 ) => {
   const target = Array.from(properties)
   if( target.length === 0 ) {
-    target.push(...Object.keys(description.properties) as (keyof TDescription['properties'])[])
+    target.push(...Object.keys(description.properties))
   }
 
   const projection = target.reduce((a, key) => {
@@ -95,10 +95,7 @@ export const prepareInsert = (
   })
 
   const prepareCreate = () => Object.entries(rest).reduce((a, [key, value]) => {
-    if( forbidden(key) || [
-      undefined,
-      null,
-    ].includes(value as any) ) {
+    if( forbidden(key) || value === null || value === undefined ) {
       return a
     }
 
@@ -113,7 +110,7 @@ export const prepareInsert = (
     : prepareCreate()
 
   Object.keys(what).forEach((k) => {
-    if( typeof what[k] === 'object' && JSON.stringify(what) === '{}' ) {
+    if( typeof what[k] === 'object' && Object.keys(what[k]).length === 0 ) {
       delete what[k]
     }
   })
