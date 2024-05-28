@@ -68,6 +68,13 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
 const checkUnprocessable = (validationEither: ReturnType<typeof validate>, context: RouteContext) => {
   if( isLeft(validationEither) ) {
     const validationError = unwrapEither(validationEither)
+    if( 'code' in validationError ) {
+      return context.error(HTTPStatus.UnprocessableContent, {
+        code: validationError.code,
+        details: validationError.errors,
+      })
+    }
+
     return context.error(HTTPStatus.UnprocessableContent, {
       code: 'UNPROCESSABLE_ENTITY',
       message: 'the provided payload is unprocessable',

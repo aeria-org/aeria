@@ -15,7 +15,7 @@ export const insert = async <TContext extends Context>(
   const security = useSecurity(context)
 
   const query = !options?.bypassSecurity
-    ? unsafe(await security.beforeWrite(payload as any))
+    ? unsafe(await security.beforeWrite(payload))
     : payload
 
   const whatEither = await traverseDocument(query.what, context.description, {
@@ -40,7 +40,13 @@ export const insert = async <TContext extends Context>(
     ? what._id
     : null
 
-  const readyWhat = prepareInsert(what, context.description)
+  const contentEither = prepareInsert(what, context.description)
+  if( isLeft(contentEither) ) {
+    return contentEither
+  }
+
+  const content = unwrapEither(contentEither)
+
   const projection = payload.project
     ? normalizeProjection(payload.project, context.description)
     : {}
@@ -49,24 +55,24 @@ export const insert = async <TContext extends Context>(
 
   if( !newId ) {
     const now = new Date()
-    Object.assign(readyWhat, {
+    Object.assign(content, {
       created_at: now,
       updated_at: now,
     })
 
-    newId = (await context.collection.model.insertOne(readyWhat)).insertedId
+    newId = (await context.collection.model.insertOne(content)).insertedId
 
   } else {
-    readyWhat.$set ??= {}
-    readyWhat.$set.updated_at = new Date()
+    content.$set ??= {}
+    content.$set.updated_at = new Date()
     await context.collection.model.updateOne({
       _id: docId,
-    }, readyWhat)
+    }, content)
 
   }
 
   if( context.collection.originalFunctions.get ) {
-    const document: SchemaWithId<TContext['description']> = await context.collection.originalFunctions.get({
+    const doc: SchemaWithId<TContext['description']> = await context.collection.originalFunctions.get({
       filters: {
         _id: newId,
       },
@@ -74,16 +80,16 @@ export const insert = async <TContext extends Context>(
       bypassSecurity: true,
     })
 
-    return right(document)
+    return right(doc)
   }
 
-  const document: SchemaWithId<TContext['description']> = await context.collection.model.findOne({
+  const doc: SchemaWithId<TContext['description']> = await context.collection.model.findOne({
     _id: newId,
   }, {
     projection,
   })
 
-  const result: SchemaWithId<TContext['description']> = unsafe(await traverseDocument(document, context.description, {
+  const result: SchemaWithId<TContext['description']> = unsafe(await traverseDocument(doc, context.description, {
     getters: true,
     fromProperties: true,
     recurseReferences: true,
