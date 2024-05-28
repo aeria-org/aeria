@@ -31,6 +31,7 @@ export enum ACError {
   InvalidLimit = 'INVALID_LIMIT',
   OwnershipError = 'OWNERSHIP_ERROR',
   ResourceNotFound = 'RESOURCE_NOT_FOUND',
+  InsecureOperator = 'INSECURE_OPERATOR',
 }
 
 export const ACErrorMessages: Record<ACError, string> = {
@@ -44,5 +45,6 @@ export const ACErrorMessages: Record<ACError, string> = {
   [ACError.InvalidLimit]: 'specified limit is invalid',
   [ACError.OwnershipError]: 'you have insufficient privileges',
   [ACError.ResourceNotFound]: 'collection not found',
+  [ACError.InsecureOperator]: 'insecure operator',
 }
 

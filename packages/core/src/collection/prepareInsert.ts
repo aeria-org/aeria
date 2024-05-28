@@ -1,12 +1,10 @@
 import type { Description } from '@aeriajs/types'
-import { left, right, isLeft, unwrapEither } from '@aeriajs/common'
 
 const prepareCreate = <TDocument>(doc: TDocument, description: Description) => {
   const result: Record<string, any> = Object.assign({}, description.defaults || {})
 
   for( const propName in doc ) {
     const value = doc[propName]
-
     if( value === null || value === undefined ) {
       continue
     }
@@ -14,10 +12,10 @@ const prepareCreate = <TDocument>(doc: TDocument, description: Description) => {
     result[propName] = value
   }
 
-  return right(result)
+  return result
 }
 
-const prepareUpdate = <TDocument>(doc: TDocument, description: Description) => {
+const prepareUpdate = <TDocument>(doc: TDocument) => {
   const result: Record<string, any> = {
     $set: {},
     $unset: {},
@@ -25,15 +23,6 @@ const prepareUpdate = <TDocument>(doc: TDocument, description: Description) => {
 
   for( const propName in doc ) {
     const value = doc[propName]
-
-    if( propName.startsWith('$') ) {
-      if( description.writable  ) {
-        return left({})
-      }
-
-      result[propName] = value
-      continue
-    }
 
     if( value === null || value === undefined ) {
       result.$unset[propName] = value
@@ -43,7 +32,7 @@ const prepareUpdate = <TDocument>(doc: TDocument, description: Description) => {
     result.$set[propName] = value
   }
 
-  return right(result)
+  return result
 }
 
 export const prepareInsert = <TPayload extends Record<string, any>>(payload: TPayload, description: Description) => {
@@ -54,15 +43,9 @@ export const prepareInsert = <TPayload extends Record<string, any>>(payload: TPa
   delete doc.created_at
   delete doc.updated_at
 
-  const whatEither = docId
-    ? prepareUpdate(doc, description)
+  const what = docId
+    ? prepareUpdate(doc)
     : prepareCreate(doc, description)
-
-  if( isLeft(whatEither) ) {
-    return whatEither
-  }
-
-  const what = unwrapEither(whatEither)
 
   Object.keys(what).forEach((k) => {
     if( typeof what[k] === 'object' && Object.keys(what[k]).length === 0 ) {
@@ -70,6 +53,6 @@ export const prepareInsert = <TPayload extends Record<string, any>>(payload: TPa
     }
   })
 
-  return right(what)
+  return what
 }
 

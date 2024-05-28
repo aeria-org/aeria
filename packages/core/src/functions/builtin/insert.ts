@@ -1,4 +1,5 @@
 import type { Context, SchemaWithId, InsertPayload } from '@aeriajs/types'
+import { HTTPStatus, ACError } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
 import { left, right, isLeft, unwrapEither, unsafe } from '@aeriajs/common'
 import { traverseDocument, normalizeProjection, prepareInsert } from '../../collection/index.js'
@@ -40,12 +41,7 @@ export const insert = async <TContext extends Context>(
     ? what._id
     : null
 
-  const contentEither = prepareInsert(what, context.description)
-  if( isLeft(contentEither) ) {
-    return contentEither
-  }
-
-  const content = unwrapEither(contentEither)
+  const content = prepareInsert(what, context.description)
 
   const projection = payload.project
     ? normalizeProjection(payload.project, context.description)
@@ -71,25 +67,32 @@ export const insert = async <TContext extends Context>(
 
   }
 
+  let doc: SchemaWithId<TContext['description']> | null
   if( context.collection.originalFunctions.get ) {
-    const doc: SchemaWithId<TContext['description']> = await context.collection.originalFunctions.get({
+    doc = await context.collection.originalFunctions.get({
       filters: {
         _id: newId,
       },
-    }, context, {
+    }, Object.assign({
+      inherited: true,
+    }, context), {
       bypassSecurity: true,
     })
-
-    return right(doc)
+  } else {
+    doc = await context.collection.model.findOne({
+      _id: newId,
+    }, {
+      projection,
+    })
   }
 
-  const doc: SchemaWithId<TContext['description']> = await context.collection.model.findOne({
-    _id: newId,
-  }, {
-    projection,
-  })
+  if( !doc ) {
+    return context.error(HTTPStatus.NotFound, {
+      code: ACError.ResourceNotFound,
+    })
+  }
 
-  const result: SchemaWithId<TContext['description']> = unsafe(await traverseDocument(doc, context.description, {
+  const result = unsafe(await traverseDocument(doc, context.description, {
     getters: true,
     fromProperties: true,
     recurseReferences: true,

@@ -1,5 +1,5 @@
-import type { Description, Property, Either, ACError, ValidationError, Context } from '@aeriajs/types'
-import { ValidationErrorCodes } from '@aeriajs/types'
+import type { Description, Property, Either, ValidationError, Context } from '@aeriajs/types'
+import { ACError, ValidationErrorCodes } from '@aeriajs/types'
 import { left, right, isLeft, unwrapEither, unsafe, pipe, isReference, getValueFromPath, isObjectId } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
 import { ObjectId } from 'mongodb'
@@ -344,13 +344,14 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
       // if first propName is preceded by '$' we assume
       // it contains MongoDB query operators
       if( Object.keys(value)[0]?.startsWith('$') ) {
-        if( ctx.options.allowOperators ) {
-          entries.push([
-            propName,
-            value,
-          ])
+        if( !ctx.options.allowOperators ) {
+          return left(ACError.InsecureOperator)
         }
 
+        entries.push([
+          propName,
+          value,
+        ])
         continue
       }
 
