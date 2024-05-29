@@ -1,4 +1,4 @@
-import type { Context, SchemaWithId, InsertPayload, InsertReturnType  } from '@aeriajs/types'
+import type { Context, SchemaWithId, InsertPayload, InsertReturnType } from '@aeriajs/types'
 import { HTTPStatus, ACError, ValidationErrorCode } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
 import { isLeft, unwrapEither, unsafe, endpointErrorSchema } from '@aeriajs/common'

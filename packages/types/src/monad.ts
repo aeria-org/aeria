@@ -11,8 +11,8 @@ export type Right<T> = {
 }
 
 export type EndpointErrorContent<
-  THTTPStatus extends HTTPStatus = any,
-  TCode extends string = any,
+  THTTPStatus extends HTTPStatus = HTTPStatus,
+  TCode extends string = string,
   TMessage extends string = string,
   TDetails extends Record<string, any> = Record<string, any>,
 > = {

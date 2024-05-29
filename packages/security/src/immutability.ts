@@ -21,7 +21,7 @@ export const checkImmutability = async (
   if( docId ) {
     if( typeof context.description.immutable === 'function' ) {
       const doc = await context.collection.model.findOne({
-        _id: docId
+        _id: docId,
       })
 
       if( !doc ) {
