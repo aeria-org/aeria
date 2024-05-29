@@ -3,7 +3,7 @@ import type { functions } from '@aeriajs/core'
 import { createContext, getFunction } from '@aeriajs/core'
 import { getCollection } from '@aeriajs/entrypoint'
 import { next } from '@aeriajs/http'
-import { ACError, ACErrorMessages, HTTPStatus } from '@aeriajs/types'
+import { ACError, HTTPStatus } from '@aeriajs/types'
 import { isLeft, unwrapEither, pipe } from '@aeriajs/common'
 import { appendPagination } from './appendPagination.js'
 
@@ -86,7 +86,6 @@ export const customVerbs = () => async (parentContext: RouteContext) => {
     const code = unwrapEither(fnEither)
     return context.error(getACErrorHttpCode(code), {
       code,
-      message: ACErrorMessages[code],
     })
   }
 
@@ -134,7 +133,6 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
     const code = unwrapEither(fnEither)
     return context.error(getACErrorHttpCode(code), {
       code,
-      message: ACErrorMessages[code],
     })
   }
 

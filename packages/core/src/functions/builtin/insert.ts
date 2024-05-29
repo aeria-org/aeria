@@ -1,5 +1,5 @@
-import type { Context, SchemaWithId, InsertPayload } from '@aeriajs/types'
-import { HTTPStatus, ACError, ValidationErrorCode, type InsertFunctionReturnType } from '@aeriajs/types'
+import type { Context, SchemaWithId, InsertPayload, InsertReturnType  } from '@aeriajs/types'
+import { HTTPStatus, ACError, ValidationErrorCode } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
 import { isLeft, unwrapEither, unsafe, endpointErrorSchema } from '@aeriajs/common'
 import { traverseDocument, normalizeProjection, prepareInsert } from '../../collection/index.js'
@@ -17,9 +17,7 @@ export const insertErrorSchema = endpointErrorSchema({
     ACError.InsecureOperator,
     ACError.OwnershipError,
     ACError.ResourceNotFound,
-    ACError.ImmutabilityIncorrectChild,
-    ACError.ImmutabilityParentNotFound,
-    ACError.ImmutabilityTargetImmutable,
+    ACError.TargetImmutable,
     ValidationErrorCode.EmptyTarget,
     ValidationErrorCode.InvalidProperties,
     ValidationErrorCode.MissingProperties,
@@ -30,7 +28,7 @@ export const insert = async <TContext extends Context>(
   payload: InsertPayload<SchemaWithId<TContext['description']>>,
   context: TContext,
   options?: InsertOptions,
-): Promise<InsertFunctionReturnType<SchemaWithId<TContext['description']>>> => {
+): Promise<InsertReturnType<SchemaWithId<TContext['description']>>> => {
   const security = useSecurity(context)
 
   const query = !options?.bypassSecurity

@@ -1,4 +1,4 @@
-import type { Context, RemoveAllPayload } from '@aeriajs/types'
+import type { Context, RemoveAllPayload, CollectionItem } from '@aeriajs/types'
 import { unsafe } from '@aeriajs/common'
 import { traverseDocument, cascadingRemove } from '../../collection/index.js'
 
@@ -16,7 +16,7 @@ export const removeAll = async <TContext extends Context>(payload: RemoveAllPayl
 
   const it = context.collection.model.find(filters)
 
-  let document: typeof context.collection.item
+  let document: CollectionItem<any>
   while( document = await it.next() ) {
     await cascadingRemove(document, context)
   }

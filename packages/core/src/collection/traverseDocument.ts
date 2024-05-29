@@ -11,7 +11,7 @@ export type TraverseOptions = {
   autoCast?: boolean
   getters?: boolean
   validate?: boolean
-  validateRequired?: string[]
+  validateRequired?: Description['required']
   moveFiles?: boolean
   fromProperties?: boolean
   allowOperators?: boolean

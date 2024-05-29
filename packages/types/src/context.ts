@@ -110,7 +110,7 @@ export type CollectionContext<
 }
 
 export type Context<
-  TDescription extends Description = any,
+  TDescription extends Description = Description,
   TFunctions = any,
 > = RouteContext & CollectionContext<TDescription, TFunctions>
 

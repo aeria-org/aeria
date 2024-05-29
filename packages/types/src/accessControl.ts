@@ -25,26 +25,10 @@ export enum ACError {
   AuthorizationError = 'AUTHORIZATION_ERROR',
   FunctionNotFound = 'FUNCTION_NOT_FOUND',
   FunctionNotExposed = 'FUNCTION_NOT_EXPOSED',
-  ImmutabilityIncorrectChild = 'IMMUTABILITY_INCORRECT_CHILD',
-  ImmutabilityParentNotFound = 'IMMUTABILITY_PARENT_NOT_FOUND',
-  ImmutabilityTargetImmutable = 'IMMUTABILITY_TARGET_IMMUTABLE',
+  TargetImmutable = 'TARGET_IMMUTABLE',
   InvalidLimit = 'INVALID_LIMIT',
   OwnershipError = 'OWNERSHIP_ERROR',
   ResourceNotFound = 'RESOURCE_NOT_FOUND',
   InsecureOperator = 'INSECURE_OPERATOR',
-}
-
-export const ACErrorMessages: Record<ACError, string> = {
-  [ACError.AuthenticationError]: 'you have insufficient privileges',
-  [ACError.AuthorizationError]: 'you have insufficient privileges',
-  [ACError.FunctionNotFound]: 'function not found',
-  [ACError.FunctionNotExposed]: 'function not exposed',
-  [ACError.ImmutabilityIncorrectChild]: 'specified limit is invalid',
-  [ACError.ImmutabilityParentNotFound]: 'specified limit is invalid',
-  [ACError.ImmutabilityTargetImmutable]: 'specified limit is invalid',
-  [ACError.InvalidLimit]: 'specified limit is invalid',
-  [ACError.OwnershipError]: 'you have insufficient privileges',
-  [ACError.ResourceNotFound]: 'collection not found',
-  [ACError.InsecureOperator]: 'insecure operator',
 }
 

@@ -1,3 +1,4 @@
+import type { WithId } from 'mongodb'
 import type { IconStyle, PhosphorIcon } from '@phosphor-icons/core'
 import type { Condition } from './condition.js'
 import type { JsonSchema, PropertiesWithId } from './property.js'
@@ -142,7 +143,7 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
   timestamps?: false
   immutable?:
     | boolean
-    | readonly string[]
+    | ((doc: WithId<any>) => boolean | Promise<boolean>)
 
   // takes an array of something
   route?: readonly string[]

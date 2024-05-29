@@ -1,5 +1,5 @@
-import type { RouteContext, Either, StringProperty, EnumProperty } from '@aeriajs/types'
-import type { Description } from '@aeriajs/types'
+import type { Description, Context, RouteContext, Either, StringProperty, EnumProperty } from '@aeriajs/types'
+import type { description as userDescription } from '../collections/user/description.js'
 import { createContext, preloadDescription, getEndpoints } from '@aeriajs/core'
 import { getCollections, getAvailableRoles } from '@aeriajs/entrypoint'
 import { serialize, isLeft, left, unwrapEither } from '@aeriajs/common'
@@ -30,7 +30,7 @@ export const describe = async (contextOrPayload: RouteContext | Payload) => {
   if( 'request' in contextOrPayload && props.revalidate ) {
     const authEither = await authenticate({
       revalidate: true,
-    }, await createContext({
+    }, <Context<typeof userDescription>>await createContext({
       collectionName: 'user',
       parentContext: contextOrPayload,
     }))

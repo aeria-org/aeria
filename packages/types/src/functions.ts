@@ -114,7 +114,7 @@ export type RemoveFilePayload = UploadAuxProps & {
   }
 }
 
-export type InsertFunctionReturnType<TDocument> =
+export type InsertReturnType<TDocument> =
   | TDocument
   | EndpointError<
     EndpointErrorContent<
@@ -129,7 +129,7 @@ export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<
   count: (payload: CountPayload<TDocument>)=> Promise<number>
   get: (payload: GetPayload<TDocument>)=> Promise<TDocument | null>
   getAll: (payload?: GetAllPayload<TDocument>)=> Promise<TDocument[]>
-  insert: (payload: InsertPayload<TDocument>)=> Promise<InsertFunctionReturnType<TDocument>>
+  insert: (payload: InsertPayload<TDocument>)=> Promise<InsertReturnType<TDocument>>
   remove: (payload: RemovePayload<TDocument>)=> Promise<TDocument>
   removeAll: (payload: RemoveAllPayload)=> Promise<any>
   removeFile: (payload: RemoveFilePayload)=> Promise<any>
