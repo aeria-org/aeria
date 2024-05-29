@@ -1,5 +1,6 @@
 import type { GenericRequest, GenericResponse, RequestMethod } from '@aeriajs/types'
 import type { ServerOptions } from '@aeriajs/http'
+import { isNativeError } from '@aeriajs/common'
 import * as http from 'http'
 import { parse as parseUrl } from 'url'
 
@@ -42,9 +43,15 @@ export const abstractResponse = (response: http.ServerResponse): GenericResponse
     end: (value) => {
       if( typeof value === 'object' && !(value instanceof Buffer) ) {
         if( !response.headersSent ) {
-          response.writeHead(200, {
-            'content-type': 'application/json',
-          })
+          if( isNativeError(value) ) {
+            response.writeHead(value.value.httpStatus, {
+              'content-type': 'application/json',
+            })
+          } else {
+            response.writeHead(200, {
+              'content-type': 'application/json',
+            })
+          }
         }
 
         return end.bind(response)(JSON.stringify(value))

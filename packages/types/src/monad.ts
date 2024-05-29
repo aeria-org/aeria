@@ -1,5 +1,7 @@
 import type { HTTPStatus } from './http.js'
 
+export const ERROR_SYMBOL = Symbol('ErrorSymbol')
+
 export type Left<T> = {
   readonly _tag: 'Left'
   readonly value: T
@@ -22,9 +24,10 @@ export type EndpointErrorContent<
   details?: TDetails
 }
 
-export type EndpointError<T extends EndpointErrorContent> = {
+export type EndpointError<T extends EndpointErrorContent = EndpointErrorContent> = {
   readonly _tag: 'Error'
   readonly value: T
+  [ERROR_SYMBOL]: true
 }
 
 export type ExtractLeft<T> = T extends Left<infer L>
