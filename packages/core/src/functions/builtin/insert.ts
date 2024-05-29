@@ -1,18 +1,36 @@
 import type { Context, SchemaWithId, InsertPayload } from '@aeriajs/types'
-import { HTTPStatus, ACError } from '@aeriajs/types'
+import { HTTPStatus, ACError, ValidationErrorCode, type InsertFunctionReturnType } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
-import { left, right, isLeft, unwrapEither, unsafe } from '@aeriajs/common'
+import { isLeft, unwrapEither, unsafe, endpointErrorSchema } from '@aeriajs/common'
 import { traverseDocument, normalizeProjection, prepareInsert } from '../../collection/index.js'
 
 export type InsertOptions = {
   bypassSecurity?: boolean
 }
 
+export const insertErrorSchema = endpointErrorSchema({
+  httpStatus: [
+    HTTPStatus.UnprocessableContent,
+    HTTPStatus.NotFound,
+  ],
+  code: [
+    ACError.InsecureOperator,
+    ACError.OwnershipError,
+    ACError.ResourceNotFound,
+    ACError.ImmutabilityIncorrectChild,
+    ACError.ImmutabilityParentNotFound,
+    ACError.ImmutabilityTargetImmutable,
+    ValidationErrorCode.EmptyTarget,
+    ValidationErrorCode.InvalidProperties,
+    ValidationErrorCode.MissingProperties,
+  ],
+})
+
 export const insert = async <TContext extends Context>(
   payload: InsertPayload<SchemaWithId<TContext['description']>>,
   context: TContext,
   options?: InsertOptions,
-) => {
+): Promise<InsertFunctionReturnType<SchemaWithId<TContext['description']>>> => {
   const security = useSecurity(context)
 
   const query = !options?.bypassSecurity
@@ -32,7 +50,16 @@ export const insert = async <TContext extends Context>(
 
   if( isLeft(whatEither) ) {
     const error = unwrapEither(whatEither)
-    return left(error)
+    if( typeof error === 'string' ) {
+      return context.error(HTTPStatus.UnprocessableContent, {
+        code: error,
+      })
+    }
+
+    return context.error(HTTPStatus.UnprocessableContent, {
+      code: error.code,
+      details: error.errors,
+    })
   }
 
   const what = unwrapEither(whatEither)
@@ -98,6 +125,6 @@ export const insert = async <TContext extends Context>(
     recurseReferences: true,
   }))
 
-  return right(result)
+  return result
 }
 

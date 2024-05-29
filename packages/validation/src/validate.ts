@@ -10,7 +10,7 @@ import type {
 } from '@aeriajs/types'
 
 import { isLeft, left, right, unwrapEither, getMissingProperties } from '@aeriajs/common'
-import { ValidationErrorCodes } from '@aeriajs/types'
+import { ValidationErrorCode } from '@aeriajs/types'
 
 export type ValidateOptions = {
   extraneous?: string[] | boolean
@@ -223,7 +223,7 @@ export const validateWholeness = (what: Record<string, any>, schema: Omit<JsonSc
 
   if( missingProps.length > 0 ) {
     return makeValidationError({
-      code: ValidationErrorCodes.MissingProperties,
+      code: ValidationErrorCode.MissingProperties,
       errors: Object.fromEntries(missingProps
         .map((error) => [
           error,
@@ -246,7 +246,7 @@ export const validate = <
 ) => {
   if( !what ) {
     return left(makeValidationError({
-      code: ValidationErrorCodes.EmptyTarget,
+      code: ValidationErrorCode.EmptyTarget,
       errors: {},
     }))
   }
@@ -287,7 +287,7 @@ export const validate = <
 
   if( Object.keys(errors).length > 0 ) {
     if( options.throwOnError ) {
-      const error = new TypeError(ValidationErrorCodes.InvalidProperties)
+      const error = new TypeError(ValidationErrorCode.InvalidProperties)
       Object.assign(error, {
         errors,
       })
@@ -295,7 +295,7 @@ export const validate = <
     }
 
     return left(makeValidationError({
-      code: ValidationErrorCodes.InvalidProperties,
+      code: ValidationErrorCode.InvalidProperties,
       errors,
     }))
   }

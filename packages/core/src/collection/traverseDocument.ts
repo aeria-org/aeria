@@ -1,5 +1,5 @@
 import type { Description, Property, Either, ValidationError, Context } from '@aeriajs/types'
-import { ACError, ValidationErrorCodes } from '@aeriajs/types'
+import { ACError, ValidationErrorCode } from '@aeriajs/types'
 import { left, right, isLeft, unwrapEither, unsafe, pipe, isReference, getValueFromPath, isObjectId } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
 import { ObjectId } from 'mongodb'
@@ -526,7 +526,7 @@ export const traverseDocument = async <const TWhat extends Record<string, any>>(
 
   if( validationError ) {
     return left(makeValidationError({
-      code: ValidationErrorCodes.InvalidProperties,
+      code: ValidationErrorCode.InvalidProperties,
       errors: validationError,
     }))
   }

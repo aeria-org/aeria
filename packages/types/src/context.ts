@@ -76,10 +76,15 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
   response: GenericResponse
 
   log: (message: string, details?: any)=> Promise<any>
-  error: <TEndpointErrorContent extends Omit<EndpointErrorContent, 'httpStatus'>>(
-    httpStatus: HTTPStatus,
+  error: <
+    TEndpointErrorContent extends Omit<EndpointErrorContent, 'httpStatus'>,
+    THTTPStatus extends HTTPStatus,
+  >(
+    httpStatus: THTTPStatus,
     error: TEndpointErrorContent
-  )=> EndpointError<TEndpointErrorContent>
+  )=> EndpointError<TEndpointErrorContent & {
+    httpStatus: THTTPStatus
+  }>
 
   limitRate: (params: RateLimitingParams)=> Promise<Either<RateLimitingErrors, {
     hits: number

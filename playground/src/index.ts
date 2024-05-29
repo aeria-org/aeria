@@ -1,10 +1,10 @@
-import { init, createRouter, isLeft, unwrapEither, leftSchema } from 'aeria'
+import { init, createRouter, isError, insertErrorSchema } from 'aeria'
 export * as collections from './collections/index.js'
 
 const router = createRouter()
 
 router.GET('/get-people', async (context) => {
-  const personEither = await context.collections.person.functions.insert({
+  const person = await context.collections.person.functions.insert({
     what: {
       name: context.request.payload.name,
       job: 'programmer',
@@ -12,11 +12,10 @@ router.GET('/get-people', async (context) => {
     },
   })
 
-  if( isLeft(personEither) ) {
-    return personEither
+  if( isError(person) ) {
+    return person
   }
 
-  const person = unwrapEither(personEither)
   person.name
   person.job
 
@@ -39,10 +38,7 @@ router.GET('/get-people', async (context) => {
     },
   },
   response: [
-    leftSchema({
-      type: 'object',
-      variable: true,
-    }),
+    insertErrorSchema,
     {
       type: 'array',
       items: {
@@ -57,3 +53,4 @@ export default init({
     return router.install(context)
   },
 })
+

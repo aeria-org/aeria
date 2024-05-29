@@ -1,8 +1,9 @@
 import type { FilterOperators, StrictFilter as Filter, StrictUpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
 import type { ACError } from './accessControl.js'
-import type { Either } from './monad.js'
+import type { EndpointError, EndpointErrorContent } from './monad.js'
 import type { PackReferences } from './schema.js'
-import type { ValidationError } from './validation.js'
+import type { ValidationErrorCode } from './validation.js'
+import type { HTTPStatus } from './http.js'
 
 export type UploadAuxProps = {
   parentId: string
@@ -113,11 +114,22 @@ export type RemoveFilePayload = UploadAuxProps & {
   }
 }
 
+export type InsertFunctionReturnType<TDocument> =
+  | TDocument
+  | EndpointError<
+    EndpointErrorContent<
+      | HTTPStatus.NotFound
+      | HTTPStatus.UnprocessableContent,
+      | ACError
+      | ValidationErrorCode
+    >
+  >
+
 export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<any>>> = {
   count: (payload: CountPayload<TDocument>)=> Promise<number>
   get: (payload: GetPayload<TDocument>)=> Promise<TDocument | null>
   getAll: (payload?: GetAllPayload<TDocument>)=> Promise<TDocument[]>
-  insert: (payload: InsertPayload<TDocument>)=> Promise<Either<ValidationError | ACError, TDocument>>
+  insert: (payload: InsertPayload<TDocument>)=> Promise<InsertFunctionReturnType<TDocument>>
   remove: (payload: RemovePayload<TDocument>)=> Promise<TDocument>
   removeAll: (payload: RemoveAllPayload)=> Promise<any>
   removeFile: (payload: RemoveFilePayload)=> Promise<any>
