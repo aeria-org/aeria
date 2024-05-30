@@ -1,6 +1,5 @@
 import type { AccessCondition } from '@aeriajs/types'
 import { defineCollection, get, getAll, remove, upload, removeFile } from '@aeriajs/core'
-import { leftSchema, rightSchema } from '@aeriajs/common'
 import { description } from './description.js'
 import { authenticate } from './authenticate.js'
 import { activate } from './activate.js'
@@ -43,15 +42,9 @@ export const user = defineCollection({
   },
   contracts: {
     getCurrentUser: {
-      response: [
-        leftSchema({
-          type: 'object',
-          variable: true,
-        }),
-        rightSchema({
-          $ref: 'user',
-        }),
-      ],
+      response: {
+        $ref: 'user',
+      },
     },
   },
   exposedFunctions: exposedFunctions as any,

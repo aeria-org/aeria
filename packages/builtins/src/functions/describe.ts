@@ -2,7 +2,7 @@ import type { Description, Context, RouteContext, Either, StringProperty, EnumPr
 import type { description as userDescription } from '../collections/user/description.js'
 import { createContext, preloadDescription, getEndpoints } from '@aeriajs/core'
 import { getCollections, getAvailableRoles } from '@aeriajs/entrypoint'
-import { serialize, isLeft, left, unwrapEither } from '@aeriajs/common'
+import { serialize, isError } from '@aeriajs/common'
 import { authenticate } from '../collections/user/authenticate.js'
 
 type Payload = {
@@ -28,19 +28,17 @@ export const describe = async (contextOrPayload: RouteContext | Payload) => {
     : contextOrPayload
 
   if( 'request' in contextOrPayload && props.revalidate ) {
-    const authEither = await authenticate({
+    const auth = await authenticate({
       revalidate: true,
     }, <Context<typeof userDescription>>await createContext({
       collectionName: 'user',
       parentContext: contextOrPayload,
     }))
 
-    if( isLeft(authEither) ) {
-      const error = unwrapEither(authEither)
-      return left(error)
+    if( isError(auth) ) {
+      return auth
     }
 
-    const auth = unwrapEither(authEither)
     result.auth = JSON.parse(JSON.stringify(auth))
   }
 

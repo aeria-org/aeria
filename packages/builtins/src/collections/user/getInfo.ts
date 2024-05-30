@@ -1,10 +1,10 @@
 import type { Context } from '@aeriajs/types'
 import type { description } from './description'
+import { HTTPStatus } from '@aeriajs/types'
 import { ObjectId } from '@aeriajs/core'
-import { left, right } from '@aeriajs/common'
 import * as bcrypt from 'bcrypt'
 
-export enum ActivationErrors {
+export enum ActivationError {
   UserNotFound = 'USER_NOT_FOUND',
   AlreadyActiveUser = 'ALREADY_ACTIVE_USER',
   InvalidLink = 'INVALID_LINK',
@@ -23,7 +23,9 @@ export const getInfo = async (
   } = payload
 
   if( !userId || !token ) {
-    return left(ActivationErrors.InvalidLink)
+    return context.error(HTTPStatus.NotFound, {
+      code: ActivationError.InvalidLink,
+    })
   }
 
   const user = await context.collection.model.findOne({
@@ -31,20 +33,26 @@ export const getInfo = async (
   })
 
   if( !user ) {
-    return left(ActivationErrors.UserNotFound)
+    return context.error(HTTPStatus.NotFound, {
+      code: ActivationError.UserNotFound,
+    })
   }
   if( user.active ) {
-    return left(ActivationErrors.AlreadyActiveUser)
+    return context.error(HTTPStatus.Forbidden, {
+      code: ActivationError.AlreadyActiveUser,
+    })
   }
 
   const equal = await bcrypt.compare(user._id.toString(), token)
   if( !equal ) {
-    return left(ActivationErrors.InvalidLink)
+    return context.error(HTTPStatus.NotFound, {
+      code: ActivationError.InvalidLink,
+    })
   }
 
-  return right({
+  return {
     name: user.name,
     email: user.email,
-  })
+  }
 }
 

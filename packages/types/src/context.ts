@@ -76,9 +76,10 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
   response: GenericResponse
 
   log: (message: string, details?: any)=> Promise<any>
+
   error: <
-    TEndpointErrorContent extends Omit<EndpointErrorContent, 'httpStatus'>,
-    THTTPStatus extends HTTPStatus,
+    const THTTPStatus extends HTTPStatus,
+    const TEndpointErrorContent extends EndpointErrorContent
   >(
     httpStatus: THTTPStatus,
     error: TEndpointErrorContent

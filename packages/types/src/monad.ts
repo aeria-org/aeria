@@ -1,6 +1,7 @@
 import type { HTTPStatus } from './http.js'
 
-export const ERROR_SYMBOL = Symbol('ErrorSymbol')
+export const ERROR_SYMBOL_DESCRIPTION = '#__ERROR_SYMBOL__' 
+export const ERROR_SYMBOL = Symbol(ERROR_SYMBOL_DESCRIPTION)
 
 export type Left<T> = {
   readonly _tag: 'Left'
@@ -13,21 +14,19 @@ export type Right<T> = {
 }
 
 export type EndpointErrorContent<
-  THTTPStatus extends HTTPStatus = HTTPStatus,
   TCode extends string = string,
-  TMessage extends string = string,
+  THTTPStatus extends HTTPStatus = HTTPStatus,
   TDetails extends Record<string, any> = Record<string, any>,
+  TMessage extends string = string,
 > = {
-  httpStatus: THTTPStatus
   code: TCode
+  httpStatus?: THTTPStatus
   message?: TMessage
   details?: TDetails
 }
 
-export type EndpointError<T extends EndpointErrorContent = EndpointErrorContent> = {
-  readonly _tag: 'Error'
-  readonly value: T
-  [ERROR_SYMBOL]: true
+export type EndpointError<TEndpointErrorContent extends EndpointErrorContent = EndpointErrorContent> = {
+  value: TEndpointErrorContent
 }
 
 export type ExtractLeft<T> = T extends Left<infer L>
@@ -38,8 +37,8 @@ export type ExtractRight<T> = T extends Right<infer R>
   ? R
   : never
 
-export type ExtractError<T> = T extends EndpointError<infer E>
-  ? EndpointError<E>
+export type ExtractError<T> = T extends EndpointError
+  ? T
   : never
 
 export type Either<L, R> = Left<L> | Right<R>

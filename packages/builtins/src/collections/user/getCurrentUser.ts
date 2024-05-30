@@ -1,6 +1,5 @@
 import type { Context, SchemaWithId } from '@aeriajs/types'
-import type { description } from './description'
-import { left, right } from '@aeriajs/common'
+import type { description } from './description.js'
 
 export enum ActivationErrors {
   UserNotFound = 'USER_NOT_FOUND',
@@ -13,7 +12,7 @@ export const getCurrentUser = async (
   context: Context<typeof description>,
 ) => {
   if( !context.token.authenticated ) {
-    return left({})
+    throw new Error()
   }
 
   const user = await context.collections.user.functions.get({
@@ -27,6 +26,6 @@ export const getCurrentUser = async (
   }
 
   const nonNullableUser: SchemaWithId<typeof description> = user
-  return right(nonNullableUser)
+  return nonNullableUser
 }
 

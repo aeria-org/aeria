@@ -1,6 +1,6 @@
 import type { Context, Schema } from '@aeriajs/types'
 import type { description } from './description.js'
-import { isLeft, unwrapEither, left, right } from '@aeriajs/common'
+import { isLeft } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
 import * as bcrypt from 'bcrypt'
 
@@ -44,7 +44,7 @@ export const createAccount = async (
   })
 
   if( isLeft(validationEither) ) {
-    return left(unwrapEither(validationEither))
+    return validationEither
   }
 
   if( context.config.security.signupDefaults ) {
@@ -70,6 +70,6 @@ export const createAccount = async (
     throw new Error()
   }
 
-  return right(newUser)
+  return newUser
 }
 

@@ -8,7 +8,7 @@ import type {
 } from '@aeriajs/types'
 
 import { ACError } from '@aeriajs/types'
-import { right, left, isLeft, unwrapEither, unsafe, deepMerge } from '@aeriajs/common'
+import { error, isError, unsafe, deepMerge } from '@aeriajs/common'
 import { defineServerOptions, cors, wrapRouteExecution } from '@aeriajs/http'
 import { registerServer } from '@aeriajs/node-http'
 
@@ -39,10 +39,10 @@ const authenticationGuard = (decodedToken: Token): decodedToken is Authenticated
 
 export const getToken = async (request: GenericRequest, context: Context) => {
   if( !request.headers.authorization ) {
-    return right(<Token>{
+    return {
       authenticated: false,
       sub: null,
-    })
+    } satisfies Token
   }
 
   try {
@@ -59,14 +59,16 @@ export const getToken = async (request: GenericRequest, context: Context) => {
       }
     }
 
-    return right(decodedToken)
+    return decodedToken
 
   } catch( err ) {
     if( process.env.NODE_ENV === 'development' ) {
       console.trace(err)
     }
 
-    return left(ACError.AuthenticationError)
+    return error({
+      code: ACError.AuthenticationError
+    })
   }
 }
 
@@ -99,12 +101,12 @@ export const init = (_options: InitOptions = {}) => {
         }
 
         await wrapRouteExecution(response, async () => {
-          const tokenEither = await getToken(request, parentContext)
-          if( isLeft(tokenEither) ) {
-            return tokenEither
+          const token = await getToken(request, parentContext)
+
+          if( isError(token) ) {
+            return token
           }
 
-          const token = unwrapEither(tokenEither)
           const context = await createContext({
             parentContext,
             token,

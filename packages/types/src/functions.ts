@@ -118,10 +118,10 @@ export type InsertReturnType<TDocument> =
   | TDocument
   | EndpointError<
     EndpointErrorContent<
-      | HTTPStatus.NotFound
-      | HTTPStatus.UnprocessableContent,
       | ACError
-      | ValidationErrorCode
+      | ValidationErrorCode,
+      | HTTPStatus.NotFound
+      | HTTPStatus.UnprocessableContent
     >
   >
 

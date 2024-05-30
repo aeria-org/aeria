@@ -14,6 +14,7 @@ export const REQUEST_METHODS = <const>[
 ]
 
 export enum HTTPStatus {
+  Ok = 200,
   BadRequest = 400,
   Unauthorized = 401,
   Forbidden = 403,

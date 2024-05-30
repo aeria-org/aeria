@@ -1,9 +1,9 @@
 import type { Context, SchemaWithId, Token, TokenRecipient } from '@aeriajs/types'
 import type { description } from './description.js'
-import { type ObjectId } from '@aeriajs/core'
+import type { ObjectId } from '@aeriajs/core'
+import { HTTPStatus, ACError } from '@aeriajs/types'
 import { compare as bcryptCompare } from 'bcrypt'
 import { signToken, decodeToken } from '@aeriajs/core'
-import { left, right } from '@aeriajs/common'
 
 type Props = {
   email: string
@@ -25,8 +25,7 @@ type Return = {
   token: TokenRecipient
 }
 
-export enum AuthenticationErrors {
-  Unauthenticated = 'UNAUTHENTICATED',
+export enum AuthenticationError {
   InvalidCredentials = 'INVALID_CREDENTIALS',
   InactiveUser = 'INACTIVE_USER',
 }
@@ -116,25 +115,29 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
   if( 'revalidate' in props ) {
     const { token } = props
     if( !token && !context.token.authenticated ) {
-      return left(AuthenticationErrors.Unauthenticated)
+      return context.error(HTTPStatus.Unauthorized, {
+        code: ACError.AuthorizationError,
+      })
     }
 
     const decodedToken = token
       ? await decodeToken<Token>(token.content)
       : context.token
 
-    return right(decodedToken.sub
-      ? await getUser(decodedToken.sub, context)
-      : await getDefaultUser())
+    return decodedToken.sub
+      ? getUser(decodedToken.sub, context)
+      : getDefaultUser()
   }
 
   if( typeof props.email !== 'string' ) {
-    return left(AuthenticationErrors.InvalidCredentials)
+    return context.error(HTTPStatus.Unauthorized, {
+      code: AuthenticationError.InvalidCredentials,
+    })
   }
 
   if( context.config.defaultUser ) {
     if( props.email === context.config.defaultUser.username && props.password === context.config.defaultUser.password ) {
-      return right(await getDefaultUser())
+      return getDefaultUser()
     }
   }
 
@@ -152,13 +155,17 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
   )
 
   if( !user || !user.password || !await bcryptCompare(props.password, user.password) ) {
-    return left(AuthenticationErrors.InvalidCredentials)
+    return context.error(HTTPStatus.Unauthorized, {
+      code: AuthenticationError.InvalidCredentials,
+    })
   }
 
   if( !user.active ) {
-    return left(AuthenticationErrors.InactiveUser)
+    return context.error(HTTPStatus.Unauthorized, {
+      code: AuthenticationError.InactiveUser,
+    })
   }
 
-  return right(await getUser(user._id, context))
+  return getUser(user._id, context)
 }
 

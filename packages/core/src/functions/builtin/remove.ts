@@ -1,6 +1,6 @@
 import type { Context, SchemaWithId, RemovePayload } from '@aeriajs/types'
-import { ACError } from '@aeriajs/types'
-import { left, unsafe } from '@aeriajs/common'
+import { HTTPStatus, ACError } from '@aeriajs/types'
+import { unsafe } from '@aeriajs/common'
 import { traverseDocument, cascadingRemove } from '../../collection/index.js'
 
 export const remove = async <TContext extends Context>(
@@ -8,7 +8,9 @@ export const remove = async <TContext extends Context>(
   context: TContext,
 ) => {
   if( !payload.filters._id ) {
-    return left(ACError.ResourceNotFound)
+    return context.error(HTTPStatus.NotFound, {
+      code: ACError.ResourceNotFound
+    })
   }
 
   const filters = unsafe(await traverseDocument(payload.filters, context.description, {
@@ -17,7 +19,9 @@ export const remove = async <TContext extends Context>(
 
   const target = await context.collection.model.findOne(filters)
   if( !target ) {
-    return left(ACError.ResourceNotFound)
+    return context.error(HTTPStatus.NotFound, {
+      code: ACError.ResourceNotFound
+    })
   }
 
   await cascadingRemove(target, context)

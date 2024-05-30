@@ -1,19 +1,25 @@
-import type { EndpointError, EndpointErrorContent } from '@aeriajs/types'
-import { ERROR_SYMBOL } from '@aeriajs/types'
+import type { EndpointError, EndpointErrorContent, HTTPStatus } from '@aeriajs/types'
+import { ERROR_SYMBOL, ERROR_SYMBOL_DESCRIPTION } from '@aeriajs/types'
 
-export const error = <TEndpointErrorContent extends EndpointErrorContent>(value: TEndpointErrorContent) => {
-  return <const>{
+export const error = <const TEndpointErrorContent extends EndpointErrorContent>(value: TEndpointErrorContent) => {
+  const wrappedError = {
     [ERROR_SYMBOL]: true,
-    _tag: 'Error',
     value,
-  } satisfies EndpointError<TEndpointErrorContent>
+  }
+
+  return wrappedError as EndpointError & {
+    value: TEndpointErrorContent
+  }
 }
 
-export const isError = (object: any): object is EndpointError => {
-  return object && object._tag === 'Error'
+export const isError = <
+  THTTPStatus extends HTTPStatus,
+  TCode extends string,
+>(object: EndpointError<EndpointErrorContent<TCode, THTTPStatus>> | Record<string, any>): object is EndpointError<EndpointErrorContent<TCode, THTTPStatus>> => {
+  return ERROR_SYMBOL in object || ERROR_SYMBOL_DESCRIPTION in object
 }
 
-export const isNativeError = (object: any): object is EndpointError => {
-  return object && ERROR_SYMBOL in object
+export const unwrapError = <TEndpointError extends EndpointError>(error: TEndpointError) => {
+  return error.value
 }
 

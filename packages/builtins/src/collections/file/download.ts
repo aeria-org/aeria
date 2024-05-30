@@ -1,13 +1,8 @@
 import type { Context } from '@aeriajs/types'
 import type { description } from './description.js'
+import { HTTPStatus, ACError } from '@aeriajs/types'
 import { ObjectId } from '@aeriajs/core'
-import { left } from '@aeriajs/common'
 import * as fs from 'fs'
-
-export enum FileReadError {
-  DocumentNotFound = 'DOCUMENT_NOT_FOUND',
-  FileNotFound = 'FILE_NOT_FOUND',
-}
 
 export const download = async (
   payload: {
@@ -37,7 +32,9 @@ export const download = async (
         'content-type': 'application/json',
       })
     }
-    return left(FileReadError.DocumentNotFound)
+    return context.error(HTTPStatus.NotFound, {
+      code: ACError.ResourceNotFound,
+    })
   }
 
   let stat: fs.StatsBase<number>
@@ -47,7 +44,9 @@ export const download = async (
     context.response.writeHead(404, {
       'content-type': 'application/json',
     })
-    return left(FileReadError.FileNotFound)
+    return context.error(HTTPStatus.NotFound, {
+      code: ACError.ResourceNotFound,
+    })
   }
 
   const range = context.request.headers.range
