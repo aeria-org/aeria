@@ -1,6 +1,6 @@
 import type { HTTPStatus } from './http.js'
 
-export const ERROR_SYMBOL_DESCRIPTION = '#__ERROR_SYMBOL__' 
+export const ERROR_SYMBOL_DESCRIPTION = '#__ERROR_SYMBOL__'
 export const ERROR_SYMBOL = Symbol(ERROR_SYMBOL_DESCRIPTION)
 
 export type Left<T> = {
@@ -21,6 +21,18 @@ export type EndpointErrorContent<
 > = {
   code: TCode
   httpStatus?: THTTPStatus
+  message?: TMessage
+  details?: TDetails
+}
+
+export type StrictEndpointErrorContent<
+  TCode extends string = string,
+  THTTPStatus extends HTTPStatus = HTTPStatus,
+  TDetails extends Record<string, any> = Record<string, any>,
+  TMessage extends string = string,
+> = {
+  code: TCode
+  httpStatus: THTTPStatus
   message?: TMessage
   details?: TDetails
 }

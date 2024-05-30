@@ -79,7 +79,7 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
 
   error: <
     const THTTPStatus extends HTTPStatus,
-    const TEndpointErrorContent extends EndpointErrorContent
+    const TEndpointErrorContent extends EndpointErrorContent,
   >(
     httpStatus: THTTPStatus,
     error: TEndpointErrorContent

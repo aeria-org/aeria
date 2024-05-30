@@ -67,7 +67,7 @@ export const getToken = async (request: GenericRequest, context: Context) => {
     }
 
     return error({
-      code: ACError.AuthenticationError
+      code: ACError.AuthenticationError,
     })
   }
 }

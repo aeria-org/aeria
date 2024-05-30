@@ -64,22 +64,17 @@ async function main() {
     phases.push(mirrorSdk)
   }
 
-  return phases.reduce(async (a: any, phase) => {
-    if( !await a ) {
-      return
-    }
-
+  for( const phase of phases ) {
     const resultEither = await phase()
     if( isLeft(resultEither) ) {
       log('error', unwrapEither(resultEither))
       log('info', 'pipeline aborted')
-      return
+      process.exit(1)
     }
 
     const result = unwrapEither(resultEither)
     log('info', result)
-    return true
-  }, true)
+  }
 }
 
 main()

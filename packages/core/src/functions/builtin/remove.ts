@@ -9,7 +9,7 @@ export const remove = async <TContext extends Context>(
 ) => {
   if( !payload.filters._id ) {
     return context.error(HTTPStatus.NotFound, {
-      code: ACError.ResourceNotFound
+      code: ACError.ResourceNotFound,
     })
   }
 
@@ -20,7 +20,7 @@ export const remove = async <TContext extends Context>(
   const target = await context.collection.model.findOne(filters)
   if( !target ) {
     return context.error(HTTPStatus.NotFound, {
-      code: ACError.ResourceNotFound
+      code: ACError.ResourceNotFound,
     })
   }
 

@@ -91,9 +91,6 @@ export const endpointErrorSchema = <
   return <const>{
     type: 'object',
     properties: {
-      _tag: {
-        const: 'Error',
-      },
       value: {
         type: 'object',
         required: [
@@ -109,6 +106,10 @@ export const endpointErrorSchema = <
           },
           message: {
             type: 'string',
+          },
+          details: {
+            type: 'object',
+            variable: true,
           },
         },
       },

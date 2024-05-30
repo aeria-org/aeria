@@ -53,7 +53,7 @@ export const abstractResponse = (response: http.ServerResponse): GenericResponse
             }
 
             Object.assign(value, {
-              [ERROR_SYMBOL_DESCRIPTION]: true
+              [ERROR_SYMBOL_DESCRIPTION]: true,
             })
           } else {
             response.writeHead(200, {
