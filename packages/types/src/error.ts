@@ -28,7 +28,8 @@ export type StrictEndpointErrorContent<
 }
 
 export type EndpointError<TEndpointErrorContent extends EndpointErrorContent = EndpointErrorContent> = {
-  value: TEndpointErrorContent
+  readonly _tag: 'Error'
+  readonly value: TEndpointErrorContent
 }
 
 export type ExtractError<T> = T extends EndpointError

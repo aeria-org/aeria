@@ -4,6 +4,7 @@ import { ERROR_SYMBOL, ERROR_SYMBOL_DESCRIPTION } from '@aeriajs/types'
 export const error = <const TEndpointErrorContent extends EndpointErrorContent>(value: TEndpointErrorContent) => {
   const wrappedError = {
     [ERROR_SYMBOL]: true,
+    _tag: 'Error',
     value,
   }
 
