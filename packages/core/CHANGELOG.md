@@ -1,5 +1,22 @@
 # @aeriajs/api
 
+## 0.0.89
+
+### Patch Changes
+
+- a24745d: Fix bugs in collection utils
+- f650bda: Increase consistency of HTTP responses
+- b7fc3ea: Error responses
+- Updated dependencies [f650bda]
+- Updated dependencies [b7fc3ea]
+  - @aeriajs/common@0.0.55
+  - @aeriajs/types@0.0.52
+  - @aeriajs/http@0.0.63
+  - @aeriajs/builtins@0.0.89
+  - @aeriajs/entrypoint@0.0.55
+  - @aeriajs/security@0.0.89
+  - @aeriajs/validation@0.0.58
+
 ## 0.0.88
 
 ### Patch Changes
