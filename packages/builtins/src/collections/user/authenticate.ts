@@ -2,6 +2,7 @@ import type { Context, SchemaWithId, Token, TokenRecipient } from '@aeriajs/type
 import type { description } from './description.js'
 import type { ObjectId } from '@aeriajs/core'
 import { HTTPStatus, ACError } from '@aeriajs/types'
+import { isError } from '@aeriajs/common'
 import { compare as bcryptCompare } from 'bcrypt'
 import { signToken, decodeToken } from '@aeriajs/core'
 
@@ -41,7 +42,7 @@ const getUser = async (
     populate: ['picture_file'],
   })
 
-  if( !leanUser ) {
+  if( isError(leanUser) ) {
     throw new Error()
   }
 

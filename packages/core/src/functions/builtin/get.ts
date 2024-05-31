@@ -1,5 +1,6 @@
-import type { Context, SchemaWithId, GetPayload } from '@aeriajs/types'
+import type { Context, SchemaWithId, GetPayload, GetReturnType } from '@aeriajs/types'
 import type { Document } from 'mongodb'
+import { HTTPStatus, ACError } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
 import { unsafe } from '@aeriajs/common'
 import {
@@ -20,7 +21,7 @@ export const get = async <TContext extends Context>(
     ? TContext
     : never,
   options?: GetOptions,
-): Promise<SchemaWithId<TContext['description']> | null> => {
+): Promise<GetReturnType<TContext['description']>> => {
   const security = useSecurity(context)
 
   const {
@@ -61,12 +62,9 @@ export const get = async <TContext extends Context>(
 
   const result = await context.collection.model.aggregate(pipeline).next()
   if( !result ) {
-    if( !context.inherited ) {
-      context.response.writeHead(404, {
-        'content-type': 'application/json',
-      })
-    }
-    return null
+    return context.error(HTTPStatus.NotFound, {
+      code: ACError.ResourceNotFound
+    })
   }
 
   return fill(unsafe(await traverseDocument(result, context.description, {

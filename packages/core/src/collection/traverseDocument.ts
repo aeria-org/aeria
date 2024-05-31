@@ -25,7 +25,7 @@ export type TraverseNormalized = {
   pipe: <T = unknown>(value: unknown, phaseContext: PhaseContext)=> T | Promise<T>
 }
 
-export enum TraverseErrors {
+export enum TraverseError {
   InvalidDocumentId = 'INVALID_DOCUMENT_ID',
   InvalidTempfile = 'INVALID_TEMPFILE',
 }
@@ -77,7 +77,7 @@ const disposeOldFiles = async (ctx: PhaseContext, options: { fromIds?: ObjectId[
   })
 
   if( !doc ) {
-    return left(TraverseErrors.InvalidDocumentId)
+    return left(TraverseError.InvalidDocumentId)
   }
 
   let fileIds = getValueFromPath(doc, ctx.propPath)
@@ -245,7 +245,7 @@ const moveFiles = async (
   })
 
   if( !tempFile ) {
-    return left(TraverseErrors.InvalidTempfile)
+    return left(TraverseError.InvalidTempfile)
   }
 
   if( ctx.root._id ) {

@@ -1,7 +1,8 @@
 import type { Context, SchemaWithId } from '@aeriajs/types'
 import type { description } from './description.js'
+import { isError } from '@aeriajs/common'
 
-export enum ActivationErrors {
+export enum ActivationError {
   UserNotFound = 'USER_NOT_FOUND',
   AlreadyActiveUser = 'ALREADY_ACTIVE_USER',
   InvalidLink = 'INVALID_LINK',
@@ -21,7 +22,7 @@ export const getCurrentUser = async (
     },
   })
 
-  if( !user ) {
+  if( isError(user) ) {
     throw new Error()
   }
 

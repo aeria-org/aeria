@@ -126,9 +126,19 @@ export type InsertReturnType<TDocument> =
     >
   >
 
+export type GetReturnType<TDocument> =
+  | TDocument
+  | EndpointError<
+    StrictEndpointErrorContent<
+      ACError.ResourceNotFound,
+      unknown,
+      HTTPStatus.NotFound
+    >
+  >
+
 export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<any>>> = {
   count: (payload: CountPayload<TDocument>)=> Promise<number>
-  get: (payload: GetPayload<TDocument>)=> Promise<TDocument | null>
+  get: (payload: GetPayload<TDocument>)=> Promise<GetReturnType<TDocument>>
   getAll: (payload?: GetAllPayload<TDocument>)=> Promise<TDocument[]>
   insert: (payload: InsertPayload<TDocument>)=> Promise<InsertReturnType<TDocument>>
   remove: (payload: RemovePayload<TDocument>)=> Promise<TDocument>

@@ -4,7 +4,7 @@ import { getConfig, getAvailableRoles } from '@aeriajs/entrypoint'
 
 type EscapeCode = `[${string}m`
 
-enum AnsiColors {
+enum AnsiColor {
   Green = '[32m',
   Yellow = '[33m',
   Blue = '[36m',
@@ -12,11 +12,11 @@ enum AnsiColors {
   White = '[37m',
 }
 
-const METHOD_COLORS: Record<string, AnsiColors> = {
-  GET: AnsiColors.Green,
-  PUT: AnsiColors.Blue,
-  POST: AnsiColors.White,
-  DELETE: AnsiColors.Red,
+const METHOD_COLORS: Record<string, AnsiColor> = {
+  GET: AnsiColor.Green,
+  PUT: AnsiColor.Blue,
+  POST: AnsiColor.White,
+  DELETE: AnsiColor.Red,
 }
 
 const escape = (code: EscapeCode | EscapeCode[], text: string) => {
@@ -35,11 +35,11 @@ const colorizedRoute = async (
   const config = await getConfig()
   const color = method in METHOD_COLORS
     ? METHOD_COLORS[method]
-    : AnsiColors.White
+    : AnsiColor.White
 
   let
     rolesLine = '',
-    hasContractLine = escape(AnsiColors.Yellow, 'x')
+    hasContractLine = escape(AnsiColor.Yellow, 'x')
 
   if( endpoint ) {
     if( 'roles' in endpoint ) {
@@ -61,7 +61,7 @@ const colorizedRoute = async (
       rolesLine = ` ${escape('[90m', `[${roles.join('|')}]`)}`
     }
     if( 'response' in endpoint || endpoint.builtin ) {
-      hasContractLine = escape(AnsiColors.Green, '✓')
+      hasContractLine = escape(AnsiColor.Green, '✓')
     }
   }
 
