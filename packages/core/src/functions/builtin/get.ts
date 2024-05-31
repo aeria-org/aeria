@@ -63,7 +63,7 @@ export const get = async <TContext extends Context>(
   const result = await context.collection.model.aggregate(pipeline).next()
   if( !result ) {
     return context.error(HTTPStatus.NotFound, {
-      code: ACError.ResourceNotFound
+      code: ACError.ResourceNotFound,
     })
   }
 

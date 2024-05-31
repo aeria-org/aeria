@@ -143,6 +143,7 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
   timestamps?: false
   immutable?:
     | boolean
+    | readonly (keyof TDescription['properties'])[]
     | ((doc: WithId<any>)=> boolean | Promise<boolean>)
 
   // takes an array of something

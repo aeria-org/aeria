@@ -3,6 +3,18 @@ export * as collections from './collections/index.js'
 
 const router = createRouter()
 
+router.GET('/hello-world', () => {
+  return {
+    message: 'Hello, world',
+  }
+}, {
+  roles: [
+    'root',
+    'manager',
+    'customer',
+  ],
+})
+
 router.GET('/get-people', async (context) => {
   const person = await context.collections.person.functions.insert({
     what: {
