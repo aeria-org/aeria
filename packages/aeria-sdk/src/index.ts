@@ -4,8 +4,11 @@ export {
   isLeft,
   isRight,
   unwrapEither,
+  error,
+  isError,
+  unwrapError,
   unsafe,
-} from '@aeriajs/common/either'
+} from '@aeriajs/common'
 
 export * from './auth.js'
 export * from './topLevel.js'
