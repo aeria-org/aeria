@@ -4,13 +4,12 @@ import type {
   Property,
   InferSchema,
   Description,
-  PropertyValidationErrorType,
   PropertyValidationError,
   ValidationError,
 } from '@aeriajs/types'
 
 import { isLeft, left, right, unwrapEither, getMissingProperties } from '@aeriajs/common'
-import { ValidationErrorCode } from '@aeriajs/types'
+import { ValidationErrorCode, PropertyValidationErrorCode } from '@aeriajs/types'
 
 export type ValidateOptions = {
   extraneous?: string[] | boolean
@@ -53,9 +52,9 @@ const getPropertyType = (property: Property) => {
 }
 
 const makePropertyError = <
-  TType extends PropertyValidationErrorType,
+  TCode extends PropertyValidationErrorCode,
   TDetails extends PropertyValidationError['details'],
->(type: TType, details: TDetails) => {
+>(type: TCode, details: TDetails) => {
   return {
     type,
     details,
@@ -66,9 +65,9 @@ export const makeValidationError = <TValidationError extends ValidationError> (e
   return error
 }
 
-export const validateProperty = (
+export const validateProperty = <TWhat>(
   propName: string,
-  what: any,
+  what: TWhat,
   property: Property | undefined,
   options: ValidateOptions = {},
 ): Either<PropertyValidationError | ValidationError, any> => {
@@ -86,7 +85,7 @@ export const validateProperty = (
       return right(what)
     }
 
-    return left(makePropertyError('extraneous', {
+    return left(makePropertyError(PropertyValidationErrorCode.Extraneous, {
       expected: 'undefined',
       got: getValueType(what),
     }))
@@ -102,7 +101,7 @@ export const validateProperty = (
 
   if( 'const' in property ) {
     if( what !== property.const ) {
-      return left(makePropertyError('unmatching', {
+      return left(makePropertyError(PropertyValidationErrorCode.Unmatching, {
         expected: property.const,
         got: what,
       }))
@@ -131,38 +130,45 @@ export const validateProperty = (
       return right(what)
     }
 
-    if( '$ref' in property && actualType === 'string' ) {
+    if( '$ref' in property && typeof what === 'string' ) {
       if( /^[0-9a-fA-F]{24}$/.test(what) ) {
         return right(what)
       }
     }
 
     if( coerce ) {
-      if( expectedType === 'number' && actualType === 'string' ) {
+      if( expectedType === 'number' && typeof what === 'string' ) {
         const coerced = parseFloat(what)
         if( !isNaN(coerced) ) {
           return right(coerced)
         }
       }
-      if( expectedType === 'integer' && actualType === 'string' ) {
+      if( expectedType === 'integer' && typeof what === 'string' ) {
         const coerced = parseInt(what)
         if( !isNaN(coerced) ) {
           return right(coerced)
         }
       }
-      if( expectedType === 'string' && actualType === 'number' ) {
+      if( expectedType === 'string' && typeof what === 'number' ) {
         return right(String(what))
       }
 
     }
 
-    return left(makePropertyError('unmatching', {
+    return left(makePropertyError(PropertyValidationErrorCode.Unmatching, {
       expected: expectedType,
       got: actualType,
     }))
   }
 
   if( 'items' in property ) {
+    if( !Array.isArray(what) ) {
+      return left(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+        expected: expectedType,
+        got: actualType,
+      }))
+    }
+
     let i = 0
     for( const elem of what ) {
       const resultEither = validateProperty(propName, elem, property.items, options)
@@ -182,7 +188,7 @@ export const validateProperty = (
   } else if( 'type' in property ) {
     if( property.type === 'integer' ) {
       if( !Number.isInteger(what) ) {
-        return left(makePropertyError('numeric_constraint', {
+        return left(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
           expected: 'integer',
           got: 'invalid_number',
         }))
@@ -190,13 +196,20 @@ export const validateProperty = (
     }
 
     if( property.type === 'integer' || property.type === 'number' ) {
+      if( typeof what !== 'number' ) {
+        return left(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+          expected: expectedType,
+          got: actualType,
+        }))
+      }
+
       if(
         (property.maximum && property.maximum < what)
       || (property.minimum && property.minimum > what)
       || (property.exclusiveMaximum && property.exclusiveMaximum <= what)
       || (property.exclusiveMinimum && property.exclusiveMinimum >= what)
       ) {
-        return left(makePropertyError('numeric_constraint', {
+        return left(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
           expected: 'number',
           got: 'invalid_number',
         }))
@@ -204,7 +217,7 @@ export const validateProperty = (
     }
   } else if( 'enum' in property ) {
     if( !property.enum.includes(what) ) {
-      return left(makePropertyError('extraneous_element', {
+      return left(makePropertyError(PropertyValidationErrorCode.ExtraneousElement, {
         expected: property.enum,
         got: what,
       }))
@@ -303,20 +316,6 @@ export const validate = <
   return right(resultCopy as InferSchema<TJsonSchema>)
 }
 
-export const validateSilently = <
-  TWhat,
-  const TJsonSchema extends Omit<Description, '$id'> | Property,
->(
-  what: TWhat | undefined,
-  schema: TJsonSchema,
-  options: ValidateOptions = {},
-) => {
-  const resultEither = validate(what, schema, options)
-  return isLeft(resultEither)
-    ? null
-    : unwrapEither(resultEither)
-}
-
 export const validator = <const TJsonSchema extends Omit<Description, '$id'> | Property>(
   schema: TJsonSchema,
   options: ValidateOptions = {},
@@ -326,19 +325,6 @@ export const validator = <const TJsonSchema extends Omit<Description, '$id'> | P
     {} as InferSchema<TJsonSchema>,
     <TWhat>(what: TWhat) => {
       return validate(what, schema, options)
-    },
-  ]
-}
-
-export const silentValidator = <const TJsonSchema extends Omit<Description, '$id'> | Property>(
-  schema: TJsonSchema,
-  options: ValidateOptions = {},
-) => {
-
-  return <const>[
-    {} as InferSchema<TJsonSchema>,
-    <TWhat>(what: TWhat) => {
-      return validateSilently(what, schema, options)
     },
   ]
 }

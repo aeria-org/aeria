@@ -3,7 +3,7 @@ export type OwnershipMode =
   | 'always'
   | 'on-write'
 
-export enum RateLimitingErrors {
+export enum RateLimitingError {
   Unauthenticated = 'UNAUTHENTICATED',
   LimitReached = 'LIMIT_REACHED',
 }

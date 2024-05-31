@@ -1,6 +1,5 @@
 import type { RouteContext, RateLimitingParams } from '@aeriajs/types'
-import { RateLimitingErrors } from '@aeriajs/types'
-import { left, right } from '@aeriajs/common'
+import { HTTPStatus, RateLimitingError } from '@aeriajs/types'
 
 const buildEntryFilter = (
   params: RateLimitingParams,
@@ -63,7 +62,9 @@ export const limitRate = async (
     if( 'scale' in params ) {
       const now = new Date()
       if( params.scale > now.getTime() / 1000 - resource.last_reach.getTime() / 1000 ) {
-        return left(RateLimitingErrors.LimitReached)
+        return context.error(HTTPStatus.TooManyRequests, {
+          code: RateLimitingError.LimitReached,
+        })
       }
     }
   }
@@ -87,6 +88,10 @@ export const limitRate = async (
     },
   )
 
-  return right(newEntry!.usage[resourceName]!)
+  if( !newEntry ) {
+    throw new Error()
+  }
+
+  return newEntry.usage[resourceName]!
 }
 

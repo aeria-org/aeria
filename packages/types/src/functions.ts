@@ -1,6 +1,6 @@
 import type { FilterOperators, StrictFilter as Filter, StrictUpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
 import type { ACError } from './accessControl.js'
-import type { EndpointError, StrictEndpointErrorContent } from './monad.js'
+import type { EndpointError, StrictEndpointErrorContent } from './error.js'
 import type { PackReferences } from './schema.js'
 import type { ValidationErrorCode } from './validation.js'
 import type { HTTPStatus } from './http.js'
@@ -120,6 +120,7 @@ export type InsertReturnType<TDocument> =
     StrictEndpointErrorContent<
       | ACError
       | ValidationErrorCode,
+      unknown,
       | HTTPStatus.NotFound
       | HTTPStatus.UnprocessableContent
     >

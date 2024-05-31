@@ -1,4 +1,4 @@
-import { init, createRouter, isError, insertErrorSchema } from 'aeria'
+import { init, createRouter, isError, unwrapError, insertErrorSchema, ACError } from 'aeria'
 export * as collections from './collections/index.js'
 
 const router = createRouter()
@@ -13,6 +13,10 @@ router.GET('/get-people', async (context) => {
   })
 
   if( isError(person) ) {
+    const error = unwrapError(person)
+    error.code === ACError.InsecureOperator
+    // @ts-expect-error
+    error.code === 'invalid'
     return person
   }
 

@@ -4,19 +4,21 @@ export enum ValidationErrorCode {
   EmptyTarget = 'EMPTY_TARGET',
 }
 
-export type PropertyValidationErrorType =
-  | 'missing'
-  | 'extraneous'
-  | 'unmatching'
-  | 'extraneous_element'
-  | 'numeric_constraint'
+export enum PropertyValidationErrorCode {
+  Missing = 'MISSING_PROPERTY',
+  Extraneous = 'EXTRANEOUS_PROPERTY',
+  Unmatching = 'UNMATCHING_PROPERTIES',
+  ExtraneousElement = 'EXTRANEOUS_ELEMENT',
+  NumericConstraint = 'NUMERIC_CONSTRAINT',
+
+}
 
 export type PropertyValidationError = {
-  type: PropertyValidationErrorType
+  type: PropertyValidationErrorCode
   index?: number
   details: {
     expected: any
-    got: string
+    got: any
   }
 }
 

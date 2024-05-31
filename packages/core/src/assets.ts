@@ -1,6 +1,6 @@
 import type { AssetType, Context, Collection, Token } from '@aeriajs/types'
-import { ACError, HTTPStatus } from '@aeriajs/types'
-import { left, right, isLeft, unwrapEither } from '@aeriajs/common'
+import { ACError } from '@aeriajs/types'
+import { isError, left, right, isLeft, unwrapEither } from '@aeriajs/common'
 import { limitRate } from '@aeriajs/security'
 import { getCollection } from '@aeriajs/entrypoint'
 import { isFunctionExposed, FunctionExposedStatus } from './accessControl.js'
@@ -94,13 +94,9 @@ export const getFunction = async <
 
     if( securityPolicy ) {
       if( securityPolicy.rateLimiting ) {
-        const rateLimitingEither = await limitRate(securityPolicy.rateLimiting, context)
-        if( isLeft(rateLimitingEither) ) {
-          const error = unwrapEither(rateLimitingEither)
-          return context.error(HTTPStatus.TooManyRequests, {
-            code: error,
-            message: 'rate limit was achieved for this resource',
-          })
+        const rate = await limitRate(securityPolicy.rateLimiting, context)
+        if( isError(rate) ) {
+          return rate
         }
       }
     }

@@ -9,7 +9,6 @@ import {
   deepCandidate,
   deepDescription,
   personValidator,
-  personSilentValidator,
   personCandidate,
   coercionDescription,
 
@@ -28,11 +27,6 @@ describe('Validate', () => {
     assert(JSON.stringify(personCandidate) === JSON.stringify(unwrapEither(validationEither)))
   })
 
-  it('validates object using silent validator', () => {
-    const person = personSilentValidator(personCandidate)
-    assert(JSON.stringify(personCandidate) === JSON.stringify(person))
-  })
-
   it('returns left with validator', () => {
     const validationEither = personValidator({
       ...personCandidate,
@@ -42,15 +36,6 @@ describe('Validate', () => {
     assert(isLeft(validationEither))
     const error = unwrapEither(validationEither)
     assert('code' in error && error.code === 'INVALID_PROPERTIES')
-  })
-
-  it('returns null with silent validator', () => {
-    const person = personSilentValidator({
-      ...personCandidate,
-      age: false,
-    })
-
-    assert(person === null)
   })
 
   it('returns error on plain object', () => {
@@ -84,7 +69,7 @@ describe('Validate', () => {
 
   it('returns error on deep object', () => {
     const candidate = Object.assign({}, deepCandidate)
-    deepCandidate.style.color.name.name = 1 as any
+    deepCandidate.style.color.props.name = 1 as any
 
     const validationEither = validate(candidate, deepDescription)
 
@@ -116,7 +101,6 @@ describe('Validate', () => {
     const invalidEither = validate({
       age: '10.8',
       weight: 'ten',
-
     }, coercionDescription, {
       coerce: true,
     })

@@ -1,4 +1,4 @@
-import { validator, silentValidator } from '../../dist'
+import { validator } from '../../dist'
 
 export const personCandidate = {
   name: 'Terry',
@@ -16,13 +16,3 @@ export const [Person1, personValidator] = validator({
   },
 })
 
-export const [Person2, personSilentValidator] = silentValidator({
-  properties: {
-    name: {
-      type: 'string',
-    },
-    age: {
-      type: 'number',
-    },
-  },
-})

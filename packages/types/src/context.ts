@@ -3,10 +3,10 @@ import type { AcceptedRole } from './token.js'
 import type { ApiConfig } from './config.js'
 import type { CollectionDocument, CollectionFunctions } from './functions.js'
 import type { Description } from './description.js'
-import type { Either, EndpointError, EndpointErrorContent } from './monad.js'
+import type { EndpointError, EndpointErrorContent } from './error.js'
 import type { GenericRequest, GenericResponse, HTTPStatus } from './http.js'
 import type { PackReferences, SchemaWithId } from './schema.js'
-import type { RateLimitingParams, RateLimitingErrors } from './security.js'
+import type { RateLimitingParams, RateLimitingError } from './security.js'
 import type { Token } from './token.js'
 
 export type CollectionModel<TDescription extends Description> =
@@ -87,12 +87,20 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
     httpStatus: THTTPStatus
   }>
 
-  limitRate: (params: RateLimitingParams)=> Promise<Either<RateLimitingErrors, {
-    hits: number
-    points: number
-    last_reach: Date
-    last_maximum_reach: Date
-  }>>
+  limitRate: (params: RateLimitingParams)=> Promise<
+    | EndpointError<
+      EndpointErrorContent<
+        RateLimitingError,
+        HTTPStatus.TooManyRequests
+      >
+    >
+    | {
+      hits: number
+      points: number
+      last_reach: Date
+      last_maximum_reach: Date
+    }
+  >
 
   config: ApiConfig
   inherited: boolean

@@ -13,7 +13,7 @@ export const deepCandidate = {
   ],
   style: {
     color: {
-      name: {
+      props: {
         name: 'red',
       },
     },
@@ -45,7 +45,7 @@ export const deepDescription = {
         color: {
           type: 'object',
           properties: {
-            name: {
+            props: {
               type: 'object',
               properties: {
                 name: {
