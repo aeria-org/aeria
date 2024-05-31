@@ -1,5 +1,25 @@
 # aeria
 
+## 0.0.97
+
+### Patch Changes
+
+- b7fc3ea: Error responses
+- Updated dependencies [a24745d]
+- Updated dependencies [f650bda]
+- Updated dependencies [b7fc3ea]
+  - @aeriajs/core@0.0.89
+  - @aeriajs/common@0.0.55
+  - @aeriajs/types@0.0.52
+  - @aeriajs/http@0.0.63
+  - @aeriajs/builtins@0.0.89
+  - @aeriajs/cli@0.0.28
+  - @aeriajs/entrypoint@0.0.55
+  - @aeriajs/node-http@0.0.63
+  - @aeriajs/security@0.0.89
+  - @aeriajs/server@0.0.91
+  - @aeriajs/validation@0.0.58
+
 ## 0.0.96
 
 ### Patch Changes

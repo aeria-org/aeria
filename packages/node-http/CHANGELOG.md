@@ -1,5 +1,14 @@
 # @aeriajs/node-http
 
+## 0.0.63
+
+### Patch Changes
+
+- b7fc3ea: Error responses
+- Updated dependencies [f650bda]
+- Updated dependencies [b7fc3ea]
+  - @aeriajs/http@0.0.63
+
 ## 0.0.62
 
 ### Patch Changes

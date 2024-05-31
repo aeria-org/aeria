@@ -1,5 +1,15 @@
 # @aeriajs/common
 
+## 0.0.55
+
+### Patch Changes
+
+- f650bda: Increase consistency of HTTP responses
+- b7fc3ea: Error responses
+- Updated dependencies [f650bda]
+- Updated dependencies [b7fc3ea]
+  - @aeriajs/types@0.0.52
+
 ## 0.0.54
 
 ### Patch Changes

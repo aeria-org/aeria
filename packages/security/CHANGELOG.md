@@ -1,5 +1,17 @@
 # @aeriajs/security
 
+## 0.0.89
+
+### Patch Changes
+
+- b7fc3ea: Error responses
+- Updated dependencies [a24745d]
+- Updated dependencies [f650bda]
+- Updated dependencies [b7fc3ea]
+  - @aeriajs/core@0.0.89
+  - @aeriajs/common@0.0.55
+  - @aeriajs/types@0.0.52
+
 ## 0.0.88
 
 ### Patch Changes
