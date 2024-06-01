@@ -82,8 +82,8 @@ export const rightSchema = <const TObject extends Property>(object: TObject) => 
 }
 
 export const endpointErrorSchema = <
-  THTTPStatus extends HTTPStatus[],
-  TCode extends string[],
+  const THTTPStatus extends HTTPStatus[],
+  const TCode extends string[],
 >(error: {
   httpStatus: THTTPStatus,
   code: TCode
@@ -91,6 +91,9 @@ export const endpointErrorSchema = <
   return <const>{
     type: 'object',
     properties: {
+      _tag: {
+        const: 'Error'
+      },
       value: {
         type: 'object',
         required: [
