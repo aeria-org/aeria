@@ -92,7 +92,7 @@ export const endpointErrorSchema = <
     type: 'object',
     properties: {
       _tag: {
-        const: 'Error'
+        const: 'Error',
       },
       value: {
         type: 'object',
