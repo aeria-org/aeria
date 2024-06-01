@@ -307,7 +307,11 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
       | 'propPath'
   >,
 
-): Promise<Either<ValidationError | ACError, TRecursionTarget>> => {
+): Promise<Either<
+  | ValidationError
+  | ACError.InsecureOperator,
+  TRecursionTarget
+>> => {
   const entries = []
   const entrypoint = ctx.options.fromProperties && 'properties' in ctx.property
     ? {

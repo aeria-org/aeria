@@ -118,7 +118,10 @@ export type InsertReturnType<TDocument> =
   | TDocument
   | EndpointError<
     StrictEndpointErrorContent<
-      | ACError
+      | ACError.InsecureOperator
+      | ACError.OwnershipError
+      | ACError.ResourceNotFound
+      | ACError.TargetImmutable
       | ValidationErrorCode,
       unknown,
       | HTTPStatus.NotFound
