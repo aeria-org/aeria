@@ -1,6 +1,6 @@
 import type { Description, Property, Either, ValidationError, Context } from '@aeriajs/types'
 import { ACError, ValidationErrorCode } from '@aeriajs/types'
-import { left, right, isLeft, unwrapEither, unsafe, pipe, isReference, getValueFromPath, isObjectId } from '@aeriajs/common'
+import { left, right, isLeft, unwrapEither, throwIfLeft, pipe, isReference, getValueFromPath, isObjectId } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
 import { ObjectId } from 'mongodb'
 import { getCollectionAsset } from '../assets.js'
@@ -395,7 +395,7 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
           : property
 
         if( '$ref' in propCast && value && !(value instanceof ObjectId) ) {
-          const targetDescription = await preloadDescription(unsafe(await getCollectionAsset(propCast.$ref, 'description')))
+          const targetDescription = await preloadDescription(throwIfLeft(await getCollectionAsset(propCast.$ref, 'description')))
 
           if( Array.isArray(value) ) {
             const documents = []

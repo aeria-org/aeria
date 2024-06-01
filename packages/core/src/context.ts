@@ -7,7 +7,7 @@ import type {
   Collection,
 } from '@aeriajs/types'
 
-import { unsafe, error } from '@aeriajs/common'
+import { throwIfLeft, error } from '@aeriajs/common'
 import { getCollections } from '@aeriajs/entrypoint'
 import { limitRate } from '@aeriajs/security'
 import { getDatabaseCollection } from './database.js'
@@ -85,7 +85,7 @@ export const createContext = async (options: ContextOptions = {}) => {
   }
 
   if( collectionName ) {
-    const description = unsafe(await getCollectionAsset(collectionName , 'description'))
+    const description = throwIfLeft(await getCollectionAsset(collectionName , 'description'))
     context.description = await preloadDescription(description)
 
     context.collectionName = collectionName

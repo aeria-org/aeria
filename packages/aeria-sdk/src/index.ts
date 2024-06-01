@@ -7,7 +7,7 @@ export {
   error,
   isError,
   unwrapError,
-  unsafe,
+  throwIfLeft,
 } from '@aeriajs/common'
 
 export * from './auth.js'

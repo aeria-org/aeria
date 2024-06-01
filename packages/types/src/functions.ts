@@ -1,9 +1,9 @@
 import type { FilterOperators, StrictFilter as Filter, StrictUpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
-import type { ACError } from './accessControl.js'
 import type { EndpointError, StrictEndpointErrorContent } from './error.js'
 import type { PackReferences } from './schema.js'
+import type { ACError } from './accessControl.js'
 import type { ValidationErrorCode } from './validation.js'
-import type { HTTPStatus } from './http.js'
+import type { HTTPStatus, WithACErrors } from './http.js'
 
 export type UploadAuxProps = {
   parentId: string
@@ -145,17 +145,22 @@ export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<
   getAll: (payload?: GetAllPayload<TDocument>)=> Promise<TDocument[]>
   insert: (payload: InsertPayload<TDocument>)=> Promise<InsertReturnType<TDocument>>
   remove: (payload: RemovePayload<TDocument>)=> Promise<TDocument>
+  // @TODO
   removeAll: (payload: RemoveAllPayload)=> Promise<any>
   removeFile: (payload: RemoveFilePayload)=> Promise<any>
 }
 
-export type CollectionFunctionsPaginated<TDocument extends CollectionDocument<OptionalId<any>>> = Omit<
-  CollectionFunctions<TDocument>,
-  | 'getAll'
-> & {
-  getAll: (payload?: GetAllPayload<TDocument>)=> Promise<{
+export type CollectionFunctionsSDK<TDocument extends CollectionDocument<OptionalId<any>>> = {
+  count: (payload: CountPayload<TDocument>)=> Promise<WithACErrors<number>>
+  get: (payload: GetPayload<TDocument>)=> Promise<WithACErrors<GetReturnType<TDocument>>>
+  getAll: (payload?: GetAllPayload<TDocument>)=> Promise<WithACErrors<{
     data: TDocument[]
     pagination: Pagination
-  }>
+  }>>
+  insert: (payload: InsertPayload<TDocument>)=> Promise<WithACErrors<InsertReturnType<TDocument>>>
+  remove: (payload: RemovePayload<TDocument>)=> Promise<WithACErrors<TDocument>>
+  // @TODO
+  removeAll: (payload: RemoveAllPayload)=> Promise<any>
+  removeFile: (payload: RemoveFilePayload)=> Promise<any>
 }
 

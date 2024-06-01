@@ -1,5 +1,8 @@
 import type { ServerResponse, IncomingMessage } from 'http'
 import type { MapSchemaUnion } from './schema.js'
+import type { EndpointError, EndpointErrorContent, StrictEndpointErrorContent } from './error.js'
+import type { ACError } from './accessControl.js'
+import type { RateLimitingError } from './security.js'
 
 export const REQUEST_METHODS = <const>[
   'GET',
@@ -41,16 +44,40 @@ export type GenericRequest = {
 
 export type GenericResponse = ServerResponse
 
+type ExtractCode<TRouteResponse> = TRouteResponse extends EndpointError<EndpointErrorContent<infer PCode>>
+  ? PCode
+  : never
+
+type ExtractHTTPStatus<TRouteResponse> = TRouteResponse extends EndpointError<EndpointErrorContent<any, unknown, infer PHTTPStatus>>
+  ? PHTTPStatus
+  : never
+
+export type WithACErrors<TRouteResponse> =
+  | Exclude<TRouteResponse, EndpointError<any>>
+  | EndpointError<
+    StrictEndpointErrorContent<
+      | ExtractCode<TRouteResponse>
+      | ACError.AuthenticationError
+      | ACError.AuthorizationError
+      | RateLimitingError.LimitReached
+      | RateLimitingError.Unauthenticated,
+      unknown,
+      | ExtractHTTPStatus<TRouteResponse>
+      | HTTPStatus.Unauthorized
+      | HTTPStatus.TooManyRequests
+    >
+  >
+
 export type EndpointFunction<
   TRouteMethod extends RequestMethod,
   TRouteResponse,
   TRoutePayload,
 > = (
   TRoutePayload extends null
-    ? (payload?: any)=> Promise<TRouteResponse>
+    ? (payload?: any)=> Promise<WithACErrors<TRouteResponse>>
     : TRoutePayload extends undefined
-      ? ()=> Promise<TRouteResponse>
-      : (payload: TRoutePayload)=> Promise<TRouteResponse>
+      ? ()=> Promise<WithACErrors<TRouteResponse>>
+      : (payload: TRoutePayload)=> Promise<WithACErrors<TRouteResponse>>
 ) extends infer Function
   ? Record<TRouteMethod, Function>
   : never

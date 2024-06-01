@@ -1,7 +1,7 @@
 import type { Context, SchemaWithId, InsertPayload, InsertReturnType } from '@aeriajs/types'
 import { HTTPStatus, ACError, ValidationErrorCode } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
-import { isLeft, unwrapEither, unsafe, endpointErrorSchema } from '@aeriajs/common'
+import { isLeft, unwrapEither, throwIfLeft, endpointErrorSchema } from '@aeriajs/common'
 import { traverseDocument, normalizeProjection, prepareInsert } from '../../collection/index.js'
 
 export type InsertOptions = {
@@ -32,7 +32,7 @@ export const insert = async <TContext extends Context>(
   const security = useSecurity(context)
 
   const query = !options?.bypassSecurity
-    ? unsafe(await security.beforeWrite(payload))
+    ? throwIfLeft(await security.beforeWrite(payload))
     : payload
 
   const whatEither = await traverseDocument(query.what, context.description, {
@@ -117,7 +117,7 @@ export const insert = async <TContext extends Context>(
     })
   }
 
-  const result = unsafe(await traverseDocument(doc, context.description, {
+  const result = throwIfLeft(await traverseDocument(doc, context.description, {
     getters: true,
     fromProperties: true,
     recurseReferences: true,

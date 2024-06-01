@@ -25,3 +25,16 @@ export const unwrapError = <TEndpointErrorContent extends EndpointErrorContent>(
   return error.value
 }
 
+export const throwIfError = <TValue>(value: TValue, message?: any) => {
+  if( isError(value) ) {
+    const error = unwrapError(value)
+    if( process.env.NODE_ENV !== 'production' ) {
+      console.trace(JSON.stringify(error, null, 2))
+    }
+
+    throw new Error(`throwIfLeft threw: ${error.code} (${message || '-'})`)
+  }
+
+  return value as Exclude<TValue, EndpointError<any>>
+}
+

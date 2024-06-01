@@ -8,7 +8,7 @@ import type {
 } from '@aeriajs/types'
 
 import { ACError } from '@aeriajs/types'
-import { error, isError, unsafe, deepMerge } from '@aeriajs/common'
+import { error, isError, throwIfLeft, deepMerge } from '@aeriajs/common'
 import { defineServerOptions, cors, wrapRouteExecution } from '@aeriajs/http'
 import { registerServer } from '@aeriajs/node-http'
 
@@ -53,7 +53,7 @@ export const getToken = async (request: GenericRequest, context: Context) => {
     if( authenticationGuard(decodedToken) ) {
       if( typeof decodedToken.sub === 'string' ) {
         decodedToken.sub = new ObjectId(decodedToken.sub)
-        Object.assign(decodedToken.userinfo, unsafe(await traverseDocument(decodedToken.userinfo, context.collections.user.description, {
+        Object.assign(decodedToken.userinfo, throwIfLeft(await traverseDocument(decodedToken.userinfo, context.collections.user.description, {
           autoCast: true,
         })))
       }

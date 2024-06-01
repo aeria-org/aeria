@@ -1,5 +1,5 @@
 import type { Context, RemoveAllPayload, CollectionItem } from '@aeriajs/types'
-import { unsafe } from '@aeriajs/common'
+import { throwIfLeft } from '@aeriajs/common'
 import { traverseDocument, cascadingRemove } from '../../collection/index.js'
 
 export const removeAll = async <TContext extends Context>(payload: RemoveAllPayload, context: TContext) => {
@@ -10,7 +10,7 @@ export const removeAll = async <TContext extends Context>(payload: RemoveAllPayl
     },
   }
 
-  const filters = unsafe(await traverseDocument(filtersWithId, context.description, {
+  const filters = throwIfLeft(await traverseDocument(filtersWithId, context.description, {
     autoCast: true,
   }))
 

@@ -2,7 +2,7 @@ import type { Context, SchemaWithId, GetPayload, GetReturnType } from '@aeriajs/
 import type { Document } from 'mongodb'
 import { HTTPStatus, ACError } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
-import { unsafe } from '@aeriajs/common'
+import { throwIfLeft } from '@aeriajs/common'
 import {
   traverseDocument,
   normalizeProjection,
@@ -28,7 +28,7 @@ export const get = async <TContext extends Context>(
     filters = {},
     project = [],
   } = !options?.bypassSecurity
-    ? unsafe(await security.beforeRead(payload))
+    ? throwIfLeft(await security.beforeRead(payload))
     : payload
 
   if( Object.keys(filters).length === 0 ) {
@@ -41,7 +41,7 @@ export const get = async <TContext extends Context>(
   })
 
   pipeline.push({
-    $match: unsafe(await traverseDocument(filters, context.description, {
+    $match: throwIfLeft(await traverseDocument(filters, context.description, {
       autoCast: true,
       allowOperators: true,
     })),
@@ -67,7 +67,7 @@ export const get = async <TContext extends Context>(
     })
   }
 
-  return fill(unsafe(await traverseDocument(result, context.description, {
+  return fill(throwIfLeft(await traverseDocument(result, context.description, {
     getters: true,
     fromProperties: true,
     recurseReferences: true,

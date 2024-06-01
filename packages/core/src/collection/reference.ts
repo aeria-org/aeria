@@ -1,5 +1,5 @@
 import type { FixedObjectProperty, Description } from '@aeriajs/types'
-import { unsafe, getReferenceProperty } from '@aeriajs/common'
+import { throwIfLeft, getReferenceProperty } from '@aeriajs/common'
 import { getCollectionAsset } from '../assets.js'
 import { prepareCollectionName } from '../database.js'
 
@@ -146,7 +146,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
       }
 
     } else {
-      const description = unsafe(await getCollectionAsset(refProperty.$ref, 'description'))
+      const description = throwIfLeft(await getCollectionAsset(refProperty.$ref, 'description'))
       const deepReferences = await getReferences(description.properties, {
         depth: depth + 1,
         memoize: `${memoize}.${propName}`,
@@ -221,7 +221,7 @@ const buildLookupStages = async (reference: Reference, propName: string, options
     } else {
       const subPipeline: any[] = []
       if( reference.deepReferences ) {
-        const subProperties = unsafe(await getCollectionAsset(reference.referencedCollection, 'description')).properties
+        const subProperties = throwIfLeft(await getCollectionAsset(reference.referencedCollection, 'description')).properties
         subPipeline.push(...await buildLookupPipeline(reference.deepReferences, {
           project: reference.populatedProperties,
           properties: subProperties,
@@ -296,7 +296,7 @@ const buildLookupStages = async (reference: Reference, propName: string, options
       }
 
       if( refMap.referencedCollection ) {
-        const description = unsafe(await getCollectionAsset(refMap.referencedCollection, 'description'))
+        const description = throwIfLeft(await getCollectionAsset(refMap.referencedCollection, 'description'))
         const { stages: result } = await buildLookupStages(refMap, refName, {
           depth: depth + 1,
           parent: withParent(propName),

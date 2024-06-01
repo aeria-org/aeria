@@ -14,7 +14,7 @@ const mirrorDts = (mirrorObj: any, config: InstanceConfig) => {
   SchemaWithId,
   MakeEndpoint,
   RequestMethod,
-  CollectionFunctionsPaginated
+  CollectionFunctionsSDK
 
 } from '@aeriajs/types'
 
@@ -65,10 +65,10 @@ declare module 'aeria-sdk' {
   type Endpoints = {
     [Route in keyof MirrorRouter]: Route extends \`/\${infer Coll}/\${infer Fn}\`
       ? Coll extends keyof Collections
-        ? Fn extends keyof CollectionFunctionsPaginated<any>
+        ? Fn extends keyof CollectionFunctionsSDK<any>
           ? Record<Coll, Record<
               Fn, {
-              POST: CollectionFunctionsPaginated<SchemaWithId<MirrorDescriptions[Coll]>>[Fn]
+              POST: CollectionFunctionsSDK<SchemaWithId<MirrorDescriptions[Coll]>>[Fn]
             }
             >>
           : InferEndpoint<Route>
