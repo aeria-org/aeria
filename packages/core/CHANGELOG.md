@@ -1,5 +1,18 @@
 # @aeriajs/api
 
+## 0.0.92
+
+### Patch Changes
+
+- fbe9927: Add `genericErrorSchema()`
+- Updated dependencies [fbe9927]
+  - @aeriajs/common@0.0.58
+  - @aeriajs/builtins@0.0.92
+  - @aeriajs/entrypoint@0.0.58
+  - @aeriajs/http@0.0.66
+  - @aeriajs/security@0.0.92
+  - @aeriajs/validation@0.0.61
+
 ## 0.0.91
 
 ### Patch Changes

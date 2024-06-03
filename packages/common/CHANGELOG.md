@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.58
+
+### Patch Changes
+
+- fbe9927: Add `genericErrorSchema()`
+
 ## 0.0.57
 
 ### Patch Changes
