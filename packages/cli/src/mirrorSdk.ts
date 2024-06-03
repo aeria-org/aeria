@@ -1,5 +1,4 @@
 import type { InstanceConfig } from 'aeria-sdk'
-import * as path from 'path'
 import { systemFunctions } from '@aeriajs/builtins'
 import { right } from '@aeriajs/common'
 
@@ -17,7 +16,7 @@ export const mirrorSdk = async (defaultConfig?: Partial<InstanceConfig>) => {
       await getConfig(),
     )
 
-    await writeMirrorFiles(mirror, config, path.join(process.cwd(), '.aeria'))
+    await writeMirrorFiles(mirror, config)
 
   } catch( err: any ) {
     if( err.code !== 'MODULE_NOT_FOUND' ) {

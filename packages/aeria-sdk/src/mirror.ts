@@ -111,7 +111,7 @@ export const storage = getStorage(config)
 export default aeria
 \n`
 
-export const writeMirrorFiles = async (mirror: any, config: InstanceConfig, filesPath = process.cwd()) => {
+export const writeMirrorFiles = async (mirror: any, config: InstanceConfig, filesPath = path.join(process.cwd(), '.aeria')) => {
   const runtimeBase = path.dirname(require.resolve('aeria-sdk'))
 
   await mkdir(runtimeBase, {

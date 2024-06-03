@@ -27,7 +27,7 @@ export type StrictEndpointErrorContent<
   message?: TMessage
 }
 
-export type EndpointError<TEndpointErrorContent extends EndpointErrorContent = EndpointErrorContent> = {
+export type EndpointError<TEndpointErrorContent extends EndpointErrorContent | unknown = EndpointErrorContent> = {
   readonly _tag: 'Error'
   readonly value: TEndpointErrorContent
 }
