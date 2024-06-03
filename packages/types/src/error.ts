@@ -10,8 +10,8 @@ export type EndpointErrorContent<
   TMessage extends string = string,
 > = {
   code: TCode
-  httpStatus?: THTTPStatus
   details?: TDetails
+  httpStatus?: THTTPStatus
   message?: TMessage
 }
 
@@ -22,8 +22,8 @@ export type StrictEndpointErrorContent<
   TMessage extends string | undefined = string,
 > = {
   code: TCode
-  httpStatus: THTTPStatus
   details?: TDetails
+  httpStatus: THTTPStatus
   message?: TMessage
 }
 
@@ -35,4 +35,8 @@ export type EndpointError<TEndpointErrorContent extends EndpointErrorContent = E
 export type ExtractError<T> = T extends EndpointError
   ? T
   : never
+
+export type ExtractSuccessful<T> = T extends EndpointError
+  ? never
+  : T
 

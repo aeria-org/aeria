@@ -452,7 +452,7 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
   return right(Object.fromEntries(entries))
 }
 
-export const traverseDocument = async <const TWhat extends Record<string, any>>(
+export const traverseDocument = async <const TWhat extends Record<string, unknown>>(
   what: TWhat,
   description: Description,
   _options: TraverseOptions,

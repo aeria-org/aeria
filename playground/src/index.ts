@@ -26,9 +26,9 @@ router.GET('/get-people', async (context) => {
 
   if( isError(person) ) {
     const error = unwrapError(person)
-    error.code === ACError.InsecureOperator
+    ACError.InsecureOperator satisfies typeof error.code
     // @ts-expect-error
-    error.code === 'invalid'
+    'invalid' satisfies typeof error.code
     return person
   }
 

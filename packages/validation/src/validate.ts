@@ -70,7 +70,7 @@ export const validateProperty = <TWhat>(
   what: TWhat,
   property: Property | undefined,
   options: ValidateOptions = {},
-): Either<PropertyValidationError | ValidationError, any> => {
+): Either<PropertyValidationError | ValidationError, unknown> => {
   const { extraneous, filterOutExtraneous, coerce } = options
   if( what === undefined ) {
     return right(what)
