@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.54
+
+### Patch Changes
+
+- d53ae6f: Fix minor bugs
+
 ## 0.0.53
 
 ### Patch Changes
