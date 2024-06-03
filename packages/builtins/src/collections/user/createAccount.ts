@@ -1,6 +1,7 @@
 import type { Context, Schema } from '@aeriajs/types'
 import type { description } from './description.js'
-import { isLeft } from '@aeriajs/common'
+import { HTTPStatus, ACError } from '@aeriajs/types'
+import { isLeft, unwrapEither } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
 import * as bcrypt from 'bcrypt'
 
@@ -44,7 +45,10 @@ export const createAccount = async (
   })
 
   if( isLeft(validationEither) ) {
-    return validationEither
+    return context.error(HTTPStatus.BadRequest, {
+      code: ACError.MalformedInput,
+      details: unwrapEither(validationEither),
+    })
   }
 
   if( context.config.security.signupDefaults ) {

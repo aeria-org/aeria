@@ -30,5 +30,6 @@ export enum ACError {
   OwnershipError = 'OWNERSHIP_ERROR',
   ResourceNotFound = 'RESOURCE_NOT_FOUND',
   InsecureOperator = 'INSECURE_OPERATOR',
+  MalformedInput = 'MALFORMED_INPUT',
 }
 

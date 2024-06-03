@@ -1,5 +1,5 @@
-import type { Context } from '@aeriajs/types'
-import { isLeft, unwrapEither, left } from '@aeriajs/common'
+import { ACError, HTTPStatus, type Context } from '@aeriajs/types'
+import { isLeft, unwrapEither } from '@aeriajs/common'
 import { getCollection } from '@aeriajs/entrypoint'
 import { validate, validator } from '@aeriajs/validation'
 import * as path from 'path'
@@ -64,12 +64,18 @@ export const upload = async <TContext extends Context>(_props: unknown, context:
   })
 
   if( isLeft(headersEither) ) {
-    return left(unwrapEither(headersEither))
+    return context.error(HTTPStatus.BadRequest, {
+      code: ACError.MalformedInput,
+      details: unwrapEither(headersEither),
+    })
   }
 
   const metadataEither = validateFileMetadata(context.request.query)
   if( isLeft(metadataEither) ) {
-    return left(unwrapEither(metadataEither))
+    return context.error(HTTPStatus.BadRequest, {
+      code: ACError.MalformedInput,
+      details: unwrapEither(metadataEither),
+    })
   }
 
   const metadata = unwrapEither(metadataEither)
