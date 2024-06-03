@@ -1,5 +1,22 @@
 # @aeriajs/api
 
+## 0.0.90
+
+### Patch Changes
+
+- da3d1a1: Fix `insert()` invalid signature
+- 3149b04: Add `ExtractError<T>` and return error instead of left in endpoint functions
+- Updated dependencies [0caa225]
+- Updated dependencies [da3d1a1]
+- Updated dependencies [3149b04]
+  - @aeriajs/common@0.0.56
+  - @aeriajs/types@0.0.53
+  - @aeriajs/builtins@0.0.90
+  - @aeriajs/entrypoint@0.0.56
+  - @aeriajs/http@0.0.64
+  - @aeriajs/security@0.0.90
+  - @aeriajs/validation@0.0.59
+
 ## 0.0.89
 
 ### Patch Changes
