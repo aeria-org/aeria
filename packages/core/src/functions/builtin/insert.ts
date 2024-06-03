@@ -1,14 +1,14 @@
 import type { Context, SchemaWithId, InsertPayload, InsertReturnType } from '@aeriajs/types'
 import { HTTPStatus, ACError, ValidationErrorCode } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
-import { isLeft, unwrapEither, throwIfLeft, endpointErrorSchema } from '@aeriajs/common'
+import { isLeft, unwrapEither, throwIfLeft, errorSchema } from '@aeriajs/common'
 import { traverseDocument, normalizeProjection, prepareInsert } from '../../collection/index.js'
 
 export type InsertOptions = {
   bypassSecurity?: boolean
 }
 
-export const insertErrorSchema = endpointErrorSchema({
+export const insertErrorSchema = () => errorSchema({
   httpStatus: [
     HTTPStatus.UnprocessableContent,
     HTTPStatus.NotFound,

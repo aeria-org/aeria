@@ -54,7 +54,7 @@ router.GET('/get-people', async (context) => {
     },
   },
   response: [
-    insertErrorSchema,
+    insertErrorSchema(),
     {
       type: 'array',
       items: {
