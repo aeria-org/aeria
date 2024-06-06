@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.55
+
+### Patch Changes
+
+- d9008db: Add `roles` property in `CollectionAction<T>`
+
 ## 0.0.54
 
 ### Patch Changes
