@@ -32,6 +32,7 @@ export type CollectionAction<TDescription extends Description> = {
   clearItem?: boolean
   params?: Record<string, any>
   query?: Record<string, any>
+  roles?: readonly string[]
 
   requires?: readonly PropertiesWithId<TDescription>[]
 }
