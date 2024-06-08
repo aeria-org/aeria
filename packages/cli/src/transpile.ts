@@ -1,8 +1,8 @@
-import * as glob from 'glob'
 import * as esbuild from 'esbuild'
+import { glob } from 'glob'
 
 export const init = async (options: esbuild.BuildOptions = {}) => {
-  const fileList = glob.sync('src/**/*.ts', {
+  const fileList = await glob('src/**/*.ts', {
     dot: true,
   })
 

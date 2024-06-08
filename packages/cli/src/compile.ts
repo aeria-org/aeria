@@ -1,9 +1,9 @@
 import * as ts from 'typescript'
 import * as path from 'path'
-import * as glob from 'glob'
 import * as JSON5 from 'json5'
 import * as transpile from './transpile.js'
 import { readFile } from 'fs/promises'
+import { glob } from 'glob'
 import { left, right, deepMerge } from '@aeriajs/common'
 import { log } from './log.js'
 
@@ -87,7 +87,7 @@ export const getTsconfig = async (additionalOptions?: ts.CompilerOptions) => {
 }
 
 export const compile = async (additionalOptions?: ts.CompilerOptions) => {
-  const fileList = glob.sync('**/*.ts', {
+  const fileList = await glob('**/*.ts', {
     ignore: ['node_modules/**/*.ts'],
     dot: true,
   })

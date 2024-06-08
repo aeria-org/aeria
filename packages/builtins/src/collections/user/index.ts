@@ -21,7 +21,9 @@ const exposedFunctions: Record<string, AccessCondition> = {
   createAccount: 'unauthenticated-only',
   getInfo: 'unauthenticated',
   getCurrentUser: true,
-  getActivationLink: true,
+  getActivationLink: [
+    'root'
+  ],
 }
 
 export const user = defineCollection({
