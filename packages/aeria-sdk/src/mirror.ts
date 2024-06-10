@@ -2,6 +2,7 @@ import type { InstanceConfig } from './types'
 import * as path from 'path'
 import { deserialize } from '@aeriajs/common'
 import { writeFile, mkdir } from 'fs/promises'
+import { createRequire } from 'module'
 import { topLevel } from './topLevel.js'
 import { publicUrl } from './utils.js'
 
@@ -114,16 +115,12 @@ export default aeria
 export const writeMirrorFiles = async (mirror: any, config: InstanceConfig, filesPath = path.join(process.cwd(), '.aeria')) => {
   const resolvedPath = (() => {
     try {
-      return require.resolve('aeria.sdk')
+      return require.resolve('aeria-sdk')
     } catch( err ) {
     }
 
-    const fn = new Function(`return (async () => {
-      const { fileURLToPath } = await import('url')
-      return fileURLToPath(import.meta.resolve('aeria-sdk'))
-    })()`)
-
-    return fn()
+    const syntheticRequire = createRequire(process.cwd())
+    return syntheticRequire.resolve('aeria-sdk')
   })()
 
   const runtimeBase = path.dirname(resolvedPath)
