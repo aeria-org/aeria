@@ -14,15 +14,15 @@ export const isFunctionExposed = async (collection: Collection, fnName: string, 
     return FunctionExposedStatus.FunctionNotExposed
   }
 
-  if( !token ) {
-    return FunctionExposedStatus.FunctionAccessible
-  }
-
   if( collection.exposedFunctions && fnName in collection.exposedFunctions ) {
     const exposed = collection.exposedFunctions[fnName]
 
     if( exposed === false ) {
       return FunctionExposedStatus.FunctionNotExposed
+    }
+
+    if( !token ) {
+      return FunctionExposedStatus.FunctionAccessible
     }
 
     return isGranted(exposed, token)
@@ -31,7 +31,7 @@ export const isFunctionExposed = async (collection: Collection, fnName: string, 
   }
 
   if( config.security.exposeFunctionsByDefault ) {
-    if( config.security.exposeFunctionsByDefault !== 'unauthenticated' && !token.authenticated ) {
+    if( config.security.exposeFunctionsByDefault !== 'unauthenticated' && (!token || !token.authenticated) ) {
       return FunctionExposedStatus.FunctionNotGranted
     }
 

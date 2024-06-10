@@ -18,7 +18,7 @@ import { DEFAULT_API_CONFIG } from './constants.js'
 import { warmup } from './warmup.js'
 import { registerRoutes } from './routes.js'
 
-type InitApiConfig = Omit<ApiConfig, keyof typeof DEFAULT_API_CONFIG> & Partial<Pick<
+export type InitApiConfig = Omit<ApiConfig, keyof typeof DEFAULT_API_CONFIG> & Partial<Pick<
   ApiConfig,
   keyof typeof DEFAULT_API_CONFIG
 >>
