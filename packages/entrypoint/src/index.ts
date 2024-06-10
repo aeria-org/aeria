@@ -20,7 +20,10 @@ export const getEntrypointPath = async () => {
 }
 
 export const getEntrypoint = async () => {
-  return dynamicImport(await getEntrypointPath())
+  const entrypoint = await dynamicImport(await getEntrypointPath())
+  return entrypoint.default.default
+    ? entrypoint.default
+    : entrypoint
 }
 
 const internalGetCollections = async (): Promise<Record<string, Collection | (()=> Collection)>> => {
@@ -70,6 +73,7 @@ export const getRouter = async () => {
 
 export const getConfig = async (): Promise<ApiConfig> => {
   const entrypoint = await getEntrypoint()
+
   return entrypoint.default
     ? entrypoint.default.options.config
     : {}

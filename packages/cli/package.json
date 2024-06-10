@@ -1,5 +1,6 @@
 {
   "name": "@aeriajs/cli",
+  "type": "module",
   "version": "0.0.32",
   "description": "",
   "main": "dist/index.js",
@@ -9,10 +10,7 @@
     "test": "echo skipping",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "build": "pnpm build:cjs && pnpm build:esm",
-    "build:cjs": "tsc",
-    "build:esm": "esbuild './src/**/*.ts' --outdir=dist --out-extension:.js=.mjs && pnpm build:esm-transform",
-    "build:esm-transform": "pnpm -w esm-transform $PWD/dist",
+    "build": "tsc",
     "prepublishOnly": "pnpm build"
   },
   "bin": {
@@ -20,8 +18,7 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
+      "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
     "./config/*": "./dist/config/*"
@@ -53,5 +50,8 @@
     "@aeriajs/core": "^0.0.93",
     "@aeriajs/entrypoint": "^0.0.59",
     "@aeriajs/types": "^0.0.55"
+  },
+  "optionalDependencies": {
+    "aeria-lang": "~0.0.2"
   }
 }

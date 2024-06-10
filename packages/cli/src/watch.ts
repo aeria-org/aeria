@@ -1,11 +1,12 @@
 import type { BuildContext } from 'esbuild'
-import * as path from 'path'
+import ts from 'typescript'
 import * as chokidar from 'chokidar'
-import * as ts from 'typescript'
-import { isLeft, unwrapEither } from '@aeriajs/common'
+import { fileURLToPath } from 'url'
 import { spawn, fork, type ChildProcessWithoutNullStreams } from 'child_process'
+import { isLeft, unwrapEither } from '@aeriajs/common'
 import { log } from './log.js'
 import { mirrorSdk } from './mirrorSdk.js'
+import { buildAeriaLangPhase } from './buildAeriaLang.js'
 import { getUserTsconfig, compile, type CompileOptions } from './compile.js'
 import * as transpile from './transpile.js'
 
@@ -19,6 +20,17 @@ const processEnv = async () => {
 }
 
 const compileOnChanges = async (transpileCtx: BuildContext | null) => {
+  const buildEither = await buildAeriaLangPhase()
+  if( isLeft(buildEither) ) {
+    log('error', unwrapEither(buildEither))
+
+    return {
+      success: false
+    }
+  }
+
+  log('info', unwrapEither(buildEither))
+
   if( transpileCtx ) {
     try {
       await transpileCtx.rebuild()
@@ -74,7 +86,7 @@ export const watch = async (options: CompileOptions = {}) => {
   process.env.AERIA_MAIN = `${tsConfig.compilerOptions.outDir}/index.js`
 
   const compilerWorker = !options.useTsc
-    ? fork(path.join(__dirname, 'compilationWorker.js'))
+    ? fork(fileURLToPath(import.meta.resolve('./compilationWorker.js')))
     : null
 
   if( compilerWorker ) {
@@ -112,6 +124,7 @@ export const watch = async (options: CompileOptions = {}) => {
 
   const srcWatcher = chokidar.watch([
     'src',
+    'schemas',
     'package.json',
     'tsconfig.json',
     '.env',
@@ -142,7 +155,7 @@ export const watch = async (options: CompileOptions = {}) => {
         compilerWorker.send({})
       }
 
-      fork(path.join(__dirname, 'watchWorker.js'), {
+      fork(fileURLToPath(import.meta.resolve('./watchWorker.js')), {
         env: await processEnv(),
         detached: true,
       })

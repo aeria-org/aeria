@@ -1,7 +1,8 @@
-import * as ts from 'typescript'
+import ts from 'typescript'
+import JSON5 from 'json5'
 import * as path from 'path'
-import * as JSON5 from 'json5'
 import * as transpile from './transpile.js'
+import { fileURLToPath } from 'url'
 import { readFile } from 'fs/promises'
 import { glob } from 'glob'
 import { left, right, deepMerge } from '@aeriajs/common'
@@ -33,7 +34,7 @@ export const getUserTsconfig = async () => {
     const extendsPath = tsConfig.extends
     const resolvedPath = /^\.{1,2}\//.test(extendsPath)
       ? path.join(process.cwd(), extendsPath)
-      : require.resolve(extendsPath)
+      : fileURLToPath(import.meta.resolve(extendsPath))
 
     Object.assign(
       tsConfig,

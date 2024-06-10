@@ -1,4 +1,4 @@
-import { parseArgs } from 'node:util'
+import { parseArgs } from 'util'
 import { mirrorRemotely } from './mirror.js'
 import { getConfig } from './utils.js'
 

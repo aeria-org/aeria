@@ -1,3 +1,6 @@
 #!/usr/bin/env node
 
-require('../dist/cli')
+(async () => {
+  const { main } = await import('../dist/cli.mjs')
+  main()
+})()

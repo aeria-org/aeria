@@ -1,5 +1,5 @@
 import type { Either } from '@aeriajs/types'
-import { parseArgs } from 'node:util'
+import { parseArgs } from 'util'
 import { isLeft, unwrapEither } from '@aeriajs/common'
 import { log } from './log.js'
 import { compilationPhase } from './compile.js'
@@ -7,6 +7,7 @@ import { watch } from './watch.js'
 import { migrate } from './migrate.js'
 import { iconsExtraction } from './iconsExtraction.js'
 import { mirrorSdk } from './mirrorSdk.js'
+import { buildAeriaLangPhase } from './buildAeriaLang.js'
 
 const { values: opts } = parseArgs({
   options: {
@@ -39,7 +40,7 @@ const { values: opts } = parseArgs({
 
 const phases: (()=> Promise<Either<string, string>>)[] = []
 
-async function main() {
+export async function main() {
   if( opts.watch ) {
     return watch({
       useTsc: opts.tsc,
@@ -47,6 +48,7 @@ async function main() {
   }
 
   if( opts.compile ) {
+    phases.push(buildAeriaLangPhase)
     phases.push(() => compilationPhase({
       useTsc: opts.tsc,
     }))
@@ -77,5 +79,4 @@ async function main() {
   }
 }
 
-main()
 

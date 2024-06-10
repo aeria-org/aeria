@@ -1,7 +1,7 @@
 #!/usr/bin/env -S pnpm ts-node --swc
 
 import { Transform } from 'stream'
-import * as glob from 'glob'
+import { glob } from 'glob'
 import * as fs from 'fs'
 
 const renameExtensions = () => new Transform({
@@ -14,7 +14,7 @@ const renameExtensions = () => new Transform({
 })
 
 const main = async () => {
-  const fileList = glob.sync(`${process.argv[2]}/**/*.mjs`)
+  const fileList = await glob(`${process.argv[2]}/**/*.mjs`)
   for( const file of fileList ) {
     const tempPath = `${file}.tmp`
 

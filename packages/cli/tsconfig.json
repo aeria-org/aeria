@@ -2,7 +2,10 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    "esModuleInterop": true,
     "paths": {
       "@aeriajs/core": [
         "../core/dist"
