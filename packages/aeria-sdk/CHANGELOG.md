@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.84
+
+### Patch Changes
+
+- 3890e5b: Fix problem with `import.meta` outside module
+
 ## 0.0.83
 
 ### Patch Changes
