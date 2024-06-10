@@ -1,5 +1,15 @@
 # @aeriajs/server
 
+## 0.0.97
+
+### Patch Changes
+
+- 49ff8b8: Minor usability bugs
+- Updated dependencies [49ff8b8]
+  - @aeriajs/server@0.0.97
+  - @aeriajs/core@0.0.95
+  - @aeriajs/builtins@0.0.95
+
 ## 0.0.96
 
 ### Patch Changes

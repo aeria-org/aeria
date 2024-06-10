@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.95
+
+### Patch Changes
+
+- 49ff8b8: Minor usability bugs
+  - @aeriajs/builtins@0.0.95
+  - @aeriajs/security@0.0.95
+
 ## 0.0.94
 
 ### Patch Changes
