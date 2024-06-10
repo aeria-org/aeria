@@ -3,7 +3,11 @@
     "noEmit": true,
     "strict": true,
     "target": "esnext",
+    "module": "esnext",
     "esModuleInterop": true,
     "moduleResolution": "node"
+  },
+  "ts-node": {
+    "esm": true
   }
 }

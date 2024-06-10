@@ -7,7 +7,7 @@ export const buildAeriaLang = async () => {
   const tsConfig = await getUserTsconfig()
 
   try {
-    return build(['schemas/*.aeria'], {
+    return await build(['schemas/*.aeria'], {
       outDir: '.aeria/out',
       module: tsConfig.compilerOptions.module === ts.ModuleKind.CommonJS
         ? 'commonjs'

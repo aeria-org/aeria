@@ -25,7 +25,7 @@ const compileOnChanges = async (transpileCtx: BuildContext | null) => {
     log('error', unwrapEither(buildEither))
 
     return {
-      success: false
+      success: false,
     }
   }
 

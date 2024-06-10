@@ -1,4 +1,4 @@
-#!/usr/bin/env -S pnpm ts-node --swc
+#!/usr/bin/env -S node --loader ts-node/esm
 
 import path from 'path'
 import { extractIcons, iconsEsmContent, iconsCjsContent, iconsDtsContent } from '../packages/cli/dist/index.js'
