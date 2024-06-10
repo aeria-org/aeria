@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.83
+
+### Patch Changes
+
+- 00b5420: Wip `aeria-lang` integration
+
 ## 0.0.82
 
 ### Patch Changes

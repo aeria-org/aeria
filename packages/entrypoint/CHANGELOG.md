@@ -1,5 +1,11 @@
 # @aeriajs/entrypoint
 
+## 0.0.60
+
+### Patch Changes
+
+- 00b5420: Wip `aeria-lang` integration
+
 ## 0.0.59
 
 ### Patch Changes

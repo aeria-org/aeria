@@ -1,5 +1,20 @@
 # aeria
 
+## 0.0.102
+
+### Patch Changes
+
+- 00b5420: Wip `aeria-lang` integration
+- Updated dependencies [00b5420]
+  - @aeriajs/entrypoint@0.0.60
+  - @aeriajs/cli@0.0.33
+  - @aeriajs/builtins@0.0.94
+  - @aeriajs/core@0.0.94
+  - @aeriajs/http@0.0.68
+  - @aeriajs/server@0.0.96
+  - @aeriajs/security@0.0.94
+  - @aeriajs/node-http@0.0.68
+
 ## 0.0.101
 
 ### Patch Changes
