@@ -1,5 +1,13 @@
 # aeria-build
 
+## 0.0.34
+
+### Patch Changes
+
+- Updated dependencies [49ff8b8]
+  - @aeriajs/core@0.0.95
+  - @aeriajs/builtins@0.0.95
+
 ## 0.0.33
 
 ### Patch Changes
