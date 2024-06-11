@@ -1,10 +1,12 @@
 export type Left<T> = {
   readonly _tag: 'Left'
-  readonly value: T
+  readonly error: T
+  readonly value: undefined
 }
 
 export type Right<T> = {
   readonly _tag: 'Right'
+  readonly error: undefined
   readonly value: T
 }
 

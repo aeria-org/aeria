@@ -1,5 +1,4 @@
 import assert from 'assert'
-import { isRight } from '@aeriajs/common'
 import { traverseDocument, ObjectId } from '../dist'
 
 describe('Traverse document', () => {
@@ -14,7 +13,7 @@ describe('Traverse document', () => {
       },
     }
 
-    const result = await traverseDocument(what, {
+    const { value } = await traverseDocument(what, {
       $id: '',
       properties: {
         items: {
@@ -41,10 +40,10 @@ describe('Traverse document', () => {
       allowOperators: true,
     })
 
-    assert(isRight(result))
-    assert(result.value.items.$elemMatch.date instanceof Date)
-    assert(result.value.items.$elemMatch.image instanceof ObjectId)
-    assert(result.value.items.$elemMatch.status === 'accepted')
+    assert(value)
+    assert(value.items.$elemMatch.date instanceof Date)
+    assert(value.items.$elemMatch.image instanceof ObjectId)
+    assert(value.items.$elemMatch.status === 'accepted')
   })
 
   it('autocast top-level MongoDB operators', async () => {
@@ -62,7 +61,7 @@ describe('Traverse document', () => {
       ],
     }
 
-    const result = await traverseDocument(what, {
+    const { value } = await traverseDocument(what, {
       $id: '',
       properties: {
         date: {
@@ -81,9 +80,9 @@ describe('Traverse document', () => {
       allowOperators: true,
     })
 
-    assert(isRight(result))
-    assert(result.value.$and[0].date instanceof Date)
-    assert(result.value.$and[1].image instanceof ObjectId)
-    assert(result.value.$and[2].status === 'accepted')
+    assert(value)
+    assert(value.$and[0].date instanceof Date)
+    assert(value.$and[1].image instanceof ObjectId)
+    assert(value.$and[2].status === 'accepted')
   })
 })

@@ -1,6 +1,6 @@
 import type { Description, Property, Either, ValidationError, Context } from '@aeriajs/types'
 import { ACError, ValidationErrorCode } from '@aeriajs/types'
-import { left, right, isLeft, unwrapEither, throwIfLeft, pipe, isReference, getValueFromPath, isObjectId } from '@aeriajs/common'
+import { left, right, throwIfLeft, pipe, isReference, getValueFromPath, isObjectId } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
 import { ObjectId } from 'mongodb'
 import { getCollectionAsset } from '../assets.js'
@@ -205,11 +205,11 @@ const validate = (value: any, ctx: PhaseContext) => {
     }
   }
 
-  const validationEither = validateProperty(ctx.propName, value, ctx.property)
+  const { error } = validateProperty(ctx.propName, value, ctx.property)
 
-  if( isLeft(validationEither) ) {
+  if( error ) {
     return left({
-      [ctx.propName]: unwrapEither(validationEither),
+      [ctx.propName]: error,
     })
   }
 
@@ -266,8 +266,12 @@ const recurseDeep = async (value: any, ctx: PhaseContext) => {
   }
 
   if( 'properties' in ctx.property ) {
-    const resultEither = await recurse(value, ctx)
-    return unwrapEither(resultEither)
+    const { error, value: result } = await recurse(value, ctx)
+    if( error ) {
+      return left(error)
+    }
+
+    return result
   }
 
   if( 'items' in ctx.property ) {
@@ -362,12 +366,12 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
       if( Array.isArray(value) ) {
         const operations = []
         for( const operation of value ) {
-          const operatorEither = await recurse(operation, ctx)
-          if( isLeft(operatorEither) ) {
-            return left(unwrapEither(operatorEither))
+          const { error, value } = await recurse(operation, ctx)
+          if( error ) {
+            return left(error)
           }
 
-          operations.push(unwrapEither(operatorEither))
+          operations.push(value)
         }
 
         entries.push([
@@ -377,14 +381,14 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
         continue
       }
 
-      const operatorEither = await recurse(value, ctx)
-      if( isLeft(operatorEither) ) {
-        return left(unwrapEither(operatorEither))
+      const { error, value: operator } = await recurse(value, ctx)
+      if( error ) {
+        return left(error)
       }
 
       entries.push([
         propName,
-        unwrapEither(operatorEither),
+        operator,
       ])
     }
 
@@ -406,12 +410,12 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
                 continue
               }
 
-              const documentEither = await traverseDocument(elem, targetDescription, ctx.options)
-              if( isLeft(documentEither) ) {
-                return left(unwrapEither(documentEither))
+              const { error, value } = await traverseDocument(elem, targetDescription, ctx.options)
+              if( error ) {
+                return left(error)
               }
 
-              documents.push(unwrapEither(documentEither))
+              documents.push(value)
             }
 
             entries.push([
@@ -421,14 +425,14 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
             continue
           }
 
-          const documentEither = await traverseDocument(value, targetDescription, ctx.options)
-          if( isLeft(documentEither) ) {
-            return left(unwrapEither(documentEither))
+          const { error, value: document } = await traverseDocument(value, targetDescription, ctx.options)
+          if( error ) {
+            return left(error)
           }
 
           entries.push([
             propName,
-            unwrapEither(documentEither),
+            document,
           ])
           continue
         }
@@ -517,15 +521,15 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
     }),
   })
 
-  const resultEither = await recurse(what, {
+  const { error, value } = await recurse(what, {
     root: what,
     property: description as Property,
     propPath: '',
     options,
   })
 
-  if( isLeft(resultEither) ) {
-    return left(unwrapEither(resultEither))
+  if( error ) {
+    return left(error)
   }
 
   if( validationError ) {
@@ -535,6 +539,6 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
     }))
   }
 
-  return right(unwrapEither(resultEither) as any)
+  return right(value as any)
 }
 

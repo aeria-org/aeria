@@ -14,7 +14,7 @@ import type {
 
 import { Stream } from 'stream'
 import { ACError, HTTPStatus, REQUEST_METHODS } from '@aeriajs/types'
-import { pipe, isGranted, isLeft, unwrapEither, deepMerge, error } from '@aeriajs/common'
+import { pipe, isGranted, deepMerge, error } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
 import { getConfig } from '@aeriajs/entrypoint'
 import { safeJson } from './payload.js'
@@ -65,20 +65,19 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
   )=> ReturnType<typeof registerRoute>
 >
 
-const checkUnprocessable = (validationEither: ReturnType<typeof validate>, context: RouteContext) => {
-  if( isLeft(validationEither) ) {
-    const validationError = unwrapEither(validationEither)
-    if( 'code' in validationError ) {
+const checkUnprocessable = ({ error }: ReturnType<typeof validate>, context: RouteContext) => {
+  if( error ) {
+    if( 'code' in error ) {
       return context.error(HTTPStatus.UnprocessableContent, {
-        code: validationError.code,
-        details: validationError.errors,
+        code: error.code,
+        details: error.errors,
       })
     }
 
     return context.error(HTTPStatus.UnprocessableContent, {
       code: 'UNPROCESSABLE_ENTITY',
       message: 'the provided payload is unprocessable',
-      details: validationError,
+      details: error,
     })
   }
 }

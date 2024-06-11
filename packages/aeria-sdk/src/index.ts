@@ -1,9 +1,6 @@
 export {
   left,
   right,
-  isLeft,
-  isRight,
-  unwrapEither,
   error,
   isError,
   unwrapError,

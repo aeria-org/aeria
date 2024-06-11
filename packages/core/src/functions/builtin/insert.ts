@@ -1,7 +1,7 @@
 import type { Context, SchemaWithId, InsertPayload, InsertReturnType } from '@aeriajs/types'
 import { HTTPStatus, ACError, ValidationErrorCode } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
-import { isLeft, unwrapEither, throwIfLeft, errorSchema } from '@aeriajs/common'
+import { throwIfLeft, errorSchema } from '@aeriajs/common'
 import { traverseDocument, normalizeProjection, prepareInsert } from '../../collection/index.js'
 
 export type InsertOptions = {
@@ -35,7 +35,7 @@ export const insert = async <TContext extends Context>(
     ? throwIfLeft(await security.beforeWrite(payload))
     : payload
 
-  const whatEither = await traverseDocument(query.what, context.description, {
+  const { error, value: what } = await traverseDocument(query.what, context.description, {
     recurseDeep: true,
     autoCast: true,
     validate: true,
@@ -46,8 +46,7 @@ export const insert = async <TContext extends Context>(
     context,
   })
 
-  if( isLeft(whatEither) ) {
-    const error = unwrapEither(whatEither)
+  if( error ) {
     if( typeof error === 'string' ) {
       return context.error(HTTPStatus.UnprocessableContent, {
         code: error,
@@ -59,8 +58,6 @@ export const insert = async <TContext extends Context>(
       details: error.errors,
     })
   }
-
-  const what = unwrapEither(whatEither)
 
   const docId = '_id' in what
     ? what._id

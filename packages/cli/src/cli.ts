@@ -1,6 +1,5 @@
 import type { Either } from '@aeriajs/types'
 import { parseArgs } from 'util'
-import { isLeft, unwrapEither } from '@aeriajs/common'
 import { log } from './log.js'
 import { compilationPhase } from './compile.js'
 import { watch } from './watch.js'
@@ -67,15 +66,14 @@ export async function main() {
   }
 
   for( const phase of phases ) {
-    const resultEither = await phase()
-    if( isLeft(resultEither) ) {
-      log('error', unwrapEither(resultEither))
+    const { error, value: result } = await phase()
+    if( error ) {
+      log('error', error)
       log('info', 'pipeline aborted')
       process.exit(1)
     }
 
-    const result = unwrapEither(resultEither)
-    log('info', result)
+    log('info', result!)
   }
 }
 

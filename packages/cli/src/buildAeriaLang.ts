@@ -31,6 +31,12 @@ export const buildAeriaLangPhase = async () => {
     return left(ppDiagnostic(result.diagnostics))
   }
 
-  return right('aeria files built')
+  if( result.emittedFiles.length === 0 ) {
+    return right('no aeria files to build')
+  }
+
+  return right(result.emittedFiles.length > 0
+    ? 'aeria files built'
+    : 'no aeria files to build')
 }
 

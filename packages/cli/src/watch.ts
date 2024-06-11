@@ -3,7 +3,6 @@ import ts from 'typescript'
 import * as chokidar from 'chokidar'
 import { fileURLToPath } from 'url'
 import { spawn, fork, type ChildProcessWithoutNullStreams } from 'child_process'
-import { isLeft, unwrapEither } from '@aeriajs/common'
 import { log } from './log.js'
 import { mirrorSdk } from './mirrorSdk.js'
 import { buildAeriaLangPhase } from './buildAeriaLang.js'
@@ -20,16 +19,16 @@ const processEnv = async () => {
 }
 
 const compileOnChanges = async (transpileCtx: BuildContext | null) => {
-  const buildEither = await buildAeriaLangPhase()
-  if( isLeft(buildEither) ) {
-    log('error', unwrapEither(buildEither))
+  const { error, value } = await buildAeriaLangPhase()
+  if( error ) {
+    log('error', error)
 
     return {
       success: false,
     }
   }
 
-  log('info', unwrapEither(buildEither))
+  log('info', value!)
 
   if( transpileCtx ) {
     try {
@@ -110,16 +109,13 @@ export const watch = async (options: CompileOptions = {}) => {
   if( initialCompilationResult.success ) {
     runningApi = await spawnApi()
 
-    const resultEither = await mirrorSdk({
+    const { value } = await mirrorSdk({
       environment: 'development',
     })
 
-    log(
-      isLeft(resultEither)
-        ? 'error'
-        : 'info',
-      unwrapEither(resultEither),
-    )
+    if( value ) {
+      log('info', value)
+    }
   }
 
   const srcWatcher = chokidar.watch([

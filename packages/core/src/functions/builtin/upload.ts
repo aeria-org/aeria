@@ -1,5 +1,4 @@
 import { ACError, HTTPStatus, type Context } from '@aeriajs/types'
-import { isLeft, unwrapEither } from '@aeriajs/common'
 import { getCollection } from '@aeriajs/entrypoint'
 import { validate, validator } from '@aeriajs/validation'
 import * as path from 'path'
@@ -49,7 +48,7 @@ export const upload = async <TContext extends Context>(_props: unknown, context:
     throw new Error('The "tempFile" collection is absent, yet it is required to upload files.')
   }
 
-  const headersEither = validate(context.request.headers, {
+  const { error: headersError } = validate(context.request.headers, {
     type: 'object',
     properties: {
       'x-stream-request': {
@@ -63,22 +62,20 @@ export const upload = async <TContext extends Context>(_props: unknown, context:
     extraneous: true,
   })
 
-  if( isLeft(headersEither) ) {
+  if( headersError ) {
     return context.error(HTTPStatus.BadRequest, {
       code: ACError.MalformedInput,
-      details: unwrapEither(headersEither),
+      details: headersError,
     })
   }
 
-  const metadataEither = validateFileMetadata(context.request.query)
-  if( isLeft(metadataEither) ) {
+  const { error: metadataError, value: metadata } = validateFileMetadata(context.request.query)
+  if( metadataError ) {
     return context.error(HTTPStatus.BadRequest, {
       code: ACError.MalformedInput,
-      details: unwrapEither(metadataEither),
+      details: metadataError,
     })
   }
-
-  const metadata = unwrapEither(metadataEither)
 
   const path = await streamToFs(metadata, context)
   const file = await context.collections.tempFile.model.insertOne({

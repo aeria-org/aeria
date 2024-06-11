@@ -8,7 +8,7 @@ import type {
   ValidationError,
 } from '@aeriajs/types'
 
-import { isLeft, left, right, unwrapEither, getMissingProperties } from '@aeriajs/common'
+import { left, right, getMissingProperties } from '@aeriajs/common'
 import { ValidationErrorCode, PropertyValidationErrorCode } from '@aeriajs/types'
 
 export type ValidateOptions = {
@@ -171,16 +171,15 @@ export const validateProperty = <TWhat>(
 
     let i = 0
     for( const elem of what ) {
-      const resultEither = validateProperty(propName, elem, property.items, options)
+      const { error } = validateProperty(propName, elem, property.items, options)
 
-      if( isLeft(resultEither) ) {
-        const result = unwrapEither(resultEither)
-        if( 'errors' in result ) {
+      if( error ) {
+        if( 'errors' in error ) {
           continue
         }
 
-        result.index = i
-        return left(result)
+        error.index = i
+        return left(error)
       }
 
       i++
@@ -265,9 +264,9 @@ export const validate = <
   }
 
   if( !('properties' in schema) ) {
-    const resultEither = validateProperty('', what, schema)
-    return isLeft(resultEither)
-      ? resultEither
+    const { error } = validateProperty('', what, schema)
+    return error
+      ? left(error)
       : right(what as InferSchema<TJsonSchema>)
   }
 
@@ -280,19 +279,17 @@ export const validate = <
   const resultCopy: Record<string, any> = {}
 
   for( const propName in what ) {
-    const resultEither = validateProperty(
+    const { error, value: parsed } = validateProperty(
       propName,
       what[propName],
       schema.properties[propName],
       options,
     )
 
-    if( isLeft(resultEither) ) {
-      const result = unwrapEither(resultEither)
-      errors[propName] = result
+    if( error ) {
+      errors[propName] = error
     }
 
-    const parsed = unwrapEither(resultEither)
     if( parsed !== undefined ) {
       resultCopy[propName] = parsed
     }

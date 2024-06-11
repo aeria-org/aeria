@@ -1,5 +1,4 @@
 import assert from 'assert'
-import { unwrapEither, isLeft, isRight } from '@aeriajs/common'
 import { validate } from '../dist'
 
 import {
@@ -16,25 +15,24 @@ import {
 
 describe('Validate', () => {
   it('validates plain object', () => {
-    const validationEither = validate(plainCandidate, plainDescription)
-    assert(isRight(validationEither))
-    assert(JSON.stringify(plainCandidate) === JSON.stringify(unwrapEither(validationEither)))
+    const { value } = validate(plainCandidate, plainDescription)
+    assert(value)
+    assert(JSON.stringify(plainCandidate) === JSON.stringify(value))
   })
 
   it('validates object using validator', () => {
-    const validationEither = personValidator(personCandidate)
-    assert(isRight(validationEither))
-    assert(JSON.stringify(personCandidate) === JSON.stringify(unwrapEither(validationEither)))
+    const { value } = personValidator(personCandidate)
+    assert(value)
+    assert(JSON.stringify(personCandidate) === JSON.stringify(value))
   })
 
   it('returns left with validator', () => {
-    const validationEither = personValidator({
+    const { error } = personValidator({
       ...personCandidate,
       age: false,
     })
 
-    assert(isLeft(validationEither))
-    const error = unwrapEither(validationEither)
+    assert(error)
     assert('code' in error && error.code === 'INVALID_PROPERTIES')
   })
 
@@ -42,10 +40,9 @@ describe('Validate', () => {
     const candidate = Object.assign({}, plainCandidate)
     candidate.age = '0' as any
 
-    const validationEither = validate(candidate, plainDescription)
+    const { error } = validate(candidate, plainDescription)
 
-    assert(isLeft(validationEither))
-    const error = unwrapEither(validationEither)
+    assert(error)
     assert('code' in error && error.code === 'INVALID_PROPERTIES')
   })
 
@@ -53,28 +50,26 @@ describe('Validate', () => {
     const candidate = Object.assign({}, plainCandidate)
     candidate.job = 'invalid'
 
-    const validationEither = validate(candidate, plainDescription)
+    const { error } = validate(candidate, plainDescription)
 
-    assert(isLeft(validationEither))
-    const error = unwrapEither(validationEither)
+    assert(error)
     assert('code' in error && error.code === 'INVALID_PROPERTIES')
   })
 
   it('validates deep object', () => {
-    const validationEither = validate(deepCandidate, deepDescription)
+    const { value } = validate(deepCandidate, deepDescription)
 
-    assert(isRight(validationEither))
-    assert(JSON.stringify(deepCandidate) === JSON.stringify(unwrapEither(validationEither)))
+    assert(value)
+    assert(JSON.stringify(deepCandidate) === JSON.stringify(value))
   })
 
   it('returns error on deep object', () => {
     const candidate = Object.assign({}, deepCandidate)
     deepCandidate.style.color.props.name = 1 as any
 
-    const validationEither = validate(candidate, deepDescription)
+    const { error } = validate(candidate, deepDescription)
 
-    assert(isLeft(validationEither))
-    const error = unwrapEither(validationEither)
+    assert(error)
     assert('code' in error && error.code === 'INVALID_PROPERTIES')
   })
 
@@ -85,8 +80,8 @@ describe('Validate', () => {
     const invalidEither = validate({
       id: 9,
     }, conditionalDescription)
-    assert(isRight(validEither))
-    assert(isLeft(invalidEither))
+    assert(validEither.value)
+    assert(invalidEither.error)
   })
 
   it('coercion during validation', () => {
@@ -105,11 +100,11 @@ describe('Validate', () => {
       coerce: true,
     })
 
-    assert(isRight(validEither))
+    assert(validEither.value)
     validEither.value.age === 10
     validEither.value.weight === 10.5
 
-    assert(isLeft(invalidEither))
+    assert(invalidEither.error)
   })
 })
 

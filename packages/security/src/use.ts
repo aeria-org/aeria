@@ -1,4 +1,4 @@
-import { deepMerge, right, isLeft, unwrapEither } from '@aeriajs/common'
+import { deepMerge, left, right } from '@aeriajs/common'
 import type { SecurityCheck, SecurityCheckProps } from './types'
 import type {
   Context,
@@ -28,12 +28,11 @@ const chainFunctions = async <TProps extends SecurityCheckProps>(
       continue
     }
 
-    const resultEither = await fn(props, context)
-    if( isLeft(resultEither) ) {
-      return resultEither
+    const { error, value: result } = await fn(props, context)
+    if( error ) {
+      return left(error)
     }
 
-    const result = unwrapEither(resultEither)
     Object.assign(props.payload, result)
   }
 

@@ -1,5 +1,5 @@
 import type { Description, Property } from '@aeriajs/types'
-import { getReferenceProperty, deepMerge, serialize, isLeft, unwrapEither } from '@aeriajs/common'
+import { getReferenceProperty, deepMerge, serialize } from '@aeriajs/common'
 import { getCollectionAsset } from '../assets.js'
 import * as presets from '../presets/index.js'
 
@@ -36,12 +36,11 @@ const recurseProperty = async (_property: Property, propertyName: string, descri
   const reference = getReferenceProperty(property)
   if( reference ) {
     if( !reference.indexes && !reference.inline ) {
-      const referenceDescriptionEither = await getCollectionAsset(reference.$ref, 'description')
-      if( isLeft(referenceDescriptionEither) ) {
+      const { error, value: referenceDescription } = await getCollectionAsset(reference.$ref, 'description')
+      if( error ) {
         throw new Error(`description of ${reference.$ref} not found`)
       }
 
-      const referenceDescription = unwrapEither(referenceDescriptionEither)
       const indexes = reference.indexes = referenceDescription.indexes?.slice() as any
 
       if( !indexes ) {

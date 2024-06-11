@@ -1,6 +1,6 @@
 import type { AssetType, Context, Collection, Token } from '@aeriajs/types'
 import { ACError } from '@aeriajs/types'
-import { isError, left, right, isLeft, unwrapEither } from '@aeriajs/common'
+import { isError, left, right } from '@aeriajs/common'
 import { limitRate } from '@aeriajs/security'
 import { getCollection } from '@aeriajs/entrypoint'
 import { isFunctionExposed, FunctionExposedStatus } from './accessControl.js'
@@ -40,12 +40,11 @@ export const getCollectionAsset = async <
     return right(cached[assetName] as NonNullable<Collection[TAssetName]>)
   }
 
-  const assetEither = await internalGetCollectionAsset(collectionName, assetName)
-  if( isLeft(assetEither) ) {
-    return assetEither
+  const { error, value: asset } = await internalGetCollectionAsset(collectionName, assetName)
+  if( error ) {
+    return left(error)
   }
 
-  const asset = unwrapEither(assetEither) as NonNullable<Collection[TAssetName]>
   assetsMemo.assets[collectionName] ??= {}
   assetsMemo.assets[collectionName]![assetName] = asset
 
@@ -63,12 +62,11 @@ export const getFunction = async <
     exposedOnly: false,
   },
 ) => {
-  const functionsEither = await getCollectionAsset(collectionName, 'functions')
-  if( isLeft(functionsEither) ) {
-    return functionsEither
+  const { error, value: functions } = await getCollectionAsset(collectionName, 'functions')
+  if( error ) {
+    return left(error)
   }
 
-  const functions = unwrapEither(functionsEither)
   if( !(functionName in functions) ) {
     return left(ACError.FunctionNotFound)
   }

@@ -4,7 +4,7 @@ import { createContext, getFunction } from '@aeriajs/core'
 import { getCollection } from '@aeriajs/entrypoint'
 import { next } from '@aeriajs/http'
 import { ACError, HTTPStatus } from '@aeriajs/types'
-import { isLeft, unwrapEither, pipe } from '@aeriajs/common'
+import { pipe } from '@aeriajs/common'
 import { appendPagination } from './appendPagination.js'
 
 const postPipe = pipe([appendPagination])
@@ -73,7 +73,7 @@ export const customVerbs = () => async (parentContext: RouteContext) => {
     calledFunction: functionName,
   })
 
-  const fnEither = await getFunction(
+  const { error, value: fn } = await getFunction(
     collectionName,
     functionName,
     context.token,
@@ -82,16 +82,13 @@ export const customVerbs = () => async (parentContext: RouteContext) => {
     },
   )
 
-  if( isLeft(fnEither) ) {
-    const code = unwrapEither(fnEither)
-    return context.error(getACErrorHttpCode(code), {
-      code,
+  if( error ) {
+    return context.error(getACErrorHttpCode(error), {
+      code: error,
     })
   }
 
-  const fn = unwrapEither(fnEither)
   const result = await fn(context.request.payload, context)
-
   return postPipe(result, context)
 }
 
@@ -120,7 +117,7 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
     }
   }
 
-  const fnEither = await getFunction(
+  const { error, value: fn } = await getFunction(
     collectionName,
     functionName,
     context.token,
@@ -129,16 +126,13 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
     },
   )
 
-  if( isLeft(fnEither) ) {
-    const code = unwrapEither(fnEither)
-    return context.error(getACErrorHttpCode(code), {
-      code,
+  if( error ) {
+    return context.error(getACErrorHttpCode(error), {
+      code: error,
     })
   }
 
-  const fn = unwrapEither(fnEither)
   const result = await fn(requestCopy.payload, context)
-
   return postPipe(result, context)
 }
 
