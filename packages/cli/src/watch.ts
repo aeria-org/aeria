@@ -113,9 +113,7 @@ export const watch = async (options: CompileOptions = {}) => {
       environment: 'development',
     })
 
-    if( value ) {
-      log('info', value)
-    }
+    log('info', value)
   }
 
   const srcWatcher = chokidar.watch([

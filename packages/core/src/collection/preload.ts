@@ -41,7 +41,7 @@ const recurseProperty = async (_property: Property, propertyName: string, descri
         throw new Error(`description of ${reference.$ref} not found`)
       }
 
-      const indexes = reference.indexes = referenceDescription.indexes?.slice() as any
+      const indexes = reference.indexes = referenceDescription.indexes?.slice()
 
       if( !indexes ) {
         throw new Error(`neither indexes or inline are present on reference property or indexes is set on target description on ${description.$id}.${propertyName}`)

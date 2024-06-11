@@ -160,7 +160,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
         ? refProperty.indexes
         : description.indexes || []
 
-      reference.populatedProperties = (refProperty.populate || []).concat(indexes as any)
+      reference.populatedProperties = (refProperty.populate || []).concat(indexes)
     }
 
     if( !refProperty?.$ref && !reference.deepReferences ) {
