@@ -84,12 +84,12 @@ export const watch = async (options: CompileOptions = {}) => {
   let runningApi: ChildProcessWithoutNullStreams | undefined
   process.env.AERIA_MAIN = `${tsConfig.compilerOptions.outDir}/index.js`
 
-  const compilerWorker = !options.useTsc
+  const compilationWorker = !options.useTsc
     ? fork(fileURLToPath(import.meta.resolve('./compilationWorker.js')))
     : null
 
-  if( compilerWorker ) {
-    compilerWorker.send({})
+  if( compilationWorker ) {
+    compilationWorker.send({})
   }
 
   process.on('SIGINT', () => {
@@ -99,8 +99,8 @@ export const watch = async (options: CompileOptions = {}) => {
     if( runningApi ) {
       runningApi.kill()
     }
-    if( compilerWorker ) {
-      compilerWorker.kill()
+    if( compilationWorker ) {
+      compilationWorker.kill()
     }
 
     process.exit(0)
@@ -145,8 +145,8 @@ export const watch = async (options: CompileOptions = {}) => {
     if( compilationResult.success ) {
       runningApi = await spawnApi()
 
-      if( compilerWorker ) {
-        compilerWorker.send({})
+      if( compilationWorker ) {
+        compilationWorker.send({})
       }
 
       fork(fileURLToPath(import.meta.resolve('./watchWorker.js')), {

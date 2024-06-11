@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-(async () => {
-  const { main } = await import('../dist/cli.js')
+import('../dist/cli.js').then(({ main }) => {
   main()
-})()
+})
