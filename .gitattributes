@@ -5,5 +5,5 @@
 *.js linguist-vendored
 
 # scripts with node hashbang will be falsily reported as javascript
-*.ts linguist-vendored
+scripts/*.ts linguist-vendored
 
