@@ -1,5 +1,15 @@
 # @aeriajs/server
 
+## 0.0.102
+
+### Patch Changes
+
+- 5e6751d: Change `describe()` signature
+- Updated dependencies [5e6751d]
+  - @aeriajs/builtins@0.0.100
+  - @aeriajs/server@0.0.102
+  - @aeriajs/core@0.0.100
+
 ## 0.0.101
 
 ### Patch Changes

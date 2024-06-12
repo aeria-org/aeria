@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.100
+
+### Patch Changes
+
+- 5e6751d: Change `describe()` signature
+  - @aeriajs/core@0.0.100
+
 ## 0.0.99
 
 ### Patch Changes
