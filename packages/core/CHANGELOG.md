@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.96
+
+### Patch Changes
+
+- fafac8a: Introduce `Result`
+- Updated dependencies [fafac8a]
+  - @aeriajs/validation@0.0.63
+  - @aeriajs/builtins@0.0.96
+  - @aeriajs/security@0.0.96
+  - @aeriajs/common@0.0.60
+  - @aeriajs/types@0.0.56
+  - @aeriajs/http@0.0.69
+  - @aeriajs/entrypoint@0.0.61
+
 ## 0.0.95
 
 ### Patch Changes

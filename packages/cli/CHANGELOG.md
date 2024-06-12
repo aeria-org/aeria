@@ -1,5 +1,17 @@
 # aeria-build
 
+## 0.0.35
+
+### Patch Changes
+
+- fafac8a: Introduce `Result`
+- Updated dependencies [fafac8a]
+  - @aeriajs/builtins@0.0.96
+  - @aeriajs/common@0.0.60
+  - @aeriajs/types@0.0.56
+  - @aeriajs/core@0.0.96
+  - @aeriajs/entrypoint@0.0.61
+
 ## 0.0.34
 
 ### Patch Changes

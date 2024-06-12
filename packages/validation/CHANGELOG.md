@@ -1,5 +1,14 @@
 # @aeriajs/validation
 
+## 0.0.63
+
+### Patch Changes
+
+- fafac8a: Introduce `Result`
+- Updated dependencies [fafac8a]
+  - @aeriajs/common@0.0.60
+  - @aeriajs/types@0.0.56
+
 ## 0.0.62
 
 ### Patch Changes

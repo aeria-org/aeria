@@ -1,5 +1,14 @@
 # aeria-sdk
 
+## 0.0.85
+
+### Patch Changes
+
+- fafac8a: Introduce `Result`
+- Updated dependencies [fafac8a]
+  - @aeriajs/common@0.0.60
+  - @aeriajs/types@0.0.56
+
 ## 0.0.84
 
 ### Patch Changes

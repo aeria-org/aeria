@@ -1,5 +1,13 @@
 # @aeriajs/node-http
 
+## 0.0.69
+
+### Patch Changes
+
+- fafac8a: Introduce `Result`
+- Updated dependencies [fafac8a]
+  - @aeriajs/http@0.0.69
+
 ## 0.0.68
 
 ### Patch Changes
