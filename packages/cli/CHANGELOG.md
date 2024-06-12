@@ -1,5 +1,14 @@
 # aeria-build
 
+## 0.0.39
+
+### Patch Changes
+
+- 5e6751d: Change `describe()` signature
+- Updated dependencies [5e6751d]
+  - @aeriajs/builtins@0.0.100
+  - @aeriajs/core@0.0.100
+
 ## 0.0.38
 
 ### Patch Changes
