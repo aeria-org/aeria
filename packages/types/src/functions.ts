@@ -1,6 +1,6 @@
 import type { FilterOperators, StrictFilter as Filter, StrictUpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
 import type { Result } from './result.js'
-import type { StrictEndpointError } from './error.js'
+import type { StrictEndpointError } from './endpointError.js'
 import type { PackReferences } from './schema.js'
 import type { ACError } from './accessControl.js'
 import type { ValidationErrorCode } from './validation.js'

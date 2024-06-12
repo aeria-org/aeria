@@ -3,7 +3,7 @@ import type { Result as R } from '@aeriajs/types/result'
 export namespace Result {
   export type Error<T> = R.Error<T>
   export type Result<T> = R.Result<T>
-  export type Either<TLeft, TRight> = R.Either<TLeft, TRight>
+  export type Either<Error, Result> = R.Either<Error, Result>
 
   export const error = <const TValue>(value: TValue) => <const>({
     _tag: 'Error',

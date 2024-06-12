@@ -11,7 +11,7 @@ export declare namespace Result {
     readonly result: T
   }
 
-  export type Either<L, R> = Result.Error<L> | Result.Result<R>
+  export type Either<E, R> = Result.Error<E> | Result.Result<R>
 }
 
 export type ExtractError<T> = T extends Result.Error<infer L>

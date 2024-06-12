@@ -1,7 +1,7 @@
 import type { ServerResponse, IncomingMessage } from 'http'
 import type { MapSchemaUnion } from './schema.js'
 import type { ExtractError, ExtractResult, Result } from './result.js'
-import type { EndpointError, StrictEndpointError } from './error.js'
+import type { EndpointError, StrictEndpointError } from './endpointError.js'
 import type { ACError } from './accessControl.js'
 import type { RateLimitingError } from './security.js'
 
