@@ -61,8 +61,6 @@ router.GET('/get-people', async (context) => {
 })
 
 export default init({
-  callback: (context) => {
-    return router.install(context)
-  },
+  router,
 })
 

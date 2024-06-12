@@ -68,7 +68,13 @@ export const getCollection = async (collectionName: string): Promise<Collection 
 
 export const getRouter = async () => {
   const entrypoint = await getEntrypoint()
-  return entrypoint.router
+  if( entrypoint.router ) {
+    return entrypoint.router
+  }
+
+  return entrypoint.default
+    ? entrypoint.default.options.router
+    : null
 }
 
 export const getConfig = async (): Promise<ApiConfig> => {

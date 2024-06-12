@@ -9,7 +9,7 @@ import type {
 
 import { ACError } from '@aeriajs/types'
 import { Result, endpointError, throwIfError, deepMerge } from '@aeriajs/common'
-import { defineServerOptions, cors, wrapRouteExecution } from '@aeriajs/http'
+import { defineServerOptions, cors, wrapRouteExecution, type createRouter } from '@aeriajs/http'
 import { registerServer } from '@aeriajs/node-http'
 
 import { createContext, decodeToken, traverseDocument, ObjectId } from '@aeriajs/core'
@@ -25,6 +25,7 @@ export type InitApiConfig = Omit<ApiConfig, keyof typeof DEFAULT_API_CONFIG> & P
 
 export type InitOptions = {
   config?: InitApiConfig
+  router?: ReturnType<typeof createRouter>
   setup?: (context: Context)=> any
   callback?: (context: Context)=> any
   collections?: Record<string, {
@@ -118,6 +119,13 @@ export const init = (_options: InitOptions = {}) => {
 
           if( options.callback ) {
             const result = await options.callback(context)
+            if( result !== undefined ) {
+              return result
+            }
+          }
+
+          if( options.router ) {
+            const result = await options.router.install(context)
             if( result !== undefined ) {
               return result
             }
