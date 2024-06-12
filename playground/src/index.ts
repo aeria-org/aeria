@@ -1,4 +1,4 @@
-import { init, createRouter, insertErrorSchema, ACError, Result } from 'aeria'
+import { init, createRouter, resultSchema, insertErrorSchema, ACError, Result } from 'aeria'
 export * as collections from './collections/index.js'
 
 const router = createRouter()
@@ -39,7 +39,7 @@ router.GET('/get-people', async (context) => {
     pet.toys.favorite.invalid
   }
 
-  return context.collections.person.functions.getAll()
+  return Result.result(context.collections.person.functions.getAll())
 }, {
   payload: {
     type: 'object',
@@ -51,12 +51,12 @@ router.GET('/get-people', async (context) => {
   },
   response: [
     insertErrorSchema(),
-    {
+    resultSchema({
       type: 'array',
       items: {
         $ref: 'person',
       },
-    },
+    }),
   ],
 })
 
