@@ -1,5 +1,13 @@
 # @aeriajs/common
 
+## 0.0.61
+
+### Patch Changes
+
+- 6c981e6: Rename `leftSchema()` -> `errorSchema()`, `rightSchema()` -> `resultSchema()`
+- Updated dependencies [ec235f7]
+  - @aeriajs/types@0.0.57
+
 ## 0.0.60
 
 ### Patch Changes

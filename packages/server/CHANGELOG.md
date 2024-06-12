@@ -1,5 +1,21 @@
 # @aeriajs/server
 
+## 0.0.99
+
+### Patch Changes
+
+- ec235f7: Fix pagination and function signatures
+- Updated dependencies [6c981e6]
+- Updated dependencies [ec235f7]
+  - @aeriajs/common@0.0.61
+  - @aeriajs/server@0.0.99
+  - @aeriajs/types@0.0.57
+  - @aeriajs/builtins@0.0.97
+  - @aeriajs/core@0.0.97
+  - @aeriajs/entrypoint@0.0.62
+  - @aeriajs/http@0.0.70
+  - @aeriajs/node-http@0.0.70
+
 ## 0.0.98
 
 ### Patch Changes
