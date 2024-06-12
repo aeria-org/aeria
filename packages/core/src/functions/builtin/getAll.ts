@@ -1,7 +1,7 @@
 import type { Context, SchemaWithId, GetAllPayload } from '@aeriajs/types'
 import type { Document } from 'mongodb'
 import { useSecurity } from '@aeriajs/security'
-import { throwIfLeft } from '@aeriajs/common'
+import { Result, throwIfError } from '@aeriajs/common'
 import {
   traverseDocument,
   normalizeProjection,
@@ -29,7 +29,7 @@ export const getAll = async <TContext extends Context>(
     project = [],
     offset = 0,
   } = !options.bypassSecurity
-    ? throwIfLeft(await security.beforeRead(payload))
+    ? throwIfError(await security.beforeRead(payload))
     : payload
 
   const { $text, ...filtersRest } = filters
@@ -63,7 +63,7 @@ export const getAll = async <TContext extends Context>(
 
   if( Object.keys(filtersRest).length > 0 ) {
     pipeline.push({
-      $match: throwIfLeft(await traverseDocument(filtersRest, context.description, {
+      $match: throwIfError(await traverseDocument(filtersRest, context.description, {
         autoCast: true,
         allowOperators: true,
       })),
@@ -103,7 +103,7 @@ export const getAll = async <TContext extends Context>(
   const documents: SchemaWithId<TContext['description']>[] = []
 
   for( const document of result ) {
-    documents.push(throwIfLeft(await traverseDocument(fill(document, context.description), context.description, {
+    documents.push(throwIfError(await traverseDocument(fill(document, context.description), context.description, {
       getters: true,
       fromProperties: true,
       recurseReferences: true,
@@ -111,6 +111,6 @@ export const getAll = async <TContext extends Context>(
     })))
   }
 
-  return documents
+  return Result.result(documents)
 }
 

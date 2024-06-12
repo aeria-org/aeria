@@ -1,5 +1,5 @@
 import type { InstanceConfig } from './types.js'
-import { left } from '@aeriajs/common'
+import { Result } from '@aeriajs/common'
 import { request } from './http.js'
 import { publicUrl } from './utils.js'
 import { getStorage } from './storage.js'
@@ -26,7 +26,7 @@ export const authenticate = (config: InstanceConfig) => async (payload: Authenti
     getStorage(config).set('auth', result)
   }
 
-  return left(error)
+  return Result.error(error)
 }
 
 export const signout = (config: InstanceConfig) => async () => {

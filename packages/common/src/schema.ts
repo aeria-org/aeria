@@ -81,7 +81,7 @@ export const rightSchema = <const TObject extends Property>(object: TObject) => 
   } satisfies Property
 }
 
-export const errorSchema = <
+export const endpointErrorSchema = <
   const THTTPStatus extends HTTPStatus[],
   const TCode extends string[],
 >(error: {
@@ -90,64 +90,48 @@ export const errorSchema = <
 }) => {
   return <const>{
     type: 'object',
+    required: [
+      'httpStatus',
+      'code',
+    ],
     properties: {
-      _tag: {
-        const: 'Error',
+      httpStatus: {
+        enum: error.httpStatus,
       },
-      value: {
+      code: {
+        enum: error.code,
+      },
+      message: {
+        type: 'string',
+      },
+      details: {
         type: 'object',
-        required: [
-          'httpStatus',
-          'code',
-        ],
-        properties: {
-          httpStatus: {
-            enum: error.httpStatus,
-          },
-          code: {
-            enum: error.code,
-          },
-          message: {
-            type: 'string',
-          },
-          details: {
-            type: 'object',
-            variable: true,
-          },
-        },
+        variable: true,
       },
     },
   } satisfies Property
 }
 
-export const genericErrorSchema = () => {
+export const genericEndpointErrorSchema = () => {
   return <const>{
     type: 'object',
+    required: [
+      'httpStatus',
+      'code',
+    ],
     properties: {
-      _tag: {
-        const: 'Error',
+      httpStatus: {
+        type: 'number',
       },
-      value: {
+      code: {
+        type: 'string',
+      },
+      message: {
+        type: 'string',
+      },
+      details: {
         type: 'object',
-        required: [
-          'httpStatus',
-          'code',
-        ],
-        properties: {
-          httpStatus: {
-            type: 'number',
-          },
-          code: {
-            type: 'string',
-          },
-          message: {
-            type: 'string',
-          },
-          details: {
-            type: 'object',
-            variable: true,
-          },
-        },
+        variable: true,
       },
     },
   } satisfies Property

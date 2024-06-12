@@ -7,7 +7,7 @@ import type {
   Collection,
 } from '@aeriajs/types'
 
-import { throwIfLeft, error } from '@aeriajs/common'
+import { throwIfError, endpointError } from '@aeriajs/common'
 import { getCollections } from '@aeriajs/entrypoint'
 import { limitRate } from '@aeriajs/security'
 import { getDatabaseCollection } from './database.js'
@@ -74,10 +74,10 @@ export const createContext = async (options: ContextOptions = {}) => {
     })
   }
 
-  context.error = (httpStatus, endpointError) => {
-    return error(Object.assign({
+  context.error = (httpStatus, error) => {
+    return endpointError(Object.assign({
       httpStatus,
-    }, endpointError))
+    }, error))
   }
 
   context.limitRate = (params) => {
@@ -85,7 +85,7 @@ export const createContext = async (options: ContextOptions = {}) => {
   }
 
   if( collectionName ) {
-    const description = throwIfLeft(await getCollectionAsset(collectionName , 'description'))
+    const description = throwIfError(await getCollectionAsset(collectionName , 'description'))
     context.description = await preloadDescription(description)
 
     context.collectionName = collectionName

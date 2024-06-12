@@ -1,6 +1,6 @@
 import type { AssetType, Context, Collection, Token } from '@aeriajs/types'
 import { ACError } from '@aeriajs/types'
-import { isError, left, right } from '@aeriajs/common'
+import { Result } from '@aeriajs/common'
 import { limitRate } from '@aeriajs/security'
 import { getCollection } from '@aeriajs/entrypoint'
 import { isFunctionExposed, FunctionExposedStatus } from './accessControl.js'
@@ -19,13 +19,13 @@ export const internalGetCollectionAsset = async <
   assetName: TAssetName,
 ) => {
   const collection = await getCollection(collectionName)
-  const asset = collection?.[assetName as AssetType]
+  const asset = collection?.[assetName]
 
   if( !asset ) {
-    return left(ACError.ResourceNotFound)
+    return Result.error(ACError.ResourceNotFound)
   }
 
-  return right(asset)
+  return Result.result(asset)
 }
 
 export const getCollectionAsset = async <
@@ -37,18 +37,18 @@ export const getCollectionAsset = async <
 ) => {
   const cached = assetsMemo.assets[collectionName]
   if( cached?.[assetName] ) {
-    return right(cached[assetName] as NonNullable<Collection[TAssetName]>)
+    return Result.result(cached[assetName] as NonNullable<Collection[TAssetName]>)
   }
 
-  const { error, value: asset } = await internalGetCollectionAsset(collectionName, assetName)
+  const { error, result: asset } = await internalGetCollectionAsset(collectionName, assetName)
   if( error ) {
-    return left(error)
+    return Result.error(error)
   }
 
   assetsMemo.assets[collectionName] ??= {}
   assetsMemo.assets[collectionName]![assetName] = asset
 
-  return right(asset)
+  return Result.result(asset)
 }
 
 export const getFunction = async <
@@ -62,28 +62,28 @@ export const getFunction = async <
     exposedOnly: false,
   },
 ) => {
-  const { error, value: functions } = await getCollectionAsset(collectionName, 'functions')
+  const { error, result: functions } = await getCollectionAsset(collectionName, 'functions')
   if( error ) {
-    return left(error)
+    return Result.error(error)
   }
 
   if( !(functionName in functions) ) {
-    return left(ACError.FunctionNotFound)
+    return Result.error(ACError.FunctionNotFound)
   }
 
   const collection = await getCollection(collectionName)
   const fn = functions[functionName]
 
   if( !collection ) {
-    return left(ACError.ResourceNotFound)
+    return Result.error(ACError.ResourceNotFound)
   }
 
   if( options.exposedOnly ) {
     const exposedStatus = await isFunctionExposed(collection, functionName, token)
 
     switch( exposedStatus ) {
-      case FunctionExposedStatus.FunctionNotExposed: return left(ACError.FunctionNotExposed)
-      case FunctionExposedStatus.FunctionNotGranted: return left(ACError.AuthorizationError)
+      case FunctionExposedStatus.FunctionNotExposed: return Result.error(ACError.FunctionNotExposed)
+      case FunctionExposedStatus.FunctionNotGranted: return Result.error(ACError.AuthorizationError)
     }
   }
 
@@ -92,9 +92,9 @@ export const getFunction = async <
 
     if( securityPolicy ) {
       if( securityPolicy.rateLimiting ) {
-        const rate = await limitRate(securityPolicy.rateLimiting, context)
-        if( isError(rate) ) {
-          return rate
+        const { error } = await limitRate(securityPolicy.rateLimiting, context)
+        if( error ) {
+          return Result.error(error)
         }
       }
     }
@@ -102,6 +102,6 @@ export const getFunction = async <
     return fn(payload, context)
   }
 
-  return right(wrapper)
+  return Result.result(wrapper)
 }
 

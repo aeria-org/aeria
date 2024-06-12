@@ -1,5 +1,4 @@
-import { deepMerge, left, right } from '@aeriajs/common'
-import type { SecurityCheck, SecurityCheckProps } from './types'
+import type { SecurityCheck, SecurityCheckProps } from './types.js'
 import type {
   Context,
   Description,
@@ -7,6 +6,7 @@ import type {
   InsertPayload,
 } from '@aeriajs/types'
 
+import { deepMerge, Result } from '@aeriajs/common'
 import {
   checkImmutability,
   checkOwnershipRead,
@@ -28,15 +28,15 @@ const chainFunctions = async <TProps extends SecurityCheckProps>(
       continue
     }
 
-    const { error, value: result } = await fn(props, context)
+    const { error, result } = await fn(props, context)
     if( error ) {
-      return left(error)
+      return Result.error(error)
     }
 
     Object.assign(props.payload, result)
   }
 
-  return right(props.payload)
+  return Result.result(props.payload)
 }
 
 export const useSecurity = <TDescription extends Description>(context: Context<TDescription>) => {

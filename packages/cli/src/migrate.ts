@@ -1,6 +1,6 @@
-import { right } from '@aeriajs/common'
 import { getCollections } from '@aeriajs/entrypoint'
 import { getDatabase, prepareCollectionName, getDatabaseCollection } from '@aeriajs/core'
+import { Result } from '@aeriajs/common'
 import { config as loadEnv } from 'dotenv'
 import { log } from './log.js'
 
@@ -12,7 +12,7 @@ export const migrate = async () => {
     || process.env.GITLAB_CI
     || process.env.IS_CI
   ) {
-    return right('skipping (continuos integration detected)')
+    return Result.result('skipping (continuos integration detected)')
   }
 
   if( process.env.NODE_ENV !== 'production' ) {
@@ -118,6 +118,6 @@ export const migrate = async () => {
   }
 
   await session.client.close()
-  return right('migration succeeded')
+  return Result.result('migration succeeded')
 }
 

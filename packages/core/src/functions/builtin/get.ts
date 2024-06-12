@@ -2,7 +2,7 @@ import type { Context, SchemaWithId, GetPayload, GetReturnType } from '@aeriajs/
 import type { Document } from 'mongodb'
 import { HTTPStatus, ACError } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
-import { throwIfLeft } from '@aeriajs/common'
+import { Result, throwIfError } from '@aeriajs/common'
 import {
   traverseDocument,
   normalizeProjection,
@@ -28,11 +28,13 @@ export const get = async <TContext extends Context>(
     filters = {},
     project = [],
   } = !options?.bypassSecurity
-    ? throwIfLeft(await security.beforeRead(payload))
+    ? throwIfError(await security.beforeRead(payload))
     : payload
 
   if( Object.keys(filters).length === 0 ) {
-    throw new Error('no filters were passed')
+    return context.error(HTTPStatus.BadRequest, {
+      code: ACError.MalformedInput,
+    })
   }
 
   const pipeline: Document[] = []
@@ -41,7 +43,7 @@ export const get = async <TContext extends Context>(
   })
 
   pipeline.push({
-    $match: throwIfLeft(await traverseDocument(filters, context.description, {
+    $match: throwIfError(await traverseDocument(filters, context.description, {
       autoCast: true,
       allowOperators: true,
     })),
@@ -60,18 +62,20 @@ export const get = async <TContext extends Context>(
     properties: context.description.properties,
   }))
 
-  const result = await context.collection.model.aggregate(pipeline).next()
-  if( !result ) {
+  const doc = await context.collection.model.aggregate(pipeline).next()
+  if( !doc ) {
     return context.error(HTTPStatus.NotFound, {
       code: ACError.ResourceNotFound,
     })
   }
 
-  return fill(throwIfLeft(await traverseDocument(result, context.description, {
+  const result = fill(throwIfError(await traverseDocument(doc, context.description, {
     getters: true,
     fromProperties: true,
     recurseReferences: true,
     recurseDeep: true,
   })), context.description)
+
+  return Result.result(result)
 }
 

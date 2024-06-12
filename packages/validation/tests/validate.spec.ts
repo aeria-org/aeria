@@ -15,15 +15,15 @@ import {
 
 describe('Validate', () => {
   it('validates plain object', () => {
-    const { value } = validate(plainCandidate, plainDescription)
-    assert(value)
-    assert(JSON.stringify(plainCandidate) === JSON.stringify(value))
+    const { result } = validate(plainCandidate, plainDescription)
+    assert(result)
+    assert(JSON.stringify(plainCandidate) === JSON.stringify(result))
   })
 
   it('validates object using validator', () => {
-    const { value } = personValidator(personCandidate)
-    assert(value)
-    assert(JSON.stringify(personCandidate) === JSON.stringify(value))
+    const { result } = personValidator(personCandidate)
+    assert(result)
+    assert(JSON.stringify(personCandidate) === JSON.stringify(result))
   })
 
   it('returns left with validator', () => {
@@ -57,10 +57,10 @@ describe('Validate', () => {
   })
 
   it('validates deep object', () => {
-    const { value } = validate(deepCandidate, deepDescription)
+    const { result } = validate(deepCandidate, deepDescription)
 
-    assert(value)
-    assert(JSON.stringify(deepCandidate) === JSON.stringify(value))
+    assert(result)
+    assert(JSON.stringify(deepCandidate) === JSON.stringify(result))
   })
 
   it('returns error on deep object', () => {
@@ -80,7 +80,7 @@ describe('Validate', () => {
     const invalidEither = validate({
       id: 9,
     }, conditionalDescription)
-    assert(validEither.value)
+    assert(validEither.result)
     assert(invalidEither.error)
   })
 
@@ -100,9 +100,9 @@ describe('Validate', () => {
       coerce: true,
     })
 
-    assert(validEither.value)
-    validEither.value.age === 10
-    validEither.value.weight === 10.5
+    assert(validEither.result)
+    validEither.result.age === 10
+    validEither.result.weight === 10.5
 
     assert(invalidEither.error)
   })

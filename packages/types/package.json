@@ -23,6 +23,11 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./result": {
+      "import": "./dist/result.mjs",
+      "require": "./dist/result.js",
+      "types": "./dist/result.d.ts"
     }
   },
   "keywords": [],

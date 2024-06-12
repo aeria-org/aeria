@@ -1,5 +1,6 @@
 import type { FilterOperators, StrictFilter as Filter, StrictUpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
-import type { EndpointError, StrictEndpointErrorContent } from './error.js'
+import type { Result } from './result.js'
+import type { StrictEndpointError } from './error.js'
 import type { PackReferences } from './schema.js'
 import type { ACError } from './accessControl.js'
 import type { ValidationErrorCode } from './validation.js'
@@ -115,9 +116,8 @@ export type RemoveFilePayload = UploadAuxProps & {
 }
 
 export type InsertReturnType<TDocument> =
-  | TDocument
-  | EndpointError<
-    StrictEndpointErrorContent<
+  Result.Either<
+    StrictEndpointError<
       | ACError.InsecureOperator
       | ACError.OwnershipError
       | ACError.ResourceNotFound
@@ -126,17 +126,20 @@ export type InsertReturnType<TDocument> =
       unknown,
       | HTTPStatus.NotFound
       | HTTPStatus.UnprocessableContent
-    >
+    >,
+    TDocument
   >
 
 export type GetReturnType<TDocument> =
-  | TDocument
-  | EndpointError<
-    StrictEndpointErrorContent<
-      ACError.ResourceNotFound,
+  Result.Either<
+    StrictEndpointError<
+      | ACError.ResourceNotFound
+      | ACError.MalformedInput,
       unknown,
-      HTTPStatus.NotFound
-    >
+      | HTTPStatus.NotFound
+      | HTTPStatus.BadRequest
+    >,
+    TDocument
   >
 
 export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<any>>> = {

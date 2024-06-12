@@ -1,6 +1,7 @@
 import type { ServerResponse, IncomingMessage } from 'http'
 import type { MapSchemaUnion } from './schema.js'
-import type { EndpointError, EndpointErrorContent, StrictEndpointErrorContent } from './error.js'
+import type { ExtractError, ExtractResult, Result } from './result.js'
+import type { EndpointError, StrictEndpointError } from './error.js'
 import type { ACError } from './accessControl.js'
 import type { RateLimitingError } from './security.js'
 
@@ -44,19 +45,19 @@ export type GenericRequest = {
 
 export type GenericResponse = ServerResponse
 
-type ExtractCode<TRouteResponse> = TRouteResponse extends EndpointError<EndpointErrorContent<infer PCode>>
+type ExtractCode<TRouteResponse> = TRouteResponse extends Result.Error<EndpointError<infer PCode>>
   ? PCode
   : never
 
-type ExtractHTTPStatus<TRouteResponse> = TRouteResponse extends EndpointError<EndpointErrorContent<any, unknown, infer PHTTPStatus>>
+type ExtractHTTPStatus<TRouteResponse> = TRouteResponse extends Result.Error<EndpointError<any, unknown, infer PHTTPStatus>>
   ? PHTTPStatus
   : never
 
 export type WithACErrors<TRouteResponse> =
-  | Exclude<TRouteResponse, EndpointError<any>>
-  | EndpointError<
-    StrictEndpointErrorContent<
-      | ExtractCode<TRouteResponse>
+  Result.Either<
+    | ExtractError<TRouteResponse>
+    | StrictEndpointError<
+    | ExtractCode<TRouteResponse>
       | ACError.AuthenticationError
       | ACError.AuthorizationError
       | RateLimitingError.LimitReached
@@ -65,7 +66,8 @@ export type WithACErrors<TRouteResponse> =
       | ExtractHTTPStatus<TRouteResponse>
       | HTTPStatus.Unauthorized
       | HTTPStatus.TooManyRequests
-    >
+    >,
+    ExtractResult<TRouteResponse>
   >
 
 export type EndpointFunction<

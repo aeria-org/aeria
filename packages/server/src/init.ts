@@ -8,7 +8,7 @@ import type {
 } from '@aeriajs/types'
 
 import { ACError } from '@aeriajs/types'
-import { error, isError, throwIfLeft, deepMerge } from '@aeriajs/common'
+import { Result, endpointError, throwIfError, deepMerge } from '@aeriajs/common'
 import { defineServerOptions, cors, wrapRouteExecution } from '@aeriajs/http'
 import { registerServer } from '@aeriajs/node-http'
 
@@ -39,10 +39,10 @@ const authenticationGuard = (decodedToken: Token): decodedToken is Authenticated
 
 export const getToken = async (request: GenericRequest, context: Context) => {
   if( !request.headers.authorization ) {
-    return {
+    return Result.result({
       authenticated: false,
       sub: null,
-    } satisfies Token
+    } satisfies Token)
   }
 
   try {
@@ -53,20 +53,20 @@ export const getToken = async (request: GenericRequest, context: Context) => {
     if( authenticationGuard(decodedToken) ) {
       if( typeof decodedToken.sub === 'string' ) {
         decodedToken.sub = new ObjectId(decodedToken.sub)
-        Object.assign(decodedToken.userinfo, throwIfLeft(await traverseDocument(decodedToken.userinfo, context.collections.user.description, {
+        Object.assign(decodedToken.userinfo, throwIfError(await traverseDocument(decodedToken.userinfo, context.collections.user.description, {
           autoCast: true,
         })))
       }
     }
 
-    return decodedToken
+    return Result.result(decodedToken)
 
   } catch( err ) {
     if( process.env.NODE_ENV === 'development' ) {
       console.trace(err)
     }
 
-    return error({
+    return endpointError({
       code: ACError.AuthenticationError,
     })
   }
@@ -101,10 +101,9 @@ export const init = (_options: InitOptions = {}) => {
         }
 
         await wrapRouteExecution(response, async () => {
-          const token = await getToken(request, parentContext)
-
-          if( isError(token) ) {
-            return token
+          const { error, result: token } = await getToken(request, parentContext)
+          if( error ) {
+            return Result.error(error)
           }
 
           const context = await createContext({

@@ -19,7 +19,7 @@ const processEnv = async () => {
 }
 
 const compileOnChanges = async (transpileCtx: BuildContext | null) => {
-  const { error, value } = await buildAeriaLangPhase()
+  const { error, result } = await buildAeriaLangPhase()
   if( error ) {
     log('error', error)
 
@@ -28,7 +28,7 @@ const compileOnChanges = async (transpileCtx: BuildContext | null) => {
     }
   }
 
-  log('info', value!)
+  log('info', result!)
 
   if( transpileCtx ) {
     try {
@@ -109,11 +109,11 @@ export const watch = async (options: CompileOptions = {}) => {
   if( initialCompilationResult.success ) {
     runningApi = await spawnApi()
 
-    const { value } = await mirrorSdk({
+    const { result } = await mirrorSdk({
       environment: 'development',
     })
 
-    log('info', value)
+    log('info', result)
   }
 
   const srcWatcher = chokidar.watch([

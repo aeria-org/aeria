@@ -1,14 +1,14 @@
 import type { Context, SchemaWithId, InsertPayload, InsertReturnType } from '@aeriajs/types'
 import { HTTPStatus, ACError, ValidationErrorCode } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
-import { throwIfLeft, errorSchema } from '@aeriajs/common'
+import { Result, throwIfError, endpointErrorSchema } from '@aeriajs/common'
 import { traverseDocument, normalizeProjection, prepareInsert } from '../../collection/index.js'
 
 export type InsertOptions = {
   bypassSecurity?: boolean
 }
 
-export const insertErrorSchema = () => errorSchema({
+export const insertErrorSchema = () => endpointErrorSchema({
   httpStatus: [
     HTTPStatus.UnprocessableContent,
     HTTPStatus.NotFound,
@@ -32,10 +32,10 @@ export const insert = async <TContext extends Context>(
   const security = useSecurity(context)
 
   const query = !options?.bypassSecurity
-    ? throwIfLeft(await security.beforeWrite(payload))
+    ? throwIfError(await security.beforeWrite(payload))
     : payload
 
-  const { error, value: what } = await traverseDocument(query.what, context.description, {
+  const { error, result: what } = await traverseDocument(query.what, context.description, {
     recurseDeep: true,
     autoCast: true,
     validate: true,
@@ -114,12 +114,12 @@ export const insert = async <TContext extends Context>(
     })
   }
 
-  const result = throwIfLeft(await traverseDocument(doc, context.description, {
+  const result = throwIfError(await traverseDocument(doc, context.description, {
     getters: true,
     fromProperties: true,
     recurseReferences: true,
   }))
 
-  return result
+  return Result.result(result)
 }
 

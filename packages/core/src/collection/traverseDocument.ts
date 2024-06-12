@@ -1,6 +1,6 @@
-import type { Description, Property, Either, ValidationError, Context } from '@aeriajs/types'
+import type { Description, Property, ValidationError, Context } from '@aeriajs/types'
 import { ACError, ValidationErrorCode } from '@aeriajs/types'
-import { left, right, throwIfLeft, pipe, isReference, getValueFromPath, isObjectId } from '@aeriajs/common'
+import { Result, throwIfError, pipe, isReference, getValueFromPath, isObjectId } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
 import { ObjectId } from 'mongodb'
 import { getCollectionAsset } from '../assets.js'
@@ -77,7 +77,7 @@ const disposeOldFiles = async (ctx: PhaseContext, options: { fromIds?: ObjectId[
   })
 
   if( !doc ) {
-    return left(TraverseError.InvalidDocumentId)
+    return Result.error(TraverseError.InvalidDocumentId)
   }
 
   let fileIds = getValueFromPath(doc, ctx.propPath)
@@ -208,7 +208,7 @@ const validate = (value: any, ctx: PhaseContext) => {
   const { error } = validateProperty(ctx.propName, value, ctx.property)
 
   if( error ) {
-    return left({
+    return Result.error({
       [ctx.propName]: error,
     })
   }
@@ -245,7 +245,7 @@ const moveFiles = async (
   })
 
   if( !tempFile ) {
-    return left(TraverseError.InvalidTempfile)
+    return Result.error(TraverseError.InvalidTempfile)
   }
 
   if( ctx.root._id ) {
@@ -266,9 +266,9 @@ const recurseDeep = async (value: any, ctx: PhaseContext) => {
   }
 
   if( 'properties' in ctx.property ) {
-    const { error, value: result } = await recurse(value, ctx)
+    const { error, result } = await recurse(value, ctx)
     if( error ) {
-      return left(error)
+      return Result.error(error)
     }
 
     return result
@@ -311,7 +311,7 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
       | 'propPath'
   >,
 
-): Promise<Either<
+): Promise<Result.Either<
   | ValidationError
   | ACError.InsecureOperator,
   TRecursionTarget
@@ -353,7 +353,7 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
       // it contains MongoDB query operators
       if( Object.keys(value)[0]?.startsWith('$') ) {
         if( !ctx.options.allowOperators ) {
-          return left(ACError.InsecureOperator)
+          return Result.error(ACError.InsecureOperator)
         }
 
         entries.push([
@@ -366,12 +366,12 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
       if( Array.isArray(value) ) {
         const operations = []
         for( const operation of value ) {
-          const { error, value } = await recurse(operation, ctx)
+          const { error, result } = await recurse(operation, ctx)
           if( error ) {
-            return left(error)
+            return Result.error(error)
           }
 
-          operations.push(value)
+          operations.push(result)
         }
 
         entries.push([
@@ -381,9 +381,9 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
         continue
       }
 
-      const { error, value: operator } = await recurse(value, ctx)
+      const { error, result: operator } = await recurse(value, ctx)
       if( error ) {
-        return left(error)
+        return Result.error(error)
       }
 
       entries.push([
@@ -399,7 +399,7 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
           : property
 
         if( '$ref' in propCast && value && !(value instanceof ObjectId) ) {
-          const targetDescription = await preloadDescription(throwIfLeft(await getCollectionAsset(propCast.$ref, 'description')))
+          const targetDescription = await preloadDescription(throwIfError(await getCollectionAsset(propCast.$ref, 'description')))
 
           if( Array.isArray(value) ) {
             const documents = []
@@ -410,12 +410,12 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
                 continue
               }
 
-              const { error, value } = await traverseDocument(elem, targetDescription, ctx.options)
+              const { error, result } = await traverseDocument(elem, targetDescription, ctx.options)
               if( error ) {
-                return left(error)
+                return Result.error(error)
               }
 
-              documents.push(value)
+              documents.push(result)
             }
 
             entries.push([
@@ -425,9 +425,9 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
             continue
           }
 
-          const { error, value: document } = await traverseDocument(value, targetDescription, ctx.options)
+          const { error, result: document } = await traverseDocument(value, targetDescription, ctx.options)
           if( error ) {
-            return left(error)
+            return Result.error(error)
           }
 
           entries.push([
@@ -453,7 +453,7 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
     }
   }
 
-  return right(Object.fromEntries(entries))
+  return Result.result(Object.fromEntries(entries))
 }
 
 export const traverseDocument = async <const TWhat extends Record<string, unknown>>(
@@ -465,7 +465,7 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
   const functions = []
 
   if( !options.validate && Object.keys(what).length === 0 ) {
-    return right({})
+    return Result.result({})
   }
 
   if( options.recurseDeep ) {
@@ -488,7 +488,7 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
 
     const wholenessError = validateWholeness(what, descriptionCopy)
     if( wholenessError ) {
-      return left(wholenessError)
+      return Result.error(wholenessError)
     }
 
     functions.push(validate)
@@ -521,7 +521,7 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
     }),
   })
 
-  const { error, value } = await recurse(what, {
+  const { error, result } = await recurse(what, {
     root: what,
     property: description as Property,
     propPath: '',
@@ -529,16 +529,16 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
   })
 
   if( error ) {
-    return left(error)
+    return Result.error(error)
   }
 
   if( validationError ) {
-    return left(makeValidationError({
+    return Result.error(makeValidationError({
       code: ValidationErrorCode.InvalidProperties,
       errors: validationError,
     }))
   }
 
-  return right(value as any)
+  return Result.result(result as any)
 }
 

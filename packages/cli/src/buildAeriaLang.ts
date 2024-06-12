@@ -1,6 +1,6 @@
 import ts from 'typescript'
 import { build, ppDiagnostic } from 'aeria-lang'
-import { left, right } from '@aeriajs/common'
+import { Result } from '@aeriajs/common'
 import { getUserTsconfig } from './compile.js'
 
 export const buildAeriaLang = async () => {
@@ -24,18 +24,18 @@ export const buildAeriaLang = async () => {
 export const buildAeriaLangPhase = async () => {
   const result = await buildAeriaLang()
   if( !result ) {
-    return right('skipped aeria-lang build (@aeria-lang/build dependency is absent)')
+    return Result.result('skipped aeria-lang build (@aeria-lang/build dependency is absent)')
   }
 
   if( !result.success ) {
-    return left(ppDiagnostic(result.diagnostics))
+    return Result.error(ppDiagnostic(result.diagnostics))
   }
 
   if( result.emittedFiles.length === 0 ) {
-    return right('no aeria files to build')
+    return Result.result('no aeria files to build')
   }
 
-  return right(result.emittedFiles.length > 0
+  return Result.result(result.emittedFiles.length > 0
     ? 'aeria files built'
     : 'no aeria files to build')
 }

@@ -18,9 +18,9 @@ const preferredRemove = async (targetId: ObjectId | ObjectId[], reference: Refer
   })
 
   if( Array.isArray(targetId) ) {
-    const { value } = await getFunction(reference.referencedCollection, 'removeAll')
-    if( value ) {
-      const removeAll: typeof functions.removeAll = value
+    const { result } = await getFunction(reference.referencedCollection, 'removeAll')
+    if( result ) {
+      const removeAll: typeof functions.removeAll = result
       return removeAll({
         filters: targetId,
       }, context)
@@ -33,9 +33,9 @@ const preferredRemove = async (targetId: ObjectId | ObjectId[], reference: Refer
     })
   }
 
-  const { value } = await getFunction(reference.referencedCollection, 'remove')
-  if( value ) {
-    const remove: typeof functions.remove = value
+  const { result } = await getFunction(reference.referencedCollection, 'remove')
+  if( result ) {
+    const remove: typeof functions.remove = result
     return remove({
       filters: {
         _id: targetId,

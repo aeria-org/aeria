@@ -1,4 +1,5 @@
-import type { Context, Either, GetAllPayload, InsertPayload, ACError } from '@aeriajs/types'
+import type { Context, GetAllPayload, InsertPayload, ACError } from '@aeriajs/types'
+import type { Result } from '@aeriajs/common'
 
 export type SecurityCheckReadPayload = {
   filters: Record<string, any>
@@ -18,7 +19,7 @@ export type SecurityCheckProps<TPayload extends Record<string, any> = any> = {
   payload: TPayload
 }
 
-export type SecurityCheck = (props: SecurityCheckProps, context: Context)=> Promise<Either<
+export type SecurityCheck = (props: SecurityCheckProps, context: Context)=> Promise<Result.Either<
   ACError,
   GetAllPayload<any> | InsertPayload<any>
 >>

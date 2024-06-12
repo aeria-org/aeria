@@ -73,7 +73,7 @@ export const customVerbs = () => async (parentContext: RouteContext) => {
     calledFunction: functionName,
   })
 
-  const { error, value: fn } = await getFunction(
+  const { error, result: fn } = await getFunction(
     collectionName,
     functionName,
     context.token,
@@ -117,7 +117,7 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
     }
   }
 
-  const { error, value: fn } = await getFunction(
+  const { error, result: fn } = await getFunction(
     collectionName,
     functionName,
     context.token,

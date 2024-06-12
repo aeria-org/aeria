@@ -1,4 +1,4 @@
-import type { Either } from '@aeriajs/types'
+import type { Result } from '@aeriajs/common'
 import { parseArgs } from 'util'
 import { log } from './log.js'
 import { compilationPhase } from './compile.js'
@@ -37,7 +37,7 @@ const { values: opts } = parseArgs({
   },
 })
 
-const phases: (()=> Promise<Either<string, string>>)[] = []
+const phases: (()=> Promise<Result.Either<string, string>>)[] = []
 
 export async function main() {
   if( opts.watch ) {
@@ -66,7 +66,7 @@ export async function main() {
   }
 
   for( const phase of phases ) {
-    const { error, value: result } = await phase()
+    const { error, result } = await phase()
     if( error ) {
       log('error', error)
       log('info', 'pipeline aborted')

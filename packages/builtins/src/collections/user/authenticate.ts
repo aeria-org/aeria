@@ -2,7 +2,7 @@ import type { Context, SchemaWithId, Token, TokenRecipient } from '@aeriajs/type
 import type { description } from './description.js'
 import type { ObjectId } from '@aeriajs/core'
 import { HTTPStatus, ACError } from '@aeriajs/types'
-import { isError } from '@aeriajs/common'
+import { Result } from '@aeriajs/common'
 import { compare as bcryptCompare } from 'bcrypt'
 import { signToken, decodeToken } from '@aeriajs/core'
 
@@ -35,14 +35,14 @@ const getUser = async (
   userId: ObjectId,
   context: Context<typeof description, Collections['user']['functions']>,
 ): Promise<Return> => {
-  const leanUser = await context.collection.functions.get({
+  const { error, result: leanUser } = await context.collection.functions.get({
     filters: {
       _id: userId,
     },
     populate: ['picture_file'],
   })
 
-  if( isError(leanUser) ) {
+  if( error ) {
     throw new Error()
   }
 
@@ -125,9 +125,9 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
       ? await decodeToken<Token>(token.content)
       : context.token
 
-    return decodedToken.sub
-      ? getUser(decodedToken.sub, context)
-      : getDefaultUser()
+    return Result.result(decodedToken.sub
+      ? await getUser(decodedToken.sub, context)
+      : await getDefaultUser())
   }
 
   if( typeof props.email !== 'string' ) {
@@ -138,7 +138,7 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
 
   if( context.config.defaultUser ) {
     if( props.email === context.config.defaultUser.username && props.password === context.config.defaultUser.password ) {
-      return getDefaultUser()
+      return Result.result(await getDefaultUser())
     }
   }
 
@@ -167,6 +167,6 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
     })
   }
 
-  return getUser(user._id, context)
+  return Result.result(await getUser(user._id, context))
 }
 

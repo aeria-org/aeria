@@ -3,7 +3,8 @@ import type { AcceptedRole } from './token.js'
 import type { ApiConfig } from './config.js'
 import type { CollectionDocument, CollectionFunctions } from './functions.js'
 import type { Description } from './description.js'
-import type { EndpointError, EndpointErrorContent } from './error.js'
+import type { Result } from './result.js'
+import type { EndpointError } from './error.js'
 import type { GenericRequest, GenericResponse, HTTPStatus } from './http.js'
 import type { PackReferences, SchemaWithId } from './schema.js'
 import type { RateLimitingParams, RateLimitingError } from './security.js'
@@ -79,27 +80,27 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
 
   error: <
     const THTTPStatus extends HTTPStatus,
-    const TEndpointErrorContent extends EndpointErrorContent,
+    const TEndpointError extends EndpointError,
   >(
     httpStatus: THTTPStatus,
-    error: TEndpointErrorContent
-  )=> EndpointError<TEndpointErrorContent & {
+    error: TEndpointError
+  )=> Result.Error<TEndpointError & {
     httpStatus: THTTPStatus
   }>
 
   limitRate: (params: RateLimitingParams)=> Promise<
-    | EndpointError<
-      EndpointErrorContent<
+    Result.Either<
+      EndpointError<
         RateLimitingError,
         HTTPStatus.TooManyRequests
-      >
+      >,
+      {
+        hits: number
+        points: number
+        last_reach: Date
+        last_maximum_reach: Date
+      }
     >
-    | {
-      hits: number
-      points: number
-      last_reach: Date
-      last_maximum_reach: Date
-    }
   >
 
   config: ApiConfig

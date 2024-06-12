@@ -1,5 +1,4 @@
 import type {
-  Either,
   JsonSchema,
   Property,
   InferSchema,
@@ -8,7 +7,7 @@ import type {
   ValidationError,
 } from '@aeriajs/types'
 
-import { left, right, getMissingProperties } from '@aeriajs/common'
+import { Result, getMissingProperties } from '@aeriajs/common'
 import { ValidationErrorCode, PropertyValidationErrorCode } from '@aeriajs/types'
 
 export type ValidateOptions = {
@@ -55,7 +54,7 @@ const makePropertyError = <
   TCode extends PropertyValidationErrorCode,
   TDetails extends PropertyValidationError['details'],
 >(type: TCode, details: TDetails) => {
-  return {
+  return <const>{
     type,
     details,
   } satisfies PropertyValidationError
@@ -70,29 +69,29 @@ export const validateProperty = <TWhat>(
   what: TWhat,
   property: Property | undefined,
   options: ValidateOptions = {},
-): Either<PropertyValidationError | ValidationError, unknown> => {
+): Result.Either<PropertyValidationError | ValidationError, unknown> => {
   const { extraneous, filterOutExtraneous, coerce } = options
   if( what === undefined ) {
-    return right(what)
+    return Result.result(what)
   }
 
   if( !property ) {
     if( extraneous || (Array.isArray(extraneous) && extraneous.includes(propName)) ) {
       if( filterOutExtraneous ) {
-        return right(undefined)
+        return Result.result(undefined)
       }
 
-      return right(what)
+      return Result.result(what)
     }
 
-    return left(makePropertyError(PropertyValidationErrorCode.Extraneous, {
+    return Result.error(makePropertyError(PropertyValidationErrorCode.Extraneous, {
       expected: 'undefined',
       got: getValueType(what),
     }))
   }
 
   if( 'getter' in property ) {
-    return right(undefined)
+    return Result.result(undefined)
   }
 
   if( 'properties' in property ) {
@@ -101,20 +100,20 @@ export const validateProperty = <TWhat>(
 
   if( 'const' in property ) {
     if( what !== property.const ) {
-      return left(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+      return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
         expected: property.const,
         got: what,
       }))
     }
 
-    return right(what)
+    return Result.result(what)
   }
 
   const expectedType = getPropertyType(property)!
   const actualType = getValueType(what)
 
   if( 'enum' in property && property.enum.length === 0 ) {
-    return right(what)
+    return Result.result(what)
   }
 
   if(
@@ -123,16 +122,16 @@ export const validateProperty = <TWhat>(
     && !(actualType === 'number' && expectedType === 'integer')
   ) {
     if( expectedType === 'datetime' && what instanceof Date ) {
-      return right(what)
+      return Result.result(what)
     }
 
     if( expectedType === 'boolean' && !what ) {
-      return right(what)
+      return Result.result(what)
     }
 
     if( '$ref' in property && typeof what === 'string' ) {
       if( /^[0-9a-fA-F]{24}$/.test(what) ) {
-        return right(what)
+        return Result.result(what)
       }
     }
 
@@ -140,22 +139,22 @@ export const validateProperty = <TWhat>(
       if( expectedType === 'number' && typeof what === 'string' ) {
         const coerced = parseFloat(what)
         if( !isNaN(coerced) ) {
-          return right(coerced)
+          return Result.result(coerced)
         }
       }
       if( expectedType === 'integer' && typeof what === 'string' ) {
         const coerced = parseInt(what)
         if( !isNaN(coerced) ) {
-          return right(coerced)
+          return Result.result(coerced)
         }
       }
       if( expectedType === 'string' && typeof what === 'number' ) {
-        return right(String(what))
+        return Result.result(String(what))
       }
 
     }
 
-    return left(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+    return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
       expected: expectedType,
       got: actualType,
     }))
@@ -163,7 +162,7 @@ export const validateProperty = <TWhat>(
 
   if( 'items' in property ) {
     if( !Array.isArray(what) ) {
-      return left(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+      return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
         expected: expectedType,
         got: actualType,
       }))
@@ -179,7 +178,7 @@ export const validateProperty = <TWhat>(
         }
 
         error.index = i
-        return left(error)
+        return Result.error(error)
       }
 
       i++
@@ -187,7 +186,7 @@ export const validateProperty = <TWhat>(
   } else if( 'type' in property ) {
     if( property.type === 'integer' ) {
       if( !Number.isInteger(what) ) {
-        return left(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
+        return Result.error(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
           expected: 'integer',
           got: 'invalid_number',
         }))
@@ -196,7 +195,7 @@ export const validateProperty = <TWhat>(
 
     if( property.type === 'integer' || property.type === 'number' ) {
       if( typeof what !== 'number' ) {
-        return left(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+        return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
           expected: expectedType,
           got: actualType,
         }))
@@ -208,7 +207,7 @@ export const validateProperty = <TWhat>(
       || (property.exclusiveMaximum && property.exclusiveMaximum <= what)
       || (property.exclusiveMinimum && property.exclusiveMinimum >= what)
       ) {
-        return left(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
+        return Result.error(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
           expected: 'number',
           got: 'invalid_number',
         }))
@@ -216,14 +215,14 @@ export const validateProperty = <TWhat>(
     }
   } else if( 'enum' in property ) {
     if( !property.enum.includes(what) ) {
-      return left(makePropertyError(PropertyValidationErrorCode.ExtraneousElement, {
+      return Result.error(makePropertyError(PropertyValidationErrorCode.ExtraneousElement, {
         expected: property.enum,
         got: what,
       }))
     }
   }
 
-  return right(what)
+  return Result.result(what)
 }
 
 export const validateWholeness = (what: Record<string, any>, schema: Omit<JsonSchema, '$id'>) => {
@@ -257,7 +256,7 @@ export const validate = <
   options: ValidateOptions = {},
 ) => {
   if( !what ) {
-    return left(makeValidationError({
+    return Result.error(makeValidationError({
       code: ValidationErrorCode.EmptyTarget,
       errors: {},
     }))
@@ -266,20 +265,20 @@ export const validate = <
   if( !('properties' in schema) ) {
     const { error } = validateProperty('', what, schema)
     return error
-      ? left(error)
-      : right(what as InferSchema<TJsonSchema>)
+      ? Result.error(error)
+      : Result.result(what as InferSchema<TJsonSchema>)
   }
 
   const wholenessError = validateWholeness(what, schema)
   if( wholenessError ) {
-    return left(wholenessError)
+    return Result.error(wholenessError)
   }
 
   const errors: Record<string, PropertyValidationError | ValidationError> = {}
   const resultCopy: Record<string, any> = {}
 
   for( const propName in what ) {
-    const { error, value: parsed } = validateProperty(
+    const { error, result: parsed } = validateProperty(
       propName,
       what[propName],
       schema.properties[propName],
@@ -304,13 +303,13 @@ export const validate = <
       throw error
     }
 
-    return left(makeValidationError({
+    return Result.error(makeValidationError({
       code: ValidationErrorCode.InvalidProperties,
       errors,
     }))
   }
 
-  return right(resultCopy as InferSchema<TJsonSchema>)
+  return Result.result(resultCopy as InferSchema<TJsonSchema>)
 }
 
 export const validator = <const TJsonSchema extends Omit<Description, '$id'> | Property>(

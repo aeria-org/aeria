@@ -2,7 +2,7 @@ import * as fs from 'fs/promises'
 import * as path from 'path'
 import { extractIcons, iconsEsmContent, iconsCjsContent, iconsDtsContent } from './icons.js'
 import { getCollections } from '@aeriajs/entrypoint'
-import { right } from '@aeriajs/common'
+import { Result } from '@aeriajs/common'
 
 const DATA_PATH = '.aeria'
 
@@ -29,6 +29,6 @@ export const iconsExtraction = async () => {
   await fs.writeFile(path.join(base, 'icons.cjs'), iconsCjsContent(uniqueIcons))
   await fs.writeFile(path.join(base, 'icons.d.ts'), iconsDtsContent(uniqueIcons))
 
-  return right('icon extraction succeeded')
+  return Result.result('icon extraction succeeded')
 }
 

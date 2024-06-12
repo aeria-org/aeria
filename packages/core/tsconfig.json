@@ -19,6 +19,9 @@
       "@aeriajs/types": [
         "../types/dist"
       ],
+      "@aeriajs/types/*": [
+        "../types/dist/*"
+      ],
       "@aeriajs/http": [
         "../http/dist"
       ],

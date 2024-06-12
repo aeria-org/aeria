@@ -1,6 +1,6 @@
 import type { Context, SchemaWithId, CountPayload } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
-import { throwIfLeft } from '@aeriajs/common'
+import { Result, throwIfError } from '@aeriajs/common'
 import { traverseDocument } from '../../collection/index.js'
 
 export const count = async <TContext extends Context>(
@@ -10,10 +10,10 @@ export const count = async <TContext extends Context>(
     : never,
 ) => {
   const security = useSecurity(context)
-  const { filters } = throwIfLeft(await security.beforeRead(payload))
+  const { filters } = throwIfError(await security.beforeRead(payload))
   const { $text, ...filtersRest } = filters
 
-  const traversedFilters = throwIfLeft(await traverseDocument(filtersRest, context.description, {
+  const traversedFilters = throwIfError(await traverseDocument(filtersRest, context.description, {
     autoCast: true,
     allowOperators: true,
   }))
@@ -37,11 +37,11 @@ export const count = async <TContext extends Context>(
     })
 
     const result = await context.collection.model.aggregate(pipeline).next()
-    return result
+    return Result.result(result
       ? result.total
-      : 0
+      : 0)
   }
 
-  return context.collection.model.countDocuments(traversedFilters)
+  return Result.result(await context.collection.model.countDocuments(traversedFilters))
 }
 

@@ -1,4 +1,4 @@
-import { init, createRouter, isError, unwrapError, insertErrorSchema, ACError } from 'aeria'
+import { init, createRouter, insertErrorSchema, ACError } from 'aeria'
 export * as collections from './collections/index.js'
 
 const router = createRouter()
@@ -16,7 +16,7 @@ router.GET('/hello-world', () => {
 })
 
 router.GET('/get-people', async (context) => {
-  const person = await context.collections.person.functions.insert({
+  const { error, result: person } = await context.collections.person.functions.insert({
     what: {
       name: context.request.payload.name,
       job: 'programmer',
@@ -24,12 +24,11 @@ router.GET('/get-people', async (context) => {
     },
   })
 
-  if( isError(person) ) {
-    const error = unwrapError(person)
+  if( error ) {
     ACError.InsecureOperator satisfies typeof error.code
     // @ts-expect-error
     'invalid' satisfies typeof error.code
-    return person
+    return error
   }
 
   person.name

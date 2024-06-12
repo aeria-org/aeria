@@ -13,7 +13,7 @@ describe('Traverse document', () => {
       },
     }
 
-    const { value } = await traverseDocument(what, {
+    const { result } = await traverseDocument(what, {
       $id: '',
       properties: {
         items: {
@@ -40,10 +40,10 @@ describe('Traverse document', () => {
       allowOperators: true,
     })
 
-    assert(value)
-    assert(value.items.$elemMatch.date instanceof Date)
-    assert(value.items.$elemMatch.image instanceof ObjectId)
-    assert(value.items.$elemMatch.status === 'accepted')
+    assert(result)
+    assert(result.items.$elemMatch.date instanceof Date)
+    assert(result.items.$elemMatch.image instanceof ObjectId)
+    assert(result.items.$elemMatch.status === 'accepted')
   })
 
   it('autocast top-level MongoDB operators', async () => {
@@ -61,7 +61,7 @@ describe('Traverse document', () => {
       ],
     }
 
-    const { value } = await traverseDocument(what, {
+    const { result } = await traverseDocument(what, {
       $id: '',
       properties: {
         date: {
@@ -80,9 +80,9 @@ describe('Traverse document', () => {
       allowOperators: true,
     })
 
-    assert(value)
-    assert(value.$and[0].date instanceof Date)
-    assert(value.$and[1].image instanceof ObjectId)
-    assert(value.$and[2].status === 'accepted')
+    assert(result)
+    assert(result.$and[0].date instanceof Date)
+    assert(result.$and[1].image instanceof ObjectId)
+    assert(result.$and[2].status === 'accepted')
   })
 })

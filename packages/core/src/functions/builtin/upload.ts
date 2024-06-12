@@ -1,6 +1,7 @@
 import { ACError, HTTPStatus, type Context } from '@aeriajs/types'
 import { getCollection } from '@aeriajs/entrypoint'
 import { validate, validator } from '@aeriajs/validation'
+import { Result } from '@aeriajs/common'
 import * as path from 'path'
 import { createWriteStream } from 'fs'
 import { createHash } from 'crypto'
@@ -69,11 +70,11 @@ export const upload = async <TContext extends Context>(_props: unknown, context:
     })
   }
 
-  const { error: metadataError, value: metadata } = validateFileMetadata(context.request.query)
-  if( metadataError ) {
+  const { error, result: metadata } = validateFileMetadata(context.request.query)
+  if( error ) {
     return context.error(HTTPStatus.BadRequest, {
       code: ACError.MalformedInput,
-      details: metadataError,
+      details: error,
     })
   }
 
@@ -87,8 +88,8 @@ export const upload = async <TContext extends Context>(_props: unknown, context:
     name: metadata.name,
   })
 
-  return {
+  return Result.result({
     tempId: file.insertedId,
-  }
+  })
 }
 

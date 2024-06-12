@@ -1,5 +1,5 @@
 import type { Context, RemoveAllPayload, CollectionItem } from '@aeriajs/types'
-import { throwIfLeft } from '@aeriajs/common'
+import { Result, throwIfError } from '@aeriajs/common'
 import { traverseDocument, cascadingRemove } from '../../collection/index.js'
 
 export const removeAll = async <TContext extends Context>(payload: RemoveAllPayload, context: TContext) => {
@@ -10,17 +10,17 @@ export const removeAll = async <TContext extends Context>(payload: RemoveAllPayl
     },
   }
 
-  const filters = throwIfLeft(await traverseDocument(filtersWithId, context.description, {
+  const filters = throwIfError(await traverseDocument(filtersWithId, context.description, {
     autoCast: true,
   }))
 
   const it = context.collection.model.find(filters)
 
-  let document: CollectionItem<any>
-  while( document = await it.next() ) {
-    await cascadingRemove(document, context)
+  let doc: CollectionItem<any>
+  while( doc = await it.next() ) {
+    await cascadingRemove(doc, context)
   }
 
-  return context.collection.model.deleteMany(filters)
+  return Result.result(await context.collection.model.deleteMany(filters))
 }
 

@@ -1,13 +1,6 @@
 export {
-  left,
-  right,
-  error,
-  isError,
-  unwrapError,
-  throwIfLeft,
-  throwIfError,
+  Result, throwIfError,
 } from '@aeriajs/common'
-
 export * from './auth.js'
 export * from './topLevel.js'
 export * from './constants.js'

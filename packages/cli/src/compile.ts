@@ -5,7 +5,7 @@ import * as transpile from './transpile.js'
 import { fileURLToPath } from 'url'
 import { readFile } from 'fs/promises'
 import { glob } from 'glob'
-import { left, right, deepMerge } from '@aeriajs/common'
+import { Result, deepMerge } from '@aeriajs/common'
 import { log } from './log.js'
 
 type TsConfig = {
@@ -153,7 +153,7 @@ export const compilationPhase = async (options: CompileOptions = {}) => {
   })
 
   if( !result.success ) {
-    return left(`typescript compilation produced ${result.diagnostics.length} errors, please fix them`)
+    return Result.error(`typescript compilation produced ${result.diagnostics.length} errors, please fix them`)
   }
 
   if( !options.useTsc ) {
@@ -168,6 +168,6 @@ export const compilationPhase = async (options: CompileOptions = {}) => {
     await transpileCtx.dispose()
   }
 
-  return right('compilation succeeded')
+  return Result.result('compilation succeeded')
 }
 

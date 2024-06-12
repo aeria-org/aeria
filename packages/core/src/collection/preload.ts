@@ -36,12 +36,14 @@ const recurseProperty = async (_property: Property, propertyName: string, descri
   const reference = getReferenceProperty(property)
   if( reference ) {
     if( !reference.indexes && !reference.inline ) {
-      const { error, value: referenceDescription } = await getCollectionAsset(reference.$ref, 'description')
+      const { error, result: referenceDescription } = await getCollectionAsset(reference.$ref, 'description')
       if( error ) {
         throw new Error(`description of ${reference.$ref} not found`)
       }
 
-      const indexes = reference.indexes = referenceDescription.indexes?.slice()
+      const indexes = reference.indexes = referenceDescription.indexes?.filter((index): index is string => {
+        return typeof index === 'string'
+      })
 
       if( !indexes ) {
         throw new Error(`neither indexes or inline are present on reference property or indexes is set on target description on ${description.$id}.${propertyName}`)
