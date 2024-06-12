@@ -142,26 +142,30 @@ export type GetReturnType<TDocument> =
     TDocument
   >
 
+export type CountReturnType = Result.Either<unknown, number>
+export type GetAllReturnType<TDocument> = Result.Either<unknown, TDocument[]>
+export type RemoveReturnType<TDocument> = Result.Either<unknown, TDocument>
+
 export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<any>>> = {
-  count: (payload: CountPayload<TDocument>)=> Promise<number>
+  count: (payload: CountPayload<TDocument>)=> Promise<CountReturnType>
   get: (payload: GetPayload<TDocument>)=> Promise<GetReturnType<TDocument>>
-  getAll: (payload?: GetAllPayload<TDocument>)=> Promise<TDocument[]>
+  getAll: (payload?: GetAllPayload<TDocument>)=> Promise<GetAllReturnType<TDocument>>
   insert: (payload: InsertPayload<TDocument>)=> Promise<InsertReturnType<TDocument>>
-  remove: (payload: RemovePayload<TDocument>)=> Promise<TDocument>
+  remove: (payload: RemovePayload<TDocument>)=> Promise<RemoveReturnType<TDocument>>
   // @TODO
   removeAll: (payload: RemoveAllPayload)=> Promise<any>
   removeFile: (payload: RemoveFilePayload)=> Promise<any>
 }
 
 export type CollectionFunctionsSDK<TDocument extends CollectionDocument<OptionalId<any>>> = {
-  count: (payload: CountPayload<TDocument>)=> Promise<WithACErrors<number>>
+  count: (payload: CountPayload<TDocument>)=> Promise<WithACErrors<CountReturnType>>
   get: (payload: GetPayload<TDocument>)=> Promise<WithACErrors<GetReturnType<TDocument>>>
-  getAll: (payload?: GetAllPayload<TDocument>)=> Promise<WithACErrors<{
+  getAll: (payload?: GetAllPayload<TDocument>)=> Promise<WithACErrors<Result.Either<unknown, {
     data: TDocument[]
     pagination: Pagination
-  }>>
+  }>>>
   insert: (payload: InsertPayload<TDocument>)=> Promise<WithACErrors<InsertReturnType<TDocument>>>
-  remove: (payload: RemovePayload<TDocument>)=> Promise<WithACErrors<TDocument>>
+  remove: (payload: RemovePayload<TDocument>)=> Promise<WithACErrors<RemoveReturnType<TDocument>>>
   // @TODO
   removeAll: (payload: RemoveAllPayload)=> Promise<any>
   removeFile: (payload: RemoveFilePayload)=> Promise<any>
