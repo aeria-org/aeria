@@ -1,5 +1,13 @@
 # @aeriajs/common
 
+## 0.0.60
+
+### Patch Changes
+
+- fafac8a: Introduce `Result`
+- Updated dependencies [fafac8a]
+  - @aeriajs/types@0.0.56
+
 ## 0.0.59
 
 ### Patch Changes

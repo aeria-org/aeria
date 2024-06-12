@@ -1,5 +1,20 @@
 # @aeriajs/server
 
+## 0.0.98
+
+### Patch Changes
+
+- fafac8a: Introduce `Result`
+- Updated dependencies [fafac8a]
+  - @aeriajs/node-http@0.0.69
+  - @aeriajs/builtins@0.0.96
+  - @aeriajs/common@0.0.60
+  - @aeriajs/server@0.0.98
+  - @aeriajs/types@0.0.56
+  - @aeriajs/core@0.0.96
+  - @aeriajs/http@0.0.69
+  - @aeriajs/entrypoint@0.0.61
+
 ## 0.0.97
 
 ### Patch Changes

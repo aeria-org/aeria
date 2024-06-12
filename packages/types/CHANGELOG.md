@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.56
+
+### Patch Changes
+
+- fafac8a: Introduce `Result`
+
 ## 0.0.55
 
 ### Patch Changes

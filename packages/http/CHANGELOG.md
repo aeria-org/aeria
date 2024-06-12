@@ -1,5 +1,16 @@
 # @aeriajs/http
 
+## 0.0.69
+
+### Patch Changes
+
+- fafac8a: Introduce `Result`
+- Updated dependencies [fafac8a]
+  - @aeriajs/validation@0.0.63
+  - @aeriajs/common@0.0.60
+  - @aeriajs/types@0.0.56
+  - @aeriajs/entrypoint@0.0.61
+
 ## 0.0.68
 
 ### Patch Changes
