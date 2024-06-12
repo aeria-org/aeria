@@ -5,7 +5,7 @@ const router = createRouter()
 
 router.GET('/hello-world', (context) => {
   return context.collections.person.functions.hello({
-    name: 'Terry'
+    name: 'Terry',
   })
 }, {
   roles: [
