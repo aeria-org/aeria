@@ -119,7 +119,7 @@ export const writeMirrorFiles = async (mirror: any, config: InstanceConfig, file
     } catch( err ) {
     }
 
-    const syntheticRequire = createRequire(process.cwd())
+    const syntheticRequire = createRequire(path.join(process.cwd(), 'node_modules'))
     return syntheticRequire.resolve('aeria-sdk')
   })()
 
