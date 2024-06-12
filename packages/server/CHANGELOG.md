@@ -1,5 +1,18 @@
 # @aeriajs/server
 
+## 0.0.101
+
+### Patch Changes
+
+- 4c7243e: Add `router` in `InitOptions`, install it automatically
+- Updated dependencies [4c7243e]
+  - @aeriajs/entrypoint@0.0.64
+  - @aeriajs/server@0.0.101
+  - @aeriajs/builtins@0.0.99
+  - @aeriajs/core@0.0.99
+  - @aeriajs/http@0.0.72
+  - @aeriajs/node-http@0.0.72
+
 ## 0.0.100
 
 ### Patch Changes

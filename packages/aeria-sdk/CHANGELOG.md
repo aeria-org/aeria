@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.88
+
+### Patch Changes
+
+- c05936f: Fix synthetic require
+
 ## 0.0.87
 
 ### Patch Changes
