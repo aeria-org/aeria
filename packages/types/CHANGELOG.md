@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.57
+
+### Patch Changes
+
+- ec235f7: Fix pagination and function signatures
+
 ## 0.0.56
 
 ### Patch Changes
