@@ -1,4 +1,5 @@
 import type { Description } from '@aeriajs/types'
+import { isEmptyObject } from '@aeriajs/common'
 
 const prepareCreate = <TDocument>(doc: TDocument, description: Description) => {
   const result: Record<string, any> = Object.assign({}, description.defaults || {})
@@ -48,7 +49,7 @@ export const prepareInsert = <TPayload extends Record<string, any>>(payload: TPa
     : prepareCreate(doc, description)
 
   Object.keys(what).forEach((k) => {
-    if( what[k] && Object.keys(what[k]).length === 0 && what[k].constructor !== Object ) {
+    if( isEmptyObject(what[k]) ) {
       delete what[k]
     }
   })
