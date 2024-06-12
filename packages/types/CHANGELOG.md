@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.58
+
+### Patch Changes
+
+- ebe7477: Fix `FixedObjectProperty` type
+
 ## 0.0.57
 
 ### Patch Changes
