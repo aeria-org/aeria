@@ -57,26 +57,26 @@ export const fromLiteral = <
   } as ObjectToSchema<TObject, TRequired>
 }
 
-export const leftSchema = <const TObject extends Property>(object: TObject) => {
+export const errorSchema = <const TObject extends Property>(object: TObject) => {
   return <const>{
     type: 'object',
     properties: {
       _tag: {
-        const: 'Left',
+        const: 'Error',
       },
-      value: object,
+      error: object,
     },
   } satisfies Property
 }
 
-export const rightSchema = <const TObject extends Property>(object: TObject) => {
+export const resultSchema = <const TObject extends Property>(object: TObject) => {
   return <const>{
     type: 'object',
     properties: {
       _tag: {
-        const: 'Right',
+        const: 'Result',
       },
-      value: object,
+      result: object,
     },
   } satisfies Property
 }
@@ -88,7 +88,7 @@ export const endpointErrorSchema = <
   httpStatus: THTTPStatus,
   code: TCode
 }) => {
-  return <const>{
+  return errorSchema({
     type: 'object',
     required: [
       'httpStatus',
@@ -109,11 +109,11 @@ export const endpointErrorSchema = <
         variable: true,
       },
     },
-  } satisfies Property
+  })
 }
 
 export const genericEndpointErrorSchema = () => {
-  return <const>{
+  return errorSchema({
     type: 'object',
     required: [
       'httpStatus',
@@ -134,6 +134,6 @@ export const genericEndpointErrorSchema = () => {
         variable: true,
       },
     },
-  } satisfies Property
+  })
 }
 

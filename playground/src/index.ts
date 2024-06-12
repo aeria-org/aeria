@@ -1,4 +1,4 @@
-import { init, createRouter, insertErrorSchema, ACError } from 'aeria'
+import { init, createRouter, insertErrorSchema, ACError, Result } from 'aeria'
 export * as collections from './collections/index.js'
 
 const router = createRouter()
@@ -28,11 +28,8 @@ router.GET('/get-people', async (context) => {
     ACError.InsecureOperator satisfies typeof error.code
     // @ts-expect-error
     'invalid' satisfies typeof error.code
-    return error
+    return Result.error(error)
   }
-
-  person.name
-  person.job
 
   for( const pet of person.pets ) {
     pet.name
