@@ -3,10 +3,10 @@ export * as collections from './collections/index.js'
 
 const router = createRouter()
 
-router.GET('/hello-world', () => {
-  return {
-    message: 'Hello, world',
-  }
+router.GET('/hello-world', (context) => {
+  return context.collections.person.functions.hello({
+    name: 'Terry'
+  })
 }, {
   roles: [
     'root',

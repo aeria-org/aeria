@@ -32,7 +32,7 @@ export const person = defineCollection({
       // @ts-expect-error
       obj.invalid
       return {
-        success: true,
+        message: `Hello, ${obj.name}`
       }
     },
   },
@@ -52,8 +52,8 @@ export const person = defineCollection({
       response: {
         type: 'object',
         properties: {
-          success: {
-            type: 'boolean',
+          message: {
+            type: 'string',
           },
         },
       },
