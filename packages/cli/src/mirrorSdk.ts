@@ -1,5 +1,5 @@
 import type { InstanceConfig } from 'aeria-sdk'
-import { systemFunctions } from '@aeriajs/builtins'
+import { builtinFunctions } from '@aeriajs/builtins'
 import { Result } from '@aeriajs/common'
 
 export const mirrorSdk = async (defaultConfig?: Partial<InstanceConfig>) => {
@@ -7,7 +7,7 @@ export const mirrorSdk = async (defaultConfig?: Partial<InstanceConfig>) => {
     const { getConfig } = await import('aeria-sdk/utils')
     const { writeMirrorFiles } = await import('aeria-sdk/mirror')
 
-    const mirror = await systemFunctions.describe({
+    const mirror = await builtinFunctions.describe({
       router: true,
     })
 

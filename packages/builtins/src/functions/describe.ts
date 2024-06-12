@@ -85,7 +85,7 @@ export const describe = async (contextOrPayload: RouteContext | Payload) => {
   }
 
   if( props.noSerialize || !('response' in contextOrPayload) ) {
-    return result
+    return Result.result(result)
   }
 
   contextOrPayload.response.setHeader('content-type', 'application/bson')

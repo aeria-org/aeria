@@ -1,7 +1,7 @@
 import type { RouteContext } from '@aeriajs/types'
 import { createRouter } from '@aeriajs/http'
 import { createContext } from '@aeriajs/core'
-import { systemFunctions } from '@aeriajs/builtins'
+import { builtinFunctions } from '@aeriajs/builtins'
 import {
   safeHandle,
   regularVerb,
@@ -20,7 +20,7 @@ export const registerRoutes = () => {
   router.route([
     'POST',
     'GET',
-  ], '/describe', systemFunctions.describe)
+  ], '/describe', builtinFunctions.describe)
 
   router.GET('/file/(\\w+)((/(\\w+))*)', defaultHandler(async (parentContext) => {
     const context = await createContext({
