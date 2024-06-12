@@ -76,6 +76,7 @@ export type ArrayProperty = {
 }
 
 export type FixedObjectProperty = {
+  type: 'object'
   properties: Record<string, Property>
   form?: readonly string[]
   required?: readonly string[]
