@@ -48,7 +48,7 @@ export const prepareInsert = <TPayload extends Record<string, any>>(payload: TPa
     : prepareCreate(doc, description)
 
   Object.keys(what).forEach((k) => {
-    if( typeof what[k] === 'object' && Object.keys(what[k]).length === 0 ) {
+    if( what[k] && Object.keys(what[k]).length === 0 && what[k].constructor !== Object ) {
       delete what[k]
     }
   })
