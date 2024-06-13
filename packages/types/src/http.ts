@@ -57,7 +57,7 @@ export type WithACErrors<TRouteResponse> =
   Result.Either<
     | ExtractError<TRouteResponse>
     | StrictEndpointError<
-    | ExtractCode<TRouteResponse>
+      | ExtractCode<TRouteResponse>
       | ACError.AuthenticationError
       | ACError.AuthorizationError
       | RateLimitingError.LimitReached

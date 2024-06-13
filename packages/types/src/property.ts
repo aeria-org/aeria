@@ -134,7 +134,7 @@ export type GetterProperty = {
 }
 
 export type ConstProperty = {
-  const: string | number | boolean
+  const: string | number | boolean | undefined
 }
 
 export type MixedProperty =

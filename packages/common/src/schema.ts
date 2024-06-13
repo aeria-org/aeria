@@ -65,6 +65,9 @@ export const errorSchema = <const TObject extends Property>(object: TObject) => 
         const: 'Error',
       },
       error: object,
+      result: {
+        const: undefined
+      },
     },
   } satisfies Property
 }
@@ -76,64 +79,89 @@ export const resultSchema = <const TObject extends Property>(object: TObject) =>
       _tag: {
         const: 'Result',
       },
+      error: {
+        const: undefined
+      },
       result: object,
     },
   } satisfies Property
 }
 
 export const endpointErrorSchema = <
-  const THTTPStatus extends HTTPStatus[],
-  const TCode extends string[],
+const THTTPStatus extends HTTPStatus[],
+const TCode extends string[],
 >(error: {
   httpStatus: THTTPStatus,
   code: TCode
 }) => {
-  return errorSchema({
+  return <const>{
     type: 'object',
-    required: [
-      'httpStatus',
-      'code',
-    ],
     properties: {
-      httpStatus: {
-        enum: error.httpStatus,
+      _tag: {
+        const: 'Error',
       },
-      code: {
-        enum: error.code,
+      result: {
+        const: undefined,
       },
-      message: {
-        type: 'string',
-      },
-      details: {
+      error: {
         type: 'object',
-        variable: true,
-      },
-    },
-  })
+        required: [
+          'httpStatus',
+          'code',
+        ],
+        properties: {
+          httpStatus: {
+            enum: error.httpStatus,
+          },
+          code: {
+            enum: error.code,
+          },
+          message: {
+            type: 'string',
+          },
+          details: {
+            type: 'object',
+            variable: true,
+          },
+        },
+      }
+    }
+  } satisfies Property
 }
 
 export const genericEndpointErrorSchema = () => {
-  return errorSchema({
+  return <const>{
     type: 'object',
-    required: [
-      'httpStatus',
-      'code',
-    ],
     properties: {
-      httpStatus: {
-        type: 'number',
+      _tag: {
+        const: 'Error',
       },
-      code: {
-        type: 'string',
+      result: {
+        const: undefined,
       },
-      message: {
-        type: 'string',
-      },
-      details: {
+      error: {
         type: 'object',
-        variable: true,
-      },
-    },
-  })
+        required: [
+          'httpStatus',
+          'code',
+        ],
+        properties: {
+          httpStatus: {
+            type: 'number',
+          },
+          code: {
+            type: 'string',
+          },
+          message: {
+            type: 'string',
+          },
+          details: {
+            type: 'object',
+            variable: true,
+          },
+        },
+      }
+    }
+  } satisfies Property
 }
 
