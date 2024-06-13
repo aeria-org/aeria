@@ -1,5 +1,13 @@
 # @aeriajs/common
 
+## 0.0.64
+
+### Patch Changes
+
+- 5bc9c5a: Fix endpoint error schemas
+- Updated dependencies [5bc9c5a]
+  - @aeriajs/types@0.0.59
+
 ## 0.0.63
 
 ### Patch Changes
