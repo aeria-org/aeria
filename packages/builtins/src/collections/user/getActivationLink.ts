@@ -1,5 +1,6 @@
 import type { ObjectId } from '@aeriajs/core'
 import { getConfig } from '@aeriajs/entrypoint'
+import { Result } from '@aeriajs/common'
 import * as bcrypt from 'bcrypt'
 
 export const getActivationLink = async (userId: ObjectId) => {
@@ -8,6 +9,6 @@ export const getActivationLink = async (userId: ObjectId) => {
   const activationToken = await bcrypt.hash(userId.toString(), 10)
   const link = `${config.publicUrl}/user/activate?u=${userId.toString()}&t=${activationToken}`
 
-  return link
+  return Result.result(link)
 }
 

@@ -1,6 +1,7 @@
 import type { Context, Schema } from '@aeriajs/types'
 import type { description } from './description.js'
 import { HTTPStatus, ACError } from '@aeriajs/types'
+import { Result } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
 import * as bcrypt from 'bcrypt'
 
@@ -73,6 +74,6 @@ export const createAccount = async (
     throw new Error()
   }
 
-  return newUser
+  return Result.result(newUser)
 }
 

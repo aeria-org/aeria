@@ -1,8 +1,9 @@
 import type { Context } from '@aeriajs/types'
 import type { description } from './description'
+import * as bcrypt from 'bcrypt'
 import { HTTPStatus } from '@aeriajs/types'
 import { ObjectId } from '@aeriajs/core'
-import * as bcrypt from 'bcrypt'
+import { Result } from '@aeriajs/common'
 
 export enum ActivationError {
   UserNotFound = 'USER_NOT_FOUND',
@@ -50,9 +51,9 @@ export const getInfo = async (
     })
   }
 
-  return {
+  return Result.result({
     name: user.name,
     email: user.email,
-  }
+  })
 }
 
