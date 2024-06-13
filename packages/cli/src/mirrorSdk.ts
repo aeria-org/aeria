@@ -7,9 +7,18 @@ export const mirrorSdk = async (defaultConfig?: Partial<InstanceConfig>) => {
     const { getConfig } = await import('aeria-sdk/utils')
     const { writeMirrorFiles } = await import('aeria-sdk/mirror')
 
-    const mirror = await builtinFunctions.describe({
+    const response = await builtinFunctions.describe({
       router: true,
     })
+
+    if( !('result' in response) ) {
+      throw new Error('invalid response')
+    }
+
+    const { error, result: mirror } = response
+    if( error ) {
+      return Result.error(error.code)
+    }
 
     const config = Object.assign(
       defaultConfig || {},

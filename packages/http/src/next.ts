@@ -4,7 +4,7 @@ type NextObject = {
   [NEXT_SYMBOL]: null
 }
 
-export const next = () => {
+export const next = (): NextObject => {
   return {
     [NEXT_SYMBOL]: null,
   }

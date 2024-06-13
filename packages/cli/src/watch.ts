@@ -109,11 +109,15 @@ export const watch = async (options: CompileOptions = {}) => {
   if( initialCompilationResult.success ) {
     runningApi = await spawnApi()
 
-    const { result } = await mirrorSdk({
+    const { error, result } = await mirrorSdk({
       environment: 'development',
     })
 
-    log('info', result)
+    if( error ) {
+      log('error', error)
+    } else {
+      log('info', result)
+    }
   }
 
   const srcWatcher = chokidar.watch([

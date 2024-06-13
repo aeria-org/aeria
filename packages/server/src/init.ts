@@ -9,7 +9,7 @@ import type {
 
 import { ACError } from '@aeriajs/types'
 import { Result, endpointError, throwIfError, deepMerge } from '@aeriajs/common'
-import { defineServerOptions, cors, wrapRouteExecution, type createRouter } from '@aeriajs/http'
+import { defineServerOptions, cors, wrapRouteExecution, isNext, type createRouter } from '@aeriajs/http'
 import { registerServer } from '@aeriajs/node-http'
 
 import { createContext, decodeToken, traverseDocument, ObjectId } from '@aeriajs/core'
@@ -119,14 +119,14 @@ export const init = (_options: InitOptions = {}) => {
 
           if( options.callback ) {
             const result = await options.callback(context)
-            if( result !== undefined ) {
+            if( result !== undefined && !isNext(result) ) {
               return result
             }
           }
 
           if( options.router ) {
             const result = await options.router.install(context)
-            if( result !== undefined ) {
+            if( result !== undefined && !isNext(result) ) {
               return result
             }
           }
