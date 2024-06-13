@@ -1,5 +1,11 @@
 # @aeriajs/http
 
+## 0.0.74
+
+### Patch Changes
+
+- fba5dd0: Fix mirror bug and use `isNext()` in request flow
+
 ## 0.0.73
 
 ### Patch Changes

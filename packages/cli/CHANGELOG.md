@@ -1,5 +1,13 @@
 # aeria-build
 
+## 0.0.42
+
+### Patch Changes
+
+- fba5dd0: Fix mirror bug and use `isNext()` in request flow
+  - @aeriajs/core@0.0.103
+  - @aeriajs/builtins@0.0.103
+
 ## 0.0.41
 
 ### Patch Changes
