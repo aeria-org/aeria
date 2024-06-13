@@ -66,7 +66,7 @@ export const errorSchema = <const TObject extends Property>(object: TObject) => 
       },
       error: object,
       result: {
-        const: undefined
+        const: undefined,
       },
     },
   } satisfies Property
@@ -80,7 +80,7 @@ export const resultSchema = <const TObject extends Property>(object: TObject) =>
         const: 'Result',
       },
       error: {
-        const: undefined
+        const: undefined,
       },
       result: object,
     },
@@ -88,8 +88,8 @@ export const resultSchema = <const TObject extends Property>(object: TObject) =>
 }
 
 export const endpointErrorSchema = <
-const THTTPStatus extends HTTPStatus[],
-const TCode extends string[],
+  const THTTPStatus extends HTTPStatus[],
+  const TCode extends string[],
 >(error: {
   httpStatus: THTTPStatus,
   code: TCode
@@ -124,8 +124,8 @@ const TCode extends string[],
             variable: true,
           },
         },
-      }
-    }
+      },
+    },
   } satisfies Property
 }
 
@@ -160,8 +160,8 @@ export const genericEndpointErrorSchema = () => {
             variable: true,
           },
         },
-      }
-    }
+      },
+    },
   } satisfies Property
 }
 
