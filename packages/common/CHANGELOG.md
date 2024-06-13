@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.63
+
+### Patch Changes
+
+- afbd76e: Make `deserialize()` generic
+
 ## 0.0.62
 
 ### Patch Changes
