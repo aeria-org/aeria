@@ -1,5 +1,17 @@
 # aeria
 
+## 0.0.109
+
+### Patch Changes
+
+- 535b932: Return `Result` from builtin functions
+- Updated dependencies [535b932]
+  - @aeriajs/builtins@0.0.101
+  - @aeriajs/cli@0.0.40
+  - @aeriajs/core@0.0.101
+  - @aeriajs/server@0.0.103
+  - @aeriajs/security@0.0.101
+
 ## 0.0.108
 
 ### Patch Changes
