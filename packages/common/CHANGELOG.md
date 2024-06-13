@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.66
+
+### Patch Changes
+
+- 27dab7c: Fix `request()` bug
+
 ## 0.0.65
 
 ### Patch Changes
