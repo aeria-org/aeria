@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.101
+
+### Patch Changes
+
+- 535b932: Return `Result` from builtin functions
+  - @aeriajs/core@0.0.101
+
 ## 0.0.100
 
 ### Patch Changes
