@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.65
+
+### Patch Changes
+
+- 953d4a8: Don't throw on error
+
 ## 0.0.64
 
 ### Patch Changes
