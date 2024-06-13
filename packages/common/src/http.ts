@@ -39,6 +39,11 @@ export const defaultResponseTransformer = async (response: Awaited<ReturnType<ty
   }
 
   result.data = await response.text()
+
+  if( response.headers.get('content-type')?.startsWith('application/json') ) {
+    result.data = JSON.parse(result.data)
+  }
+
   return result
 }
 
