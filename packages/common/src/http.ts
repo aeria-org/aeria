@@ -39,19 +39,6 @@ export const defaultResponseTransformer = async (response: Awaited<ReturnType<ty
   }
 
   result.data = await response.text()
-
-  if( response.headers.get('content-type')?.startsWith('application/json') ) {
-    const data = result.data = JSON.parse(result.data) as {
-      error?: any
-    }
-
-    if( data.error && data.error instanceof Object ) {
-      const error = new Error(data.error.message)
-      Object.assign(error, data.error)
-      throw error
-    }
-  }
-
   return result
 }
 
