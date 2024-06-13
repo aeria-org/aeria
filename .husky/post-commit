@@ -4,7 +4,7 @@
 if ! test $GITHUB_ACTIONS && ! test $SKIP; then
   if ! [ -z $(git diff --name-only) ]; then
     git add .
-    SKIP=1 git commit -m 'refactor: lint fix'
+    SKIP=1 git commit -m "$(git log -1 --pretty="%B") (lint fix)"
   fi
 fi
 
