@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.67
+
+### Patch Changes
+
+- 40abaf6: Add `isResult()`
+
 ## 0.0.66
 
 ### Patch Changes
