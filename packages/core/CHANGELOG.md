@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.109
+
+### Patch Changes
+
+- 66625be: Fix `insert()`
+  - @aeriajs/builtins@0.0.109
+  - @aeriajs/security@0.0.109
+
 ## 0.0.108
 
 ### Patch Changes
