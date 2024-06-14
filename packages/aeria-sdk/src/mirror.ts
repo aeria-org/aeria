@@ -124,7 +124,14 @@ export const writeMirrorFiles = async (mirror: any, config: InstanceConfig) => {
 
   for( const mirrorPath of mirrorPaths ) {
     const syntheticRequire = createRequire(path.join(path.dirname(path.resolve(mirrorPath)), 'node_modules'))
-    const resolvedPath = syntheticRequire.resolve('aeria-sdk')
+
+    let resolvedPath: string
+    try {
+      resolvedPath = syntheticRequire.resolve('aeria-sdk')
+    } catch( err ) {
+      console.log(`couldn't locate node_modules in "${mirrorPath}"`)
+      continue
+    }
 
     const runtimeBase = path.dirname(resolvedPath)
 
