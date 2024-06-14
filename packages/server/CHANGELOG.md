@@ -1,5 +1,20 @@
 # @aeriajs/server
 
+## 0.0.112
+
+### Patch Changes
+
+- df29aa6: Export `Result` in `@aeriajs/types`
+- Updated dependencies [df29aa6]
+  - @aeriajs/builtins@0.0.110
+  - @aeriajs/common@0.0.69
+  - @aeriajs/server@0.0.112
+  - @aeriajs/types@0.0.61
+  - @aeriajs/core@0.0.110
+  - @aeriajs/http@0.0.80
+  - @aeriajs/entrypoint@0.0.71
+  - @aeriajs/node-http@0.0.80
+
 ## 0.0.111
 
 ### Patch Changes

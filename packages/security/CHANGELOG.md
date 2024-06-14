@@ -1,5 +1,15 @@
 # @aeriajs/security
 
+## 0.0.110
+
+### Patch Changes
+
+- df29aa6: Export `Result` in `@aeriajs/types`
+- Updated dependencies [df29aa6]
+  - @aeriajs/common@0.0.69
+  - @aeriajs/types@0.0.61
+  - @aeriajs/core@0.0.110
+
 ## 0.0.109
 
 ### Patch Changes
