@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.61
+
+### Patch Changes
+
+- df29aa6: Export `Result` in `@aeriajs/types`
+
 ## 0.0.60
 
 ### Patch Changes
