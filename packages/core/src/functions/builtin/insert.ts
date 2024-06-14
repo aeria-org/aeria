@@ -91,7 +91,7 @@ export const insert = async <TContext extends Context>(
 
   let doc: SchemaWithId<TContext['description']> | null
   if( context.collection.originalFunctions.get ) {
-    doc = await context.collection.originalFunctions.get({
+    doc = throwIfError(await context.collection.originalFunctions.get({
       filters: {
         _id: newId,
       },
@@ -99,7 +99,7 @@ export const insert = async <TContext extends Context>(
       inherited: true,
     }, context), {
       bypassSecurity: true,
-    })
+    }))
   } else {
     doc = await context.collection.model.findOne({
       _id: newId,
