@@ -18,6 +18,12 @@ export namespace Result {
   })
 }
 
+export const isResult = (value: any): value is Result.Either<unknown, unknown> => {
+  return value
+    && value.constructor === Object
+    && (value._tag === 'Error' || value._tag === 'Result')
+}
+
 export const throwIfError = <TValue>(either: R.Either<unknown, TValue>, message?: any) => {
   if( !either.result ) {
     if( process.env.NODE_ENV !== 'production' ) {
