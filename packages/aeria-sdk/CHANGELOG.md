@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.93
+
+### Patch Changes
+
+- 1897ab7: Introduce `mirrorPaths` config
+
 ## 0.0.92
 
 ### Patch Changes
