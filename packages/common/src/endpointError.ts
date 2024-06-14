@@ -1,6 +1,5 @@
 import type { EndpointError } from '@aeriajs/types'
-import { ERROR_SYMBOL, ERROR_SYMBOL_DESCRIPTION } from '@aeriajs/types'
-import { Result } from './result.js'
+import { Result, ERROR_SYMBOL, ERROR_SYMBOL_DESCRIPTION } from '@aeriajs/types'
 
 export const endpointError = <const TEndpointError extends EndpointError>(value: TEndpointError) => {
   return Result.error(Object.assign({

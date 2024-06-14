@@ -1,22 +1,4 @@
-import type { Result as R } from '@aeriajs/types/result'
-
-export namespace Result {
-  export type Error<T> = R.Error<T>
-  export type Result<T> = R.Result<T>
-  export type Either<Error, Result> = R.Either<Error, Result>
-
-  export const error = <const TValue>(value: TValue) => <const>({
-    _tag: 'Error',
-    error: value,
-    result: undefined,
-  })
-
-  export const result = <const TValue>(value: TValue) => <const>({
-    _tag: 'Result',
-    error: undefined,
-    result: value,
-  })
-}
+import type { Result } from '@aeriajs/types'
 
 export const isResult = (value: any): value is Result.Either<unknown, unknown> => {
   return value
@@ -24,7 +6,7 @@ export const isResult = (value: any): value is Result.Either<unknown, unknown> =
     && (value._tag === 'Error' || value._tag === 'Result')
 }
 
-export const throwIfError = <TValue>(either: R.Either<unknown, TValue>, message?: any) => {
+export const throwIfError = <TValue>(either: Result.Either<unknown, TValue>, message?: any) => {
   if( !either.result ) {
     if( process.env.NODE_ENV !== 'production' ) {
       console.trace(JSON.stringify(either.error, null, 2))

@@ -6,7 +6,8 @@ import type {
   InsertPayload,
 } from '@aeriajs/types'
 
-import { deepMerge, Result } from '@aeriajs/common'
+import { Result } from '@aeriajs/types'
+import { deepMerge } from '@aeriajs/common'
 import {
   checkImmutability,
   checkOwnershipRead,

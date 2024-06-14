@@ -5,7 +5,8 @@ import * as transpile from './transpile.js'
 import { fileURLToPath } from 'url'
 import { readFile } from 'fs/promises'
 import { glob } from 'glob'
-import { Result, deepMerge } from '@aeriajs/common'
+import { Result } from '@aeriajs/types'
+import { deepMerge } from '@aeriajs/common'
 import { log } from './log.js'
 
 type TsConfig = {

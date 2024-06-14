@@ -1,7 +1,7 @@
 import type { Context, SchemaWithId, InsertPayload, InsertReturnType } from '@aeriajs/types'
-import { HTTPStatus, ACError, ValidationErrorCode } from '@aeriajs/types'
+import { Result, HTTPStatus, ACError, ValidationErrorCode } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
-import { Result, throwIfError, endpointErrorSchema } from '@aeriajs/common'
+import { throwIfError, endpointErrorSchema } from '@aeriajs/common'
 import { traverseDocument, normalizeProjection, prepareInsert } from '../../collection/index.js'
 
 export type InsertOptions = {

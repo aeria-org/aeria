@@ -1,7 +1,6 @@
-import { ACError, HTTPStatus, type Context } from '@aeriajs/types'
+import { Result, ACError, HTTPStatus, type Context } from '@aeriajs/types'
 import { getCollection } from '@aeriajs/entrypoint'
 import { validate, validator } from '@aeriajs/validation'
-import { Result } from '@aeriajs/common'
 import * as path from 'path'
 import { createWriteStream } from 'fs'
 import { createHash } from 'crypto'

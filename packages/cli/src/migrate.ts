@@ -1,6 +1,6 @@
 import { getCollections } from '@aeriajs/entrypoint'
 import { getDatabase, prepareCollectionName, getDatabaseCollection } from '@aeriajs/core'
-import { Result } from '@aeriajs/common'
+import { Result } from '@aeriajs/types'
 import { config as loadEnv } from 'dotenv'
 import { log } from './log.js'
 

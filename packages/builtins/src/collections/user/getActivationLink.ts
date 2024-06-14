@@ -1,6 +1,6 @@
 import type { ObjectId } from '@aeriajs/core'
 import { getConfig } from '@aeriajs/entrypoint'
-import { Result } from '@aeriajs/common'
+import { Result } from '@aeriajs/types'
 import * as bcrypt from 'bcrypt'
 
 export const getActivationLink = async (userId: ObjectId) => {

@@ -1,7 +1,6 @@
 import type { Context, InsertPayload } from '@aeriajs/types'
 import type { SecurityCheckProps, SecurityCheckReadPayload } from './types.js'
-import { ACError } from '@aeriajs/types'
-import { Result } from '@aeriajs/common'
+import { Result, ACError } from '@aeriajs/types'
 
 export const checkOwnershipRead = async (props: SecurityCheckProps<SecurityCheckReadPayload>, context: Context) => {
   const { token, description } = context

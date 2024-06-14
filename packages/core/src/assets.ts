@@ -1,6 +1,5 @@
 import type { AssetType, Context, Collection, Token } from '@aeriajs/types'
-import { ACError } from '@aeriajs/types'
-import { Result } from '@aeriajs/common'
+import { Result, ACError } from '@aeriajs/types'
 import { limitRate } from '@aeriajs/security'
 import { getCollection } from '@aeriajs/entrypoint'
 import { isFunctionExposed, FunctionExposedStatus } from './accessControl.js'

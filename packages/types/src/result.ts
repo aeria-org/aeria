@@ -1,4 +1,4 @@
-export declare namespace Result {
+export namespace Result {
   export type Error<T> = {
     readonly _tag: 'Error'
     readonly error: T
@@ -12,6 +12,18 @@ export declare namespace Result {
   }
 
   export type Either<E, R> = Result.Error<E> | Result.Result<R>
+
+  export const error = <const TValue>(value: TValue) => <const>({
+    _tag: 'Error',
+    error: value,
+    result: undefined,
+  })
+
+  export const result = <const TValue>(value: TValue) => <const>({
+    _tag: 'Result',
+    error: undefined,
+    result: value,
+  })
 }
 
 export type ExtractError<T> = T extends Result.Error<infer L>

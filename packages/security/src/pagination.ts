@@ -1,6 +1,5 @@
 import type { SecurityCheckProps, SecurityCheckReadPayload } from './types.js'
-import { ACError } from '@aeriajs/types'
-import { Result } from '@aeriajs/common'
+import { Result, ACError } from '@aeriajs/types'
 
 export const checkPagination = async (props: SecurityCheckProps<SecurityCheckReadPayload>) => {
   const { payload } = props

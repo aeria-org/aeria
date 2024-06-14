@@ -7,7 +7,8 @@ import type {
   ValidationError,
 } from '@aeriajs/types'
 
-import { Result, getMissingProperties } from '@aeriajs/common'
+import { Result } from '@aeriajs/types'
+import { getMissingProperties } from '@aeriajs/common'
 import { ValidationErrorCode, PropertyValidationErrorCode } from '@aeriajs/types'
 
 export type ValidateOptions = {

@@ -1,6 +1,6 @@
 import ts from 'typescript'
 import { build, ppDiagnostic } from 'aeria-lang'
-import { Result } from '@aeriajs/common'
+import { Result } from '@aeriajs/types'
 import { getUserTsconfig } from './compile.js'
 
 export const buildAeriaLang = async () => {

@@ -1,8 +1,8 @@
 import * as fs from 'fs/promises'
 import * as path from 'path'
-import { extractIcons, iconsEsmContent, iconsCjsContent, iconsDtsContent } from './icons.js'
 import { getCollections } from '@aeriajs/entrypoint'
-import { Result } from '@aeriajs/common'
+import { Result } from '@aeriajs/types'
+import { extractIcons, iconsEsmContent, iconsCjsContent, iconsDtsContent } from './icons.js'
 
 const DATA_PATH = '.aeria'
 

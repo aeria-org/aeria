@@ -1,6 +1,6 @@
 import type { InstanceConfig } from 'aeria-sdk'
 import { builtinFunctions } from '@aeriajs/builtins'
-import { Result } from '@aeriajs/common'
+import { Result } from '@aeriajs/types'
 
 export const mirrorSdk = async (defaultConfig?: Partial<InstanceConfig>) => {
   try {

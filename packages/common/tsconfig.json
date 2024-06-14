@@ -6,9 +6,6 @@
       "@aeriajs/types": [
         "../types/dist"
       ],
-      "@aeriajs/types/*": [
-        "../types/dist/*"
-      ],
       "mongodb": [
         "../core/node_modules/mongodb"
       ]

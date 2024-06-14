@@ -1,5 +1,6 @@
 import type { Context, RemoveAllPayload, CollectionItem } from '@aeriajs/types'
-import { Result, throwIfError } from '@aeriajs/common'
+import { Result } from '@aeriajs/types'
+import { throwIfError } from '@aeriajs/common'
 import { traverseDocument, cascadingRemove } from '../../collection/index.js'
 
 export const removeAll = async <TContext extends Context>(payload: RemoveAllPayload, context: TContext) => {

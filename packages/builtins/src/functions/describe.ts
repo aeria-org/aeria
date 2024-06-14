@@ -2,7 +2,8 @@ import type { Description, Context, RouteContext, StringProperty, EnumProperty }
 import type { description as userDescription } from '../collections/user/description.js'
 import { createContext, preloadDescription, getEndpoints } from '@aeriajs/core'
 import { getCollections, getAvailableRoles } from '@aeriajs/entrypoint'
-import { serialize, Result } from '@aeriajs/common'
+import { Result } from '@aeriajs/types'
+import { serialize } from '@aeriajs/common'
 import { authenticate } from '../collections/user/authenticate.js'
 
 type Payload = {

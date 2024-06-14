@@ -1,6 +1,5 @@
 import type { RouteContext, RateLimitingParams } from '@aeriajs/types'
-import { HTTPStatus, RateLimitingError } from '@aeriajs/types'
-import { Result } from '@aeriajs/common'
+import { Result, HTTPStatus, RateLimitingError } from '@aeriajs/types'
 
 const buildEntryFilter = (
   params: RateLimitingParams,

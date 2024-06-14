@@ -1,7 +1,6 @@
 import type { Context } from '@aeriajs/types'
 import type { SecurityCheckProps, SecurityCheckReadPayload, SecurityCheckWritePayload } from './types.js'
-import { ACError } from '@aeriajs/types'
-import { Result } from '@aeriajs/common'
+import { Result, ACError } from '@aeriajs/types'
 
 export const checkImmutability = async (
   props: SecurityCheckProps<

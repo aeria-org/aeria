@@ -1,6 +1,6 @@
 import type { Context } from '@aeriajs/types'
 import type { description } from './description.js'
-import { Result } from '@aeriajs/common'
+import { Result } from '@aeriajs/types'
 
 export enum ActivationError {
   UserNotFound = 'USER_NOT_FOUND',

@@ -1,4 +1,4 @@
-import type { Result } from '@aeriajs/common'
+import type { Result } from '@aeriajs/types'
 import { parseArgs } from 'util'
 import { log } from './log.js'
 import { compilationPhase } from './compile.js'

@@ -1,9 +1,8 @@
 import type { Context } from '@aeriajs/types'
 import type { description } from './description'
 import * as bcrypt from 'bcrypt'
-import { HTTPStatus } from '@aeriajs/types'
+import { Result, HTTPStatus } from '@aeriajs/types'
 import { ObjectId } from '@aeriajs/core'
-import { Result } from '@aeriajs/common'
 
 export enum ActivationError {
   UserNotFound = 'USER_NOT_FOUND',

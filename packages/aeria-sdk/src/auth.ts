@@ -1,5 +1,5 @@
 import type { InstanceConfig } from './types.js'
-import { Result } from '@aeriajs/common'
+import { Result } from '@aeriajs/types'
 import { request } from './http.js'
 import { publicUrl } from './utils.js'
 import { getStorage } from './storage.js'

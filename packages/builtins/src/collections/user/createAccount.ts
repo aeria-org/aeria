@@ -1,7 +1,6 @@
 import type { Context, Schema } from '@aeriajs/types'
 import type { description } from './description.js'
-import { HTTPStatus, ACError } from '@aeriajs/types'
-import { Result } from '@aeriajs/common'
+import { Result, HTTPStatus, ACError } from '@aeriajs/types'
 import { validate } from '@aeriajs/validation'
 import * as bcrypt from 'bcrypt'
 

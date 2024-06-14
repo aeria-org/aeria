@@ -1,7 +1,8 @@
 import type { Context, SchemaWithId, GetAllPayload } from '@aeriajs/types'
 import type { Document } from 'mongodb'
 import { useSecurity } from '@aeriajs/security'
-import { Result, throwIfError } from '@aeriajs/common'
+import { Result } from '@aeriajs/types'
+import { throwIfError } from '@aeriajs/common'
 import {
   traverseDocument,
   normalizeProjection,
