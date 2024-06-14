@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.60
+
+### Patch Changes
+
+- d4855b1: Fix function signatures
+
 ## 0.0.59
 
 ### Patch Changes

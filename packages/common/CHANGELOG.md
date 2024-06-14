@@ -1,5 +1,12 @@
 # @aeriajs/common
 
+## 0.0.68
+
+### Patch Changes
+
+- Updated dependencies [d4855b1]
+  - @aeriajs/types@0.0.60
+
 ## 0.0.67
 
 ### Patch Changes
