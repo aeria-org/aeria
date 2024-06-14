@@ -1,6 +1,6 @@
 import type { FilterOperators, StrictFilter as Filter, StrictUpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
 import type { Result } from './result.js'
-import type { StrictEndpointError } from './endpointError.js'
+import type { EndpointError, StrictEndpointError } from './endpointError.js'
 import type { PackReferences } from './schema.js'
 import type { ACError } from './accessControl.js'
 import type { ValidationErrorCode } from './validation.js'
@@ -142,9 +142,9 @@ export type GetReturnType<TDocument> =
     TDocument
   >
 
-export type CountReturnType = Result.Either<unknown, number>
-export type GetAllReturnType<TDocument> = Result.Either<unknown, TDocument[]>
-export type RemoveReturnType<TDocument> = Result.Either<unknown, TDocument>
+export type CountReturnType = Result.Either<EndpointError, number>
+export type GetAllReturnType<TDocument> = Result.Either<EndpointError, TDocument[]>
+export type RemoveReturnType<TDocument> = Result.Either<EndpointError, TDocument>
 
 export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<any>>> = {
   count: (payload: CountPayload<TDocument>)=> Promise<CountReturnType>
