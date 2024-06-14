@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.94
+
+### Patch Changes
+
+- 42e3361: Tolerate invalid paths in `mirrorPaths`
+
 ## 0.0.93
 
 ### Patch Changes
