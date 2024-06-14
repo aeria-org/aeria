@@ -1,10 +1,12 @@
 import type { InstanceConfig } from './types'
 import * as path from 'path'
 import { deserialize } from '@aeriajs/common'
-import { writeFile, mkdir } from 'fs/promises'
+import { writeFile } from 'fs/promises'
 import { createRequire } from 'module'
 import { topLevel } from './topLevel.js'
 import { publicUrl } from './utils.js'
+
+const DTS_FILENAME = 'aeria-sdk.d.ts'
 
 const mirrorDts = (mirrorObj: any, config: InstanceConfig) => {
   const collections = mirrorObj.descriptions
@@ -83,11 +85,11 @@ declare module 'aeria-sdk' {
     & ((bearerToken?: string) => TopLevelObject & Endpoints)
     & TopLevelObject & Endpoints
 
-  declare const aeria: TopLevelAeria
+  const topLevelAeria: TopLevelAeria
 
   export const url: string
   export const aeria: TopLevelAeria
-  export default aeria
+  export default topLevelAeria
 }
 \n`
 }
@@ -112,26 +114,24 @@ export const storage = getStorage(config)
 export default aeria
 \n`
 
-export const writeMirrorFiles = async (mirror: any, config: InstanceConfig, filesPath = path.join(process.cwd(), '.aeria')) => {
-  const resolvedPath = (() => {
-    try {
-      return require.resolve('aeria-sdk')
-    } catch( err ) {
-    }
+export const writeMirrorFiles = async (mirror: any, config: InstanceConfig) => {
+  const mirrorPaths = config.mirrorPaths || ['.aeria']
+    .map((mirrorPath) => path.join(process.cwd(), mirrorPath))
 
-    const syntheticRequire = createRequire(path.join(process.cwd(), 'node_modules'))
-    return syntheticRequire.resolve('aeria-sdk')
-  })()
+  const dts = mirrorDts(mirror, config)
+  const cjs = runtimeCjs(config)
+  const esm = runtimeEsm(config)
 
-  const runtimeBase = path.dirname(resolvedPath)
+  for( const mirrorPath of mirrorPaths ) {
+    const syntheticRequire = createRequire(path.join(path.dirname(path.resolve(mirrorPath)), 'node_modules'))
+    const resolvedPath = syntheticRequire.resolve('aeria-sdk')
 
-  await mkdir(runtimeBase, {
-    recursive: true,
-  })
+    const runtimeBase = path.dirname(resolvedPath)
 
-  await writeFile(path.join(filesPath, 'aeria-sdk.d.ts'), mirrorDts(mirror, config))
-  await writeFile(path.join(runtimeBase, 'runtime.js'), runtimeCjs(config))
-  await writeFile(path.join(runtimeBase, 'runtime.mjs'), runtimeEsm(config))
+    await writeFile(path.join(mirrorPath, DTS_FILENAME), dts)
+    await writeFile(path.join(runtimeBase, 'runtime.js'), cjs)
+    await writeFile(path.join(runtimeBase, 'runtime.mjs'), esm)
+  }
 }
 
 export const mirrorRemotely = async (config: InstanceConfig) => {

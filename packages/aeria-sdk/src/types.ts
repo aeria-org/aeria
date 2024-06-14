@@ -16,5 +16,6 @@ export type InstanceConfig = {
     | 'production'
     | 'development'
   integrated?: boolean
+  mirrorPaths?: string[]
 }
 
