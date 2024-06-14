@@ -1,5 +1,9 @@
-export { Result } from '@aeriajs/types'
-export { throwIfError } from '@aeriajs/common'
+export {
+  Result,
+} from '@aeriajs/types'
+export {
+  throwIfError,
+} from '@aeriajs/common'
 export * from './auth.js'
 export * from './topLevel.js'
 export * from './constants.js'
