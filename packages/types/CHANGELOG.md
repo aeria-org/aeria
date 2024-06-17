@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.62
+
+### Patch Changes
+
+- de0523c: Fix custom function inference, allow `null` and `undefined` in `ConstProperty`
+
 ## 0.0.61
 
 ### Patch Changes
