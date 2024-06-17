@@ -17,7 +17,7 @@ type OmitContextParameter<TFunction> = TFunction extends ()=> any
   ? TFunction
   : TFunction extends (payload: undefined, ...args: any[])=> infer Return
     ? ()=> Return
-    : TFunction extends (payload: infer Payload, context: Context, ...args: infer Rest)=> infer Return
+    : TFunction extends (payload: infer Payload, context: Context<any>, ...args: infer Rest)=> infer Return
       ? (payload: Payload, ...args: Rest)=> Return
       : never
 
