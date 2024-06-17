@@ -5,9 +5,9 @@ export type RequestParams = Omit<RequestInit, 'headers'> & {
   headers?: Partial<Record<string, string>>
 }
 
-export type RequestConfig<Return = any> = {
+export type RequestConfig<ResponseType = any> = {
   params?: RequestParams
-  requestTransformer?: (...args: Parameters<typeof defaultRequestTransformer>)=> Promise<Return>
+  requestTransformer?: (...args: Parameters<typeof defaultRequestTransformer>)=> Promise<ResponseType>
   responseTransformer?: typeof defaultResponseTransformer
 }
 
@@ -35,22 +35,22 @@ export const defaultRequestTransformer = async (url: string, payload: any, param
 
 export const defaultResponseTransformer = async (response: Awaited<ReturnType<typeof fetch>>) => {
   const result = response as Awaited<ReturnType<typeof fetch>> & {
-    data: any
+    data: unknown
   }
 
   result.data = await response.text()
 
   if( response.headers.get('content-type')?.startsWith('application/json') ) {
-    result.data = JSON.parse(result.data)
+    result.data = JSON.parse(result.data as any)
   }
 
   return result
 }
 
-export const request = async <Return = any>(
+export const request = async <ResponseType = any>(
   url: string,
   payload?: any,
-  config?: RequestConfig<Return>,
+  config?: RequestConfig<ResponseType>,
 ) => {
   const {
     requestTransformer = defaultRequestTransformer,
@@ -70,6 +70,10 @@ export const request = async <Return = any>(
   const transformedRequest = await requestTransformer(url, payload, params)
 
   const response = await fetch(transformedRequest.url, transformedRequest.params)
-  return responseTransformer(response)
+  const transformedResponse = await responseTransformer(response)
+
+  return transformedResponse as Omit<typeof transformedRequest, 'data'> & {
+    data: ResponseType
+  }
 }
 
