@@ -1,5 +1,13 @@
 # aeria-sdk
 
+## 0.0.99
+
+### Patch Changes
+
+- 2bc5059: Fix generic `request()`
+- Updated dependencies [2bc5059]
+  - @aeriajs/common@0.0.71
+
 ## 0.0.98
 
 ### Patch Changes
