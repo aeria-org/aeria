@@ -5,7 +5,7 @@ export const makePagination = async (
   payload: GetAllPayload<any>,
   documents: any[],
   context: Context<Description, {
-    count?: (...args: unknown[]) => unknown
+    count?: (...args: unknown[])=> unknown
   }>,
 ): Promise<Pagination> => {
   const limit = payload.limit
