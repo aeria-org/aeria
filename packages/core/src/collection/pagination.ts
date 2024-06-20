@@ -14,7 +14,7 @@ export const makePagination = async (
 
   const offset = payload.offset || 0
 
-  const recordsTotal = context.collection.functions.count
+  const recordsTotal = typeof context.collection.functions.count === 'function'
     ? throwIfError(await context.collection.functions.count({
       filters: payload.filters,
     }))
