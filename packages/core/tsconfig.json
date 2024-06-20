@@ -27,6 +27,9 @@
       ],
       "@aeriajs/validation": [
         "../validation/dist"
+      ],
+      "mongodb": [
+        "../core/node_modules/mongodb"
       ]
     }
   },

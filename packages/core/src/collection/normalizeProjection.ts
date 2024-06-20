@@ -24,7 +24,7 @@ export const normalizeProjection = <
   }, {})
 
   return Object.keys(projection).length === 0
-    ? null
+    ? undefined
     : projection
 }
 

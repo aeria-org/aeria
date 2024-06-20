@@ -17,7 +17,7 @@ export const removeAll = async <TContext extends Context>(payload: RemoveAllPayl
 
   const it = context.collection.model.find(filters)
 
-  let doc: CollectionItem<any>
+  let doc: CollectionItem<any> | null
   while( doc = await it.next() ) {
     await cascadingRemove(doc, context)
   }

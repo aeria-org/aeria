@@ -39,7 +39,7 @@ export const insert = async <TContext extends Context>(
     recurseDeep: true,
     autoCast: true,
     validate: true,
-    validateRequired: payload.what._id
+    validateRequired: '_id' in payload.what && payload.what._id
       ? []
       : context.description.required,
     moveFiles: true,
@@ -89,7 +89,7 @@ export const insert = async <TContext extends Context>(
 
   }
 
-  let doc: SchemaWithId<TContext['description']> | null
+  let doc: SchemaWithId<any> | null
   if( context.collection.originalFunctions.get ) {
     doc = throwIfError(await context.collection.originalFunctions.get({
       filters: {

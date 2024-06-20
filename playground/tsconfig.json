@@ -1,14 +1,19 @@
 {
-    "extends": "@aeriajs/cli/config/tsconfig.json",
-    "compilerOptions": {
-        "outDir": "dist",
-        "module": "commonjs",
-        "moduleResolution": "node10",
-        "preserveSymlinks": true
-    },
-    "include": [
-        "@types/*.d.ts",
-        ".aeria/aeria.d.ts",
-        "src"
-    ]
+  "extends": "@aeriajs/cli/config/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "commonjs",
+    "moduleResolution": "node10",
+    "preserveSymlinks": true,
+    "paths": {
+      "mongodb": [
+        "../packages/core/node_modules/mongodb"
+      ]
+    }
+  },
+  "include": [
+    "@types/*.d.ts",
+    ".aeria/aeria.d.ts",
+    "src"
+  ]
 }
