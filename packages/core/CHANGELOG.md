@@ -1,5 +1,20 @@
 # @aeriajs/api
 
+## 0.0.113
+
+### Patch Changes
+
+- 3e209c3: Fix `get` returning random document if a filter containing `undefined` is provided
+- d3a28e6: Fix pagination and make types stricter
+- Updated dependencies [3e209c3]
+  - @aeriajs/types@0.0.63
+  - @aeriajs/builtins@0.0.113
+  - @aeriajs/common@0.0.72
+  - @aeriajs/entrypoint@0.0.74
+  - @aeriajs/http@0.0.83
+  - @aeriajs/security@0.0.113
+  - @aeriajs/validation@0.0.75
+
 ## 0.0.112
 
 ### Patch Changes
