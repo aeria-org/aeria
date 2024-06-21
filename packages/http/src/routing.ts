@@ -202,18 +202,8 @@ export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> any
   try {
     const result = await cb()
 
-    if( !response[STREAMED_RESPONSE] ) {
-      if( result === null ) {
-        if( !response.headersSent ) {
-          response.writeHead(204)
-        }
-        response.end(result)
-        return
-      }
-
-      if( !response.writableEnded ) {
-        response.end(result)
-      }
+    if( response[STREAMED_RESPONSE] && !result ) {
+      return
     }
 
     if( result instanceof Stream ) {
@@ -222,6 +212,18 @@ export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> any
       } catch( err ) {
       }
       return
+    }
+
+    if( result === null ) {
+      if( !response.headersSent ) {
+        response.writeHead(204)
+      }
+      response.end(result)
+      return
+    }
+
+    if( !response.writableEnded ) {
+      response.end(result)
     }
 
     return result
