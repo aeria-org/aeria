@@ -10,7 +10,7 @@
 
 
 ```typescript
-router.GET('/get-pets/(\w+)', (context) => {
+router.GET('/get-pets/(\\w+)', (context) => {
   return context.collections.pet.functions.getAll({
     filters: {
       name: context.request.fragments[0]

@@ -75,7 +75,7 @@ const checkUnprocessable = ({ error }: ReturnType<typeof validate>, context: Rou
     }
 
     return context.error(HTTPStatus.UnprocessableContent, {
-      code: 'UNPROCESSABLE_ENTITY',
+      code: ACError.MalformedInput,
       message: 'the provided payload is unprocessable',
       details: error,
     })
@@ -148,7 +148,7 @@ export const registerRoute = async (
 
       } catch( err ) {
         return context.error(HTTPStatus.UnprocessableContent, {
-          code: 'INVALID_JSON',
+          code: ACError.MalformedInput,
           message: 'Invalid JSON',
         })
       }
@@ -237,7 +237,7 @@ export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> any
     if( !response.writableEnded ) {
       return endpointError({
         httpStatus: 500,
-        code: 'UNKNOWN_ERROR',
+        code: ACError.UnknownError,
         message: 'Internal server error',
       })
     }
@@ -348,7 +348,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
     const result = await routerPipe(undefined, context, options)
     if( exhaust && (result === undefined || isNext(result)) ) {
       return context.error(HTTPStatus.NotFound, {
-        code: 'NOT_FOUND',
+        code: ACError.ResourceNotFound,
         message: 'Not found',
       })
     }
