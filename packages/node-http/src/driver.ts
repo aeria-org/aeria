@@ -17,7 +17,7 @@ const getBody = async ($req: http.IncomingMessage) => {
 export const abstractRequest = async (request: http.IncomingMessage) => {
   const url = request.url || '/'
 
-  const req: GenericRequest = {
+  const req: GenericRequest = Object.assign(request, {
     url,
     method: (request.method || '') as RequestMethod,
     headers: request.headers,
@@ -29,8 +29,7 @@ export const abstractRequest = async (request: http.IncomingMessage) => {
       : {},
     payload: {},
     fragments: [],
-    nodeRequest: request,
-  }
+  })
 
   return req
 }
@@ -38,10 +37,14 @@ export const abstractRequest = async (request: http.IncomingMessage) => {
 export const abstractResponse = (response: http.ServerResponse): GenericResponse => {
   const { end } = response
 
-  return Object.assign(response, <GenericResponse>{
+  return Object.assign(response, {
     writeHead: response.writeHead.bind(response),
     setHeader: response.setHeader.bind(response),
     end: (value) => {
+      if( value === undefined ) {
+        return end.bind(response)()
+      }
+
       if( typeof value === 'object' && !(value instanceof Buffer) ) {
         if( !response.headersSent ) {
           if( isEndpointError(value) ) {
@@ -71,7 +74,7 @@ export const abstractResponse = (response: http.ServerResponse): GenericResponse
 
       return end.bind(response)(endVal)
     },
-  })
+  } satisfies Partial<GenericResponse>)
 }
 
 const abstractTransaction = async ($req: http.IncomingMessage, $res: http.ServerResponse) => {

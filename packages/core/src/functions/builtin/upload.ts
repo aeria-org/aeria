@@ -36,7 +36,7 @@ const streamToFs = (metadata: typeof FileMetadata, context: Context) => {
   return new Promise<string>((resolve, reject) => {
     const stream = createWriteStream(absolutePath)
 
-    stream.on('open', () => context.request.nodeRequest.pipe(stream))
+    stream.on('open', () => context.request.pipe(stream))
     stream.on('close', () => resolve(absolutePath))
     stream.on('error', (error) => reject(error))
   })

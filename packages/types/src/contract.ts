@@ -7,6 +7,7 @@ import type { UserRole } from './token.js'
 export type ContractBase = {
   // used internally to indicate the contract belongs to a builtin function
   builtin?: boolean
+  streamed?: boolean
 }
 
 export type ContractRoles = {

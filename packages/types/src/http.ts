@@ -32,18 +32,24 @@ export type RouteUri = `/${string}`
 
 export type RequestMethod = (typeof REQUEST_METHODS)[number]
 
-export type GenericRequest = {
-  url: string
-  method: RequestMethod
-  headers: Record<string, string | string[] | undefined>
-  body?: string
-  query: Record<string, any>
+export type GenericRequest = Omit<
+  IncomingMessage,
+  | 'url'
+  | 'method'
+> & {
+  readonly url: string
+  readonly method: RequestMethod
+  readonly body?: string
+  readonly fragments: string[]
   payload: Record<string, any>
-  fragments: string[]
-  nodeRequest: IncomingMessage
+  query: Record<string, any>
 }
 
-export type GenericResponse = ServerResponse
+export const STREAMED_RESPONSE = Symbol('StreamedResponse')
+
+export type GenericResponse = ServerResponse & {
+  [STREAMED_RESPONSE]?: boolean
+}
 
 type ExtractCode<TRouteResponse> = TRouteResponse extends Result.Error<EndpointError<infer PCode>>
   ? PCode

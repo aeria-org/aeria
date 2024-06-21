@@ -13,7 +13,7 @@ import type {
 } from '@aeriajs/types'
 
 import { Stream } from 'stream'
-import { ACError, HTTPStatus, REQUEST_METHODS } from '@aeriajs/types'
+import { ACError, HTTPStatus, REQUEST_METHODS, STREAMED_RESPONSE } from '@aeriajs/types'
 import { pipe, isGranted, deepMerge, endpointError } from '@aeriajs/common'
 import { validate } from '@aeriajs/validation'
 import { getConfig } from '@aeriajs/entrypoint'
@@ -157,6 +157,10 @@ export const registerRoute = async (
     Object.assign(context.request, match)
 
     if( contract ) {
+      if( contract.streamed ) {
+        context.response[STREAMED_RESPONSE] = true
+      }
+
       if( contract.roles ) {
         const granted = isGranted(contract.roles, context.token)
         if( !granted ) {
@@ -197,12 +201,19 @@ export const registerRoute = async (
 export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> any | Promise<any>) => {
   try {
     const result = await cb()
-    if( result === null ) {
-      if( !response.headersSent ) {
-        response.writeHead(204)
+
+    if( !response[STREAMED_RESPONSE] ) {
+      if( result === null ) {
+        if( !response.headersSent ) {
+          response.writeHead(204)
+        }
+        response.end(result)
+        return
       }
-      response.end(result)
-      return
+
+      if( !response.writableEnded ) {
+        response.end(result)
+      }
     }
 
     if( result instanceof Stream ) {
@@ -211,10 +222,6 @@ export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> any
       } catch( err ) {
       }
       return
-    }
-
-    if( !response.writableEnded ) {
-      response.end(result)
     }
 
     return result
