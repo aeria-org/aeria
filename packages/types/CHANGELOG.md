@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.63
+
+### Patch Changes
+
+- 3e209c3: Fix `get` returning random document if a filter containing `undefined` is provided
+
 ## 0.0.62
 
 ### Patch Changes
