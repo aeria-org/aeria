@@ -15,6 +15,7 @@ export type TraverseOptions = {
   moveFiles?: boolean
   fromProperties?: boolean
   allowOperators?: boolean
+  skipUndefined?: boolean
   recurseDeep?: boolean
   recurseReferences?: boolean
   context?: Context
@@ -328,8 +329,10 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
     const value = target[propName]
     const property = getProperty(propName, ctx.property)
 
-    if( value === undefined && !(ctx.options.getters && property && 'getter' in property) ) {
-      continue
+    if( ctx.options.skipUndefined ) {
+      if( value === undefined && !(ctx.options.getters && property && 'getter' in property) ) {
+        continue
+      }
     }
 
     if( ctx.options.autoCast && propName === '_id' ) {

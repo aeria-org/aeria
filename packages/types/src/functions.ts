@@ -40,7 +40,7 @@ export type StrictFilter<TDocument> = RemoveAny<Filter<DocumentFilter<TDocument>
 
 export type StrictFilterOperators<TDocument> = RemoveAny<FilterOperators<DocumentFilter<TDocument>>>
 
-export type Filters<TDocument> = StrictFilter<any> & Partial<{
+export type Filters<TDocument> = StrictFilter<TDocument> & Partial<{
   [P in keyof TDocument]: null | (
     TDocument[P] extends infer Field
       ? Field extends ObjectId

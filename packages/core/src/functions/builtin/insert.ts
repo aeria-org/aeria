@@ -43,6 +43,7 @@ export const insert = async <TContext extends Context>(
       ? []
       : context.description.required,
     moveFiles: true,
+    skipUndefined: true,
     context,
   })
 
