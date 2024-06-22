@@ -1,5 +1,17 @@
 # @aeriajs/builtins
 
+## 0.0.114
+
+### Patch Changes
+
+- 4d43509: `getActivationLink()`
+- Updated dependencies [4d43509]
+  - @aeriajs/types@0.0.64
+  - @aeriajs/core@0.0.114
+  - @aeriajs/common@0.0.73
+  - @aeriajs/entrypoint@0.0.75
+  - @aeriajs/validation@0.0.76
+
 ## 0.0.113
 
 ### Patch Changes
