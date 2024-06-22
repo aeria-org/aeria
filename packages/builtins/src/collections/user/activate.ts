@@ -3,6 +3,7 @@ import type { description } from './description.js'
 import { ObjectId } from '@aeriajs/core'
 import { HTTPStatus } from '@aeriajs/types'
 import * as bcrypt from 'bcrypt'
+import { getActivationToken } from './getActivationLink.js'
 
 export enum ActivationError {
   UserNotFound = 'USER_NOT_FOUND',
@@ -14,7 +15,14 @@ export const activate = async (
   payload: {
     password: string
   },
-  context: Context<typeof description>,
+  context: Context<typeof description> & {
+    request: {
+      query: {
+        u?: string
+        t?: string
+      }
+    }
+  },
 ) => {
   const {
     u: userId,
@@ -28,7 +36,7 @@ export const activate = async (
   }
 
   const user = await context.collection.model.findOne({
-    _id: new ObjectId(<string>userId),
+    _id: new ObjectId(userId),
   }, {
     projection: {
       password: 1,
@@ -46,7 +54,9 @@ export const activate = async (
     })
   }
 
-  const equal = await bcrypt.compare(user._id.toString(), token)
+  const activationToken = await getActivationToken(userId.toString(), context)
+  const equal = await bcrypt.compare(activationToken, token)
+
   if( !equal ) {
     return context.error(HTTPStatus.NotFound, {
       code: ActivationError.InvalidLink,
