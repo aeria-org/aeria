@@ -1,7 +1,8 @@
 import type { Context } from '@aeriajs/types'
 import type { ObjectId } from '@aeriajs/core'
-import { Result } from '@aeriajs/types'
+import { Result, HTTPStatus } from '@aeriajs/types'
 import * as bcrypt from 'bcrypt'
+import { ActivationError } from './activate.js'
 
 export const getActivationToken = async (strId: string, context: Context) => {
   if( context.calledFunction === 'getActivationToken' ) {
@@ -15,14 +16,23 @@ export const getActivationToken = async (strId: string, context: Context) => {
 }
 
 export const getActivationLink = async (payload: { userId: ObjectId | string }, context: Context) => {
-  const { error } = await context.collections.user.functions.get({
+  const { error, result: user } = await context.collections.user.functions.get({
     filters: {
       _id: payload.userId,
     },
+    project: [
+      'active',
+    ],
   })
 
   if( error ) {
     return Result.error(error)
+  }
+
+  if( user.active ) {
+    return context.error(HTTPStatus.Forbidden, {
+      code: ActivationError.AlreadyActiveUser,
+    })
   }
 
   const activationToken = await getActivationToken(payload.userId.toString(), context)
