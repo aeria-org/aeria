@@ -20,9 +20,7 @@ export const getActivationLink = async (payload: { userId: ObjectId | string }, 
     filters: {
       _id: payload.userId,
     },
-    project: [
-      'active',
-    ],
+    project: ['active'],
   })
 
   if( error ) {
