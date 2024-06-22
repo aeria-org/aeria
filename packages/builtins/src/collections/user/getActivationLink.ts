@@ -17,8 +17,8 @@ export const getActivationToken = async (strId: string, context: Context) => {
 export const getActivationLink = async (payload: { userId: ObjectId | string }, context: Context) => {
   const { error } = await context.collections.user.functions.get({
     filters: {
-      _id: payload.userId
-    }
+      _id: payload.userId,
+    },
   })
 
   if( error ) {
