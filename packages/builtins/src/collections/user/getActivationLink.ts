@@ -14,12 +14,24 @@ export const getActivationToken = async (strId: string, context: Context) => {
   return `${context.config.secret}:${strId}`
 }
 
-export const getActivationLink = async (userId: ObjectId, context: Context) => {
-  const activationToken = await getActivationToken(userId.toString(), context)
+export const getActivationLink = async (payload: { userId: ObjectId | string }, context: Context) => {
+  const { error } = await context.collections.user.functions.get({
+    filters: {
+      _id: payload.userId
+    }
+  })
+
+  if( error ) {
+    return Result.error(error)
+  }
+
+  const activationToken = await getActivationToken(payload.userId.toString(), context)
   const encryptedActivationToken = await bcrypt.hash(activationToken, 10)
 
-  const link = `${context.config.publicUrl}/user/activate?u=${userId.toString()}&t=${encryptedActivationToken}`
+  const url = `${context.config.publicUrl}/user/activate?u=${payload.userId.toString()}&t=${encryptedActivationToken}`
 
-  return Result.result(link)
+  return Result.result({
+    url,
+  })
 }
 

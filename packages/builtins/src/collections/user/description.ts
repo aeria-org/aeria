@@ -109,6 +109,11 @@ export const description = defineDescription({
       fetchItem: true,
       translate: true,
     },
+    'copyActivationLink': {
+      label: 'copy_activation_link',
+      icon: 'link',
+      translate: true,
+    },
   },
   icon: 'users',
   filters: [

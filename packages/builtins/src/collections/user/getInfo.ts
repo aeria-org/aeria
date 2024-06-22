@@ -3,6 +3,7 @@ import type { description } from './description'
 import * as bcrypt from 'bcrypt'
 import { Result, HTTPStatus } from '@aeriajs/types'
 import { ObjectId } from '@aeriajs/core'
+import { getActivationToken } from './getActivationLink.js'
 
 export enum ActivationError {
   UserNotFound = 'USER_NOT_FOUND',
@@ -43,7 +44,9 @@ export const getInfo = async (
     })
   }
 
-  const equal = await bcrypt.compare(user._id.toString(), token)
+  const activationToken = await getActivationToken(user._id.toString(), context)
+  const equal = await bcrypt.compare(activationToken, token)
+
   if( !equal ) {
     return context.error(HTTPStatus.NotFound, {
       code: ActivationError.InvalidLink,

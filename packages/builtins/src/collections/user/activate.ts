@@ -1,7 +1,7 @@
 import type { Context } from '@aeriajs/types'
 import type { description } from './description.js'
 import { ObjectId } from '@aeriajs/core'
-import { HTTPStatus } from '@aeriajs/types'
+import { Result, ACError, HTTPStatus } from '@aeriajs/types'
 import * as bcrypt from 'bcrypt'
 import { getActivationToken } from './getActivationLink.js'
 
@@ -20,6 +20,9 @@ export const activate = async (
       query: {
         u?: string
         t?: string
+      }
+      payload: {
+        password?: string
       }
     }
   },
@@ -65,8 +68,14 @@ export const activate = async (
 
   if( !user.password ) {
     if( !payload.password ) {
-      return context.response.writeHead(302, {
-        location: `/user/activation?step=password&u=${userId}&t=${token}`,
+      if( context.request.method === 'GET' ) {
+        return context.response.writeHead(302, {
+          location: `/user/activation?step=password&u=${userId}&t=${token}`,
+        }).end()
+      }
+
+      return context.error(HTTPStatus.UnprocessableContent, {
+        code: ACError.MalformedInput,
       })
     }
 
@@ -96,8 +105,14 @@ export const activate = async (
     },
   )
 
-  return context.response.writeHead(302, {
-    location: '/user/activation',
+  if( context.request.method === 'GET' ) {
+    return context.response.writeHead(302, {
+      location: '/user/activation',
+    }).end()
+  }
+
+  return Result.result({
+    userId: user._id,
   })
 }
 

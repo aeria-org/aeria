@@ -3,7 +3,7 @@ import type { functions } from '@aeriajs/core'
 import { createContext, getFunction } from '@aeriajs/core'
 import { getCollection } from '@aeriajs/entrypoint'
 import { next } from '@aeriajs/http'
-import { ACError, HTTPStatus } from '@aeriajs/types'
+import { ACError, HTTPStatus, Result } from '@aeriajs/types'
 import { pipe } from '@aeriajs/common'
 import { appendPagination } from './appendPagination.js'
 
@@ -36,24 +36,15 @@ export const safeHandle = (
       console.trace(error)
     }
 
-    const response = {
-      error: {
-        name: error.name,
-        code: error.code,
-        message: error.message,
-        details: error.details,
-        silent: error.silent,
-        logout: error.logout,
-        httpStatus: error.httpStatus,
-      },
-    }
-
     if( context.request.headers['sec-fetch-mode'] === 'cors' ) {
-      return response
+      return Result.error({
+        code: error.code || error.name,
+        message: error.message,
+      })
     }
 
     return context.error(error.httpStatus || HTTPStatus.InternalServerError, {
-      code: error.code,
+      code: error.code || error.name,
       message: error.message,
     })
   }
