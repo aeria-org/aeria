@@ -5,7 +5,7 @@ import { throwIfError } from '@aeriajs/common'
 import { traverseDocument } from '../../collection/index.js'
 
 export const count = async <TContext extends Context>(
-  payload: CountPayload<SchemaWithId<Context['description']>>,
+  payload: CountPayload<SchemaWithId<TContext['description']>>,
   context: TContext extends Context<any>
     ? TContext
     : never,

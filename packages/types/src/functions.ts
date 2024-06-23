@@ -41,14 +41,16 @@ export type StrictFilter<TDocument> = RemoveAny<Filter<DocumentFilter<TDocument>
 export type StrictFilterOperators<TDocument> = RemoveAny<FilterOperators<DocumentFilter<TDocument>>>
 
 export type Filters<TDocument> = StrictFilter<TDocument> & Partial<{
-  [P in keyof TDocument]: null | (
-    TDocument[P] extends infer Field
-      ? Field extends ObjectId
-        ? Field | string
-        : Field extends { _id: infer Id }
-          ? Id | string
-          : Field
-      : never
+  [P in keyof TDocument | `${Extract<keyof TDocument, string>}.${string}`]: null | (
+    P extends keyof TDocument
+      ? TDocument[P] extends infer Field
+        ? Field extends ObjectId
+          ? Field | string
+          : Field extends { _id: infer Id }
+            ? Id | string
+            : Field
+        : never
+      : any
     ) extends infer Field
     ? Field | StrictFilterOperators<Field> | null
     : never

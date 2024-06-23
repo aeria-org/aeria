@@ -16,7 +16,7 @@ export type GetAllOptions = {
 }
 
 export const getAll = async <TContext extends Context>(
-  _payload: GetAllPayload<SchemaWithId<Context['description']>> | undefined,
+  _payload: GetAllPayload<SchemaWithId<TContext['description']>> | undefined,
   context: TContext,
   options: GetAllOptions = {},
 ) => {
@@ -70,6 +70,8 @@ export const getAll = async <TContext extends Context>(
       })),
     })
   }
+
+  console.log(JSON.stringify(pipeline, null,2))
 
   if( offset > 0 ) {
     pipeline.push({
