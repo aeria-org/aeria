@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.116
+
+### Patch Changes
+
+- 0a880d9: Fix nested object filter
+  - @aeriajs/builtins@0.0.116
+  - @aeriajs/security@0.0.116
+
 ## 0.0.115
 
 ### Patch Changes
