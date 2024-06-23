@@ -71,8 +71,6 @@ export const getAll = async <TContext extends Context>(
     })
   }
 
-  console.log(JSON.stringify(pipeline, null,2))
-
   if( offset > 0 ) {
     pipeline.push({
       $skip: offset,
