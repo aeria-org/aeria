@@ -1,9 +1,9 @@
 import type { Condition } from '@aeriajs/types'
-import { arraysIntersects } from './arraysIntersects.js'
+import { arraysIntersect } from './arraysIntersect.js'
 
 const equalOrContains = (term1: any, term2: any) => {
   if( Array.isArray(term1) && Array.isArray(term2) ) {
-    return arraysIntersects(term1, term2)
+    return arraysIntersect(term1, term2)
   }
 
   if( Array.isArray(term1) ) {

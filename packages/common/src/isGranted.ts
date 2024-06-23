@@ -1,10 +1,10 @@
 import type { AccessCondition, Token } from '@aeriajs/types'
-import { arraysIntersects } from './arraysIntersects.js'
+import { arraysIntersect } from './arraysIntersect.js'
 
 export const isGranted = (condition: AccessCondition, token: Token) => {
   if( Array.isArray(condition) ) {
     return token.authenticated
-      ? arraysIntersects(token.roles, condition)
+      ? arraysIntersect(token.roles, condition)
       : condition.includes('unauthenticated')
   }
 

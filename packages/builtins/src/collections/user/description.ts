@@ -20,9 +20,6 @@ export const description = defineDescription({
     'picture_file',
   ],
   indexes: ['name'],
-  freshItem: {
-    active: true,
-  },
   properties: {
     name: {
       type: 'string',

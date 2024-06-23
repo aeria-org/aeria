@@ -1,4 +1,4 @@
-export * from './arraysIntersects.js'
+export * from './arraysIntersect.js'
 export * from './checkForUndefined.js'
 export * from './convertConditionToQuery.js'
 export * from './date.js'
