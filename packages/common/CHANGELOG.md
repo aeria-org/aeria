@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.74
+
+### Patch Changes
+
+- 5f6fcc4: Rename `arraysIntersects()` -> `arraysIntersect()`
+
 ## 0.0.73
 
 ### Patch Changes
