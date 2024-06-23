@@ -108,7 +108,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
 
   if( memoize ) {
     if( referenceMemo[memoize] ) {
-      return referenceMemo[memoize]!
+      return referenceMemo[memoize]
     }
   }
 
@@ -339,7 +339,7 @@ export const buildLookupPipeline = async (referenceMap: ReferenceMap | {}, optio
   const memoize = `${memoizeId}-${project.sort().join('-')}`
 
   if( memoizeId && lookupMemo[memoize] ) {
-    const result = lookupMemo[memoize]!
+    const result = lookupMemo[memoize]
     return project.length > 0
       ? narrowLookupPipelineProjection(result, project)
       : result

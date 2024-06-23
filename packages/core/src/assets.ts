@@ -45,7 +45,7 @@ export const getCollectionAsset = async <
   }
 
   assetsMemo.assets[collectionName] ??= {}
-  assetsMemo.assets[collectionName]![assetName] = asset
+  assetsMemo.assets[collectionName][assetName] = asset
 
   return Result.result(asset)
 }

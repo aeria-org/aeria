@@ -266,7 +266,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
     contract?: TContractWithRoles,
   ) => {
     routesMeta[exp] ??= {}
-    routesMeta[exp]![Array.isArray(method)
+    routesMeta[exp][Array.isArray(method)
       ? method[0]
       : method] = contract || null
 

@@ -29,12 +29,12 @@ ${
   config.integrated
     ? ''
     : `declare global {
-      type Collections = {
-        [K in keyof MirrorDescriptions]: {
-          item: SchemaWithId<MirrorDescriptions[K]>
-        }
-      }
-    }\n`
+  type Collections = {
+    [K in keyof MirrorDescriptions]: {
+      item: SchemaWithId<MirrorDescriptions[K]>
+    }
+  }
+}\n`
 }
 declare module 'aeria-sdk' {
   import { TopLevelObject, TLOFunctions } from 'aeria-sdk'
