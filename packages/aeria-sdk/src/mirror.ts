@@ -1,4 +1,4 @@
-import type { InstanceConfig } from './types'
+import type { InstanceConfig } from './types.js'
 import * as path from 'path'
 import { deserialize } from '@aeriajs/common'
 import { writeFile } from 'fs/promises'
@@ -37,7 +37,7 @@ ${
 }\n`
 }
 declare module 'aeria-sdk' {
-  import { TopLevelObject, TLOFunctions } from 'aeria-sdk'
+  import { TopLevelObject } from 'aeria-sdk'
 
   type UnionToIntersection<T> = (T extends any ? ((x: T) => 0) : never) extends ((x: infer R) => 0)
     ? R

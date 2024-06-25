@@ -4,10 +4,6 @@ import type { InstanceConfig } from './types.js'
 import { request } from './http.js'
 import { publicUrl } from './utils.js'
 
-export type TLOFunctions = {
-  [P: string]: Record<RequestMethod, ((payload?: any)=> Promise<any>) & TLOFunctions>
-}
-
 export type TopLevelObject = {
   describe: {
     POST: (...args: any)=> Promise<any>
