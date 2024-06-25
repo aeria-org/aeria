@@ -1,5 +1,12 @@
 # aeria-build
 
+## 0.0.56
+
+### Patch Changes
+
+- 36b5c1d: Update codegen
+- 8a0aa9c: Update `aeria-lang` and refactor SDK mirror file
+
 ## 0.0.55
 
 ### Patch Changes
