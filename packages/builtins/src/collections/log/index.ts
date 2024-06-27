@@ -3,6 +3,7 @@ import { defineCollection, get, getAll, insert } from '@aeriajs/core'
 export const log = defineCollection({
   description: {
     $id: 'log',
+    icon: 'magnifying-glass',
     required: [
       'context',
       'message',
@@ -28,7 +29,6 @@ export const log = defineCollection({
         format: 'date-time',
       },
     },
-    icon: 'magnifying-glass',
     presets: ['view'],
     filters: [
       'context',

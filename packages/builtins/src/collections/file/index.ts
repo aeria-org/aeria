@@ -8,6 +8,7 @@ import { removeAll } from './removeAll.js'
 export const tempFile = defineCollection({
   description: {
     $id: 'tempFile',
+    icon: 'file',
     temporary: {
       index: 'created_at',
       expireAfterSeconds: 3600,

@@ -3,6 +3,7 @@ import { defineCollection } from '@aeriajs/core'
 export const resourceUsage = defineCollection({
   description: {
     $id: 'resourceUsage',
+    icon: 'wrench',
     required: ['usage'],
     properties: {
       user: {

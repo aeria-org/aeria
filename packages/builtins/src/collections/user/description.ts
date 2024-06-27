@@ -6,6 +6,7 @@ import { defineDescription } from '@aeriajs/core'
  */
 export const description = defineDescription({
   $id: 'user',
+  icon: 'users',
   required: [
     'name',
     'roles',
@@ -112,7 +113,6 @@ export const description = defineDescription({
       translate: true,
     },
   },
-  icon: 'users',
   filters: [
     'name',
     'roles',

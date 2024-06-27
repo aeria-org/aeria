@@ -12,6 +12,7 @@ const timestamp = (lastModified: Date | undefined) => lastModified
 
 export const description = defineDescription({
   $id: 'file',
+  icon: 'file',
   owned: 'always',
   presets: ['owned'],
   indexes: [
