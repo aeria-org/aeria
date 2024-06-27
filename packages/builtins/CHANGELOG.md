@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.117
+
+### Patch Changes
+
+- 43d5758: Builtin collections icons
+  - @aeriajs/core@0.0.117
+
 ## 0.0.116
 
 ### Patch Changes
