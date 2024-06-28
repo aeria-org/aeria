@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.121
+
+### Patch Changes
+
+- ec1b67b: Fix `traverseDocument()` bug
+  - @aeriajs/builtins@0.0.121
+  - @aeriajs/security@0.0.121
+
 ## 0.0.120
 
 ### Patch Changes
