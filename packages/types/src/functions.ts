@@ -74,7 +74,7 @@ export type What<TDocument> = (
 
 export type Projection<TDocument> =
   keyof TDocument | '_id' extends infer DocumentProp
-    ? DocumentProp extends string
+    ? [DocumentProp] extends [string]
       ? DocumentProp[]
       : string[]
     : never
