@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.67
+
+### Patch Changes
+
+- 55a61de: Prevent union expansion in `Projection<T>`
+
 ## 0.0.66
 
 ### Patch Changes
