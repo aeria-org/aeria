@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.66
+
+### Patch Changes
+
+- ba7acc0: Add `PaginatedGetAllReturnType<T>`
+
 ## 0.0.65
 
 ### Patch Changes
