@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.65
+
+### Patch Changes
+
+- 29e6db7: Fix filter types and getAll return type
+
 ## 0.0.64
 
 ### Patch Changes

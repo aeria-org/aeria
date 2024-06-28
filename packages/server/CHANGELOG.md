@@ -1,5 +1,20 @@
 # @aeriajs/server
 
+## 0.0.120
+
+### Patch Changes
+
+- 29e6db7: Fix filter types and getAll return type
+- Updated dependencies [29e6db7]
+  - @aeriajs/builtins@0.0.118
+  - @aeriajs/server@0.0.120
+  - @aeriajs/types@0.0.65
+  - @aeriajs/core@0.0.118
+  - @aeriajs/common@0.0.75
+  - @aeriajs/entrypoint@0.0.77
+  - @aeriajs/http@0.0.86
+  - @aeriajs/node-http@0.0.86
+
 ## 0.0.119
 
 ### Patch Changes
