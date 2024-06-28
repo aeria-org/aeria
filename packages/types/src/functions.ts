@@ -151,6 +151,10 @@ export type GetReturnType<TDocument> =
 export type CountReturnType = Result.Either<EndpointError, number>
 export type GetAllReturnType<TDocument> = Result.Either<EndpointError, TDocument[]>
 export type RemoveReturnType<TDocument> = Result.Either<EndpointError, TDocument>
+export type PaginatedGetAllReturnType<TDocument> = Result.Either<EndpointError, {
+  data: TDocument[]
+  pagination: Pagination
+}>
 
 export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<any>>> = {
   count: (payload: CountPayload<TDocument>)=> Promise<CountReturnType>
@@ -166,10 +170,7 @@ export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<
 export type CollectionFunctionsSDK<TDocument extends CollectionDocument<OptionalId<any>>> = {
   count: (payload: CountPayload<TDocument>)=> Promise<WithACErrors<CountReturnType>>
   get: (payload: GetPayload<TDocument>)=> Promise<WithACErrors<GetReturnType<TDocument>>>
-  getAll: (payload?: GetAllPayload<TDocument>)=> Promise<WithACErrors<Result.Either<unknown, {
-    data: TDocument[]
-    pagination: Pagination
-  }>>>
+  getAll: (payload?: GetAllPayload<TDocument>)=> Promise<WithACErrors<PaginatedGetAllReturnType<TDocument>>>
   insert: (payload: InsertPayload<TDocument>)=> Promise<WithACErrors<InsertReturnType<TDocument>>>
   remove: (payload: RemovePayload<TDocument>)=> Promise<WithACErrors<RemoveReturnType<TDocument>>>
   // @TODO
