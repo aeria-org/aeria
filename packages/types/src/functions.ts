@@ -55,9 +55,9 @@ export type Filters<TDocument> = StrictFilter<TDocument> & Partial<{
             : Field
         : never
       : any
-    ) extends infer Field
-      ? Field | StrictFilterOperators<Field> | null
-      : never
+  ) extends infer Field
+    ? Field | StrictFilterOperators<Field> | null
+    : never
 }>
 
 export type What<TDocument> = (
