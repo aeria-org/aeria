@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.121
+
+### Patch Changes
+
+- Updated dependencies [ec1b67b]
+  - @aeriajs/core@0.0.121
+
 ## 0.0.120
 
 ### Patch Changes
