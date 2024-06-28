@@ -514,7 +514,9 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
   const mutateTarget = (fn: (value: any, ctx: PhaseContext)=> unknown) => {
     return async (value: unknown, ctx: PhaseContext) => {
       const result = await fn(value, ctx)
-      ctx.target[ctx.propName] = result
+      if( ctx.target && typeof ctx.target === 'object' ) {
+        ctx.target[ctx.propName] = result
+      }
       return result
     }
   }
