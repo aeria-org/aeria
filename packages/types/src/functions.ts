@@ -18,12 +18,16 @@ export type Pagination = {
   limit: number
 }
 
+type FilterProperty<T> = T extends ObjectId
+  ? T | string
+  : T
+
 type DocumentFilter<TDocument> = PackReferences<TDocument> extends infer Document
   ? {
     [P in keyof Document]: null | (
-      Document[P] extends ObjectId
-        ? Document[P] | string
-        : Document[P]
+      Document[P] extends (infer E)[]
+        ? FilterProperty<E>[]
+        : FilterProperty<Document[P]>
     )
   }
   : never
@@ -41,7 +45,7 @@ export type StrictFilter<TDocument> = RemoveAny<Filter<DocumentFilter<TDocument>
 export type StrictFilterOperators<TDocument> = RemoveAny<FilterOperators<DocumentFilter<TDocument>>>
 
 export type Filters<TDocument> = StrictFilter<TDocument> & Partial<{
-  [P in keyof TDocument | `${Extract<keyof TDocument, string>}.${string}`]: null | (
+  [P in keyof TDocument | `${Extract<keyof TDocument, string>}.${string}`]: (
     P extends keyof TDocument
       ? TDocument[P] extends infer Field
         ? Field extends ObjectId
@@ -52,8 +56,8 @@ export type Filters<TDocument> = StrictFilter<TDocument> & Partial<{
         : never
       : any
     ) extends infer Field
-    ? Field | StrictFilterOperators<Field> | null
-    : never
+      ? Field | StrictFilterOperators<Field> | null
+      : never
 }>
 
 export type What<TDocument> = (
