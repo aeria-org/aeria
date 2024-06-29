@@ -1,5 +1,14 @@
 # @aeriajs/api
 
+## 0.0.122
+
+### Patch Changes
+
+- a979e1a: Add item view
+- Updated dependencies [a979e1a]
+  - @aeriajs/builtins@0.0.122
+  - @aeriajs/security@0.0.122
+
 ## 0.0.121
 
 ### Patch Changes
