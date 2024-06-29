@@ -82,7 +82,6 @@ export const description = defineDescription({
   },
   presets: [
     'crud',
-    'view',
     'duplicate',
   ],
   layout: {

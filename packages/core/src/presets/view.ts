@@ -2,10 +2,11 @@ import type { Description } from '@aeriajs/types'
 
 export const view = <const>{
   individualActions: {
-    'ui:spawnView': {
+    'route:/dashboard/crud/:id': {
       label: 'action.view',
-      icon: 'magnifying-glass-plus',
+      icon: 'eye',
       translate: true,
+      setItem: true,
     },
   },
 } satisfies Pick<Description, 'individualActions'>

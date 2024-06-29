@@ -15,6 +15,12 @@ export const crud = <const>{
       icon: 'pencil-simple',
       translate: true,
     },
+    'route:/dashboard/crud/:id': {
+      label: 'action.view',
+      icon: 'eye',
+      translate: true,
+      setItem: true,
+    },
     'remove': {
       label: 'action.remove',
       icon: 'trash',
