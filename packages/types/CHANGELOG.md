@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.68
+
+### Patch Changes
+
+- 51638c5: Fix `traverseDocument()` incorrect error handling
+
 ## 0.0.67
 
 ### Patch Changes

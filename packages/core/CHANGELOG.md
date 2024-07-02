@@ -1,5 +1,20 @@
 # @aeriajs/api
 
+## 0.0.124
+
+### Patch Changes
+
+- 51638c5: Fix `traverseDocument()` incorrect error handling
+- 463ba06: Fix `disposeOldFiles()` deleting undue files
+- Updated dependencies [51638c5]
+  - @aeriajs/types@0.0.68
+  - @aeriajs/builtins@0.0.124
+  - @aeriajs/security@0.0.124
+  - @aeriajs/common@0.0.78
+  - @aeriajs/entrypoint@0.0.80
+  - @aeriajs/http@0.0.89
+  - @aeriajs/validation@0.0.81
+
 ## 0.0.123
 
 ### Patch Changes
