@@ -35,6 +35,7 @@ type PhaseContext = {
   propPath: string
   property: Property
   options: TraverseOptions & TraverseNormalized
+  isArray?: boolean
 }
 
 const getProperty = (propertyName: string, parentProperty: Property | Description) => {
@@ -57,8 +58,8 @@ const getProperty = (propertyName: string, parentProperty: Property | Descriptio
   }
 }
 
-const disposeOldFiles = async (ctx: PhaseContext, options: { fromIds?: ObjectId[] } = {}) => {
-  if( !options.fromIds && Array.isArray(ctx.target[ctx.propName]) ) {
+const disposeOldFiles = async (ctx: PhaseContext, options: { preserveIds?: ObjectId[] } = {}) => {
+  if( !options.preserveIds && Array.isArray(ctx.target[ctx.propName]) ) {
     return
   }
 
@@ -77,9 +78,10 @@ const disposeOldFiles = async (ctx: PhaseContext, options: { fromIds?: ObjectId[
   }
 
   let fileIds = getValueFromPath(doc, ctx.propPath)
-  if( options.fromIds ) {
-    fileIds = fileIds.filter((id: ObjectId | null) => !options.fromIds!.some((fromId) => {
-      return !id || id.equals(fromId)
+
+  if( options.preserveIds ) {
+    fileIds = fileIds.filter((id: ObjectId | null) => !id || !options.preserveIds!.some((fromId) => {
+      return id.equals(fromId)
     }))
   }
 
@@ -230,7 +232,7 @@ const moveFiles = async (
   }
 
   if( !value ) {
-    if( ctx.root._id ) {
+    if( ctx.root._id && !ctx.isArray ) {
       await disposeOldFiles(ctx)
     }
     return null
@@ -244,7 +246,7 @@ const moveFiles = async (
     return Result.error(TraverseError.InvalidTempfile)
   }
 
-  if( ctx.root._id ) {
+  if( ctx.root._id && !ctx.isArray ) {
     await disposeOldFiles(ctx)
   }
 
@@ -280,6 +282,7 @@ const recurseDeep = async (value: any, ctx: PhaseContext) => {
       const result = await ctx.options.pipe<ObjectId>(item, {
         ...ctx,
         property: ctx.property.items,
+        isArray: true,
       })
 
       items.push(result)
@@ -287,7 +290,7 @@ const recurseDeep = async (value: any, ctx: PhaseContext) => {
 
     if( ctx.options.moveFiles && '$ref' in ctx.property.items && ctx.property.items.$ref === 'file' ) {
       await disposeOldFiles(ctx, {
-        fromIds: items,
+        preserveIds: items,
       })
     }
 
