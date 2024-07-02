@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.123
+
+### Patch Changes
+
+- 28525e8: Fill insert result
+  - @aeriajs/builtins@0.0.123
+  - @aeriajs/security@0.0.123
+
 ## 0.0.122
 
 ### Patch Changes
