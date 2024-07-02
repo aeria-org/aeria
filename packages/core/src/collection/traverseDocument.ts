@@ -529,7 +529,7 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
             case TraverseError.InvalidDocumentId:
             case TraverseError.InvalidTempfile:
               traverseError = error
-            break
+              break
             default:
               validationError = error
           }
