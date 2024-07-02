@@ -10,7 +10,11 @@ export enum PropertyValidationErrorCode {
   Unmatching = 'UNMATCHING_PROPERTIES',
   ExtraneousElement = 'EXTRANEOUS_ELEMENT',
   NumericConstraint = 'NUMERIC_CONSTRAINT',
+}
 
+export enum TraverseError {
+  InvalidDocumentId = 'INVALID_DOCUMENT_ID',
+  InvalidTempfile = 'INVALID_TEMPFILE',
 }
 
 export type PropertyValidationError = {

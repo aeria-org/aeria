@@ -3,7 +3,7 @@ import type { Result } from './result.js'
 import type { EndpointError, StrictEndpointError } from './endpointError.js'
 import type { PackReferences } from './schema.js'
 import type { ACError } from './accessControl.js'
-import type { ValidationErrorCode } from './validation.js'
+import type { ValidationErrorCode, TraverseError } from './validation.js'
 import type { HTTPStatus, WithACErrors } from './http.js'
 
 export type UploadAuxProps = {
@@ -128,7 +128,9 @@ export type InsertReturnType<TDocument> =
       | ACError.OwnershipError
       | ACError.ResourceNotFound
       | ACError.TargetImmutable
-      | ValidationErrorCode,
+      | ValidationErrorCode
+      | TraverseError.InvalidDocumentId
+      | TraverseError.InvalidTempfile,
       unknown,
       | HTTPStatus.NotFound
       | HTTPStatus.UnprocessableContent

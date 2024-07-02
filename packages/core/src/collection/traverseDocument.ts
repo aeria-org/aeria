@@ -1,6 +1,6 @@
 import type { Description, Property, ValidationError, Context } from '@aeriajs/types'
-import { Result, ACError, ValidationErrorCode } from '@aeriajs/types'
-import { throwIfError, pipe, isReference, getValueFromPath, isObjectId } from '@aeriajs/common'
+import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
+import { throwIfError, pipe, isReference, getValueFromPath, isObjectId, isError } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
 import { ObjectId } from 'mongodb'
 import { getCollectionAsset } from '../assets.js'
@@ -24,11 +24,6 @@ export type TraverseOptions = {
 export type TraverseNormalized = {
   description: Description
   pipe: <T = unknown>(value: unknown, phaseContext: PhaseContext)=> T | Promise<T>
-}
-
-export enum TraverseError {
-  InvalidDocumentId = 'INVALID_DOCUMENT_ID',
-  InvalidTempfile = 'INVALID_TEMPFILE',
 }
 
 type PhaseContext = {
@@ -314,6 +309,7 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
 
 ): Promise<Result.Either<
   | ValidationError
+  | TraverseError
   | ACError.InsecureOperator,
   TRecursionTarget
 >> => {
@@ -509,6 +505,7 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
     functions.push(moveFiles)
   }
 
+  let traverseError: TraverseError | undefined
   let validationError: Record<string, ValidationError> | undefined
 
   const mutateTarget = (fn: (value: any, ctx: PhaseContext)=> unknown) => {
@@ -526,8 +523,17 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
   Object.assign(options, {
     pipe: pipe(functions.map(mutateTarget), {
       returnFirst: (value) => {
-        if( value?._tag === 'Left' ) {
-          validationError = value.value
+        if( isError(value) ) {
+          const error = value.error as TraverseError | Record<string, ValidationError>
+          switch( error ) {
+            case TraverseError.InvalidDocumentId:
+            case TraverseError.InvalidTempfile:
+              traverseError = error
+            break
+            default:
+              validationError = error
+          }
+
           return value
         }
       },
@@ -543,6 +549,10 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
 
   if( error ) {
     return Result.error(error)
+  }
+
+  if( traverseError ) {
+    return Result.error(traverseError)
   }
 
   if( validationError ) {

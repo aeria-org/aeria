@@ -1,5 +1,5 @@
 import type { Context, SchemaWithId, InsertPayload, InsertReturnType } from '@aeriajs/types'
-import { Result, HTTPStatus, ACError, ValidationErrorCode } from '@aeriajs/types'
+import { Result, HTTPStatus, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
 import { throwIfError, endpointErrorSchema } from '@aeriajs/common'
 import { traverseDocument, normalizeProjection, prepareInsert, fill } from '../../collection/index.js'
@@ -21,6 +21,8 @@ export const insertErrorSchema = () => endpointErrorSchema({
     ValidationErrorCode.EmptyTarget,
     ValidationErrorCode.InvalidProperties,
     ValidationErrorCode.MissingProperties,
+    TraverseError.InvalidDocumentId,
+    TraverseError.InvalidTempfile,
   ],
 })
 
