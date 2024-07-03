@@ -23,10 +23,6 @@ export const throwIfError = <TValue>(either: Result.Either<unknown, TValue>, mes
       : ''}`)
   }
 
-  if( !either.result ) {
-    throw new Error()
-  }
-
-  return either.result
+  return either.result!
 }
 
