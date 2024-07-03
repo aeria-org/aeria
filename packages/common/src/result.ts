@@ -6,8 +6,14 @@ export const isResult = (value: any): value is Result.Either<unknown, unknown> =
     && (value._tag === 'Error' || value._tag === 'Result')
 }
 
+export const isError = (object: any): object is Result.Error<unknown> => {
+  return object
+    && object._tag === 'Error'
+    && 'error' in object
+}
+
 export const throwIfError = <TValue>(either: Result.Either<unknown, TValue>, message?: any) => {
-  if( !either.result ) {
+  if( either.error ) {
     if( process.env.NODE_ENV !== 'production' ) {
       console.trace(JSON.stringify(either.error, null, 2))
     }
@@ -15,6 +21,10 @@ export const throwIfError = <TValue>(either: Result.Either<unknown, TValue>, mes
     throw new Error(`throwIfError threw: ${either.error} ${message
       ? `(${message})`
       : ''}`)
+  }
+
+  if( !either.result ) {
+    throw new Error()
   }
 
   return either.result
