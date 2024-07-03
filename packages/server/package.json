@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/server",
-  "version": "0.0.126",
+  "version": "0.0.127",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -43,13 +43,13 @@
     "mongodb": "^6.5.0"
   },
   "peerDependencies": {
-    "@aeriajs/core": "^0.0.124",
-    "@aeriajs/builtins": "^0.0.124",
-    "@aeriajs/common": "^0.0.78",
-    "@aeriajs/entrypoint": "^0.0.80",
-    "@aeriajs/http": "^0.0.89",
-    "@aeriajs/node-http": "^0.0.89",
-    "@aeriajs/server": "^0.0.126",
+    "@aeriajs/core": "^0.0.125",
+    "@aeriajs/builtins": "^0.0.125",
+    "@aeriajs/common": "^0.0.79",
+    "@aeriajs/entrypoint": "^0.0.81",
+    "@aeriajs/http": "^0.0.90",
+    "@aeriajs/node-http": "^0.0.90",
+    "@aeriajs/server": "^0.0.127",
     "@aeriajs/types": "^0.0.68",
     "mongodb": "^6.5.0"
   }
