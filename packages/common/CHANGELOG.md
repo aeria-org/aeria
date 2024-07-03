@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.80
+
+### Patch Changes
+
+- 57bd0c2: Fix `throwIfError()`
+
 ## 0.0.79
 
 ### Patch Changes
