@@ -28,7 +28,6 @@ export const successfulAuthentication = async (userId: ObjectId, context: RouteC
     populate: ['picture_file'],
   })
 
-
   if( error ) {
     throw new Error()
   }
