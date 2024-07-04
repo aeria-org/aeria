@@ -2,6 +2,7 @@ import type {} from 'mongodb'
 import type {} from '@aeriajs/validation'
 export * from './collections/index.js'
 export * as builtinFunctions from './functions/index.js'
+export * from './authentication.js'
 
 import {
   file,

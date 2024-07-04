@@ -1,9 +1,9 @@
-import type { Context, SchemaWithId, Token, TokenRecipient } from '@aeriajs/types'
+import type { Context, Token, TokenRecipient } from '@aeriajs/types'
 import type { description } from './description.js'
-import type { ObjectId } from '@aeriajs/core'
 import { Result, HTTPStatus, ACError } from '@aeriajs/types'
 import { compare as bcryptCompare } from 'bcrypt'
-import { signToken, decodeToken } from '@aeriajs/core'
+import { decodeToken } from '@aeriajs/core'
+import { successfulAuthentication, defaultSuccessfulAuthentication, AuthenticationError } from '../../authentication.js'
 
 type Props = {
   email: string
@@ -11,104 +11,6 @@ type Props = {
 } | {
   token?: TokenRecipient
   revalidate: true
-}
-
-type Return = {
-  user: Pick<SchemaWithId<typeof description>,
-    | 'name'
-    | 'email'
-    | 'roles'
-    | 'active'
-  > & {
-    _id: ObjectId | null
-  }
-  token: TokenRecipient
-}
-
-export enum AuthenticationError {
-  InvalidCredentials = 'INVALID_CREDENTIALS',
-  InactiveUser = 'INACTIVE_USER',
-}
-
-const getUser = async (
-  userId: ObjectId,
-  context: Context<typeof description, Collections['user']['functions']>,
-): Promise<Return> => {
-  const { error, result: leanUser } = await context.collection.functions.get({
-    filters: {
-      _id: userId,
-    },
-    populate: ['picture_file'],
-  })
-
-  if( error ) {
-    throw new Error()
-  }
-
-  const tokenContent = {
-    sub: leanUser._id,
-    roles: leanUser.roles,
-    userinfo: {},
-  }
-
-  if( context.config.security.authenticationRateLimiting ) {
-    //
-  }
-
-  if( context.config.security.logSuccessfulAuthentications ) {
-    await context.log('successful authentication', {
-      email: leanUser.email,
-      roles: leanUser.roles,
-      _id: leanUser._id,
-    })
-  }
-
-  if( context.config.tokenUserProperties ) {
-    const pick = (obj: any, properties: string[]) => properties.reduce((a, prop) => {
-      if( 'prop' in obj ) {
-        return a
-      }
-
-      return {
-        ...a,
-        [prop]: obj[prop],
-      }
-    }, {})
-
-    tokenContent.userinfo = pick(leanUser, context.config.tokenUserProperties)
-  }
-
-  const token = await signToken(tokenContent)
-
-  return {
-    user: leanUser,
-    token: {
-      type: 'bearer',
-      content: token,
-    },
-  }
-}
-
-export const getDefaultUser = async () => {
-  const token = await signToken({
-    _id: null,
-    roles: ['root'],
-    userinfo: {},
-  })
-
-  return {
-    user: {
-      _id: null,
-      name: 'God Mode',
-      email: '',
-      roles: ['root'],
-      active: true,
-    },
-    token: {
-      type: 'bearer',
-      content: token,
-    },
-  }
 }
 
 export const authenticate = async (props: Props, context: Context<typeof description>) => {
@@ -125,8 +27,8 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
       : context.token
 
     return Result.result(decodedToken.sub
-      ? await getUser(decodedToken.sub, context)
-      : await getDefaultUser())
+      ? await successfulAuthentication(decodedToken.sub, context)
+      : await defaultSuccessfulAuthentication())
   }
 
   if( typeof props.email !== 'string' ) {
@@ -137,7 +39,7 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
 
   if( context.config.defaultUser ) {
     if( props.email === context.config.defaultUser.username && props.password === context.config.defaultUser.password ) {
-      return Result.result(await getDefaultUser())
+      return Result.result(await defaultSuccessfulAuthentication())
     }
   }
 
@@ -166,6 +68,6 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
     })
   }
 
-  return Result.result(await getUser(user._id, context))
+  return Result.result(await successfulAuthentication(user._id, context))
 }
 
