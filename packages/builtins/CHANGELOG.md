@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.127
+
+### Patch Changes
+
+- ba1084e: Export authentication functions
+  - @aeriajs/core@0.0.127
+
 ## 0.0.126
 
 ### Patch Changes
