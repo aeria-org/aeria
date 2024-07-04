@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.128
+
+### Patch Changes
+
+- 8d18a0e: Update `successfulAuthentication()` signature
+  - @aeriajs/core@0.0.128
+
 ## 0.0.127
 
 ### Patch Changes
