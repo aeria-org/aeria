@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { traverseDocument, ObjectId } from '../dist'
+import { traverseDocument, ObjectId } from '../dist/index.js'
 import { PropertyValidationErrorCode, ValidationErrorCode } from '@aeriajs/types'
 
 describe('Traverse document', () => {

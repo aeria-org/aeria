@@ -1,6 +1,6 @@
 import type { GenericRequest } from '@aeriajs/types'
 import assert from 'assert'
-import { matches } from '../dist'
+import { matches } from '../dist/index.js'
 
 describe('Routing', () => {
   it('matches patterns correctly', async () => {
