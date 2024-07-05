@@ -9,7 +9,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "echo skipping",
+    "test": "TS_NODE_COMPILER_OPTIONS=\"$(cat ../compilerOptions.json)\" mocha -r ts-node/register tests/*.spec.ts",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "build": "pnpm build:cjs && pnpm build:esm",

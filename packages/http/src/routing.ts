@@ -86,7 +86,7 @@ export const matches = <TRequest extends GenericRequest>(
   req: TRequest,
   method: RequestMethod | RequestMethod[] | null,
   exp: string | RegExp,
-  options: RouterOptions,
+  options: RouterOptions = {},
   config?: ApiConfig,
 ) => {
   const base = config?.baseUrl && config.baseUrl !== '/'
