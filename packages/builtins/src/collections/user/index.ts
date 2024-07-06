@@ -11,8 +11,8 @@ import { getActivationLink } from './getActivationLink.js'
 
 const exposedFunctions: Record<string, AccessCondition> = {
   get: true,
-  getAll: true,
-  remove: true,
+  getAll: ['root'],
+  remove: ['root'],
   upload: true,
   removeFile: true,
   insert: true,

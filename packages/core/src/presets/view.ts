@@ -2,7 +2,7 @@ import type { Description } from '@aeriajs/types'
 
 export const view = <const>{
   individualActions: {
-    'route:/dashboard/crud/:id': {
+    'route:/dashboard/:collection/:id': {
       label: 'action.view',
       icon: 'eye',
       translate: true,

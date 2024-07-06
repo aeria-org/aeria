@@ -15,7 +15,7 @@ export const crud = <const>{
       icon: 'pencil-simple',
       translate: true,
     },
-    'route:/dashboard/crud/:id': {
+    'route:/dashboard/:collection/:id': {
       label: 'action.view',
       icon: 'eye',
       translate: true,
