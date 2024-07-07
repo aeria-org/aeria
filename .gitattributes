@@ -1,7 +1,8 @@
 # ignore husky hooks
 .husky/* linguist-vendored
 
-# ignore bin and tests *.js files
+# ignore vendored and test-related .js files
+./*.js linguist-vendored
 **/bin/*.js linguist-vendored
 **/tests/fixtures/**/*.js linguist-vendored
 **/tests/fixtures/**/*.mjs linguist-vendored
