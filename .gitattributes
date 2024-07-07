@@ -1,8 +1,9 @@
 # ignore husky hooks
 .husky/* linguist-vendored
 
-# ignore bin/index.js
-*.js linguist-vendored
+# ignore bin and tests *.js files
+**/bin/*.js linguist-vendored
+**/tests/fixtures/**/*.js linguist-vendored
 
 # scripts with node hashbang will be falsily reported as javascript
 scripts/*.ts linguist-vendored
