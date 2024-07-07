@@ -4,6 +4,7 @@
 # ignore bin and tests *.js files
 **/bin/*.js linguist-vendored
 **/tests/fixtures/**/*.js linguist-vendored
+**/tests/fixtures/**/*.mjs linguist-vendored
 
 # scripts with node hashbang will be falsily reported as javascript
 scripts/*.ts linguist-vendored
