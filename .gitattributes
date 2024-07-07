@@ -2,7 +2,8 @@
 .husky/* linguist-vendored
 
 # ignore vendored and test-related .js files
-./*.js linguist-vendored
+.*.js linguist-vendored
+eslint.config.js linguist-vendored
 **/bin/*.js linguist-vendored
 **/tests/fixtures/**/*.js linguist-vendored
 **/tests/fixtures/**/*.mjs linguist-vendored
