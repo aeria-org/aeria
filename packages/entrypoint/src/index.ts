@@ -63,7 +63,7 @@ export const getCollection = async (collectionName: string): Promise<Collection 
     collectionMemo[collectionName] = collection
   }
 
-  return collection
+  return Object.assign({}, collection)
 }
 
 export const getRouter = async () => {

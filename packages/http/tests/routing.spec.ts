@@ -35,7 +35,7 @@ describe('Routing', () => {
     const shouldMatch1 = matches(req as GenericRequest, 'GET', '/resource/([0-9]+)/view')
     const shouldMatch2 = matches({ ...req, url: '/resource/123/view?query=val' } as GenericRequest, 'GET', '/resource/([0-9]+)/view')
     const shouldntMatch1 = matches(req as GenericRequest, 'GET', '/resource/abc/view')
-    const shouldntMatch2 = matches(req as GenericRequest, 'GET', '/resource/abc/invalid')
+    const shouldntMatch2 = matches(req as GenericRequest, 'GET', '/resource/123/invalid')
 
     assert(shouldMatch1)
     assert(shouldMatch1.fragments[0] === '123')

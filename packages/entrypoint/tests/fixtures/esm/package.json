@@ -1,0 +1,4 @@
+{
+  "main": "dist/index.js",
+  "aeriaMain": "aeria/index.mjs"
+}
