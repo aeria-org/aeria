@@ -1,6 +1,6 @@
 import type { ServerResponse, IncomingMessage } from 'http'
 import type { MapSchemaUnion } from './schema.js'
-import type { ExtractError, ExtractResult, Result } from './result.js'
+import type { Result } from './result.js'
 import type { EndpointError, StrictEndpointError } from './endpointError.js'
 import type { ACError } from './accessControl.js'
 import type { RateLimitingError } from './security.js'
@@ -51,29 +51,43 @@ export type GenericResponse = ServerResponse & {
   [STREAMED_RESPONSE]?: boolean
 }
 
-type ExtractCode<TRouteResponse> = TRouteResponse extends Result.Error<EndpointError<infer PCode>>
+type ExtractCode<TRouteResponse> = TRouteResponse extends EndpointError<infer PCode>
   ? PCode
   : never
 
-type ExtractHTTPStatus<TRouteResponse> = TRouteResponse extends Result.Error<EndpointError<any, unknown, infer PHTTPStatus>>
+type ExtractHTTPStatus<TRouteResponse> = TRouteResponse extends EndpointError<any, unknown, infer PHTTPStatus>
   ? PHTTPStatus
   : never
 
-export type WithACErrors<TRouteResponse> =
-  Result.Either<
-    | ExtractError<TRouteResponse>
+
+export type NativeError =
+  | ACError.AuthenticationError
+  | ACError.AuthorizationError
+  | RateLimitingError.LimitReached
+  | RateLimitingError.Unauthenticated
+
+export type NativeHTTPErrorStatus =
+  | HTTPStatus.Unauthorized
+  | HTTPStatus.TooManyRequests
+
+export type WithACErrors<TRouteResponse> = TRouteResponse extends Result.Either<infer InferredError, infer InferredResult>
+  ? Result.Either<
+    | InferredError
     | StrictEndpointError<
-      | ExtractCode<TRouteResponse>
-      | ACError.AuthenticationError
-      | ACError.AuthorizationError
-      | RateLimitingError.LimitReached
-      | RateLimitingError.Unauthenticated,
+      | ExtractCode<InferredError>
+      | NativeError,
       unknown,
-      | ExtractHTTPStatus<TRouteResponse>
-      | HTTPStatus.Unauthorized
-      | HTTPStatus.TooManyRequests
+      | ExtractHTTPStatus<InferredError>
+      | NativeHTTPErrorStatus
     >,
-    ExtractResult<TRouteResponse>
+    InferredResult
+  >
+  : TRouteResponse | Result.Error<
+    StrictEndpointError<
+      NativeError,
+      unknown,
+      NativeHTTPErrorStatus
+    >
   >
 
 export type EndpointFunction<
@@ -82,10 +96,10 @@ export type EndpointFunction<
   TRoutePayload,
 > = (
   TRoutePayload extends null
-    ? (payload?: any)=> Promise<WithACErrors<TRouteResponse>>
+    ? <T = TRouteResponse>(payload?: any)=> Promise<WithACErrors<T>>
     : TRoutePayload extends undefined
-      ? ()=> Promise<WithACErrors<TRouteResponse>>
-      : (payload: TRoutePayload)=> Promise<WithACErrors<TRouteResponse>>
+      ? <T = TRouteResponse>()=> Promise<WithACErrors<T>>
+      : <T = TRouteResponse>(payload: TRoutePayload)=> Promise<WithACErrors<T>>
 ) extends infer Function
   ? Record<TRouteMethod, Function>
   : never
