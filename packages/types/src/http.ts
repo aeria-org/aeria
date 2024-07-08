@@ -59,7 +59,6 @@ type ExtractHTTPStatus<TRouteResponse> = TRouteResponse extends EndpointError<an
   ? PHTTPStatus
   : never
 
-
 export type NativeError =
   | ACError.AuthenticationError
   | ACError.AuthorizationError
