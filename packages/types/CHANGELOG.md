@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.69
+
+### Patch Changes
+
+- a052067: Update aeria-lang
+
 ## 0.0.68
 
 ### Patch Changes
