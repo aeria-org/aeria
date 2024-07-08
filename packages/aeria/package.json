@@ -1,6 +1,6 @@
 {
   "name": "aeria",
-  "version": "0.0.138",
+  "version": "0.0.139",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -46,7 +46,7 @@
     "@aeriajs/validation": "link:../validation"
   },
   "peerDependencies": {
-    "@aeriajs/cli": "^0.0.69",
+    "@aeriajs/cli": "^0.0.70",
     "@aeriajs/core": "^0.0.129",
     "@aeriajs/common": "^0.0.80",
     "@aeriajs/entrypoint": "^0.0.82",
