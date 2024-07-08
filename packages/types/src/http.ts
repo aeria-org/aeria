@@ -1,6 +1,6 @@
 import type { ServerResponse, IncomingMessage } from 'http'
 import type { MapSchemaUnion } from './schema.js'
-import type { Result } from './result.js'
+import type { Result, ExtractError, ExtractResult } from './result.js'
 import type { EndpointError, StrictEndpointError } from './endpointError.js'
 import type { ACError } from './accessControl.js'
 import type { RateLimitingError } from './security.js'
@@ -69,9 +69,9 @@ export type NativeHTTPErrorStatus =
   | HTTPStatus.Unauthorized
   | HTTPStatus.TooManyRequests
 
-export type WithACErrors<TRouteResponse> = TRouteResponse extends Result.Either<infer InferredError, infer InferredResult>
+export type WithACErrors<TRouteResponse> = TRouteResponse extends Result.Either<infer InferredError, unknown>
   ? Result.Either<
-    | InferredError
+    | ExtractError<TRouteResponse>
     | StrictEndpointError<
       | ExtractCode<InferredError>
       | NativeError,
@@ -79,7 +79,7 @@ export type WithACErrors<TRouteResponse> = TRouteResponse extends Result.Either<
       | ExtractHTTPStatus<InferredError>
       | NativeHTTPErrorStatus
     >,
-    InferredResult
+    ExtractResult<TRouteResponse>
   >
   : TRouteResponse | Result.Error<
     StrictEndpointError<
