@@ -1,5 +1,13 @@
 # @aeriajs/entrypoint
 
+## 0.0.84
+
+### Patch Changes
+
+- Updated dependencies [e0f5922]
+  - @aeriajs/types@0.0.70
+  - @aeriajs/common@0.0.82
+
 ## 0.0.83
 
 ### Patch Changes

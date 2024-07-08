@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.70
+
+### Patch Changes
+
+- e0f5922: Fix `WithACErrors<T>` narrowing
+
 ## 0.0.69
 
 ### Patch Changes
