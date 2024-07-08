@@ -75,6 +75,9 @@ export const migrate = async () => {
       let newIndexes = 0
 
       for( const index of description.indexes ) {
+        if( index === '_id' ) {
+          continue
+        }
         const hasIndex = collIndexes.find((collIndex) => (
           !('textIndexVersion' in collIndex)
           && Object.keys(collIndex.key).length === 1

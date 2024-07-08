@@ -132,7 +132,7 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
   icon?: Icon
   options?: CollectionOptions<TDescription>
 
-  indexes?: readonly (keyof TDescription['properties'])[]
+  indexes?: readonly PropertiesWithId<TDescription>[]
   defaults?: Record<string, any>
 
   // modifiers
