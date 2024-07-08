@@ -115,7 +115,8 @@ export type CollectionContext<
   description: TDescription
   collectionName?: (keyof Collections & string) | string
   collection: TDescription['$id'] extends keyof Collections
-    ? IndepthCollection<{ description: TDescription, functions: TFunctions }>
+    ? IndepthCollection<{ description: TDescription,
+      functions: TFunctions }>
     : IndepthCollection<any>
 }
 

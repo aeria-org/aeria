@@ -187,8 +187,8 @@ importers:
         version: 2.2.3
     optionalDependencies:
       aeria-lang:
-        specifier: ~0.0.9
-        version: 0.0.9(@aeria-lang/build@0.0.12(@aeria-lang/compiler@0.0.7))(@aeria-lang/compiler@0.0.7)
+        specifier: ~0.0.10
+        version: 0.0.10(@aeria-lang/build@0.0.13(@aeria-lang/compiler@0.0.7))(@aeria-lang/compiler@0.0.7)
     devDependencies:
       '@aeriajs/builtins':
         specifier: link:../builtins
@@ -347,8 +347,8 @@ importers:
 
 packages:
 
-  '@aeria-lang/build@0.0.12':
-    resolution: {integrity: sha512-iCzN7y/GW0o5BD24nWWMmpcZItu6euYPhrPbHDTFPj++1oGi4mMxrxAk/tei3DnewWiPZX0x9zUibX3w3jEN3g==}
+  '@aeria-lang/build@0.0.13':
+    resolution: {integrity: sha512-2bQ9RgrS5JUNcLA/8LfDgYfacD8nKFfWSaTRhp8GdKHOKRiE4S0NpQzKwKa/iE5NOPWQKJ7CMh/vG073JHw2gQ==}
     peerDependencies:
       '@aeria-lang/compiler': ^0.0.7
 
@@ -1029,10 +1029,10 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  aeria-lang@0.0.9:
-    resolution: {integrity: sha512-w9XyKxGJd2adXqJKBrRSigvjsyqx+Artv0fcKVnb+GNpIaxH3nuDUCL84SJkhyDexWfbcjWpjIKBKPI2yFHHwQ==}
+  aeria-lang@0.0.10:
+    resolution: {integrity: sha512-/G1tsyqMjta1XljYQvpbUkz+mwnL6uWObLDCBTb5GdVW1BPdTXC4eS/mzfVmU6KCvDhz2PY5jOeKgVPYiMbapQ==}
     peerDependencies:
-      '@aeria-lang/build': ^0.0.12
+      '@aeria-lang/build': ^0.0.13
       '@aeria-lang/compiler': ^0.0.7
 
   agent-base@6.0.2:
@@ -3017,7 +3017,7 @@ packages:
 
 snapshots:
 
-  '@aeria-lang/build@0.0.12(@aeria-lang/compiler@0.0.7)':
+  '@aeria-lang/build@0.0.13(@aeria-lang/compiler@0.0.7)':
     dependencies:
       '@aeria-lang/compiler': 0.0.7
       glob: 10.4.3
@@ -3769,9 +3769,9 @@ snapshots:
 
   acorn@8.12.1: {}
 
-  aeria-lang@0.0.9(@aeria-lang/build@0.0.12(@aeria-lang/compiler@0.0.7))(@aeria-lang/compiler@0.0.7):
+  aeria-lang@0.0.10(@aeria-lang/build@0.0.13(@aeria-lang/compiler@0.0.7))(@aeria-lang/compiler@0.0.7):
     dependencies:
-      '@aeria-lang/build': 0.0.12(@aeria-lang/compiler@0.0.7)
+      '@aeria-lang/build': 0.0.13(@aeria-lang/compiler@0.0.7)
       '@aeria-lang/compiler': 0.0.7
     optional: true
 

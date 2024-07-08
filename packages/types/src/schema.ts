@@ -85,8 +85,11 @@ export type ObjectToSchema<TObject, TRequired extends string[] | null = null> = 
         : never
     } extends infer Properties
       ? TRequired extends null
-        ? { type: 'object', properties: Properties }
-        : { type: 'object', required: TRequired, properties: Properties }
+        ? { type: 'object',
+          properties: Properties }
+        : { type: 'object',
+          required: TRequired,
+          properties: Properties }
       : never
 
 export type PackReferences<T> = {
@@ -153,8 +156,10 @@ type ValueToProperty<TValue> = TValue extends `$${infer Ref}`
     ? { type: 'string' } : TValue extends number
       ? { type: 'number' } : TValue extends boolean
         ? { type: 'boolean' } : TValue extends new ()=> Date
-          ? { type: 'string', format: 'date' } : TValue extends readonly [infer K]
-            ? { type: 'array', items: ValueToProperty<K> } : TValue extends (infer K)[]
+          ? { type: 'string',
+            format: 'date' } : TValue extends readonly [infer K]
+            ? { type: 'array',
+              items: ValueToProperty<K> } : TValue extends (infer K)[]
               ? { enum: K } : TValue extends Record<string, any>
                 ? keyof TValue extends never
                   ? { type: 'object' }
