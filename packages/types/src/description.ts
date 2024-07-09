@@ -37,7 +37,7 @@ export type CollectionActionEvent = {
 }
 
 export type CollectionActionBase<TDescription extends Description> = {
-  label: string
+  label?: string
   icon?: Icon
   ask?: boolean
   button?: boolean
