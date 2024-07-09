@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.132
+
+### Patch Changes
+
+- b15285d: Refactor actions
+- Updated dependencies [b15285d]
+  - @aeriajs/builtins@0.0.132
+  - @aeriajs/types@0.0.71
+  - @aeriajs/common@0.0.83
+  - @aeriajs/entrypoint@0.0.85
+  - @aeriajs/http@0.0.94
+  - @aeriajs/security@0.0.132
+  - @aeriajs/validation@0.0.86
+
 ## 0.0.131
 
 ### Patch Changes

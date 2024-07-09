@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.71
+
+### Patch Changes
+
+- b15285d: Refactor actions
+
 ## 0.0.70
 
 ### Patch Changes
