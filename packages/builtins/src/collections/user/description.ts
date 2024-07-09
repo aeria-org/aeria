@@ -102,7 +102,7 @@ export const description = defineDescription({
       route: {
         name: '/dashboard/user/changepass',
         fetchItem: true,
-      }
+      },
     },
     'copyActivationLink': {
       label: 'copy_activation_link',

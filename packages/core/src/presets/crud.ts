@@ -24,7 +24,7 @@ export const crud = <const>{
       route: {
         name: '/dashboard/:collection/:id',
         setItem: true,
-      }
+      },
     },
     remove: {
       label: 'action.remove',

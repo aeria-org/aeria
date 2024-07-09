@@ -9,7 +9,7 @@ export const view = <const>{
       route: {
         name: '/dashboard/:collection/:id',
         setItem: true,
-      }
+      },
     },
   },
 } satisfies Pick<Description, 'individualActions'>
