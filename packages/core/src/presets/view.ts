@@ -2,11 +2,14 @@ import type { Description } from '@aeriajs/types'
 
 export const view = <const>{
   individualActions: {
-    'route:/dashboard/:collection/:id': {
+    viewItem: {
       label: 'action.view',
       icon: 'eye',
       translate: true,
-      setItem: true,
+      route: {
+        name: '/dashboard/:collection/:id',
+        setItem: true,
+      }
     },
   },
 } satisfies Pick<Description, 'individualActions'>

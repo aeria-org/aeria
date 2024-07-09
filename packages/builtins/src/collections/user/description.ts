@@ -95,16 +95,14 @@ export const description = defineDescription({
     },
   },
   individualActions: {
-    'ui:spawnEdit': {
-      label: 'action.edit',
-      icon: 'pencil',
-      translate: true,
-    },
-    'route:/dashboard/user/changepass': {
+    changePassword: {
       label: 'change_password',
       icon: 'key',
-      fetchItem: true,
       translate: true,
+      route: {
+        name: '/dashboard/user/changepass',
+        fetchItem: true,
+      }
     },
     'copyActivationLink': {
       label: 'copy_activation_link',

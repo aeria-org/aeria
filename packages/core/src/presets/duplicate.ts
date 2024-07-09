@@ -2,8 +2,9 @@ import type { Description } from '@aeriajs/types'
 
 export const duplicate = <const>{
   individualActions: {
-    'ui:duplicate': {
+    duplicate: {
       label: 'action.duplicate',
+      event: 'duplicate',
       icon: 'copy',
       translate: true,
     },

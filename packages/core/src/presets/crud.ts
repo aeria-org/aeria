@@ -2,26 +2,31 @@ import type { Description } from '@aeriajs/types'
 
 export const crud = <const>{
   actions: {
-    'ui:spawnAdd': {
+    spawnAdd: {
       label: 'action.add',
+      event: 'spawnAdd',
       icon: 'plus',
       button: true,
       translate: true,
     },
   },
   individualActions: {
-    'ui:spawnEdit': {
+    spawnEdit: {
       label: 'action.edit',
+      event: 'spawnEdit',
       icon: 'pencil-simple',
       translate: true,
     },
-    'route:/dashboard/:collection/:id': {
+    viewItem: {
       label: 'action.view',
       icon: 'eye',
       translate: true,
-      setItem: true,
+      route: {
+        name: '/dashboard/:collection/:id',
+        setItem: true,
+      }
     },
-    'remove': {
+    remove: {
       label: 'action.remove',
       icon: 'trash',
       ask: true,

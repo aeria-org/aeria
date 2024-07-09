@@ -1,5 +1,5 @@
 import type { WithId } from 'mongodb'
-import type { IconStyle, PhosphorIcon } from '@phosphor-icons/core'
+import type { PhosphorIcon } from '@phosphor-icons/core'
 import type { Condition } from './condition.js'
 import type { JsonSchema, PropertiesWithId } from './property.js'
 import type { OwnershipMode } from './security.js'
@@ -13,29 +13,44 @@ export type CollectionPresets =
   | 'timestamped'
   | 'view'
 
-export type Icon =
-  | PhosphorIcon['name']
-  | `${IconStyle}:${PhosphorIcon['name']}`
+export type Icon = PhosphorIcon['name']
 
-export type CollectionAction<TDescription extends Description> = {
+export type CollectionActionRoute = {
+  route: {
+    name: string
+    setItem?: boolean
+    fetchItem?: boolean
+    clearItem?: boolean
+    params?: Record<string, any>
+    query?: Record<string, any>
+  }
+}
+
+export type CollectionActionFunction = {
+  function?: string
+  selection?: boolean
+  effect?: string
+}
+
+export type CollectionActionEvent = {
+  event?: string
+}
+
+export type CollectionActionBase<TDescription extends Description> = {
   label: string
   icon?: Icon
   ask?: boolean
-  selection?: boolean
-  effect?: string
   button?: boolean
   translate?: boolean
-
-  // route namespace
-  setItem?: boolean
-  fetchItem?: boolean
-  clearItem?: boolean
-  params?: Record<string, any>
-  query?: Record<string, any>
   roles?: readonly string[]
-
   requires?: readonly PropertiesWithId<TDescription>[]
 }
+
+export type CollectionAction<TDescription extends Description> = CollectionActionBase<TDescription> & (
+  | CollectionActionRoute
+  | CollectionActionFunction
+  | CollectionActionEvent
+)
 
 export type CollectionActions<TDescription extends Description> =
   Record<string, null | CollectionAction<TDescription>>
