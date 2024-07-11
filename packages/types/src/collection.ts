@@ -7,10 +7,10 @@ import type { Description } from './description.js'
 export type Collection<TCollection extends Collection = any> = {
   description: Description
   item?: any
-  security?: CollectionSecurityPolicy<TCollection>
   functions?: Record<string, (payload: any, context: Context<any>, ...args: any[])=> any>
   contracts?: Record<string, Contract>
   exposedFunctions?: Record<string, AccessCondition>
+  security?: CollectionSecurityPolicy<TCollection>
 }
 
 export type CollectionItem<TCollectionName extends keyof Collections> = Omit<Collections[TCollectionName]['item'], '_id'>

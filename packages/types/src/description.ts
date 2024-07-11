@@ -4,7 +4,7 @@ import type { Condition } from './condition.js'
 import type { JsonSchema, PropertiesWithId } from './property.js'
 import type { OwnershipMode } from './security.js'
 
-export type CollectionPresets =
+export type DescriptionPreset =
   | 'crud'
   | 'duplicate'
   | 'remove'
@@ -164,7 +164,7 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
 
   // takes an array of something
   route?: readonly string[]
-  presets?: readonly CollectionPresets[]
+  presets?: readonly DescriptionPreset[]
 
   table?: readonly PropertiesWithId<TDescription>[]
   tableMeta?: readonly PropertiesWithId<TDescription>[]

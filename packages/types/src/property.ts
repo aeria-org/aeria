@@ -39,14 +39,12 @@ export type NonCircularJsonSchema<TJsonSchema extends NonCircularJsonSchema = an
 
 export type RefProperty = {
   $ref: Exclude<keyof Collections, 'file'> & string
-
   indexes?: readonly string[]
   populate?: readonly string[]
   select?: readonly string[]
   inline?: boolean
   form?: readonly string[]
   purge?: boolean
-
   constraints?: Condition
 }
 
