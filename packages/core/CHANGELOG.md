@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.134
+
+### Patch Changes
+
+- 09e005c: Fix `get` signature
+  - @aeriajs/builtins@0.0.134
+  - @aeriajs/security@0.0.134
+
 ## 0.0.133
 
 ### Patch Changes
