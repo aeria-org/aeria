@@ -21,7 +21,7 @@ export const get = async <TContext extends Context>(
     ? TContext
     : never,
   options?: GetOptions,
-): Promise<GetReturnType<TContext['description']>> => {
+): Promise<GetReturnType<SchemaWithId<TContext['description']>>> => {
   const security = useSecurity(context)
 
   const {
