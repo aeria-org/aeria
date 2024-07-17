@@ -9,6 +9,7 @@ export const tempFile = defineCollection({
   description: {
     $id: 'tempFile',
     icon: 'file',
+    hidden: true,
     temporary: {
       index: 'created_at',
       expireAfterSeconds: 3600,

@@ -7,7 +7,6 @@ import type {
 } from '@aeriajs/types'
 
 import { Result } from '@aeriajs/types'
-import { deepMerge } from '@aeriajs/common'
 import {
   checkImmutability,
   checkOwnershipRead,
@@ -41,20 +40,9 @@ const chainFunctions = async <TProps extends SecurityCheckProps>(
 }
 
 export const useSecurity = <TDescription extends Description>(context: Context<TDescription>) => {
-  const options = context.description.options
-    ? Object.assign({}, context.description.options)
-    : {}
-
   const beforeRead = async <TPayload extends Partial<GetAllPayload<any>>>(payload?: TPayload) => {
     const newPayload = Object.assign({}, payload)
     newPayload.filters ??= {}
-
-    if( options.queryPreset ) {
-      Object.assign(newPayload, deepMerge(
-        newPayload,
-        options.queryPreset,
-      ))
-    }
 
     const props = {
       payload: newPayload,

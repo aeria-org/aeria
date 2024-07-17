@@ -89,13 +89,6 @@ export type FiltersPreset<TDescription extends Description> = {
   default?: boolean
 }
 
-export type CollectionOptions<TDescription extends Description> = {
-  queryPreset?: {
-    filters?: Partial<Record<PropertiesWithId<TDescription> | `$${string}`, any>>
-    sort?: Partial<Record<PropertiesWithId<TDescription>, any>>
-  }
-}
-
 export type LayoutName =
   | 'tabular'
   | 'grid'
@@ -139,14 +132,10 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
   title?: string
   categories?: readonly string[]
 
-  system?: boolean
-  inline?: boolean
-
+  hidden?: boolean
   preferred?: Record<string, RuntimeDescription<TDescription>>
 
   icon?: Icon
-  options?: CollectionOptions<TDescription>
-
   indexes?: readonly PropertiesWithId<TDescription>[]
   defaults?: Record<string, any>
 
