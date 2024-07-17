@@ -1,5 +1,17 @@
 # @aeriajs/builtins
 
+## 0.0.135
+
+### Patch Changes
+
+- d19bd76: Add `description.hidden`
+- Updated dependencies [d19bd76]
+  - @aeriajs/types@0.0.73
+  - @aeriajs/core@0.0.135
+  - @aeriajs/common@0.0.85
+  - @aeriajs/entrypoint@0.0.87
+  - @aeriajs/validation@0.0.88
+
 ## 0.0.134
 
 ### Patch Changes
