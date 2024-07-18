@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.73
+
+### Patch Changes
+
+- d19bd76: Add `description.hidden`
+
 ## 0.0.72
 
 ### Patch Changes

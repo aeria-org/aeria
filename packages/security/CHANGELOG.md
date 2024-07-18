@@ -1,5 +1,15 @@
 # @aeriajs/security
 
+## 0.0.135
+
+### Patch Changes
+
+- d19bd76: Add `description.hidden`
+- Updated dependencies [d19bd76]
+  - @aeriajs/types@0.0.73
+  - @aeriajs/core@0.0.135
+  - @aeriajs/common@0.0.85
+
 ## 0.0.134
 
 ### Patch Changes
