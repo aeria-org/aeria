@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.136
+
+### Patch Changes
+
+- c38ebfd: Refactor `successfulAuthentication()`
+  - @aeriajs/core@0.0.136
+
 ## 0.0.135
 
 ### Patch Changes
