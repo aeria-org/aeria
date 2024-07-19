@@ -26,8 +26,19 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
       ? await decodeToken<Token>(token.content)
       : context.token
 
+    const { error, result: user } = await context.collections.user.functions.get({
+      filters: {
+        _id: decodedToken.sub,
+      },
+      populate: ['picture_file'],
+    })
+
+    if( error ) {
+      throw new Error()
+    }
+
     return Result.result(decodedToken.sub
-      ? await successfulAuthentication(decodedToken.sub, context)
+      ? await successfulAuthentication(user, context)
       : await defaultSuccessfulAuthentication())
   }
 
@@ -68,6 +79,6 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
     })
   }
 
-  return Result.result(await successfulAuthentication(user._id, context))
+  return Result.result(await successfulAuthentication(user, context))
 }
 

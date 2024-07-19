@@ -1,16 +1,18 @@
 import type { RouteContext, SchemaWithId, TokenRecipient } from '@aeriajs/types'
-import type { ObjectId } from '@aeriajs/core'
 import type { description } from './collections/user/description.js'
 import { signToken } from '@aeriajs/core'
 
+export type TokenableUser = Pick<SchemaWithId<typeof description>,
+  | '_id'
+  | 'name'
+  | 'email'
+  | 'roles'
+  | 'active'
+>
+
 export type SuccessfulAuthentication = {
-  user: Pick<SchemaWithId<typeof description>,
-    | 'name'
-    | 'email'
-    | 'roles'
-    | 'active'
-  > & {
-    _id: ObjectId | null
+  user: TokenableUser & {
+    _id: null
   }
   token: TokenRecipient
 }
@@ -20,17 +22,7 @@ export enum AuthenticationError {
   InactiveUser = 'INACTIVE_USER',
 }
 
-export const successfulAuthentication = async (userId: ObjectId, context: RouteContext): Promise<SuccessfulAuthentication> => {
-  const { error, result: user } = await context.collections.user.functions.get({
-    filters: {
-      _id: userId,
-    },
-    populate: ['picture_file'],
-  })
-
-  if( error ) {
-    throw new Error()
-  }
+export const successfulAuthentication = async <TUser extends TokenableUser>(user: TUser, context: RouteContext): Promise<SuccessfulAuthentication> => {
   const tokenContent = {
     sub: user._id,
     roles: user.roles,
@@ -67,7 +59,7 @@ export const successfulAuthentication = async (userId: ObjectId, context: RouteC
   const token = await signToken(tokenContent)
 
   return {
-    user: user,
+    user,
     token: {
       type: 'bearer',
       content: token,
