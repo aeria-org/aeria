@@ -78,6 +78,9 @@ const disposeOldFiles = async (ctx: PhaseContext, options: { preserveIds?: Objec
   }
 
   let fileIds = getValueFromPath(doc, ctx.propPath)
+  if( !fileIds ) {
+    return
+  }
 
   if( options.preserveIds ) {
     fileIds = fileIds.filter((id: ObjectId | null) => !id || !options.preserveIds!.some((fromId) => {
