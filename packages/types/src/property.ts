@@ -14,6 +14,10 @@ export type PropertyInputType =
   | 'time'
   | 'month'
 
+export type PropertyInputElement =
+  | 'input'
+  | 'textarea'
+
 export type PropertyFormat =
   | 'date'
   | 'date-time'
@@ -98,9 +102,8 @@ export type StringProperty = {
   default?: string | Date
   mask?: string | readonly string[]
   maskedValue?: boolean
-
   placeholder?: string
-  element?: 'textarea'
+  element?: PropertyInputElement
   inputType?: PropertyInputType
 }
 
@@ -113,7 +116,6 @@ export type NumberProperty = {
   exclusiveMinimum?: number
   exclusiveMaximum?: number
   default?: number
-
   placeholder?: string
 }
 
