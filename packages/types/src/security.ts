@@ -1,3 +1,7 @@
+import type { Result } from './result.js'
+import type { Context } from './context.js'
+import type { ACError } from './accessControl.js'
+
 export type OwnershipMode =
   | boolean
   | 'always'
@@ -58,3 +62,21 @@ export type CollectionSecurityPolicy<
     >
   >
 }
+
+export type CollectionHookProps<TPayload = any> = {
+  propertyName?: string
+  parentId?: string
+  childId?: string
+  payload: TPayload
+}
+
+export type CollectionHook<TPayload = any> = (props: CollectionHookProps, context: Context)=> Promise<Result.Either<
+  ACError,
+  TPayload
+>>
+
+export type CollectionMiddleware = {
+  beforeRead: CollectionHook
+  beforeWrite: CollectionHook
+}
+

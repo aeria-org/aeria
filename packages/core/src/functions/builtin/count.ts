@@ -11,23 +11,29 @@ export const count = async <TContext extends Context>(
     : never,
 ) => {
   const security = useSecurity(context)
-  const { filters } = throwIfError(await security.beforeRead(payload))
-  const { $text, ...filtersRest } = filters
+  const sanitizedPayload = throwIfError(await security.beforeRead(payload))
 
-  const traversedFilters = throwIfError(await traverseDocument(filtersRest, context.description, {
+  const filters = sanitizedPayload.filters
+  const $text = '$text' in sanitizedPayload.filters
+    ? sanitizedPayload.filters.$text
+    : undefined
+
+  if( '$text' in filters ) {
+    delete filters.$text
+  }
+
+  const traversedFilters = throwIfError(await traverseDocument(filters, context.description, {
     autoCast: true,
     allowOperators: true,
   }))
 
   if( $text ) {
     const pipeline = []
-    if( $text ) {
-      pipeline.push({
-        $match: {
-          $text,
-        },
-      })
-    }
+    pipeline.push({
+      $match: {
+        $text,
+      },
+    })
 
     pipeline.push({
       $match: traversedFilters,

@@ -23,17 +23,25 @@ export const getAll = async <TContext extends Context>(
   const security = useSecurity(context)
   const payload = _payload || {}
 
+  const sanitizedPayload = !options.bypassSecurity
+    ? throwIfError(await security.beforeRead(payload))
+    : payload
+
   const {
-    filters = {},
     limit = context.config.paginationLimit!,
     sort,
     project = [],
     offset = 0,
-  } = !options.bypassSecurity
-    ? throwIfError(await security.beforeRead(payload))
-    : payload
+  } = sanitizedPayload
 
-  const { $text, ...filtersRest } = filters
+  const filters = sanitizedPayload.filters || {}
+  const $text = sanitizedPayload.filters && '$text' in sanitizedPayload.filters
+    ? sanitizedPayload.filters.$text
+    : undefined
+
+  if( '$text' in filters ) {
+    delete filters.$text
+  }
 
   const pipeline: Document[] = []
   const references = await getReferences(context.description.properties, {
@@ -62,9 +70,9 @@ export const getAll = async <TContext extends Context>(
     })
   }
 
-  if( Object.keys(filtersRest).length > 0 ) {
+  if( Object.keys(filters).length > 0 ) {
     pipeline.push({
-      $match: throwIfError(await traverseDocument(filtersRest, context.description, {
+      $match: throwIfError(await traverseDocument(filters, context.description, {
         autoCast: true,
         allowOperators: true,
       })),
@@ -90,7 +98,9 @@ export const getAll = async <TContext extends Context>(
 
   pipeline.push(...await buildLookupPipeline(references, {
     memoize: context.description.$id,
-    project: payload.populate || project,
+    project: sanitizedPayload.populate
+      ? <string[]>sanitizedPayload.populate
+      : project,
     properties: context.description.properties,
   }))
 

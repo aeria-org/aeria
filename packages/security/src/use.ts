@@ -1,28 +1,20 @@
-import type { SecurityCheck, SecurityCheckProps } from './types.js'
-import type {
-  Context,
-  Description,
-  GetAllPayload,
-  InsertPayload,
-} from '@aeriajs/types'
+import type { Context, Description, CollectionHook, CollectionHookProps } from '@aeriajs/types'
+import type { CollectionHookReadPayload, CollectionHookWritePayload } from './types.js'
 
 import { Result } from '@aeriajs/types'
 import {
-  checkImmutability,
+  checkImmutabilityWrite,
   checkOwnershipRead,
   checkOwnershipWrite,
   checkPagination,
 } from './index.js'
 
-const chainFunctions = async <TProps extends SecurityCheckProps>(
-  _props: TProps,
+const chainFunctions = async <TPayload extends {}>(
+  _props: CollectionHookProps<TPayload>,
   context: Context,
-  functions: (SecurityCheck | null)[],
+  functions: (CollectionHook<NoInfer<TPayload>> | null)[],
 ) => {
-  const props = Object.assign({
-    filters: {},
-  }, _props)
-
+  const props = Object.assign({}, _props)
   for( const fn of functions ) {
     if( !fn ) {
       continue
@@ -40,9 +32,10 @@ const chainFunctions = async <TProps extends SecurityCheckProps>(
 }
 
 export const useSecurity = <TDescription extends Description>(context: Context<TDescription>) => {
-  const beforeRead = async <TPayload extends Partial<GetAllPayload<any>>>(payload?: TPayload) => {
-    const newPayload = Object.assign({}, payload)
-    newPayload.filters ??= {}
+  const beforeRead = async <TPayload extends Partial<CollectionHookReadPayload>>(payload?: TPayload) => {
+    const newPayload = Object.assign({
+      filters: {},
+    }, payload)
 
     const props = {
       payload: newPayload,
@@ -56,7 +49,7 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
     ])
   }
 
-  const beforeWrite = async <TPayload extends Partial<InsertPayload<any>>>(payload?: TPayload) => {
+  const beforeWrite = async <TPayload extends CollectionHookWritePayload>(payload?: TPayload) => {
     const newPayload = Object.assign({
       what: {},
     }, payload)
@@ -66,7 +59,7 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
 
     return chainFunctions(props, context, [
       checkOwnershipWrite,
-      checkImmutability,
+      checkImmutabilityWrite,
     ])
   }
 

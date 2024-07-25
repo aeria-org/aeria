@@ -1,8 +1,8 @@
-import type { Context, InsertPayload } from '@aeriajs/types'
-import type { SecurityCheckProps, SecurityCheckReadPayload } from './types.js'
+import type { Context, CollectionHookProps } from '@aeriajs/types'
+import type { CollectionHookReadPayload, CollectionHookWritePayload } from './types.js'
 import { Result, ACError } from '@aeriajs/types'
 
-export const checkOwnershipRead = async (props: SecurityCheckProps<SecurityCheckReadPayload>, context: Context) => {
+export const checkOwnershipRead = async <T extends CollectionHookReadPayload>(props: CollectionHookProps<T>, context: Context) => {
   const { token, description } = context
   const payload = Object.assign({}, props.payload)
 
@@ -15,7 +15,7 @@ export const checkOwnershipRead = async (props: SecurityCheckProps<SecurityCheck
   return Result.result(payload)
 }
 
-export const checkOwnershipWrite = async (props: SecurityCheckProps<InsertPayload<any>>, context: Context) => {
+export const checkOwnershipWrite = async <T extends CollectionHookWritePayload>(props: CollectionHookProps<T>, context: Context) => {
   const { token, description } = context
   const { parentId } = props
 

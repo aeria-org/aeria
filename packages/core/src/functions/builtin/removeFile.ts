@@ -1,5 +1,5 @@
 import type { Context, RemoveFilePayload } from '@aeriajs/types'
-import { checkImmutability } from '@aeriajs/security'
+import { checkImmutabilityRead } from '@aeriajs/security'
 import { Result } from '@aeriajs/types'
 
 export const removeFile = async <TContext extends Context>(
@@ -12,7 +12,7 @@ export const removeFile = async <TContext extends Context>(
     ...props
   } = payload
 
-  await checkImmutability({
+  await checkImmutabilityRead({
     propertyName,
     parentId,
     childId: props.filters._id,

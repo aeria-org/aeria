@@ -1,21 +1,16 @@
-import type { Context } from '@aeriajs/types'
-import type { SecurityCheckProps, SecurityCheckReadPayload, SecurityCheckWritePayload } from './types.js'
+import type { ObjectId } from 'mongodb'
+import type { Context, CollectionHookProps } from '@aeriajs/types'
+import type { CollectionHookReadPayload, CollectionHookWritePayload } from './types.js'
 import { Result, ACError } from '@aeriajs/types'
 
-export const checkImmutability = async (
-  props: SecurityCheckProps<
-    | SecurityCheckReadPayload
-    | SecurityCheckWritePayload
-  >,
+const checkImmutability = async <TProps extends CollectionHookProps>(
+  docId: ObjectId | undefined,
+  props: TProps,
   context: Context,
 ) => {
   if( !context.description.immutable ) {
     return Result.result(props.payload)
   }
-
-  const docId = 'filters' in props.payload
-    ? props.payload.filters._id
-    : props.payload.what._id
 
   if( docId ) {
     if( typeof context.description.immutable === 'function' ) {
@@ -37,5 +32,13 @@ export const checkImmutability = async (
   }
 
   return Result.result(props.payload)
+}
+
+export const checkImmutabilityRead = async (props: CollectionHookProps<CollectionHookReadPayload>, context: Context) => {
+  return checkImmutability(props.payload.filters._id, props, context)
+}
+
+export const checkImmutabilityWrite = async (props: CollectionHookProps<CollectionHookWritePayload>, context: Context) => {
+  return checkImmutability(props.payload.what._id, props, context)
 }
 

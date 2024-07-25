@@ -24,12 +24,14 @@ export const get = async <TContext extends Context>(
 ): Promise<GetReturnType<SchemaWithId<TContext['description']>>> => {
   const security = useSecurity(context)
 
+  const sanitizedPayload = !options?.bypassSecurity
+    ? throwIfError(await security.beforeRead(payload))
+    : payload
+
   const {
     filters = {},
     project = [],
-  } = !options?.bypassSecurity
-    ? throwIfError(await security.beforeRead(payload))
-    : payload
+  } = sanitizedPayload
 
   if( Object.keys(filters).length === 0 ) {
     return context.error(HTTPStatus.BadRequest, {
@@ -58,7 +60,9 @@ export const get = async <TContext extends Context>(
 
   pipeline.push(...await buildLookupPipeline(references, {
     memoize: context.description.$id,
-    project: payload.populate || project,
+    project: sanitizedPayload.populate
+      ? <string[]>sanitizedPayload.populate
+      : project,
     properties: context.description.properties,
   }))
 

@@ -95,8 +95,8 @@ export type LayoutName =
   | 'list'
 
 export type LayoutOptions<TDescription extends Description=any> = {
-  picture?: PropertiesWithId<TDescription>
   title?: PropertiesWithId<TDescription>
+  picture?: PropertiesWithId<TDescription>
   badge?: PropertiesWithId<TDescription>
   information?: PropertiesWithId<TDescription>
   active?: PropertiesWithId<TDescription>
