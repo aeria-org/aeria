@@ -83,9 +83,7 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
     filters: {
       _id: user._id,
     },
-    populate: [
-      'picture_file',
-    ],
+    populate: ['picture_file'],
   }, context))
 
   return Result.result(await successfulAuthentication(completeUser, context))
