@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.74
+
+### Patch Changes
+
+- f8e3c41: Collection middlewares, fix authentication bug
+
 ## 0.0.73
 
 ### Patch Changes
