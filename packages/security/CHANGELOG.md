@@ -1,5 +1,15 @@
 # @aeriajs/security
 
+## 0.0.137
+
+### Patch Changes
+
+- f8e3c41: Collection middlewares, fix authentication bug
+- Updated dependencies [f8e3c41]
+  - @aeriajs/core@0.0.137
+  - @aeriajs/types@0.0.74
+  - @aeriajs/common@0.0.86
+
 ## 0.0.136
 
 ### Patch Changes
