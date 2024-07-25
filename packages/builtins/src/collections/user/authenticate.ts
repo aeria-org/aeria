@@ -2,7 +2,8 @@ import type { Context, Token, TokenRecipient } from '@aeriajs/types'
 import type { description } from './description.js'
 import { Result, HTTPStatus, ACError } from '@aeriajs/types'
 import { compare as bcryptCompare } from 'bcrypt'
-import { decodeToken } from '@aeriajs/core'
+import { decodeToken, get } from '@aeriajs/core'
+import { throwIfError } from '@aeriajs/common'
 import { successfulAuthentication, defaultSuccessfulAuthentication, AuthenticationError } from '../../authentication.js'
 
 type Props = {
@@ -60,7 +61,6 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
     },
     {
       projection: {
-        email: 1,
         password: 1,
         active: 1,
       },
@@ -79,6 +79,15 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
     })
   }
 
-  return Result.result(await successfulAuthentication(user, context))
+  const completeUser = throwIfError(await get({
+    filters: {
+      _id: user._id,
+    },
+    populate: [
+      'picture_file',
+    ],
+  }, context))
+
+  return Result.result(await successfulAuthentication(completeUser, context))
 }
 
