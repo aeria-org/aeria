@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.79
+
+### Patch Changes
+
+- 0411ccb: Update aeria-lang
+
 ## 0.0.78
 
 ### Patch Changes
