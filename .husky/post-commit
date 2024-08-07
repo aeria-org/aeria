@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
 
 if ! test $GITHUB_ACTIONS && ! test $SKIP; then
   if ! [ -z $(git diff --name-only) ]; then
