@@ -52,6 +52,6 @@
     "@aeriajs/types": "^0.0.74"
   },
   "optionalDependencies": {
-    "aeria-lang": "~0.0.10"
+    "aeria-lang": "~0.0.11"
   }
 }
