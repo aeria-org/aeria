@@ -1,6 +1,6 @@
 import type { ObjectId } from 'mongodb'
 import type { Context, CollectionHookProps, GenericMiddlewareNext } from '@aeriajs/types'
-import type { CollectionHookReadPayload, CollectionHookWritePayload } from './types.js'
+import type { CollectionHookReadPayload, CollectionHookWritePayload } from '../types.js'
 import { Result, ACError } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 

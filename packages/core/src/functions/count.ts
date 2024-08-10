@@ -2,7 +2,7 @@ import type { Context, SchemaWithId, CountPayload } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
 import { Result } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
-import { traverseDocument } from '../../collection/index.js'
+import { traverseDocument } from '../collection/index.js'
 
 export type CountOptions = {
   bypassSecurity?: boolean

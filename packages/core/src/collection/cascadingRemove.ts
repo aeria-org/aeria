@@ -1,8 +1,8 @@
 import type { Context } from '@aeriajs/types'
 import type { ObjectId } from 'mongodb'
+import type * as functions from '../functions/index.js'
 import { createContext } from '../context.js'
 import { getFunction } from '../assets.js'
-import type * as functions from '../functions/builtin/index.js'
 import { getDatabaseCollection } from '../database.js'
 import { getReferences, type ReferenceMap, type Reference } from './reference.js'
 

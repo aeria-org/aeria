@@ -7,7 +7,7 @@ import {
   checkOwnershipRead,
   checkOwnershipWrite,
   checkPagination,
-} from './index.js'
+} from './middlewares/index.js'
 
 export const useSecurity = <TDescription extends Description>(context: Context<TDescription>) => {
   const beforeRead = async <TPayload extends Partial<CollectionHookReadPayload>>(payload?: TPayload) => {

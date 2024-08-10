@@ -9,7 +9,7 @@ import {
   getReferences,
   buildLookupPipeline,
   fill,
-} from '../../collection/index.js'
+} from '../collection/index.js'
 
 export type GetOptions = {
   bypassSecurity?: boolean

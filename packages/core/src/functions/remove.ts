@@ -2,7 +2,7 @@ import type { Context, SchemaWithId, RemovePayload } from '@aeriajs/types'
 import { Result, HTTPStatus, ACError } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import { useSecurity } from '@aeriajs/security'
-import { traverseDocument, cascadingRemove } from '../../collection/index.js'
+import { traverseDocument, cascadingRemove } from '../collection/index.js'
 
 export type RemoveOptions = {
   bypassSecurity?: boolean

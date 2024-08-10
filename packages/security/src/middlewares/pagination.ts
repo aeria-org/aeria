@@ -1,5 +1,5 @@
 import type { CollectionHookProps, GenericMiddlewareNext, Context } from '@aeriajs/types'
-import type { CollectionHookReadPayload } from './types.js'
+import type { CollectionHookReadPayload } from '../types.js'
 import { Result, ACError } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 
