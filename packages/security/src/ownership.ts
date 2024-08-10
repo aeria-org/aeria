@@ -7,7 +7,7 @@ export const checkOwnershipRead = async <T extends CollectionHookReadPayload>(
   props: CollectionHookProps<T>,
   initial: Result.Either<unknown, T>,
   context: Context,
-  next: GenericMiddlewareNext<Result.Result<T>, CollectionHookProps<T>>
+  next: GenericMiddlewareNext<Result.Result<T>, CollectionHookProps<T>>,
 ) => {
   const { token, description } = context
   const payload = throwIfError(initial)
@@ -25,7 +25,7 @@ export const checkOwnershipWrite = async <T extends CollectionHookWritePayload>(
   props: CollectionHookProps<T>,
   initial: Result.Either<unknown, T>,
   context: Context,
-  next: GenericMiddlewareNext<Result.Result<T>, CollectionHookProps<T>>
+  next: GenericMiddlewareNext<Result.Result<T>, CollectionHookProps<T>>,
 ) => {
   const { token, description } = context
   const { parentId } = props
