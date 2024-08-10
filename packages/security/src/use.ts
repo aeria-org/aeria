@@ -25,9 +25,7 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
     }
 
     const start = iterableMiddlewares<
-      Result.Either<unknown, TPayload & {
-        filters: Record<string, any>,
-      }>,
+      Result.Either<unknown, TPayload & CollectionHookReadPayload>,
       typeof props
     >(middlewares)
 

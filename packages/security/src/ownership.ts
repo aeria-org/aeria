@@ -1,9 +1,14 @@
-import type { MiddlewareNext, Context, CollectionHookProps } from '@aeriajs/types'
+import type { GenericMiddlewareNext, Context, CollectionHookProps } from '@aeriajs/types'
 import type { CollectionHookReadPayload, CollectionHookWritePayload } from './types.js'
 import { Result, ACError } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 
-export const checkOwnershipRead = async <T extends CollectionHookReadPayload>(props: CollectionHookProps<T>, initial: Result.Either<unknown, T>, context: Context, next: MiddlewareNext) => {
+export const checkOwnershipRead = async <T extends CollectionHookReadPayload>(
+  props: CollectionHookProps<T>,
+  initial: Result.Either<unknown, T>,
+  context: Context,
+  next: GenericMiddlewareNext<Result.Result<T>, CollectionHookProps<T>>
+) => {
   const { token, description } = context
   const payload = throwIfError(initial)
 
@@ -16,7 +21,12 @@ export const checkOwnershipRead = async <T extends CollectionHookReadPayload>(pr
   return next(props, Result.result(payload), context)
 }
 
-export const checkOwnershipWrite = async <T extends CollectionHookWritePayload>(props: CollectionHookProps<T>, initial: Result.Either<unknown, T>, context: Context, next: MiddlewareNext) => {
+export const checkOwnershipWrite = async <T extends CollectionHookWritePayload>(
+  props: CollectionHookProps<T>,
+  initial: Result.Either<unknown, T>,
+  context: Context,
+  next: GenericMiddlewareNext<Result.Result<T>, CollectionHookProps<T>>
+) => {
   const { token, description } = context
   const { parentId } = props
 
