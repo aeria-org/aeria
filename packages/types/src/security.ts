@@ -68,10 +68,10 @@ export type CollectionHookProps<TPayload = any> = {
   payload: TPayload
 }
 
-export type GenericMiddlewareNext<T, P> = (payload: P, initial: T, context: Context)=> T | Promise<T>
-export type MiddlewareNext = <T, P>(payload: P, initial: T, context: Context)=> T | Promise<T>
+export type GenericMiddlewareNext<TReturn, TPayload> = (payload: TPayload, initial: TReturn, context: Context)=> TReturn | Promise<TReturn>
+export type MiddlewareNext = <TReturn, TReturnPayload>(payload: TReturnPayload, initial: TReturn, context: Context)=> TReturn | Promise<TReturn>
 
-export type Middleware<T = any, P = any, TNext extends GenericMiddlewareNext<T, P> = GenericMiddlewareNext<T, P>> = (payload: P, initial: T, context: Context, next: TNext)=> T | Promise<T>
+export type Middleware<TReturn = any, TPayload = any, TReturnNext extends GenericMiddlewareNext<TReturn, TPayload> = GenericMiddlewareNext<TReturn, TPayload>> = (payload: TPayload, initial: TReturn, context: Context, next: TReturnNext)=> TReturn | Promise<TReturn>
 
 export type CollectionMiddleware = {
   beforeRead: Middleware

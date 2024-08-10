@@ -28,7 +28,7 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
       : context.token
 
     if( !decodedToken.sub ) {
-      return Result.result(defaultSuccessfulAuthentication())
+      return Result.result(await defaultSuccessfulAuthentication())
     }
 
     const { error, result: user } = await context.collections.user.functions.get({
@@ -42,7 +42,7 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
       throw new Error()
     }
 
-    return Result.result(successfulAuthentication(user, context))
+    return Result.result(await successfulAuthentication(user, context))
   }
 
   if( typeof props.email !== 'string' ) {
