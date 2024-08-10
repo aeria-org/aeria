@@ -1,8 +1,12 @@
 import type { Context, RemoveFilePayload } from '@aeriajs/types'
-import { checkImmutabilityRead } from '@aeriajs/security'
-import { Result } from '@aeriajs/types'
+import { Result, ACError } from '@aeriajs/types'
+import { useSecurity } from '@aeriajs/security'
 
-export const removeFile = async <TContext extends Context>(
+export type RemoveFileOptions = {
+  bypassSecurity?: boolean
+}
+
+const internalRemoveFile = async <TContext extends Context>(
   payload: RemoveFilePayload,
   context: TContext,
 ) => {
@@ -12,14 +16,26 @@ export const removeFile = async <TContext extends Context>(
     ...props
   } = payload
 
-  await checkImmutabilityRead({
-    propertyName,
-    parentId,
-    childId: props.filters._id,
-    payload: props,
-  }, Result.result(payload), context, (_, initial) => initial)
-
   const doc = await context.collections.file.functions!.remove(props)
   return Result.result(doc)
+}
+
+export const removeFile = async <TContext extends Context>(
+  payload: RemoveFilePayload,
+  context: TContext,
+  options: RemoveFileOptions = {},
+) => {
+  if( options.bypassSecurity ) {
+    return internalRemoveFile(payload, context)
+  }
+
+  const security = useSecurity(context)
+  const { error, result: securedPayload } = await security.beforeRead(payload)
+  if( error ) {
+    switch( error ) {
+      case ACError.InvalidLimit: throw new Error
+    }
+  }
+  return internalRemoveFile(securedPayload, context)
 }
 

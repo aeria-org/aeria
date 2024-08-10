@@ -26,18 +26,11 @@ export const insertErrorSchema = () => endpointErrorSchema({
   ],
 })
 
-export const insert = async <TContext extends Context>(
+const internalInsert = async <TContext extends Context>(
   payload: InsertPayload<SchemaWithId<TContext['description']>>,
   context: TContext,
-  options?: InsertOptions,
 ): Promise<InsertReturnType<SchemaWithId<TContext['description']>>> => {
-  const security = useSecurity(context)
-
-  const query = !options?.bypassSecurity
-    ? throwIfError(await security.beforeWrite(payload))
-    : payload
-
-  const { error, result: what } = await traverseDocument(query.what, context.description, {
+  const { error, result: what } = await traverseDocument(payload.what, context.description, {
     recurseDeep: true,
     autoCast: true,
     validate: true,
@@ -125,4 +118,24 @@ export const insert = async <TContext extends Context>(
 
   return Result.result(result)
 }
+
+export const insert = async <TContext extends Context>(
+  payload: InsertPayload<SchemaWithId<TContext['description']>>,
+  context: TContext extends Context<any>
+    ? TContext
+    : never,
+  options: InsertOptions = {},
+) => {
+  if( options.bypassSecurity ) {
+    return internalInsert(payload, context)
+  }
+
+  const security = useSecurity(context)
+  const { error, result: securedPayload } = await security.beforeWrite(payload)
+  if( error ) {
+    return Result.error(error)
+  }
+  return internalInsert(securedPayload, context)
+}
+
 

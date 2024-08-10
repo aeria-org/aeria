@@ -4,18 +4,17 @@ import { Result } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import { traverseDocument } from '../../collection/index.js'
 
-export const count = async <TContext extends Context>(
-  payload: CountPayload<SchemaWithId<TContext['description']>>,
-  context: TContext extends Context<any>
-    ? TContext
-    : never,
-) => {
-  const security = useSecurity(context)
-  const sanitizedPayload = throwIfError(await security.beforeRead(payload))
+export type CountOptions = {
+  bypassSecurity?: boolean
+}
 
-  const filters = sanitizedPayload.filters
-  const $text = '$text' in sanitizedPayload.filters
-    ? sanitizedPayload.filters.$text
+const internalCount = async <TContext extends Context>(
+  payload: CountPayload<SchemaWithId<TContext['description']>>,
+  context: Context,
+) => {
+  const { filters = {} } = payload
+  const $text = '$text' in filters
+    ? filters.$text
     : undefined
 
   if( '$text' in filters ) {
@@ -50,5 +49,24 @@ export const count = async <TContext extends Context>(
   }
 
   return Result.result(await context.collection.model.countDocuments(traversedFilters))
+}
+
+export const count = async <TContext extends Context>(
+  payload: CountPayload<SchemaWithId<TContext['description']>>,
+  context: TContext extends Context<any>
+    ? TContext
+    : never,
+  options: CountOptions = {},
+) => {
+  if( options.bypassSecurity ) {
+    return internalCount(payload, context)
+  }
+
+  const security = useSecurity(context)
+  const { error, result: securedPayload } = await security.beforeRead(payload)
+  if( error ) {
+    return Result.error(error)
+  }
+  return internalCount(securedPayload, context)
 }
 

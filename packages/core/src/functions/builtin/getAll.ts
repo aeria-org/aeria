@@ -15,28 +15,20 @@ export type GetAllOptions = {
   bypassSecurity?: boolean
 }
 
-export const getAll = async <TContext extends Context>(
-  _payload: GetAllPayload<SchemaWithId<TContext['description']>> | undefined,
+const internalGetAll = async <TContext extends Context>(
+  payload: GetAllPayload<SchemaWithId<TContext['description']>>,
   context: TContext,
-  options: GetAllOptions = {},
 ) => {
-  const security = useSecurity(context)
-  const payload = _payload || {}
-
-  const sanitizedPayload = !options.bypassSecurity
-    ? throwIfError(await security.beforeRead(payload))
-    : payload
-
   const {
     limit = context.config.paginationLimit!,
     sort,
     project = [],
     offset = 0,
-  } = sanitizedPayload
+  } = payload
 
-  const filters = sanitizedPayload.filters || {}
-  const $text = sanitizedPayload.filters && '$text' in sanitizedPayload.filters
-    ? sanitizedPayload.filters.$text
+  const filters = payload.filters || {}
+  const $text = payload.filters && '$text' in payload.filters
+    ? payload.filters.$text
     : undefined
 
   if( '$text' in filters ) {
@@ -98,8 +90,8 @@ export const getAll = async <TContext extends Context>(
 
   pipeline.push(...await buildLookupPipeline(references, {
     memoize: context.description.$id,
-    project: sanitizedPayload.populate
-      ? <string[]>sanitizedPayload.populate
+    project: payload.populate
+      ? <string[]>payload.populate
       : project,
     properties: context.description.properties,
   }))
@@ -123,5 +115,25 @@ export const getAll = async <TContext extends Context>(
   }
 
   return Result.result(documents)
+}
+
+export const getAll = async <TContext extends Context>(
+  payload: GetAllPayload<SchemaWithId<TContext['description']>> | undefined,
+  context: TContext,
+  options: GetAllOptions = {},
+) => {
+  if( !payload ) {
+    return internalGetAll({}, context)
+  }
+  if( options.bypassSecurity ) {
+    return internalGetAll(payload, context)
+  }
+
+  const security = useSecurity(context)
+  const { error, result: securedPayload } = await security.beforeRead(payload)
+  if( error ) {
+    return Result.error(error)
+  }
+  return internalGetAll(securedPayload, context)
 }
 

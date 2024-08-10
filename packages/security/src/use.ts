@@ -1,4 +1,4 @@
-import type { Context, Description } from '@aeriajs/types'
+import type { Context, Description, ACError } from '@aeriajs/types'
 import type { CollectionHookReadPayload, CollectionHookWritePayload } from './types.js'
 import { Result } from '@aeriajs/types'
 import { iterableMiddlewares } from './middleware.js'
@@ -25,7 +25,10 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
     }
 
     const start = iterableMiddlewares<
-      Result.Either<unknown, TPayload & CollectionHookReadPayload>,
+      Result.Either<
+        | ACError.InvalidLimit,
+        TPayload & CollectionHookReadPayload
+      >,
       typeof props
     >(middlewares)
 
@@ -41,7 +44,7 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
     }
 
     const start = iterableMiddlewares<
-      Result.Either<unknown, TPayload>,
+      Result.Either<ACError, TPayload>,
       typeof props
     >([
       checkOwnershipWrite,

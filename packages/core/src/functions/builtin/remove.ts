@@ -1,9 +1,14 @@
 import type { Context, SchemaWithId, RemovePayload } from '@aeriajs/types'
 import { Result, HTTPStatus, ACError } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
+import { useSecurity } from '@aeriajs/security'
 import { traverseDocument, cascadingRemove } from '../../collection/index.js'
 
-export const remove = async <TContext extends Context>(
+export type RemoveOptions = {
+  bypassSecurity?: boolean
+}
+
+const internalRemove = async <TContext extends Context>(
   payload: RemovePayload<SchemaWithId<TContext['description']>>,
   context: TContext,
 ) => {
@@ -28,3 +33,21 @@ export const remove = async <TContext extends Context>(
   return Result.result(await context.collection.model.findOneAndDelete(filters))
 }
 
+export const remove = async <TContext extends Context>(
+  payload: RemovePayload<SchemaWithId<TContext['description']>>,
+  context: TContext,
+  options: RemoveOptions = {},
+) => {
+  if( options.bypassSecurity ) {
+    return internalRemove(payload, context)
+  }
+
+  const security = useSecurity(context)
+  const { error, result: securedPayload } = await security.beforeRead(payload)
+  if( error ) {
+    switch( error ) {
+      case ACError.InvalidLimit: throw new Error
+    }
+  }
+  return internalRemove(securedPayload, context)
+}

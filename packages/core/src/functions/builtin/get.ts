@@ -15,23 +15,14 @@ export type GetOptions = {
   bypassSecurity?: boolean
 }
 
-export const get = async <TContext extends Context>(
+const internalGet = async <TContext extends Context>(
   payload: GetPayload<SchemaWithId<TContext['description']>>,
-  context: TContext extends Context<any>
-    ? TContext
-    : never,
-  options?: GetOptions,
+  context: TContext,
 ): Promise<GetReturnType<SchemaWithId<TContext['description']>>> => {
-  const security = useSecurity(context)
-
-  const sanitizedPayload = !options?.bypassSecurity
-    ? throwIfError(await security.beforeRead(payload))
-    : payload
-
   const {
     filters = {},
     project = [],
-  } = sanitizedPayload
+  } = payload
 
   if( Object.keys(filters).length === 0 ) {
     return context.error(HTTPStatus.BadRequest, {
@@ -60,8 +51,8 @@ export const get = async <TContext extends Context>(
 
   pipeline.push(...await buildLookupPipeline(references, {
     memoize: context.description.$id,
-    project: sanitizedPayload.populate
-      ? <string[]>sanitizedPayload.populate
+    project: payload.populate
+      ? <string[]>payload.populate
       : project,
     properties: context.description.properties,
   }))
@@ -81,5 +72,26 @@ export const get = async <TContext extends Context>(
   })), context.description)
 
   return Result.result(result)
+}
+
+export const get = async <TContext extends Context>(
+  payload: GetPayload<SchemaWithId<TContext['description']>>,
+  context: TContext extends Context<any>
+    ? TContext
+    : never,
+  options: GetOptions = {},
+) => {
+  if( options.bypassSecurity ) {
+    return internalGet(payload, context)
+  }
+
+  const security = useSecurity(context)
+  const { error, result: securedPayload } = await security.beforeRead(payload)
+  if( error ) {
+    switch( error ) {
+      case ACError.InvalidLimit: throw new Error
+    }
+  }
+  return internalGet(securedPayload, context)
 }
 
