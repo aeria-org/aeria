@@ -17,7 +17,7 @@ export const removeFile = async <TContext extends Context>(
     parentId,
     childId: props.filters._id,
     payload: props,
-  }, context)
+  }, Result.result(payload), context, (_, initial) => initial)
 
   const doc = await context.collections.file.functions!.remove(props)
   return Result.result(doc)

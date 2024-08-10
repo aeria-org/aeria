@@ -1,6 +1,4 @@
-import type { Result } from './result.js'
 import type { Context } from './context.js'
-import type { ACError } from './accessControl.js'
 
 export type OwnershipMode =
   | boolean
@@ -70,13 +68,13 @@ export type CollectionHookProps<TPayload = any> = {
   payload: TPayload
 }
 
-export type CollectionHook<TPayload = any> = (props: CollectionHookProps, context: Context)=> Promise<Result.Either<
-  ACError,
-  TPayload
->>
+export type GenericMiddlewareNext<T, P> = (payload: P, initial: T, context: Context)=> T | Promise<T>
+export type MiddlewareNext = <T, P>(payload: P, initial: T, context: Context)=> T | Promise<T>
+
+export type Middleware<T = any, P = any, TNext extends GenericMiddlewareNext<T, P> = GenericMiddlewareNext<T, P>> = (payload: P, initial: T, context: Context, next: TNext)=> T | Promise<T>
 
 export type CollectionMiddleware = {
-  beforeRead: CollectionHook
-  beforeWrite: CollectionHook
+  beforeRead: Middleware
+  beforeWrite: Middleware
 }
 

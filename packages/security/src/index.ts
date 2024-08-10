@@ -1,5 +1,6 @@
 export * from './define.js'
 export * from './immutability.js'
+export * from './middleware.js'
 export * from './ownership.js'
 export * from './pagination.js'
 export * from './rateLimiting.js'

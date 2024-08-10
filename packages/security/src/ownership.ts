@@ -1,10 +1,11 @@
-import type { Context, CollectionHookProps } from '@aeriajs/types'
+import type { MiddlewareNext, Context, CollectionHookProps } from '@aeriajs/types'
 import type { CollectionHookReadPayload, CollectionHookWritePayload } from './types.js'
 import { Result, ACError } from '@aeriajs/types'
+import { throwIfError } from '@aeriajs/common'
 
-export const checkOwnershipRead = async <T extends CollectionHookReadPayload>(props: CollectionHookProps<T>, context: Context) => {
+export const checkOwnershipRead = async <T extends CollectionHookReadPayload>(props: CollectionHookProps<T>, initial: Result.Either<unknown, T>, context: Context, next: MiddlewareNext) => {
   const { token, description } = context
-  const payload = Object.assign({}, props.payload)
+  const payload = throwIfError(initial)
 
   if( token.authenticated && description.owned ) {
     if( !token.roles.includes('root') ) {
@@ -12,20 +13,20 @@ export const checkOwnershipRead = async <T extends CollectionHookReadPayload>(pr
     }
   }
 
-  return Result.result(payload)
+  return next(props, Result.result(payload), context)
 }
 
-export const checkOwnershipWrite = async <T extends CollectionHookWritePayload>(props: CollectionHookProps<T>, context: Context) => {
+export const checkOwnershipWrite = async <T extends CollectionHookWritePayload>(props: CollectionHookProps<T>, initial: Result.Either<unknown, T>, context: Context, next: MiddlewareNext) => {
   const { token, description } = context
   const { parentId } = props
 
-  const payload = Object.assign({}, props.payload)
+  const payload = throwIfError(initial)
 
   if( token.authenticated && description.owned ) {
     if( !payload.what._id || description.owned === 'always' ) {
       payload.what.owner = token.sub
     } else {
-      return Result.result(payload)
+      return next(props, Result.result(payload), context)
     }
   }
 
@@ -33,6 +34,6 @@ export const checkOwnershipWrite = async <T extends CollectionHookWritePayload>(
     return Result.error(ACError.OwnershipError)
   }
 
-  return Result.result(payload)
+  return next(props, Result.result(payload), context)
 }
 

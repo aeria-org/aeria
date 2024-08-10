@@ -1,7 +1,8 @@
 import type { ObjectId } from 'mongodb'
-import type { Context, CollectionHookProps } from '@aeriajs/types'
+import type { Context, CollectionHookProps, MiddlewareNext } from '@aeriajs/types'
 import type { CollectionHookReadPayload, CollectionHookWritePayload } from './types.js'
 import { Result, ACError } from '@aeriajs/types'
+import { throwIfError } from '@aeriajs/common'
 
 const checkImmutability = async <TProps extends CollectionHookProps>(
   docId: ObjectId | undefined,
@@ -34,11 +35,23 @@ const checkImmutability = async <TProps extends CollectionHookProps>(
   return Result.result(props.payload)
 }
 
-export const checkImmutabilityRead = async (props: CollectionHookProps<CollectionHookReadPayload>, context: Context) => {
-  return checkImmutability(props.payload.filters._id, props, context)
+export const checkImmutabilityRead = async <T extends CollectionHookReadPayload>(props: CollectionHookProps<T>, initial: Result.Either<unknown, T>, context: Context, next: MiddlewareNext) => {
+  const originalPayload = throwIfError(initial)
+  const { result: payload, error } = await checkImmutability(originalPayload.filters._id, props, context)
+  if( error ) {
+    return Result.error(error)
+  }
+
+  return next(payload, Result.result(payload), context)
 }
 
-export const checkImmutabilityWrite = async (props: CollectionHookProps<CollectionHookWritePayload>, context: Context) => {
-  return checkImmutability(props.payload.what._id, props, context)
+export const checkImmutabilityWrite = async <T extends CollectionHookWritePayload>(props: CollectionHookProps<T>, initial: Result.Either<unknown, T>, context: Context, next: MiddlewareNext) => {
+  const originalPayload = throwIfError(initial)
+  const { result: payload, error } = await checkImmutability(originalPayload.what._id, props, context)
+  if( error ) {
+    return Result.error(error)
+  }
+
+  return next(payload, Result.result(payload), context)
 }
 

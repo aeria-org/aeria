@@ -30,8 +30,6 @@ export type RoutesMeta = Record<
   Partial<Record<RequestMethod, ContractWithRoles | null> | undefined>
 >
 
-export type Middleware = (context: RouteContext)=> any
-
 export type RouteGroupOptions = {
   base?: RouteUri
 }
@@ -287,7 +285,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
       install: (context: RouteContext, options?: RouterOptions)=> any
       routesMeta: typeof routesMeta
     },
-  >(exp: RouteUri, router: TRouter, middleware?: Middleware) => {
+  >(exp: RouteUri, router: TRouter, middleware?: (context: RouteContext)=> any) => {
     const newOptions = Object.assign({}, options)
 
     for( const route in router.routesMeta ) {
