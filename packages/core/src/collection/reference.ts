@@ -317,9 +317,7 @@ const buildLookupStages = async (reference: Reference, propName: string, options
         })
 
         stages.push(...refStages)
-      }
-
-      else if( 'items' in refProperties ) {
+      } else if( 'items' in refProperties ) {
         if( !('properties' in refProperties.items) ) {
           throw new Error()
         }
@@ -331,9 +329,7 @@ const buildLookupStages = async (reference: Reference, propName: string, options
         })
 
         stages.push(...refStages)
-      }
-
-      else {
+      } else {
         throw new Error()
       }
     }
