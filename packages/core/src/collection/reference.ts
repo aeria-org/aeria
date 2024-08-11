@@ -135,7 +135,6 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
 
       if( 'properties' in entrypoint ) {
         const deepReferences = await getReferences(entrypoint.properties, {
-          depth: depth + 1,
           memoize: `${memoize}.${propName}`,
         })
 
@@ -309,17 +308,34 @@ const buildLookupStages = async (reference: Reference, propName: string, options
       }
 
       const refProperties = properties[propName]
-      if( !('properties' in refProperties) ) {
-        throw new Error()
+
+      if( 'properties' in refProperties ) {
+        const { stages: refStages } = await buildLookupStages(refMap, refName, {
+          depth: depth + 1,
+          parent: withParent(propName),
+          properties: refProperties.properties,
+        })
+
+        stages.push(...refStages)
       }
 
-      const { stages: result } = await buildLookupStages(refMap, refName, {
-        depth: depth + 1,
-        parent: withParent(propName),
-        properties: refProperties.properties,
-      })
+      else if( 'items' in refProperties ) {
+        if( !('properties' in refProperties.items) ) {
+          throw new Error()
+        }
 
-      stages.push(...result)
+        const { stages: refStages } = await buildLookupStages(refMap, refName, {
+          depth: depth + 1,
+          parent: withParent(propName),
+          properties: refProperties.items.properties,
+        })
+
+        stages.push(...refStages)
+      }
+
+      else {
+        throw new Error()
+      }
     }
   }
 
@@ -346,7 +362,6 @@ export const buildLookupPipeline = async (referenceMap: ReferenceMap | {}, optio
   }
 
   let hasDeepReferences = false
-
   const pipeline: any[] = []
 
   for( const [propName, reference] of Object.entries(referenceMap) ) {
