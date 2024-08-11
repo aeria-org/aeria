@@ -130,7 +130,7 @@ export const getAll = async <TContext extends Context>(
   }
 
   const security = useSecurity(context)
-  const { error, result: securedPayload } = await security.beforeRead(payload)
+  const { error, result: securedPayload } = await security.secureReadPayload(payload)
   if( error ) {
     return Result.error(error)
   }

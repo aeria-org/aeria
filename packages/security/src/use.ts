@@ -10,7 +10,7 @@ import {
 } from './middlewares/index.js'
 
 export const useSecurity = <TDescription extends Description>(context: Context<TDescription>) => {
-  const beforeRead = async <TPayload extends Partial<CollectionHookReadPayload>>(payload?: TPayload) => {
+  const secureReadPayload = async <TPayload extends Partial<CollectionHookReadPayload>>(payload?: TPayload) => {
     const newPayload = Object.assign({
       filters: {},
     }, payload)
@@ -35,7 +35,7 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
     return start(props, Result.result(newPayload), context)
   }
 
-  const beforeWrite = async <TPayload extends CollectionHookWritePayload>(payload?: TPayload) => {
+  const secureWritePayload = async <TPayload extends CollectionHookWritePayload>(payload?: TPayload) => {
     const newPayload = Object.assign({
       what: {},
     }, payload)
@@ -55,8 +55,8 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
   }
 
   return {
-    beforeRead,
-    beforeWrite,
+    secureReadPayload,
+    secureWritePayload,
   }
 }
 

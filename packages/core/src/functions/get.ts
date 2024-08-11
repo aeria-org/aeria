@@ -86,7 +86,7 @@ export const get = async <TContext extends Context>(
   }
 
   const security = useSecurity(context)
-  const { error, result: securedPayload } = await security.beforeRead(payload)
+  const { error, result: securedPayload } = await security.secureReadPayload(payload)
   if( error ) {
     switch( error ) {
       case ACError.InvalidLimit: throw new Error

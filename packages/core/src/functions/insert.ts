@@ -131,7 +131,7 @@ export const insert = async <TContext extends Context>(
   }
 
   const security = useSecurity(context)
-  const { error, result: securedPayload } = await security.beforeWrite(payload)
+  const { error, result: securedPayload } = await security.secureWritePayload(payload)
   if( error ) {
     return Result.error(error)
   }
