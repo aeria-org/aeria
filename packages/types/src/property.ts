@@ -49,6 +49,7 @@ export type RefProperty = {
   inline?: boolean
   form?: readonly string[]
   purge?: boolean
+  populateDepth?: number
   constraints?: Condition
 }
 

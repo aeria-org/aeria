@@ -6,6 +6,7 @@ import { prepareCollectionName } from '../database.js'
 export type GetReferenceOptions = {
   memoize?: string
   depth?: number
+  maxDepth?: number
 }
 
 export type Reference = {
@@ -103,6 +104,7 @@ const buildArrayCleanupStages = (referenceMap: ReferenceMap) => {
 export const getReferences = async (properties: FixedObjectProperty['properties'], options?: GetReferenceOptions) => {
   const {
     depth = 0,
+    maxDepth = 3,
     memoize,
   } = options || {}
 
@@ -118,11 +120,30 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
     const refProperty = getReferenceProperty(property)
     const reference: Reference = {}
 
-    if( depth === 2 || (refProperty && refProperty.populate && refProperty.populate.length === 0) ) {
+    if( depth === maxDepth || (refProperty && refProperty.populate && refProperty.populate.length === 0) ) {
       continue
     }
 
-    if( !refProperty ) {
+    if( refProperty ) {
+      const description = throwIfError(await getCollectionAsset(refProperty.$ref, 'description'))
+
+      const deepReferences = await getReferences(description.properties, {
+        depth: depth + 1,
+        maxDepth: refProperty.populateDepth || maxDepth,
+        memoize: `${memoize}.${propName}`,
+      })
+
+      if( Object.keys(deepReferences).length > 0 ) {
+        reference.deepReferences = deepReferences
+      }
+
+      const indexes = refProperty.indexes
+        ? refProperty.indexes
+        : description.indexes || []
+
+      reference.populatedProperties = (refProperty.populate || []).concat(indexes.filter((index): index is string => typeof index === 'string'))
+
+    } else {
       const entrypoint = 'items' in property
         ? property.items
         : property
@@ -144,23 +165,6 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
         }
       }
 
-    } else {
-      const description = throwIfError(await getCollectionAsset(refProperty.$ref, 'description'))
-
-      const deepReferences = await getReferences(description.properties, {
-        depth: depth + 1,
-        memoize: `${memoize}.${propName}`,
-      })
-
-      if( Object.keys(deepReferences).length > 0 ) {
-        reference.deepReferences = deepReferences
-      }
-
-      const indexes = refProperty.indexes
-        ? refProperty.indexes
-        : description.indexes || []
-
-      reference.populatedProperties = (refProperty.populate || []).concat(indexes.filter((index): index is string => typeof index === 'string'))
     }
 
     if( !refProperty?.$ref && !reference.deepReferences ) {
@@ -283,12 +287,14 @@ const buildLookupStages = async (reference: Reference, propName: string, options
   } else if( reference.deepReferences && depth <= maxDepth ) {
     refHasDeepReferences = true
 
-    stages.push({
-      $unwind: {
-        path: `$${withParent(propName)}`,
-        preserveNullAndEmptyArrays: true,
-      },
-    })
+    if( reference.isArray ) {
+      stages.push({
+        $unwind: {
+          path: `$${withParent(propName)}`,
+          preserveNullAndEmptyArrays: true,
+        },
+      })
+    }
 
     for( const [refName, refMap] of Object.entries(reference.deepReferences) ) {
       if( !refMap ) {
