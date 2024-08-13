@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.139
+
+### Patch Changes
+
+- 6eac998: Fix autopopulate depth
+- Updated dependencies [6eac998]
+  - @aeriajs/types@0.0.76
+  - @aeriajs/builtins@0.0.139
+  - @aeriajs/common@0.0.88
+  - @aeriajs/entrypoint@0.0.90
+  - @aeriajs/http@0.0.99
+  - @aeriajs/security@0.0.139
+  - @aeriajs/validation@0.0.91
+
 ## 0.0.138
 
 ### Patch Changes

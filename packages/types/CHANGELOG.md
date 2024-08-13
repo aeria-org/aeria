@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.76
+
+### Patch Changes
+
+- 6eac998: Fix autopopulate depth
+
 ## 0.0.75
 
 ### Patch Changes
