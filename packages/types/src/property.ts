@@ -87,7 +87,7 @@ export type FixedObjectProperty = {
 
 export type VariableObjectProperty =
   | { variable: true }
-  | { additionalProperties: Property }
+  | { additionalProperties: boolean | Property }
 
 export type ObjectProperty = (FixedObjectProperty | VariableObjectProperty) & {
   type: 'object'

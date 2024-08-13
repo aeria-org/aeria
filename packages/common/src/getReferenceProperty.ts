@@ -5,7 +5,7 @@ export const getReferenceProperty = (property: Property) => {
     'items' in property
       ? property.items
       : null,
-    'additionalProperties' in property
+    'additionalProperties' in property && typeof property.additionalProperties === 'object'
       ? property.additionalProperties
       : null,
     property,

@@ -49,7 +49,7 @@ const getProperty = (propertyName: string, parentProperty: Property | Descriptio
     return parentProperty.items.properties[propertyName]
   }
 
-  if( 'additionalProperties' in parentProperty ) {
+  if( 'additionalProperties' in parentProperty && typeof parentProperty.additionalProperties === 'object' ) {
     return parentProperty.additionalProperties
   }
 

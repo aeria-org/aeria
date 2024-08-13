@@ -50,6 +50,7 @@ export const upload = async <TContext extends Context>(_props: unknown, context:
 
   const { error: headersError } = validate(context.request.headers, {
     type: 'object',
+    additionalProperties: true,
     properties: {
       'x-stream-request': {
         const: '1',
@@ -58,8 +59,6 @@ export const upload = async <TContext extends Context>(_props: unknown, context:
         type: 'string',
       },
     },
-  }, {
-    extraneous: true,
   })
 
   if( headersError ) {

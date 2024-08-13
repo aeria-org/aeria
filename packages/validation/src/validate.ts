@@ -12,10 +12,10 @@ import { getMissingProperties } from '@aeriajs/common'
 import { ValidationErrorCode, PropertyValidationErrorCode } from '@aeriajs/types'
 
 export type ValidateOptions = {
-  extraneous?: string[] | boolean
   filterOutExtraneous?: boolean
   throwOnError?: boolean
   coerce?: boolean
+  parentProperty?: Omit<Description, '$id'> | Property
 }
 
 const getValueType = (value: any) => {
@@ -71,15 +71,20 @@ export const validateProperty = <TWhat>(
   property: Property | undefined,
   options: ValidateOptions = {},
 ): Result.Either<PropertyValidationError | ValidationError, unknown> => {
-  const { extraneous, filterOutExtraneous, coerce } = options
+  const { filterOutExtraneous, coerce } = options
   if( what === undefined ) {
     return Result.result(what)
   }
 
   if( !property ) {
-    if( extraneous || (Array.isArray(extraneous) && extraneous.includes(propName)) ) {
-      if( filterOutExtraneous ) {
-        return Result.result(undefined)
+    if( options.parentProperty && 'additionalProperties' in options.parentProperty && options.parentProperty.additionalProperties ) {
+      const extraneous = options.parentProperty.additionalProperties
+      if( typeof extraneous === 'boolean' || Object.keys(extraneous).includes(propName) ) {
+        if( filterOutExtraneous ) {
+          return Result.result(undefined)
+        }
+
+        return Result.result(what)
       }
 
       return Result.result(what)
@@ -283,7 +288,10 @@ export const validate = <
       propName,
       what[propName],
       schema.properties[propName],
-      options,
+      {
+        ...options,
+        parentProperty: schema,
+      },
     )
 
     if( error ) {

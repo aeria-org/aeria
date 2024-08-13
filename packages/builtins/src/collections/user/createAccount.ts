@@ -1,20 +1,24 @@
-import type { Context, Schema } from '@aeriajs/types'
+import type { Context, SchemaWithId } from '@aeriajs/types'
 import type { description } from './description.js'
 import { Result, HTTPStatus, ACError } from '@aeriajs/types'
 import { validate } from '@aeriajs/validation'
 import * as bcrypt from 'bcrypt'
 
 export const createAccount = async (
-  payload: Omit<Schema<typeof description>, 'roles'>,
+  payload: Partial<SchemaWithId<typeof description>>,
   context: Context<typeof description>,
 ) => {
-  const user = Object.assign({}, payload)
+  const userCandidate = Object.assign({}, payload)
 
   if( !context.config.security.allowSignup ) {
     throw new Error('signup disallowed')
   }
 
-  const { error } = validate(user, {
+  delete userCandidate._id
+  delete userCandidate.roles
+  delete userCandidate.active
+
+  const { error, result: user } = validate(userCandidate, {
     type: 'object',
     required: [
       'name',
@@ -35,12 +39,6 @@ export const createAccount = async (
         type: 'string',
       },
     },
-  }, {
-    extraneous: [
-      '_id',
-      'roles',
-      'active',
-    ],
   })
 
   if( error ) {
