@@ -61,17 +61,19 @@ export type SchemaWithId<TSchema> = Schema<TSchema> & {
   _id: ObjectId
 }
 
-export type MapSchemaUnion<TSchema> = TSchema extends readonly (infer SchemaOption)[]
-  ? SchemaOption extends any
-    ? SchemaOption extends
-      | { $ref: infer K }
-      | { items: { $ref: infer K } }
-      ? K extends keyof Collections
-        ? 'items' extends keyof SchemaOption
-          ? Collections[K]['item'][]
-          : Collections[K]['item']
-        : never
-      : InferProperty<SchemaOption>
+export type InferProperties<TSchema> = TSchema extends readonly any[]
+  ? TSchema extends readonly (infer SchemaOption)[]
+    ? SchemaOption extends any
+      ? SchemaOption extends
+        | { $ref: infer K }
+        | { items: { $ref: infer K } }
+        ? K extends keyof Collections
+          ? 'items' extends keyof SchemaOption
+            ? Collections[K]['item'][]
+            : Collections[K]['item']
+          : never
+        : InferProperty<SchemaOption>
+      : never
     : never
   : InferProperty<TSchema>
 

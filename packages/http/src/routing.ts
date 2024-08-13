@@ -4,18 +4,18 @@ import type {
   GenericResponse,
   RequestMethod,
   RouteUri,
-  InferProperty,
-  InferResponse,
+  InferProperties,
   PackReferences,
   ContractWithRoles,
   ApiConfig,
   RoleFromAccessCondition,
+  Property,
 } from '@aeriajs/types'
 
 import { Stream } from 'stream'
-import { ACError, HTTPStatus, REQUEST_METHODS, STREAMED_RESPONSE } from '@aeriajs/types'
+import { Result, ACError, HTTPStatus, REQUEST_METHODS, STREAMED_RESPONSE } from '@aeriajs/types'
 import { pipe, isGranted, deepMerge, endpointError } from '@aeriajs/common'
-import { validate } from '@aeriajs/validation'
+import { validate, type ValidateOptions } from '@aeriajs/validation'
 import { getConfig } from '@aeriajs/entrypoint'
 import { safeJson } from './payload.js'
 import { isNext } from './next.js'
@@ -34,13 +34,13 @@ export type RouteGroupOptions = {
   base?: RouteUri
 }
 
-type TypedContext<TContractWithRoles extends ContractWithRoles> = RouteContext<RoleFromAccessCondition<TContractWithRoles['roles']>> & {
+type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<RouteContext<RoleFromAccessCondition<TContractWithRoles['roles']>>, 'request'> & {
   request: Omit<RouteContext['request'], 'payload' | 'query'> & {
     payload: TContractWithRoles extends { payload: infer Payload }
-      ? PackReferences<InferProperty<Payload>>
+      ? PackReferences<InferProperties<Payload>>
       : any
     query: TContractWithRoles extends { query: infer Query }
-      ? InferProperty<Query>
+      ? InferProperties<Query>
       : any
   }
 }
@@ -51,7 +51,9 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
     const TContractWithRoles extends ContractWithRoles,
     TCallback extends (
       TContractWithRoles extends { response: infer Response }
-        ? InferResponse<Response>
+        ? InferProperties<Response> extends infer InferredResponse
+          ? InferredResponse | Promise<InferredResponse>
+          : never
         : any
     ) extends infer Response
       ? (context: TypedContext<TContractWithRoles>)=> Response
@@ -63,7 +65,26 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
   )=> ReturnType<typeof registerRoute>
 >
 
-const checkUnprocessable = ({ error }: ReturnType<typeof validate>, context: RouteContext) => {
+const checkUnprocessable = (
+  what: any,
+  schema: Property | Property[],
+  context: RouteContext,
+  validateOptions: ValidateOptions = {},
+) => {
+  let result: ReturnType<typeof validate>
+
+  if( Array.isArray(schema) ) {
+    for( const property of schema ) {
+      result = validate(what, property, validateOptions)
+      if( result.error ) {
+        break
+      }
+    }
+  } else {
+    result = validate(what, schema, validateOptions)
+  }
+
+  const { error } = result!
   if( error ) {
     if( 'code' in error ) {
       return context.error(HTTPStatus.UnprocessableContent, {
@@ -78,6 +99,8 @@ const checkUnprocessable = ({ error }: ReturnType<typeof validate>, context: Rou
       details: error,
     })
   }
+
+  return Result.result({})
 }
 
 export const matches = <TRequest extends GenericRequest>(
@@ -170,21 +193,18 @@ export const registerRoute = async (
       }
 
       if( 'payload' in contract && contract.payload ) {
-        const validationEither = validate(context.request.payload, contract.payload)
-        const error = checkUnprocessable(validationEither, context)
+        const { error } = checkUnprocessable(context.request.query, contract.payload, context)
         if( error ) {
-          return error
+          return Result.error(error)
         }
       }
 
       if( 'query' in contract && contract.query ) {
-        const validationEither = validate(context.request.query, contract.query, {
+        const { error } = checkUnprocessable(context.request.query, contract.query, context, {
           coerce: true,
         })
-
-        const error = checkUnprocessable(validationEither, context)
         if( error ) {
-          return error
+          return Result.error(error)
         }
       }
     }
@@ -252,7 +272,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
     const TContractWithRoles extends ContractWithRoles,
     TCallback extends (
       TContractWithRoles extends { response: infer Response }
-        ? InferResponse<Response>
+        ? InferProperties<Response>
         : any
     ) extends infer Response
       ? (context: TypedContext<TContractWithRoles>)=> Response

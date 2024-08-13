@@ -1,5 +1,4 @@
 import type { ServerResponse, IncomingMessage } from 'http'
-import type { MapSchemaUnion } from './schema.js'
 import type { Result, ExtractError, ExtractResult } from './result.js'
 import type { EndpointError, StrictEndpointError } from './endpointError.js'
 import type { ACError } from './accessControl.js'
@@ -115,12 +114,4 @@ export type MakeEndpoint<
     : TRoute extends `(${string}`
       ? Record<string, EndpointFunction<TRouteMethod, TRouteResponse, TRoutePayload>>
       : Record<TRoute, EndpointFunction<TRouteMethod, TRouteResponse, TRoutePayload>>
-
-type UnwrapResponse<TResponse> = TResponse extends readonly any[]
-  ? TResponse
-  : TResponse[]
-
-export type InferResponse<TResponse> = MapSchemaUnion<UnwrapResponse<TResponse>> extends infer InferredResponse
-  ? InferredResponse | Promise<InferredResponse>
-  : never
 
