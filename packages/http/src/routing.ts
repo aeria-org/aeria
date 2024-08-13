@@ -76,7 +76,7 @@ const checkUnprocessable = (
   if( Array.isArray(schema) ) {
     for( const property of schema ) {
       result = validate(what, property, validateOptions)
-      if( result.error ) {
+      if( !result.error ) {
         break
       }
     }
