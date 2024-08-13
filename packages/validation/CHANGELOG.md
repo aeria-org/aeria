@@ -1,5 +1,14 @@
 # @aeriajs/validation
 
+## 0.0.90
+
+### Patch Changes
+
+- 072270d: Refactor validation and references
+- Updated dependencies [072270d]
+  - @aeriajs/types@0.0.75
+  - @aeriajs/common@0.0.87
+
 ## 0.0.89
 
 ### Patch Changes

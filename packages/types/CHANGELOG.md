@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.75
+
+### Patch Changes
+
+- 072270d: Refactor validation and references
+
 ## 0.0.74
 
 ### Patch Changes
