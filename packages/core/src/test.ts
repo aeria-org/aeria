@@ -1,40 +1,40 @@
-import type { Reference, ReferenceMap } from "./collection/reference.js"
-import { prepareCollectionName } from "./database"
+import type { Reference, ReferenceMap } from './collection/reference.js'
+import { prepareCollectionName } from './database'
 
-const reference = {  
-  "array": {
-    "deepReferences": {
-      "nested": {
-        "deepReferences": {
-          "users": {
-            "deepReferences": {
-              "user": {
-                "deepReferences": {
-                  "picture_file": {
-                    "populatedProperties": [
-                      "name",
-                      "link",
-                      "type"
+const reference = {
+  'array': {
+    'deepReferences': {
+      'nested': {
+        'deepReferences': {
+          'users': {
+            'deepReferences': {
+              'user': {
+                'deepReferences': {
+                  'picture_file': {
+                    'populatedProperties': [
+                      'name',
+                      'link',
+                      'type',
                     ],
-                    "referencedCollection": "file",
-                    "isChild": true
-                  }
+                    'referencedCollection': 'file',
+                    'isChild': true,
+                  },
                 },
-                "populatedProperties": [
-                  "document",
-                  "name",
-                  "name"
+                'populatedProperties': [
+                  'document',
+                  'name',
+                  'name',
                 ],
-                "referencedCollection": "user"
-              }
+                'referencedCollection': 'user',
+              },
             },
-            "isArray": true
-          }
-        }
-      }
+            'isArray': true,
+          },
+        },
+      },
     },
-    "isArray": true
-  }
+    'isArray': true,
+  },
 }
 
 type PipelineStage = any
@@ -61,14 +61,14 @@ const recurseSetStage = (reference: Reference, path: string[], elemName?: string
         input: elemName
           ? `$$${elemName}`
           : `$${refName}`,
-          as: newElemName,
-          in: {
-            $mergeObjects: [
-              `$$${newElemName}`,
-              recurseSetStage(ref, path, newElemName)
-            ]
-          },
-      }
+        as: newElemName,
+        in: {
+          $mergeObjects: [
+            `$$${newElemName}`,
+            recurseSetStage(ref, path, newElemName),
+          ],
+        },
+      },
     }
   }
 
@@ -81,26 +81,32 @@ const recurseSetStage = (reference: Reference, path: string[], elemName?: string
       }
 
       if( subReference.referencedCollection ) {
-        stages.push([subRefName, {
-          $mergeObjects: [
-            {
-              $arrayElemAt: [
-                `$${getTempName(path.concat(subRefName))}`,
-                {
-                  $indexOfArray: [
-                    `$${getTempName(path.concat(subRefName))}`,
-                    `$$${elemName}.${subRefName}`
-                  ]
-                }
-              ]
-            },
-            recurseSetStage(subReference, path.concat(subRefName), `${elemName}.${subRefName}`),
-          ]
-        }])
+        stages.push([
+          subRefName,
+          {
+            $mergeObjects: [
+              {
+                $arrayElemAt: [
+                  `$${getTempName(path.concat(subRefName))}`,
+                  {
+                    $indexOfArray: [
+                      `$${getTempName(path.concat(subRefName))}`,
+                      `$$${elemName}.${subRefName}`,
+                    ],
+                  },
+                ],
+              },
+              recurseSetStage(subReference, path.concat(subRefName), `${elemName}.${subRefName}`),
+            ],
+          },
+        ])
         continue
       }
 
-      stages.push([subRefName, recurseSetStage(subReference, path.concat(subRefName), `${elemName}.${subRefName}`)])
+      stages.push([
+        subRefName,
+        recurseSetStage(subReference, path.concat(subRefName), `${elemName}.${subRefName}`),
+      ])
     }
 
     return Object.fromEntries(stages)
@@ -114,9 +120,9 @@ const recurseSetStage = (reference: Reference, path: string[], elemName?: string
         $indexOfArray: [
           `$${getTempName(path)}._id`,
           `$$${parentName}__elem.${refName}`,
-        ]
-      }
-    ]
+        ],
+      },
+    ],
   }
 }
 
@@ -161,7 +167,7 @@ const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPipeline 
             foreignField: '_id',
             localField: `${getTempName(path)}.${refName}`,
             as: tempName,
-          }
+          },
         })
       } else {
         rootPipeline.unshift({
@@ -170,7 +176,7 @@ const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPipeline 
             foreignField: '_id',
             localField: path.concat(refName).join('.'),
             as: tempName,
-          }
+          },
         })
       }
 
@@ -181,7 +187,7 @@ const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPipeline 
     return rootPipeline.concat(pipeline, [
       {
         $unset: tempNames,
-      }
+      },
     ])
   }
 
