@@ -12,6 +12,7 @@ export type GetReferenceOptions = {
 export type Reference = {
   isArray?: boolean
   isInline?: boolean
+  isChild?: boolean
   deepReferences?: ReferenceMap
   referencedCollection?: string
   populatedProperties?: string[]
