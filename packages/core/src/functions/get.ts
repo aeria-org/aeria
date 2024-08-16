@@ -49,12 +49,11 @@ const internalGet = async <TContext extends Context>(
     })
   }
 
-  pipeline.push(...await buildLookupPipeline(references, {
+  pipeline.push(...buildLookupPipeline(references, {
     memoize: context.description.$id,
     project: payload.populate
       ? <string[]>payload.populate
       : project,
-    properties: context.description.properties,
   }))
 
   const doc = await context.collection.model.aggregate(pipeline).next()

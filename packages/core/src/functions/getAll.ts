@@ -88,12 +88,11 @@ const internalGetAll = async <TContext extends Context>(
     })
   }
 
-  pipeline.push(...await buildLookupPipeline(references, {
+  pipeline.push(...buildLookupPipeline(references, {
     memoize: context.description.$id,
     project: payload.populate
       ? <string[]>payload.populate
       : project,
-    properties: context.description.properties,
   }))
 
   if( Object.keys(references).length > 0 && preferredSort ) {
