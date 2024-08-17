@@ -191,44 +191,70 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
     }
 
     if( reference.referencedCollection ) {
+      const origin = reference.isChild
+        ? `${getTempName(path.slice(0, -1))}.${refName}`
+        : elemName
+
       return {
-        $mergeObjects: [
-          recurseSetStage({
-            ...reference,
-            deepReferences: undefined,
-          }, path, elemName),
-          Object.fromEntries(stages),
-        ],
+        $cond: [
+          {
+            $ne: [
+              {
+                $indexOfArray: [
+                  `$${getTempName(path)}._id`,
+                  `$${origin}`,
+                ],
+              },
+              -1,
+            ]
+          },
+          {
+            $mergeObjects: [
+              recurseSetStage({
+                ...reference,
+                deepReferences: undefined,
+              }, path, elemName),
+              Object.fromEntries(stages),
+            ],
+          },
+          null,
+        ]
       }
     }
 
     return Object.fromEntries(stages)
   }
 
-  if( reference.isChild ) {
-    return {
-      $arrayElemAt: [
-        `$${getTempName(path)}`,
-        {
-          $indexOfArray: [
-            `$${getTempName(path)}._id`,
-            `$${getTempName(path.slice(0, -1))}.${refName}`,
-          ],
-        },
-      ],
-    }
-  }
+  const origin = reference.isChild
+    ? `${getTempName(path.slice(0, -1))}.${refName}`
+    : elemName
 
   return {
-    $arrayElemAt: [
-      `$${getTempName(path)}`,
+    $cond: [
       {
-        $indexOfArray: [
-          `$${getTempName(path)}._id`,
-          `$${elemName}`,
+        $ne: [
+          {
+            $indexOfArray: [
+              `$${getTempName(path)}._id`,
+              `$${origin}`,
+            ],
+          },
+          -1,
+        ]
+      },
+      {
+        $arrayElemAt: [
+          `$${getTempName(path)}`,
+          {
+            $indexOfArray: [
+              `$${getTempName(path)}._id`,
+              `$${origin}`,
+            ],
+          },
         ],
       },
-    ],
+      null,
+    ]
   }
 }
 
