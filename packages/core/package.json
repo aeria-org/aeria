@@ -3,6 +3,7 @@
   "version": "0.0.139",
   "description": "",
   "main": "dist/index.js",
+  "aeriaMain": "tests/aeriaMain.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "publishConfig": {

@@ -469,13 +469,17 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
   return Result.result(Object.fromEntries(entries))
 }
 
-export const traverseDocument = async <const TWhat extends Record<string, unknown>>(
+export const traverseDocument = async <const TWhat extends Record<string, unknown> | null>(
   what: TWhat,
   description: Description,
   _options: TraverseOptions,
 ) => {
   const options = Object.assign({}, _options) as TraverseOptions & TraverseNormalized
   const functions = []
+
+  if( !what ) {
+    return Result.result(what)
+  }
 
   if( !options.validate && Object.keys(what).length === 0 ) {
     return Result.result({})

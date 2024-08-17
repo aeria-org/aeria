@@ -8,7 +8,6 @@ import {
   normalizeProjection,
   getReferences,
   buildLookupPipeline,
-  fill,
 } from '../collection/index.js'
 
 export type GetAllOptions = {
@@ -106,8 +105,8 @@ const internalGetAll = async <TContext extends Context>(
   const result = await context.collection.model.aggregate(pipeline).toArray()
   const documents: SchemaWithId<TContext['description']>[] = []
 
-  for( const document of result ) {
-    documents.push(throwIfError(await traverseDocument(fill(document, context.description), context.description, {
+  for( const doc of result ) {
+    documents.push(throwIfError(await traverseDocument(doc, context.description, {
       getters: true,
       fromProperties: true,
       recurseReferences: true,

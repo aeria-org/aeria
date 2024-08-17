@@ -86,7 +86,7 @@ const internalInsert = async <TContext extends Context>(
   }
 
   let doc: SchemaWithId<any> | null
-  if( context.collection.originalFunctions.get ) {
+  if( context.collection.originalFunctions?.get ) {
     doc = throwIfError(await context.collection.originalFunctions.get({
       filters: {
         _id: newId,

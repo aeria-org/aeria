@@ -20,7 +20,7 @@ export const getDatabase = async () => {
       if( !envUri ) {
         console.warn('mongo URI wasn\'t supplied, fallbacking to memory storage (this means your data will only be alive during runtime)')
 
-        const { MongoMemoryServer }: any = await import('mongodb-memory-server')
+        const { MongoMemoryServer } = await import('mongodb-memory-server')
 
         const mongod = await MongoMemoryServer.create()
         return mongod.getUri()

@@ -29,7 +29,7 @@
         "../validation/dist"
       ],
       "mongodb": [
-        "../core/node_modules/mongodb"
+        "./node_modules/mongodb"
       ]
     }
   },

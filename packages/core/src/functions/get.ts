@@ -8,7 +8,6 @@ import {
   normalizeProjection,
   getReferences,
   buildLookupPipeline,
-  fill,
 } from '../collection/index.js'
 
 export type GetOptions = {
@@ -65,12 +64,12 @@ const internalGet = async <TContext extends Context>(
     })
   }
 
-  const result = fill(throwIfError(await traverseDocument(doc, context.description, {
+  const result = throwIfError(await traverseDocument(doc, context.description, {
     getters: true,
     fromProperties: true,
     recurseReferences: true,
     recurseDeep: true,
-  })), context.description)
+  }))
 
   return Result.result(result)
 }

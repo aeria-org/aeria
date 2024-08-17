@@ -2,9 +2,15 @@
   "compilerOptions": {
     "noEmit": true,
     "strict": true,
-    "target": "esnext",
-    "module": "esnext",
     "skipLibCheck": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "mongodb": [
+        "../node_modules/mongodb"
+      ],
+      "mongodb-memory-server": [
+        "../node_modules/mongodb-memory-server"
+      ]
+    }
   }
 }

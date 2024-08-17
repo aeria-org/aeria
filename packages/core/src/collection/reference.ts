@@ -2,6 +2,7 @@ import type { FixedObjectProperty, Description } from '@aeriajs/types'
 import { throwIfError, getReferenceProperty } from '@aeriajs/common'
 import { getCollectionAsset } from '../assets.js'
 import { prepareCollectionName } from '../database.js'
+import { spawn } from 'child_process'
 
 export type GetReferenceOptions = {
   memoize?: string
@@ -134,41 +135,72 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
   return refMap
 }
 
-export const recurseSetStage = (reference: Reference, path: string[], elemName?: string): PipelineStage => {
+export const recurseSetStage = (reference: Reference, path: string[], elemName?: string, options = { noCond: false }): PipelineStage => {
   const refName = path.at(-1)!
 
   if( reference.isArray ) {
     const newElemName = `${refName}__elem`
 
-    if( !reference.referencedCollection ) {
-      return {
-        $map: {
-          input: `$${elemName}`,
-          as: newElemName,
-          in: {
-            $mergeObjects: [
-              `$$${newElemName}`,
-              recurseSetStage({
-                ...reference,
-                isArray: false,
-              }, path, `$${newElemName}`),
-            ],
-          },
-        },
+    let mapIn: {}
+    if( reference.referencedCollection ) {
+      mapIn = recurseSetStage({
+        ...reference,
+        isArray: false,
+      }, path, `$${newElemName}`)
+    } else {
+      mapIn = {
+        $mergeObjects: [
+          `$$${newElemName}`,
+          recurseSetStage({
+            ...reference,
+            isArray: false,
+          }, path, `$${newElemName}`),
+        ],
       }
     }
 
     return {
-      $map: {
-        input: `$${elemName}`,
-        as: newElemName,
-        in: recurseSetStage({
-          ...reference,
-          isArray: false,
-        }, path, `$${newElemName}`),
-      },
+      $filter: {
+        input: {
+          $map: {
+            input: `$${elemName}`,
+            as: newElemName,
+            in: mapIn,
+          },
+        },
+        as: 'elem',
+        cond: {
+          $ne: [
+            '$$elem',
+            null,
+          ]
+        }
+      }
     }
   }
+
+  let indexOfArray: {}
+  if( reference.isChild ) {
+    indexOfArray = {
+      $indexOfArray: [
+        `$${getTempName(path)}._id`,
+        {
+          $arrayElemAt: [
+            `$${getTempName(path.slice(0, -1))}.${refName}`,
+            0,
+          ]
+        },
+      ],
+    }
+  } else {
+    indexOfArray = {
+      $indexOfArray: [
+        `$${getTempName(path)}._id`,
+        `$${elemName}`,
+      ],
+    }
+  }
+
 
   if( reference.deepReferences ) {
     const stages: [string, PipelineStage][] = []
@@ -191,20 +223,11 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
     }
 
     if( reference.referencedCollection ) {
-      const origin = reference.isChild
-        ? `${getTempName(path.slice(0, -1))}.${refName}`
-        : elemName
-
       return {
         $cond: [
           {
             $ne: [
-              {
-                $indexOfArray: [
-                  `$${getTempName(path)}._id`,
-                  `$${origin}`,
-                ],
-              },
+              indexOfArray,
               -1,
             ],
           },
@@ -213,7 +236,7 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
               recurseSetStage({
                 ...reference,
                 deepReferences: undefined,
-              }, path, elemName),
+              }, path, elemName, { noCond: true, }),
               Object.fromEntries(stages),
             ],
           },
@@ -225,34 +248,26 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
     return Object.fromEntries(stages)
   }
 
-  const origin = reference.isChild
-    ? `${getTempName(path.slice(0, -1))}.${refName}`
-    : elemName
+  const arrayElemAt = {
+    $arrayElemAt: [
+      `$${getTempName(path)}`,
+      indexOfArray,
+    ],
+  }
+
+  if( options.noCond ) {
+    return arrayElemAt
+  }
 
   return {
     $cond: [
       {
         $ne: [
-          {
-            $indexOfArray: [
-              `$${getTempName(path)}._id`,
-              `$${origin}`,
-            ],
-          },
+          indexOfArray,
           -1,
         ],
       },
-      {
-        $arrayElemAt: [
-          `$${getTempName(path)}`,
-          {
-            $indexOfArray: [
-              `$${getTempName(path)}._id`,
-              `$${origin}`,
-            ],
-          },
-        ],
-      },
+      arrayElemAt,
       null,
     ],
   }
@@ -366,6 +381,16 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
     if( memoize ) {
       lookupMemo[memoize] = finalPipeline
     }
+
+    const p = JSON.stringify(finalPipeline, null, 2)
+    console.log(p)
+    const proc = spawn('xclip', [
+      '-sel',
+      'clipboard'
+    ])
+
+    proc.stdin.write(p)
+    proc.stdin.end()
 
     return finalPipeline
   }
