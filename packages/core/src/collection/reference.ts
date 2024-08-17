@@ -20,15 +20,6 @@ export type Reference = {
 
 export type ReferenceMap = Record<string, Reference | undefined>
 
-// export type BuildLookupOptions = {
-//   properties: FixedObjectProperty['properties']
-//   parent?: string
-//   depth?: number
-//   maxDepth?: number
-//   memoize?: string
-//   project?: string[]
-// }
-
 export type PipelineStage = any
 
 export type BuildLookupPipelineOptions = {
@@ -44,14 +35,14 @@ const getTempName = (path: string[]) => {
 }
 
 const referenceMemo: Record<string, ReferenceMap | {} | undefined> = {}
-// const lookupMemo: Record<string, Awaited<ReturnType<typeof buildLookupPipeline>> | undefined> = {}
+const lookupMemo: Record<string, Awaited<ReturnType<typeof buildLookupPipeline>> | undefined> = {}
 
-export const getReferences = async (properties: FixedObjectProperty['properties'], options?: GetReferenceOptions) => {
+export const getReferences = async (properties: FixedObjectProperty['properties'], options: GetReferenceOptions = {}) => {
   const {
     depth = 0,
     maxDepth = 3,
     memoize,
-  } = options || {}
+  } = options
 
   if( memoize ) {
     if( referenceMemo[memoize] ) {
@@ -148,16 +139,33 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
 
   if( reference.isArray ) {
     const newElemName = `${refName}__elem`
+
+    if( !reference.referencedCollection ) {
+      return {
+        $map: {
+          input: `$${elemName}`,
+          as: newElemName,
+          in: {
+            $mergeObjects: [
+              `$$${newElemName}`,
+              recurseSetStage({
+                ...reference,
+                isArray: false,
+              }, path, `$${newElemName}`)
+            ]
+          },
+        },
+      }
+    }
+
     return {
       $map: {
-        input: elemName
-          ? `$$${elemName}`
-          : `$${refName}`,
+        input: `$${elemName}`,
         as: newElemName,
         in: recurseSetStage({
           ...reference,
           isArray: false,
-        }, path, newElemName),
+        }, path, `$${newElemName}`)
       },
     }
   }
@@ -173,25 +181,8 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
       const newElemName = elemName
         ? `${elemName}.${subRefName}`
         : elemName
-      const result = recurseSetStage(subReference, path.concat(subRefName), newElemName)
 
-      if( subReference.deepReferences ) {
-        if( subReference.referencedCollection ) {
-          stages.push([
-            subRefName,
-            {
-              $mergeObjects: [
-                recurseSetStage({
-                  ...subReference,
-                  deepReferences: undefined,
-                }, path.concat(subRefName), elemName),
-                result,
-              ],
-            },
-          ])
-          continue
-        }
-      }
+      const result = recurseSetStage(subReference, path.concat(subRefName), newElemName)
 
       stages.push([
         subRefName,
@@ -228,19 +219,13 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
     }
   }
 
-  const originArray = elemName
-    ? `$${elemName}`
-    : undefined
-
   return {
     $arrayElemAt: [
       `$${getTempName(path)}`,
       {
         $indexOfArray: [
           `$${getTempName(path)}._id`,
-          originArray
-            ? `$${originArray}.${refName}`
-            : `$${refName}`,
+          `$${elemName}`,
         ],
       },
     ],
@@ -252,7 +237,19 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
     rootPipeline = [],
     path = [],
     tempNames = [],
+    project,
+    memoize: memoizeId,
   } = options
+
+  const memoize = project
+    ? `${memoizeId}-${project.sort().join('-')}`
+    : memoizeId
+
+  if( memoize ) {
+    if( lookupMemo[memoize] ) {
+      return lookupMemo[memoize]
+    }
+  }
 
   const pipeline: PipelineStage[] = []
   const setProperties: [string, any][] = []
@@ -262,6 +259,12 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       continue
     }
 
+    if( project ) {
+      if( !project.includes(refName) ) {
+        continue
+      }
+    }
+
     if( reference.deepReferences ) {
       buildLookupPipeline(reference.deepReferences, {
         rootPipeline,
@@ -269,7 +272,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
         path: path.concat(refName),
       })
 
-      const result = recurseSetStage(reference, path.concat(refName))
+      const result = recurseSetStage(reference, path.concat(refName), refName)
       setProperties.push([
         refName,
         result,
@@ -282,7 +285,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
 
       tempNames.unshift(tempName)
 
-      if( reference.populatedProperties ) {
+      if( reference.populatedProperties && reference.populatedProperties.length > 0 ) {
         const lookupPopulate = reference.populatedProperties
         if( reference.deepReferences ) {
           lookupPopulate.push(...Object.keys(reference.deepReferences))
@@ -311,7 +314,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       })
 
       if( !reference.deepReferences ) {
-        const result = recurseSetStage(reference, path.concat(refName))
+        const result = recurseSetStage(reference, path.concat(refName), refName)
         setProperties.push([
           refName,
           result,
@@ -332,9 +335,13 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
         $unset: tempNames,
       })
     }
-    console.log(JSON.stringify(refMap, null, 2))
-    console.log(JSON.stringify(rootPipeline.concat(pipeline), null, 2))
-    return rootPipeline.concat(pipeline)
+
+    const finalPipeline = rootPipeline.concat(pipeline)
+    if( memoize ) {
+      lookupMemo[memoize] = finalPipeline
+    }
+
+    return finalPipeline
   }
 
   return pipeline
@@ -342,105 +349,9 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
 
 export const getLookupPipeline = async (
   description: Description,
-  _options?: Omit<BuildLookupPipelineOptions, 'properties'>,
+  options: BuildLookupPipelineOptions,
 ) => {
-  const options = Object.assign(_options || {}, {
-    properties: description.properties,
-  })
-
   const refMap = await getReferences(description.properties)
   return buildLookupPipeline(refMap, options)
 }
-
-const refMap = {
-  // "user": {
-  //   "deepReferences": {
-  //     "picture_file": {
-  //       "populatedProperties": [
-  //         "name",
-  //         "link",
-  //         "type"
-  //       ],
-  //       "isChild": true,
-  //       "referencedCollection": "file"
-  //     }
-  //   },
-  //   "populatedProperties": [
-  //     "name",
-  //     "name",
-  //     "document",
-  //     "picture_file"
-  //   ],
-  //   "referencedCollection": "user"
-  // },
-  'a': {
-    'deepReferences': {
-      'user': {
-        'deepReferences': {
-          'picture_file': {
-            'populatedProperties': [
-              'name',
-              'link',
-              'type',
-            ],
-            'isChild': true,
-            'referencedCollection': 'file',
-          },
-        },
-        'populatedProperties': [
-          'name',
-          'name',
-          'document',
-          'picture_file',
-        ],
-        'referencedCollection': 'user',
-      },
-    },
-  },
-  // "files": {
-  //   "populatedProperties": [
-  //     "name",
-  //     "link",
-  //     "type"
-  //   ],
-  //   "isArray": true,
-  //   "referencedCollection": "file"
-  // },
-  // "array": {
-  //   "deepReferences": {
-  //     "nested": {
-  //       "deepReferences": {
-  //         "users": {
-  //           "deepReferences": {
-  //             "user": {
-  //               "deepReferences": {
-  //                 "picture_file": {
-  //                   "populatedProperties": [
-  //                     "name",
-  //                     "link",
-  //                     "type"
-  //                   ],
-  //                   "isChild": true,
-  //                   "referencedCollection": "file"
-  //                 }
-  //               },
-  //               "populatedProperties": [
-  //                 "name",
-  //                 "name",
-  //                 "document",
-  //                 "picture_file"
-  //               ],
-  //               "referencedCollection": "user"
-  //             }
-  //           },
-  //           "isArray": true
-  //         }
-  //       }
-  //     }
-  //   },
-  //   "isArray": true
-  // }
-}
-
-console.log(JSON.stringify(buildLookupPipeline(refMap), null, 2))
 

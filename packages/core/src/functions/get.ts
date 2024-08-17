@@ -31,7 +31,7 @@ const internalGet = async <TContext extends Context>(
   }
 
   const pipeline: Document[] = []
-  const references = await getReferences(context.description.properties, {
+  const refMap = await getReferences(context.description.properties, {
     memoize: context.description.$id,
   })
 
@@ -49,7 +49,7 @@ const internalGet = async <TContext extends Context>(
     })
   }
 
-  pipeline.push(...buildLookupPipeline(references, {
+  pipeline.push(...buildLookupPipeline(refMap, {
     memoize: context.description.$id,
     project: payload.populate
       ? <string[]>payload.populate
