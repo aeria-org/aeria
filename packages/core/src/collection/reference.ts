@@ -135,7 +135,9 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
   return refMap
 }
 
-export const recurseSetStage = (reference: Reference, path: string[], elemName?: string, options = { noCond: false }): PipelineStage => {
+export const recurseSetStage = (reference: Reference, path: string[], elemName?: string, options = {
+  noCond: false,
+}): PipelineStage => {
   const refName = path.at(-1)!
 
   if( reference.isArray ) {
@@ -173,9 +175,9 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
           $ne: [
             '$$elem',
             null,
-          ]
-        }
-      }
+          ],
+        },
+      },
     }
   }
 
@@ -188,7 +190,7 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
           $arrayElemAt: [
             `$${getTempName(path.slice(0, -1))}.${refName}`,
             0,
-          ]
+          ],
         },
       ],
     }
@@ -200,7 +202,6 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
       ],
     }
   }
-
 
   if( reference.deepReferences ) {
     const stages: [string, PipelineStage][] = []
@@ -236,7 +237,9 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
               recurseSetStage({
                 ...reference,
                 deepReferences: undefined,
-              }, path, elemName, { noCond: true, }),
+              }, path, elemName, {
+                noCond: true,
+              }),
               Object.fromEntries(stages),
             ],
           },
@@ -386,7 +389,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
     console.log(p)
     const proc = spawn('xclip', [
       '-sel',
-      'clipboard'
+      'clipboard',
     ])
 
     proc.stdin.write(p)
