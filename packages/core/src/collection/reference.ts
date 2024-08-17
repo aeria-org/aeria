@@ -206,7 +206,7 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
                 ],
               },
               -1,
-            ]
+            ],
           },
           {
             $mergeObjects: [
@@ -218,7 +218,7 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
             ],
           },
           null,
-        ]
+        ],
       }
     }
 
@@ -240,7 +240,7 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
             ],
           },
           -1,
-        ]
+        ],
       },
       {
         $arrayElemAt: [
@@ -254,7 +254,7 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
         ],
       },
       null,
-    ]
+    ],
   }
 }
 
