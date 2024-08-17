@@ -151,8 +151,8 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
               recurseSetStage({
                 ...reference,
                 isArray: false,
-              }, path, `$${newElemName}`)
-            ]
+              }, path, `$${newElemName}`),
+            ],
           },
         },
       }
@@ -165,7 +165,7 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
         in: recurseSetStage({
           ...reference,
           isArray: false,
-        }, path, `$${newElemName}`)
+        }, path, `$${newElemName}`),
       },
     }
   }
