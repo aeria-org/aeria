@@ -21,7 +21,7 @@ const internalGet = async <TContext extends Context>(
 ): Promise<GetReturnType<SchemaWithId<TContext['description']>>> => {
   const {
     filters = {},
-    project = [],
+    project,
   } = payload
 
   if( Object.keys(filters).length === 0 ) {
@@ -42,11 +42,13 @@ const internalGet = async <TContext extends Context>(
     })),
   })
 
-  const projection = normalizeProjection(project, context.description)
-  if( projection ) {
-    pipeline.push({
-      $project: projection,
-    })
+  if( project ) {
+    const projection = normalizeProjection(project, context.description)
+    if( projection ) {
+      pipeline.push({
+        $project: projection,
+      })
+    }
   }
 
   pipeline.push(...buildLookupPipeline(refMap, {

@@ -22,7 +22,7 @@ const internalGetAll = async <TContext extends Context>(
   const {
     limit = context.config.paginationLimit!,
     sort,
-    project = [],
+    project,
     offset = 0,
   } = payload
 
@@ -81,11 +81,13 @@ const internalGetAll = async <TContext extends Context>(
     $limit: limit,
   })
 
-  const projection = normalizeProjection(project, context.description)
-  if( projection ) {
-    pipeline.push({
-      $project: projection,
-    })
+  if( project ) {
+    const projection = normalizeProjection(project, context.description)
+    if( projection ) {
+      pipeline.push({
+        $project: projection,
+      })
+    }
   }
 
   pipeline.push(...buildLookupPipeline(refMap, {
