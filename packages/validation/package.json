@@ -9,7 +9,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "env TS_NODE_COMPILER_OPTIONS=\"$(cat ../compilerOptions.json)\" mocha -r ts-node/register tests/*.spec.ts",
+    "test": "vitest run",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "build": "pnpm build:cjs && pnpm build:esm",

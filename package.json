@@ -26,7 +26,6 @@
     "@changesets/cli": "^2.27.5",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
-    "@types/mocha": "^10.0.6",
     "@types/node": "^20.14.2",
     "aeria": "link:packages/aeria",
     "aeria-sdk": "link:packages/aeria-sdk",
@@ -35,8 +34,8 @@
     "eslint-config-aeria": "^0.0.30",
     "glob": "^10.4.1",
     "husky": "^9.0.11",
-    "mocha": "^10.4.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "vitest": "^2.0.5"
   }
 }

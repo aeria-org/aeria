@@ -1,4 +1,4 @@
-import assert from 'assert'
+import { expect, test } from 'vitest'
 import * as fs from 'fs'
 import * as entrypoint from '../dist/index.js'
 
@@ -21,47 +21,45 @@ const onDirectory = async (dir: string, cb: (...args: any[]) => any) => {
   process.chdir(testsCwd)
 }
 
-describe('Payload', () => {
-  it('gets correct entrypoint path', async () => {
-    const path1 = await onDirectory('tests/fixtures/cjs', entrypoint.getEntrypointPath)
-    const path2 = await onDirectory('tests/fixtures/esm', entrypoint.getEntrypointPath)
+test('gets correct entrypoint path', async () => {
+  const path1 = await onDirectory('tests/fixtures/cjs', entrypoint.getEntrypointPath)
+  const path2 = await onDirectory('tests/fixtures/esm', entrypoint.getEntrypointPath)
 
-    assert(relativePath(path1) === 'aeria/index.js')
-    assert(fs.existsSync(path1))
-    assert(relativePath(path2) === 'aeria/index.mjs')
-    assert(fs.existsSync(path2))
-  })
+  expect(relativePath(path1)).toBe('aeria/index.js')
+  expect(fs.existsSync(path1)).toBe(true)
+  expect(relativePath(path2)).toBe('aeria/index.mjs')
+  expect(fs.existsSync(path2)).toBe(true)
+})
 
-  it('imports entrypoint correctly (cjs)', async () => {
-    const entry = await onDirectory('tests/fixtures/cjs', entrypoint.getEntrypoint)
-    assert(entry.collections)
-    assert(entry.collections.test.description.$id === 'test')
-  })
+test('imports entrypoint correctly (cjs)', async () => {
+  const entry = await onDirectory('tests/fixtures/cjs', entrypoint.getEntrypoint)
+  expect(entry.collections).toBeTruthy()
+  expect(entry.collections.test.description.$id).toBe('test')
+})
 
-  it('imports entrypoint correctly (esm)', async () => {
-    const entry = await onDirectory('tests/fixtures/esm', entrypoint.getEntrypoint)
-    assert(entry.collections)
-    assert(entry.collections.test.description.$id === 'test')
-  })
+test('imports entrypoint correctly (esm)', async () => {
+  const entry = await onDirectory('tests/fixtures/esm', entrypoint.getEntrypoint)
+  expect(entry.collections).toBeTruthy()
+  expect(entry.collections.test.description.$id).toBe('test')
+})
 
-  it('retrieves router correctly (cjs)', async () => {
-    const router = await onDirectory('tests/fixtures/cjs', entrypoint.getRouter)
-    assert(router)
-  })
+test('retrieves router correctly (cjs)', async () => {
+  const router = await onDirectory('tests/fixtures/cjs', entrypoint.getRouter)
+  expect(router).toBeTruthy()
+})
 
-  it('retrieves router correctly (esm)', async () => {
-    const router = await onDirectory('tests/fixtures/esm', entrypoint.getRouter)
-    assert(router)
-  })
+test('retrieves router correctly (esm)', async () => {
+  const router = await onDirectory('tests/fixtures/esm', entrypoint.getRouter)
+  expect(router).toBeTruthy()
+})
 
-  it('doesnt mutate collections', async () => {
-    const collectionBefore = await onDirectory('tests/fixtures/esm', () => entrypoint.getCollection('test'))
-    collectionBefore.dummy = true
+test('doesnt mutate collections', async () => {
+  const collectionBefore = await onDirectory('tests/fixtures/esm', () => entrypoint.getCollection('test'))
+  collectionBefore.dummy = true
 
-    const collectionAfter = await onDirectory('tests/fixtures/esm', () => entrypoint.getCollection('test'))
-    const collections = await onDirectory('tests/fixtures/esm', entrypoint.getCollections)
-    assert(!collectionAfter.dummy)
-    assert(!collections.test.dummy)
-  })
+  const collectionAfter = await onDirectory('tests/fixtures/esm', () => entrypoint.getCollection('test'))
+  const collections = await onDirectory('tests/fixtures/esm', entrypoint.getCollections)
+  expect(collectionAfter.dummy).toBeFalsy()
+  expect(collections.test.dummy).toBeFalsy()
 })
 

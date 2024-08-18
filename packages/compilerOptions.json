@@ -1,8 +1,0 @@
-{
-  "noEmit": true,
-  "module": "commonjs",
-  "moduleResolution": "node",
-  "strict": true,
-  "skipLibCheck": true,
-  "esModuleInterop": true
-}
