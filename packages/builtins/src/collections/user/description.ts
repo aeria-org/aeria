@@ -27,12 +27,12 @@ export const description = defineDescription({
     },
     given_name: {
       getter: (document: any) => {
-        return `${document.name?.split(' ')[0] || 'N/A'}`
+        return document.name?.split(' ')[0]
       },
     },
     family_name: {
       getter: (document: any) => {
-        return `${document.name?.split(' ')[1]}`
+        return document.name?.split(' ')[1]
       },
     },
     active: {

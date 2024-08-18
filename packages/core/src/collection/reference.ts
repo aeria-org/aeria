@@ -2,7 +2,6 @@ import type { FixedObjectProperty, Description } from '@aeriajs/types'
 import { throwIfError, getReferenceProperty } from '@aeriajs/common'
 import { getCollectionAsset } from '../assets.js'
 import { prepareCollectionName } from '../database.js'
-import { spawn } from 'child_process'
 
 export type GetReferenceOptions = {
   memoize?: string
@@ -13,7 +12,7 @@ export type GetReferenceOptions = {
 export type Reference = {
   isArray?: boolean
   isInline?: boolean
-  isChild?: boolean
+  isRecursive?: boolean
   deepReferences?: ReferenceMap
   referencedCollection?: string
   populatedProperties?: string[]
@@ -113,7 +112,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
     }
 
     if( depth > 0 ) {
-      reference.isChild = true
+      reference.isRecursive = true
     }
 
     if( refProperty ) {
@@ -135,7 +134,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
   return refMap
 }
 
-export const recurseSetStage = (reference: Reference, path: string[], elemName?: string, options = {
+export const recurseSetStage = (reference: Reference, path: string[], parentElem: {}, options = {
   noCond: false,
 }): PipelineStage => {
   const refName = path.at(-1)!
@@ -148,7 +147,7 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
       mapIn = recurseSetStage({
         ...reference,
         isArray: false,
-      }, path, `$${newElemName}`)
+      }, path, `$$${newElemName}`)
     } else {
       mapIn = {
         $mergeObjects: [
@@ -156,7 +155,7 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
           recurseSetStage({
             ...reference,
             isArray: false,
-          }, path, `$${newElemName}`),
+          }, path, `$$${newElemName}`),
         ],
       }
     }
@@ -165,7 +164,7 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
       $filter: {
         input: {
           $map: {
-            input: `$${elemName}`,
+            input: parentElem,
             as: newElemName,
             in: mapIn,
           },
@@ -182,23 +181,30 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
   }
 
   let indexOfArray: {}
-  if( reference.isChild ) {
+
+  if( reference.isRecursive ) {
     indexOfArray = {
       $indexOfArray: [
         `$${getTempName(path)}._id`,
         {
           $arrayElemAt: [
             `$${getTempName(path.slice(0, -1))}.${refName}`,
-            0,
-          ],
+            {
+              $indexOfArray: [
+                `$${getTempName(path.slice(0, -1))}._id`,
+                parentElem,
+              ]
+            }
+          ]
         },
       ],
     }
+
   } else {
     indexOfArray = {
       $indexOfArray: [
         `$${getTempName(path)}._id`,
-        `$${elemName}`,
+        parentElem,
       ],
     }
   }
@@ -211,11 +217,25 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
         continue
       }
 
-      const newElemName = elemName
-        ? `${elemName}.${subRefName}`
-        : elemName
+      // const newElemName = !reference.referencedCollection
+      //   ? `${parentElem}.${subRefName}`
+      //   : parentElem
 
-      const result = recurseSetStage(subReference, path.concat(subRefName), newElemName)
+      let newElem: {}
+      if( reference.isRecursive ) {
+        newElem = {
+          $arrayElemAt: [
+            `$${getTempName(path.slice(0, -1))}.${refName}`,
+            indexOfArray,
+          ]
+        }
+      } else {
+        newElem = !reference.referencedCollection
+          ? `${parentElem}.${subRefName}`
+          : parentElem
+      }
+
+      const result = recurseSetStage(subReference, path.concat(subRefName), newElem)
 
       stages.push([
         subRefName,
@@ -237,7 +257,7 @@ export const recurseSetStage = (reference: Reference, path: string[], elemName?:
               recurseSetStage({
                 ...reference,
                 deepReferences: undefined,
-              }, path, elemName, {
+              }, path, parentElem, {
                 noCond: true,
               }),
               Object.fromEntries(stages),
@@ -316,7 +336,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
         path: path.concat(refName),
       })
 
-      const result = recurseSetStage(reference, path.concat(refName), refName)
+      const result = recurseSetStage(reference, path.concat(refName), `$${refName}`)
       setProperties.push([
         refName,
         result,
@@ -343,7 +363,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
         })
       }
 
-      const localField = reference.isChild
+      const localField = reference.isRecursive
         ? `${getTempName(path)}.${refName}`
         : path.concat(refName).join('.')
 
@@ -358,7 +378,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       })
 
       if( !reference.deepReferences ) {
-        const result = recurseSetStage(reference, path.concat(refName), refName)
+        const result = recurseSetStage(reference, path.concat(refName), `$${refName}`)
         setProperties.push([
           refName,
           result,
@@ -384,16 +404,6 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
     if( memoize ) {
       lookupMemo[memoize] = finalPipeline
     }
-
-    const p = JSON.stringify(finalPipeline, null, 2)
-    console.log(p)
-    const proc = spawn('xclip', [
-      '-sel',
-      'clipboard',
-    ])
-
-    proc.stdin.write(p)
-    proc.stdin.end()
 
     return finalPipeline
   }
