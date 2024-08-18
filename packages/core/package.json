@@ -10,7 +10,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "TS_NODE_COMPILER_OPTIONS=\"$(cat ../compilerOptions.json)\" mocha --exit -t10000 -r ts-node/register tests/*.spec.ts",
+    "test": "TS_NODE_COMPILER_OPTIONS=\"$(cat ../compilerOptions.json)\" mocha --exit --timeout 10000 -r ts-node/register tests/*.spec.ts",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "build": "pnpm build:cjs && pnpm build:esm",
