@@ -1,6 +1,7 @@
 import type { Token } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
-import { createContext, getDatabase, insert, ObjectId } from '../../dist/index.js'
+import { createContext, insert, ObjectId } from '../../dist/index.js'
+import { dbPromise } from './database'
 
 const token: Token = {
   authenticated: false,
@@ -8,7 +9,7 @@ const token: Token = {
 }
 
 export const documents = (async () => {
-    const { db } = await getDatabase()
+    const { db } = await dbPromise
     if( !db ) {
       throw new Error
     }

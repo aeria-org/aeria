@@ -11,6 +11,7 @@ export type GetReferenceOptions = {
 
 export type Reference = {
   isArray?: boolean
+  isArrayElement?: boolean
   isInline?: boolean
   isRecursive?: boolean
   deepReferences?: ReferenceMap
@@ -20,7 +21,7 @@ export type Reference = {
 
 export type ReferenceMap = Record<string, Reference | undefined>
 
-export type PipelineStage = any
+export type PipelineStage = {}
 
 export type BuildLookupPipelineOptions = {
   rootPipeline?: PipelineStage[]
@@ -139,50 +140,8 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
 }): PipelineStage => {
   const refName = path.at(-1)!
 
-  if( reference.isArray ) {
-    const newElemName = `${refName}__elem`
-
-    let mapIn: {}
-    if( reference.referencedCollection ) {
-      mapIn = recurseSetStage({
-        ...reference,
-        isArray: false,
-      }, path, `$$${newElemName}`)
-    } else {
-      mapIn = {
-        $mergeObjects: [
-          `$$${newElemName}`,
-          recurseSetStage({
-            ...reference,
-            isArray: false,
-          }, path, `$$${newElemName}`),
-        ],
-      }
-    }
-
-    return {
-      $filter: {
-        input: {
-          $map: {
-            input: parentElem,
-            as: newElemName,
-            in: mapIn,
-          },
-        },
-        as: 'elem',
-        cond: {
-          $ne: [
-            '$$elem',
-            null,
-          ],
-        },
-      },
-    }
-  }
-
   let indexOfArray: {}
-
-  if( reference.isRecursive ) {
+  if( reference.isRecursive && !reference.isArrayElement ) {
     indexOfArray = {
       $indexOfArray: [
         `$${getTempName(path)}._id`,
@@ -209,6 +168,59 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
     }
   }
 
+  if( reference.isArray ) {
+    const newElemName = `${refName}__elem`
+
+    let mapIn: {}
+    if( reference.referencedCollection ) {
+      mapIn = recurseSetStage({
+        ...reference,
+        isArray: false,
+        isArrayElement: true,
+      }, path, `$$${newElemName}`)
+    } else {
+      mapIn = {
+        $mergeObjects: [
+          `$$${newElemName}`,
+          recurseSetStage({
+            ...reference,
+            isArray: false,
+            isArrayElement: true,
+          }, path, `$$${newElemName}`),
+        ],
+      }
+    }
+
+    let mapInput = parentElem
+    if( reference.isRecursive ) {
+      mapInput = {
+        $arrayElemAt: [
+          `$${getTempName(path.slice(0, -1))}.${refName}`,
+          indexOfArray,
+        ],
+      }
+    }
+
+    return {
+      $filter: {
+        input: {
+          $map: {
+            input: mapInput,
+            as: newElemName,
+            in: mapIn,
+          },
+        },
+        as: 'elem',
+        cond: {
+          $ne: [
+            '$$elem',
+            null,
+          ],
+        },
+      },
+    }
+  }
+
   if( reference.deepReferences ) {
     const stages: [string, PipelineStage][] = []
 
@@ -216,10 +228,6 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
       if( !subReference ) {
         continue
       }
-
-      // const newElemName = !reference.referencedCollection
-      //   ? `${parentElem}.${subRefName}`
-      //   : parentElem
 
       let newElem: {}
       if( reference.isRecursive ) {
@@ -230,9 +238,9 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
           ],
         }
       } else {
-        newElem = !reference.referencedCollection
-          ? `${parentElem}.${subRefName}`
-          : parentElem
+        newElem = reference.referencedCollection
+          ? parentElem
+          : `${parentElem}.${subRefName}`
       }
 
       const result = recurseSetStage(subReference, path.concat(subRefName), newElem)
@@ -316,7 +324,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
   }
 
   const pipeline: PipelineStage[] = []
-  const setProperties: [string, any][] = []
+  const setProperties: [string, {}][] = []
 
   for( const [refName, reference] of Object.entries(refMap) ) {
     if( !reference ) {

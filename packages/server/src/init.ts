@@ -1,5 +1,6 @@
 import type {
   Context,
+  Collection,
   GenericRequest,
   ApiConfig,
   Token,
@@ -28,7 +29,7 @@ export type InitOptions = {
   router?: ReturnType<typeof createRouter>
   setup?: (context: Context)=> any
   callback?: (context: Context)=> any
-  collections?: Record<string, {
+  collections?: Record<string, Collection & {
     description: NonCircularJsonSchema
   }>
 }

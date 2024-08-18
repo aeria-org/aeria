@@ -5,15 +5,56 @@ exports.default = init({
   collections: {
     user,
     file,
+    circularA: {
+      functions: {
+        get,
+      },
+      description: {
+        $id: 'circularA',
+        required: [],
+        properties: {
+          name: {
+            type: 'string'
+          },
+          circularA: {
+            $ref: 'circularA'
+          },
+          circularB: {
+            $ref: 'circularB'
+          },
+          circularB_array: {
+            type: 'array',
+            items: {
+              $ref: 'circularB'
+            }
+          }
+        }
+      }
+    },
+    circularB: {
+      functions: {
+        get,
+      },
+      description: {
+        $id: 'circularA',
+        required: [],
+        properties: {
+          name: {
+            type: 'string',
+          },
+          circularA: {
+            $ref: 'circularA'
+          },
+        }
+      }
+    },
     person: {
       functions: {
         get
       },
       description: {
         $id: 'person',
-        indexes: [
-          'name'
-        ],
+        required: [],
         properties: {
           name: {
             type: 'string'
@@ -30,6 +71,7 @@ exports.default = init({
       },
       description: {
         $id: 'project',
+        required: [],
         properties: {
           created_by: {
             $ref: 'person'

@@ -1,5 +1,6 @@
 import assert from 'assert'
 import { documents } from './fixtures/documents'
+import { circularDocuments } from './fixtures/circularDocuments'
 
 describe('Reference engine', () => {
   it('populates top level references', async () => {
@@ -57,7 +58,17 @@ describe('Reference engine', () => {
     assert(user2.equals(project.cronogram.days[0].assignments[0].responsibles[1].user._id))
     assert(file2.equals(project.cronogram.days[0].assignments[0].responsibles[1].user.picture_file._id))
     assert(project.cronogram.days[0].assignments[0].responsibles[2].user.picture_file === null)
-
   })
+
+  it('populates circular references', async () => {
+    const { circularA2 } = await circularDocuments
+    assert(circularA2.name === 'rec a2')
+    assert(circularA2.circularA.name === 'rec a1')
+    assert(circularA2.circularB.name === 'rec b1')
+    assert(circularA2.circularB_array[0].name === 'rec b1')
+    assert(circularA2.circularB_array[0].circularA.name === 'rec a1')
+  })
+
+
 })
 
