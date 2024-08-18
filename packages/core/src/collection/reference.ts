@@ -193,9 +193,9 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
               $indexOfArray: [
                 `$${getTempName(path.slice(0, -1))}._id`,
                 parentElem,
-              ]
-            }
-          ]
+              ],
+            },
+          ],
         },
       ],
     }
@@ -227,7 +227,7 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
           $arrayElemAt: [
             `$${getTempName(path.slice(0, -1))}.${refName}`,
             indexOfArray,
-          ]
+          ],
         }
       } else {
         newElem = !reference.referencedCollection
