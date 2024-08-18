@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.141
+
+### Patch Changes
+
+- 943da52: Fix collection name plural form
+  - @aeriajs/builtins@0.0.141
+  - @aeriajs/security@0.0.141
+
 ## 0.0.140
 
 ### Patch Changes
