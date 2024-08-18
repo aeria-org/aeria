@@ -61,9 +61,14 @@ export const getDatabaseSync = () => {
 }
 
 export const prepareCollectionName = (collectionName: string) => {
-  const pluralized = collectionName.endsWith('s')
-    ? `${collectionName}es`
-    : `${collectionName}s`
+  let pluralized: string
+  if( collectionName.endsWith('y') ) {
+    pluralized = collectionName.replace(/y$/, 'ies')
+  } else if( collectionName.endsWith('s') ) {
+    pluralized = `${collectionName}es`
+  } else {
+    pluralized = `${collectionName}s`
+  }
 
   return pluralized.toLowerCase()
 }
