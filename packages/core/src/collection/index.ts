@@ -1,7 +1,6 @@
 export * from './cascadingRemove.js'
 export * from './define.js'
 export * from './description.js'
-export * from './fill.js'
 export * from './normalizeProjection.js'
 export * from './pagination.js'
 export * from './preload.js'

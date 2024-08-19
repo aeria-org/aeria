@@ -2,7 +2,7 @@ import type { Context, SchemaWithId, InsertPayload, InsertReturnType } from '@ae
 import { Result, HTTPStatus, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
 import { throwIfError, endpointErrorSchema } from '@aeriajs/common'
-import { traverseDocument, normalizeProjection, prepareInsert, fill } from '../collection/index.js'
+import { traverseDocument, normalizeProjection, prepareInsert } from '../collection/index.js'
 
 export type InsertOptions = {
   bypassSecurity?: boolean
@@ -110,11 +110,11 @@ const internalInsert = async <TContext extends Context>(
     })
   }
 
-  const result = fill(throwIfError(await traverseDocument(doc, context.description, {
+  const result = throwIfError(await traverseDocument(doc, context.description, {
     getters: true,
     fromProperties: true,
     recurseReferences: true,
-  })), context.description)
+  }))
 
   return Result.result(result)
 }
