@@ -45,7 +45,7 @@ const install = async () => {
     await fs.promises.mkdir(aeriaDir)
   }
 
-  const { types = 'src/index.ts' } = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'package.json'), {
+  const { types = 'src/index.ts' } = JSON.parse(await fs.promises.readFile(path.join(base, 'package.json'), {
     encoding: 'utf8',
   }))
 
