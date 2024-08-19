@@ -48,6 +48,10 @@ export const remove = async <TContext extends Context>(
     switch( error ) {
       case ACError.InvalidLimit: throw new Error
     }
+    return context.error(HTTPStatus.Forbidden, {
+      code: error,
+    })
   }
+
   return internalRemove(securedPayload, context)
 }

@@ -17,7 +17,7 @@ export type GetOptions = {
 const internalGet = async <TContext extends Context>(
   payload: GetPayload<SchemaWithId<TContext['description']>>,
   context: TContext,
-): Promise<GetReturnType<SchemaWithId<TContext['description']>>> => {
+) => {
   const {
     filters = {},
     project,
@@ -80,7 +80,7 @@ export const get = async <TContext extends Context>(
     ? TContext
     : never,
   options: GetOptions = {},
-) => {
+): Promise<GetReturnType<SchemaWithId<TContext['description']>>> => {
   if( options.bypassSecurity ) {
     return internalGet(payload, context)
   }
@@ -91,7 +91,11 @@ export const get = async <TContext extends Context>(
     switch( error ) {
       case ACError.InvalidLimit: throw new Error
     }
+    return context.error(HTTPStatus.Forbidden, {
+      code: error,
+    })
   }
+
   return internalGet(securedPayload, context)
 }
 

@@ -132,6 +132,7 @@ export type InsertReturnType<TDocument> =
       | TraverseError.InvalidDocumentId
       | TraverseError.InvalidTempfile,
       unknown,
+      | HTTPStatus.Forbidden
       | HTTPStatus.NotFound
       | HTTPStatus.UnprocessableContent
     >,
@@ -142,8 +143,10 @@ export type GetReturnType<TDocument> =
   Result.Either<
     StrictEndpointError<
       | ACError.ResourceNotFound
+      | ACError.OwnershipError
       | ACError.MalformedInput,
       unknown,
+      | HTTPStatus.Forbidden
       | HTTPStatus.NotFound
       | HTTPStatus.BadRequest
     >,

@@ -10,8 +10,9 @@ export type InsertOptions = {
 
 export const insertErrorSchema = () => endpointErrorSchema({
   httpStatus: [
-    HTTPStatus.UnprocessableContent,
+    HTTPStatus.Forbidden,
     HTTPStatus.NotFound,
+    HTTPStatus.UnprocessableContent,
   ],
   code: [
     ACError.InsecureOperator,
@@ -29,7 +30,7 @@ export const insertErrorSchema = () => endpointErrorSchema({
 const internalInsert = async <TContext extends Context>(
   payload: InsertPayload<SchemaWithId<TContext['description']>>,
   context: TContext,
-): Promise<InsertReturnType<SchemaWithId<TContext['description']>>> => {
+) => {
   const { error, result: what } = await traverseDocument(payload.what, context.description, {
     recurseDeep: true,
     autoCast: true,
@@ -125,7 +126,7 @@ export const insert = async <TContext extends Context>(
     ? TContext
     : never,
   options: InsertOptions = {},
-) => {
+): Promise<InsertReturnType<SchemaWithId<TContext['description']>>>  => {
   if( options.bypassSecurity ) {
     return internalInsert(payload, context)
   }
@@ -133,7 +134,9 @@ export const insert = async <TContext extends Context>(
   const security = useSecurity(context)
   const { error, result: securedPayload } = await security.secureWritePayload(payload)
   if( error ) {
-    return Result.error(error)
+    return context.error(HTTPStatus.Forbidden, {
+      code: error
+    })
   }
   return internalInsert(securedPayload, context)
 }

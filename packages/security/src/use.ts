@@ -26,6 +26,7 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
 
     const start = iterableMiddlewares<
       Result.Either<
+        | ACError.OwnershipError
         | ACError.InvalidLimit,
         TPayload & CollectionHookReadPayload
       >,
@@ -44,7 +45,12 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
     }
 
     const start = iterableMiddlewares<
-      Result.Either<ACError, TPayload>,
+      Result.Either<
+        | ACError.OwnershipError
+        | ACError.ResourceNotFound
+        | ACError.TargetImmutable,
+        TPayload
+      >,
       typeof props
     >([
       checkOwnershipWrite,

@@ -10,6 +10,7 @@ export const endpointError = <const TEndpointError extends EndpointError>(value:
 export const isEndpointError = (object: EndpointError | any): object is Result.Error<EndpointError<any>> => {
   return object
     && object.error
+    && typeof object.error === 'object'
     && (ERROR_SYMBOL in object.error || ERROR_SYMBOL_DESCRIPTION in object.error)
 }
 

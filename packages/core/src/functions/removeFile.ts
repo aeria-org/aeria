@@ -1,5 +1,5 @@
 import type { Context, RemoveFilePayload } from '@aeriajs/types'
-import { Result, ACError } from '@aeriajs/types'
+import { Result, ACError, HTTPStatus } from '@aeriajs/types'
 import { useSecurity } from '@aeriajs/security'
 
 export type RemoveFileOptions = {
@@ -35,7 +35,11 @@ export const removeFile = async <TContext extends Context>(
     switch( error ) {
       case ACError.InvalidLimit: throw new Error
     }
+    return context.error(HTTPStatus.Forbidden, {
+      code: error,
+    })
   }
+
   return internalRemoveFile(securedPayload, context)
 }
 
