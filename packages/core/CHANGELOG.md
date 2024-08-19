@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.144
+
+### Patch Changes
+
+- 765240d: Fix postinstall script
+  - @aeriajs/builtins@0.0.144
+  - @aeriajs/security@0.0.144
+
 ## 0.0.143
 
 ### Patch Changes
