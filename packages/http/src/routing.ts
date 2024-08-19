@@ -46,7 +46,7 @@ type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<RouteCont
 }
 
 export type ProxiedRouter<TRouter> = TRouter & Record<
-  RequestMethod,
+  typeof REQUEST_METHODS[number],
   <
     const TContractWithRoles extends ContractWithRoles,
     TCallback extends (

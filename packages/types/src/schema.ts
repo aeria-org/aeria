@@ -77,23 +77,6 @@ export type InferProperties<TSchema> = TSchema extends readonly any[]
     : never
   : InferProperty<TSchema>
 
-export type ObjectToSchema<TObject, TRequired extends string[] | null = null> = TObject extends readonly [infer K]
-  ? ValueToProperty<[K]>
-  : keyof TObject extends never
-    ? { type: 'object' }
-    : {
-      [P in keyof TObject]: TObject[P] extends infer Value
-        ? ValueToProperty<Value>
-        : never
-    } extends infer Properties
-      ? TRequired extends null
-        ? { type: 'object',
-          properties: Properties }
-        : { type: 'object',
-          required: TRequired,
-          properties: Properties }
-      : never
-
 export type PackReferences<T> = {
   [P in keyof T]: PackReferencesAux<T[P]>
 }
@@ -152,18 +135,4 @@ type MergeReferences<TSchema> = CombineProperties<TSchema> extends infer Combine
     ? MappedReferences & Omit<CombinedProperties, keyof MappedReferences>
     : never
   : never
-
-type ValueToProperty<TValue> = TValue extends `$${infer Ref}`
-  ? { $ref: Ref } : TValue extends string
-    ? { type: 'string' } : TValue extends number
-      ? { type: 'number' } : TValue extends boolean
-        ? { type: 'boolean' } : TValue extends new ()=> Date
-          ? { type: 'string',
-            format: 'date' } : TValue extends readonly [infer K]
-            ? { type: 'array',
-              items: ValueToProperty<K> } : TValue extends (infer K)[]
-              ? { enum: K } : TValue extends Record<string, any>
-                ? keyof TValue extends never
-                  ? { type: 'object' }
-                  : { type: 'object' } & ObjectToSchema<TValue> : never
 
