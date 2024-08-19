@@ -193,7 +193,7 @@ export const registerRoute = async (
       }
 
       if( 'payload' in contract && contract.payload ) {
-        const { error } = checkUnprocessable(context.request.query, contract.payload, context)
+        const { error } = checkUnprocessable(context.request.payload, contract.payload, context)
         if( error ) {
           return Result.error(error)
         }
