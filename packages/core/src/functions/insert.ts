@@ -126,7 +126,7 @@ export const insert = async <TContext extends Context>(
     ? TContext
     : never,
   options: InsertOptions = {},
-): Promise<InsertReturnType<SchemaWithId<TContext['description']>>>  => {
+): Promise<InsertReturnType<SchemaWithId<TContext['description']>>> => {
   if( options.bypassSecurity ) {
     return internalInsert(payload, context)
   }
@@ -135,7 +135,7 @@ export const insert = async <TContext extends Context>(
   const { error, result: securedPayload } = await security.secureWritePayload(payload)
   if( error ) {
     return context.error(HTTPStatus.Forbidden, {
-      code: error
+      code: error,
     })
   }
   return internalInsert(securedPayload, context)
