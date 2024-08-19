@@ -1,5 +1,4 @@
 import type { RequestConfig } from '@aeriajs/common'
-import type { RequestMethod } from '@aeriajs/types'
 import type { InstanceConfig } from './types.js'
 import { request } from './http.js'
 import { publicUrl } from './utils.js'
@@ -23,7 +22,7 @@ const proxify = <TTarget extends ((...args: any)=> any) | Record<string | symbol
       }
 
       const fn = async (payload: any) => {
-        const method = key as RequestMethod
+        const method = key
         const requestConfig = {
           params: {
             method,

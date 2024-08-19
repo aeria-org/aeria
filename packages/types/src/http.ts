@@ -29,7 +29,7 @@ export enum HTTPStatus {
 
 export type RouteUri = `/${string}`
 
-export type RequestMethod = (typeof REQUEST_METHODS)[number]
+export type RequestMethod = string
 
 export type GenericRequest = Omit<
   IncomingMessage,

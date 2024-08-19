@@ -1,4 +1,4 @@
-import type { GenericRequest, GenericResponse, RequestMethod } from '@aeriajs/types'
+import type { GenericRequest, GenericResponse } from '@aeriajs/types'
 import type { ServerOptions } from '@aeriajs/http'
 import { ERROR_SYMBOL_DESCRIPTION } from '@aeriajs/types'
 import { isEndpointError } from '@aeriajs/common'
@@ -15,11 +15,15 @@ const getBody = async ($req: http.IncomingMessage) => {
 }
 
 export const abstractRequest = async (request: http.IncomingMessage) => {
-  const url = request.url || '/'
+  if( !request.url || !request.method ) {
+    throw new Error
+  }
+
+  const url = request.url
 
   const req: GenericRequest = Object.assign(request, {
     url,
-    method: (request.method || '') as RequestMethod,
+    method: request.method,
     headers: request.headers,
     body: request.headers['x-stream-request']
       ? undefined
