@@ -1,5 +1,11 @@
 # @aeriajs/http
 
+## 0.0.100
+
+### Patch Changes
+
+- 9fdd192: Fix route runtime validation
+
 ## 0.0.99
 
 ### Patch Changes
