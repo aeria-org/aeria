@@ -3,7 +3,7 @@ import * as fs from 'fs'
 
 const DTS_FILENAME = 'aeria.d.ts'
 
-const dts = `// this file will be overwritten
+const makeDts = (typesPath: string) => `// this file will be overwritten
 import type {} from '@aeriajs/types'
 
 declare global {
@@ -15,7 +15,7 @@ declare global {
       : never
   }
 
-  type Collections = typeof import('../src/index.ts') extends infer EntrypointModule
+  type Collections = typeof import('${typesPath}') extends infer EntrypointModule
     ? 'collections' extends keyof EntrypointModule
       ? UnpackCollections<EntrypointModule['collections']>
       : 'default' extends keyof EntrypointModule
@@ -45,6 +45,11 @@ const install = async () => {
     await fs.promises.mkdir(aeriaDir)
   }
 
+  const { types = 'src/index.ts' } = JSON.parse(await fs.promises.readFile(path.join(process.cwd(), 'package.json'), {
+    encoding: 'utf8',
+  }))
+
+  const dts = makeDts(path.join('..', types))
   await fs.promises.writeFile(path.join(aeriaDir, DTS_FILENAME), dts)
 }
 
