@@ -87,7 +87,7 @@ export const warmup = async () => {
     const endpoint = endpoints[endpointUri as RouteUri]
 
     for( const method in endpoint ) {
-      const line = await colorizedRoute(method, endpointUri, endpoint[method as keyof typeof endpoint])
+      const line = await colorizedRoute(method, endpointUri, endpoint[method])
       console.log(line)
     }
   }
