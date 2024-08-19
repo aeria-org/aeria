@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/http",
-  "version": "0.0.99",
+  "version": "0.0.100",
   "description": "## Installation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
