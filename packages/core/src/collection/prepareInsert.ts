@@ -43,10 +43,8 @@ export const prepareInsert = <TPayload extends Record<string, any>>(payload: TPa
   delete doc.created_at
   delete doc.updated_at
 
-  const what = docId
+  return docId
     ? prepareUpdate(doc)
     : prepareCreate(doc, description)
-
-  return what
 }
 
