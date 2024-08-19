@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.77
+
+### Patch Changes
+
+- 4f4d31e: Fix endpoint error handling
+
 ## 0.0.76
 
 ### Patch Changes

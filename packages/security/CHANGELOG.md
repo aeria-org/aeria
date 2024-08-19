@@ -1,5 +1,15 @@
 # @aeriajs/security
 
+## 0.0.143
+
+### Patch Changes
+
+- 4f4d31e: Fix endpoint error handling
+- Updated dependencies [4f4d31e]
+  - @aeriajs/common@0.0.89
+  - @aeriajs/types@0.0.77
+  - @aeriajs/core@0.0.143
+
 ## 0.0.142
 
 ### Patch Changes
