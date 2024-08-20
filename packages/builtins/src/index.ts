@@ -1,8 +1,11 @@
 import type {} from 'mongodb'
 import type {} from '@aeriajs/validation'
-export * from './collections/index.js'
 export * as builtinFunctions from './functions/index.js'
+export * from './collections/index.js'
 export * from './authentication.js'
+export {
+  insert as insertUser,
+} from './collections/user/insert.js'
 
 import {
   file,

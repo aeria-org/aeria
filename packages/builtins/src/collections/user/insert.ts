@@ -1,12 +1,10 @@
-import type { Context, SchemaWithId, PackReferences } from '@aeriajs/types'
+import type { Context, SchemaWithId, InsertPayload } from '@aeriajs/types'
 import type { description } from './description'
 import { insert as originalInsert } from '@aeriajs/core'
 import * as bcrypt from 'bcrypt'
 
-export const insert = async (
-  payload: {
-    what: Omit<PackReferences<SchemaWithId<typeof description>>, 'roles'>
-  },
+export const insert = async <TInsertPayload extends InsertPayload<SchemaWithId<typeof description>> = InsertPayload<SchemaWithId<typeof description>>>(
+  payload: NoInfer<TInsertPayload>,
   context: Context<typeof description>,
 ) => {
   if( payload.what.password ) {

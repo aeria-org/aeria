@@ -1,4 +1,4 @@
-import type { FilterOperators, StrictFilter as Filter, StrictUpdateFilter, WithId, OptionalId, ObjectId } from 'mongodb'
+import type { FilterOperators, StrictFilter as Filter, WithId, OptionalId, ObjectId } from 'mongodb'
 import type { Result } from './result.js'
 import type { EndpointError, StrictEndpointError } from './endpointError.js'
 import type { PackReferences } from './schema.js'
@@ -61,10 +61,7 @@ export type Filters<TDocument> = StrictFilter<TDocument> & Partial<{
 }>
 
 export type What<TDocument> = (
-  | { _id: ObjectId | string } & Partial<
-    & Omit<PackReferences<TDocument>, '_id'>>
-    & RemoveAny<StrictUpdateFilter<PackReferences<TDocument>>
-    >
+  | { _id: ObjectId | string } & Partial<Omit<PackReferences<TDocument>, '_id'>>
   | { _id?: null } & Omit<PackReferences<TDocument>, '_id'>
 ) extends infer Document
   ? {
