@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.78
+
+### Patch Changes
+
+- 30479ff: Export `insertUser()` function
+
 ## 0.0.77
 
 ### Patch Changes

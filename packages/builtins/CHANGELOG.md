@@ -1,5 +1,17 @@
 # @aeriajs/builtins
 
+## 0.0.145
+
+### Patch Changes
+
+- 30479ff: Export `insertUser()` function
+- Updated dependencies [30479ff]
+  - @aeriajs/types@0.0.78
+  - @aeriajs/core@0.0.145
+  - @aeriajs/common@0.0.90
+  - @aeriajs/entrypoint@0.0.92
+  - @aeriajs/validation@0.0.93
+
 ## 0.0.144
 
 ### Patch Changes
