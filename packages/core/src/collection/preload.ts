@@ -41,7 +41,7 @@ const recurseProperty = async (_property: Property, propertyName: string, descri
         throw new Error(`description of ${reference.$ref} not found`)
       }
 
-      const indexes = reference.indexes = referenceDescription.indexes?.filter((index): index is string => {
+      const indexes = reference.indexes = referenceDescription.indexes?.filter((index) => {
         return typeof index === 'string'
       })
 

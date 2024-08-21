@@ -16,10 +16,10 @@ export type Reference = {
   isRecursive?: boolean
   deepReferences?: ReferenceMap
   referencedCollection?: string
-  populatedProperties?: string[]
+  indexes?: string[]
 }
 
-export type ReferenceMap = Record<string, Reference | undefined>
+export type ReferenceMap = Record<string, Reference>
 
 export type PipelineStage = {}
 
@@ -76,9 +76,9 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
 
       const indexes = refProperty.indexes
         ? refProperty.indexes
-        : description.indexes || []
+        : description.indexes || Object.keys(description.properties).slice(0, 1)
 
-      reference.populatedProperties = (refProperty.populate || []).concat(indexes.filter((index): index is string => typeof index === 'string'))
+      reference.indexes = (refProperty.populate || []).concat(indexes.filter((index) => typeof index === 'string'))
 
     } else {
       const entrypoint = 'items' in property
@@ -225,10 +225,6 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
     const stages: [string, PipelineStage][] = []
 
     for( const [subRefName, subReference] of Object.entries(reference.deepReferences) ) {
-      if( !subReference ) {
-        continue
-      }
-
       let newElem: {}
       if( reference.isRecursive ) {
         newElem = {
@@ -327,10 +323,6 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
   const setProperties: [string, {}][] = []
 
   for( const [refName, reference] of Object.entries(refMap) ) {
-    if( !reference ) {
-      continue
-    }
-
     if( project ) {
       if( !project.includes(refName) ) {
         continue
@@ -357,14 +349,14 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
 
       tempNames.unshift(tempName)
 
-      if( reference.populatedProperties && reference.populatedProperties.length > 0 ) {
-        const lookupPopulate = reference.populatedProperties
+      if( reference.indexes && reference.indexes.length > 0 ) {
+        const lookupPopulate = reference.indexes
         if( reference.deepReferences ) {
           lookupPopulate.push(...Object.keys(reference.deepReferences))
         }
 
         lookupPipeline.push({
-          $project: Object.fromEntries(reference.populatedProperties.map((index) => [
+          $project: Object.fromEntries(reference.indexes.map((index) => [
             index,
             1,
           ])),

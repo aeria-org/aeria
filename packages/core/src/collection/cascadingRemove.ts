@@ -51,8 +51,7 @@ const preferredRemove = async (targetId: ObjectId | ObjectId[], reference: Refer
 const internalCascadingRemove = async (target: Record<string, any>, refMap: ReferenceMap, context: Context) => {
   for( const refName in refMap ) {
     const reference = refMap[refName]
-
-    if( !reference || !target[refName] ) {
+    if( !target[refName] ) {
       continue
     }
 
