@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.146
+
+### Patch Changes
+
+- f2cad5e: Refactor migrations
+  - @aeriajs/builtins@0.0.146
+  - @aeriajs/security@0.0.146
+
 ## 0.0.145
 
 ### Patch Changes
