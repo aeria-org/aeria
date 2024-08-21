@@ -47,8 +47,7 @@ $ npm create -y aeria-app hello-world
 
 ## Resources
 
-- [Official Documentation](https://aeria.land/aeria/)
-- [Aeria UI](https://aeria.land/aeria-ui/)
-- [Aeria SDK](https://aeria.land/aeria-sdk/)
-- [Aeria Lang](https://aeria.land/aeria-lang/)
+- [Official Documentation](https://aeria.land/docs/aeria/)
+- [Aeria UI](https://aeria.land/docs/aeria-ui/)
+- [Aeria SDK](https://aeria.land/docs/aeria-sdk/)
 
