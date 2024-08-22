@@ -1,5 +1,15 @@
 # @aeriajs/server
 
+## 0.0.149
+
+### Patch Changes
+
+- 9a637d1: Fix payload being mutated in `getAll()`
+- Updated dependencies [9a637d1]
+  - @aeriajs/core@0.0.147
+  - @aeriajs/server@0.0.149
+  - @aeriajs/builtins@0.0.147
+
 ## 0.0.148
 
 ### Patch Changes
