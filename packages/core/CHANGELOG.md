@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.150
+
+### Patch Changes
+
+- 694c987: Retrieve only ObjectIds when `populate` array is empty
+  - @aeriajs/builtins@0.0.150
+  - @aeriajs/security@0.0.150
+
 ## 0.0.149
 
 ### Patch Changes
