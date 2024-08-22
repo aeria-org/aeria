@@ -11,9 +11,18 @@ test('populates top level references', async () => {
   } = await documents
 
   expect(person1.equals(project.created_by._id)).toBe(true)
+  expect(user1.equals(project.user_id)).toBe(true)
   expect(user1.equals(project.created_by.user._id)).toBe(true)
   expect(file1.equals(project.created_by.user.picture_file._id)).toBe(true)
+})
 
+test('respects the "populate" property', async () => {
+  const {
+    user1,
+    project,
+  } = await documents
+
+  expect(user1.equals(project.user_id)).toBe(true)
 })
 
 test('populates deep-nested references', async () => {

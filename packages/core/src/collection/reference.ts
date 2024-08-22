@@ -67,6 +67,10 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
       const description = throwIfError(await getCollectionAsset(refProperty.$ref, 'description'))
 
       if( refProperty.populate ) {
+        if( refProperty.populate.length === 0 ) {
+          continue
+        }
+
         const deepReferences = await getReferences(description.properties, {
           depth: depth + 1,
           maxDepth: refProperty.populateDepth || maxDepth,

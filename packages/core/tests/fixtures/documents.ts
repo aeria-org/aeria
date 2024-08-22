@@ -65,6 +65,7 @@ export const documents = (async () => {
 
     const project = throwIfError(await insert({
       what: {
+        user_id: user1,
         created_by: person1,
         stakeholders: {
           owner: person1,

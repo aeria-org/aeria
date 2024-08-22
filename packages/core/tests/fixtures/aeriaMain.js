@@ -83,6 +83,10 @@ exports.default = init({
         $id: 'project',
         required: [],
         properties: {
+          user_id: {
+            $ref: 'user',
+            populate: [],
+          },
           created_by: {
             $ref: 'person',
             populate: [
