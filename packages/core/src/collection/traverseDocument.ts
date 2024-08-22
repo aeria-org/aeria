@@ -422,6 +422,10 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
                 documents.push(elem)
                 continue
               }
+              if( typeof elem === 'string' ) {
+                documents.push(new ObjectId(elem))
+                continue
+              }
 
               const { error, result } = await traverseDocument(elem, targetDescription, ctx.options)
               if( error ) {

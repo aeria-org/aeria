@@ -1,13 +1,8 @@
 import type { FixedObjectProperty, Description } from '@aeriajs/types'
+import type { Document } from 'mongodb'
 import { throwIfError, getReferenceProperty } from '@aeriajs/common'
 import { getCollectionAsset } from '../assets.js'
 import { prepareCollectionName } from '../database.js'
-
-export type GetReferenceOptions = {
-  memoize?: string
-  depth?: number
-  maxDepth?: number
-}
 
 export type Reference = {
   isArray?: boolean
@@ -17,14 +12,20 @@ export type Reference = {
   deepReferences?: ReferenceMap
   referencedCollection?: string
   indexes?: string[]
+  populate?: string[]
 }
 
 export type ReferenceMap = Record<string, Reference>
 
-export type PipelineStage = {}
+export type GetReferenceOptions = {
+  memoize?: string
+  depth?: number
+  maxDepth?: number
+  populate?: string[]
+}
 
 export type BuildLookupPipelineOptions = {
-  rootPipeline?: PipelineStage[]
+  rootPipeline?: Document[]
   path?: string[]
   tempNames?: string[]
   memoize?: string
@@ -43,6 +44,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
     depth = 0,
     maxDepth = 3,
     memoize,
+    populate,
   } = options
 
   if( memoize ) {
@@ -54,31 +56,34 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
   const refMap: ReferenceMap = {}
 
   for( const [propName, property] of Object.entries(properties) ) {
-    const refProperty = getReferenceProperty(property)
     const reference: Reference = {}
+    const refProperty = getReferenceProperty(property)
 
-    if( depth === maxDepth || (refProperty && refProperty.populate && refProperty.populate.length === 0) ) {
+    if( depth === maxDepth || (populate && !populate.includes(propName)) ) {
       continue
     }
 
     if( refProperty ) {
       const description = throwIfError(await getCollectionAsset(refProperty.$ref, 'description'))
 
-      const deepReferences = await getReferences(description.properties, {
-        depth: depth + 1,
-        maxDepth: refProperty.populateDepth || maxDepth,
-        memoize: `${memoize}.${propName}`,
-      })
+      if( refProperty.populate ) {
+        const deepReferences = await getReferences(description.properties, {
+          depth: depth + 1,
+          maxDepth: refProperty.populateDepth || maxDepth,
+          memoize: `${memoize}.${propName}`,
+          populate: Array.from(refProperty.populate),
+        })
 
-      if( Object.keys(deepReferences).length > 0 ) {
-        reference.deepReferences = deepReferences
+        if( Object.keys(deepReferences).length > 0 ) {
+          reference.deepReferences = deepReferences
+        }
       }
 
       const indexes = refProperty.indexes
         ? refProperty.indexes
-        : description.indexes || Object.keys(description.properties).slice(0, 1)
+        : description.indexes || []
 
-      reference.indexes = (refProperty.populate || []).concat(indexes.filter((index) => typeof index === 'string'))
+      reference.populate = (refProperty.populate || []).concat(indexes.filter((index) => typeof index === 'string'))
 
     } else {
       const entrypoint = 'items' in property
@@ -137,7 +142,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
 
 export const recurseSetStage = (reference: Reference, path: string[], parentElem: {}, options = {
   noCond: false,
-}): PipelineStage => {
+}): Document => {
   const refName = path.at(-1)!
 
   let indexOfArray: {}
@@ -222,7 +227,7 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
   }
 
   if( reference.deepReferences ) {
-    const stages: [string, PipelineStage][] = []
+    const stages: [string, Document][] = []
 
     for( const [subRefName, subReference] of Object.entries(reference.deepReferences) ) {
       let newElem: {}
@@ -300,7 +305,7 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
   }
 }
 
-export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPipelineOptions = {}): PipelineStage[] => {
+export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPipelineOptions = {}): Document[] => {
   const {
     rootPipeline = [],
     path = [],
@@ -319,7 +324,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
     }
   }
 
-  const pipeline: PipelineStage[] = []
+  const pipeline: Document[] = []
   const setProperties: [string, {}][] = []
 
   for( const [refName, reference] of Object.entries(refMap) ) {
@@ -349,14 +354,9 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
 
       tempNames.unshift(tempName)
 
-      if( reference.indexes && reference.indexes.length > 0 ) {
-        const lookupPopulate = reference.indexes
-        if( reference.deepReferences ) {
-          lookupPopulate.push(...Object.keys(reference.deepReferences))
-        }
-
+      if( reference.populate && reference.populate.length > 0 ) {
         lookupPipeline.push({
-          $project: Object.fromEntries(reference.indexes.map((index) => [
+          $project: Object.fromEntries(reference.populate.map((index) => [
             index,
             1,
           ])),
