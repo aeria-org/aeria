@@ -216,7 +216,7 @@ export const registerRoute = async (
   }
 }
 
-export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> any | Promise<any>) => {
+export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> unknown | Promise<unknown>) => {
   try {
     const result = await cb()
 

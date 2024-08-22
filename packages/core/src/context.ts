@@ -29,7 +29,7 @@ const indepthCollection = (collectionName: string, collections: Record<string, C
         return null
       }
 
-      return async (props: any, ...args: any[]) => {
+      return async (props: unknown, ...args: unknown[]) => {
         const childContext = await createContext({
           parentContext,
           collectionName,

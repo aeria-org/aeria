@@ -13,7 +13,7 @@ const getApplicationSecret = async () => {
   return config.secret
 }
 
-export const signToken = async (_payload: Record<string, any>, secret?: string | null, options?: SignOptions) => {
+export const signToken = async (_payload: Record<string, unknown>, secret?: string | null, options?: SignOptions) => {
   const payload = Object.assign({}, _payload)
 
   delete payload.iat

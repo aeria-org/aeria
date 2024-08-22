@@ -3,7 +3,7 @@ import { throwIfError } from '@aeriajs/common'
 
 export const makePagination = async (
   payload: GetAllPayload<any>,
-  documents: any[],
+  documents: unknown[],
   context: Context<Description, {
     count?: (...args: unknown[])=> unknown
   }>,

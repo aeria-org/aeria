@@ -6,7 +6,7 @@ const convertExpression = (
     | FinalCondition
     | RegexCondition
     | TruthyCondition,
-  subject?: any,
+  subject?: unknown,
 ) => {
   const term2 = 'term2' in condition
     ? condition.fromState
@@ -50,7 +50,7 @@ const convertExpression = (
   }
 }
 
-export const convertConditionToQuery = (condition: Condition, subject?: Record<string, any>): Record<string, any> => {
+export const convertConditionToQuery = (condition: Condition, subject?: Record<string, unknown>): Record<string, unknown> => {
   if( 'or' in condition ) {
     return {
       $or: condition.or.map((sub) => convertConditionToQuery(sub, subject)),

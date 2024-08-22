@@ -1,5 +1,5 @@
 export type PipeOptions = {
-  returnFirst?: boolean | ((value: any)=> any)
+  returnFirst?: boolean | ((value: unknown)=> unknown)
 }
 
 export const pipe = <TFunction extends (...args: any)=> any>(functions: TFunction[], options?: PipeOptions) => {

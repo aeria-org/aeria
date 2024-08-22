@@ -75,7 +75,7 @@ const findCaseInsensitiveKey = <TObject extends Record<string, any>>(object: TOb
 
   return found
     ? found[1]
-    : null
+    : undefined
 }
 
 export const getTsconfig = async (additionalOptions?: ts.CompilerOptions) => {

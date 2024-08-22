@@ -18,7 +18,7 @@ export type ValidateOptions = {
   parentProperty?: Omit<Description, '$id'> | Property
 }
 
-const getValueType = (value: any) => {
+const getValueType = (value: unknown) => {
   return Array.isArray(value)
     ? 'array'
     : typeof value
@@ -231,7 +231,7 @@ export const validateProperty = <TWhat>(
   return Result.result(what)
 }
 
-export const validateWholeness = (what: Record<string, any>, schema: Omit<JsonSchema, '$id'>) => {
+export const validateWholeness = (what: Record<string, unknown>, schema: Omit<JsonSchema, '$id'>) => {
   const required = schema.required
     ? schema.required
     : Object.keys(schema.properties)
@@ -281,7 +281,7 @@ export const validate = <
   }
 
   const errors: Record<string, PropertyValidationError | ValidationError> = {}
-  const resultCopy: Record<string, any> = {}
+  const resultCopy: Record<string, unknown> = {}
 
   for( const propName in what ) {
     const { error, result: parsed } = validateProperty(

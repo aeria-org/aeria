@@ -35,7 +35,7 @@ const prepareUpdate = <TDocument>(doc: TDocument) => {
   return result
 }
 
-export const prepareInsert = <TPayload extends Record<string, any>>(payload: TPayload, description: Description) => {
+export const prepareInsert = <TPayload extends Record<string, unknown>>(payload: TPayload, description: Description) => {
   const { _id: docId, ...doc } = Object.assign({}, payload)
 
   return docId

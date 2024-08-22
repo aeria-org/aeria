@@ -17,11 +17,9 @@ export type AuthenticationPayload = {
   password: string
 }
 
-export const authMemo = {} as AuthenticationResult
-
 export const authenticate = (config: InstanceConfig) => async (payload: AuthenticationPayload) => {
-  const response = await request(config, `${publicUrl(config)}/user/authenticate`, payload)
-  const { error, value: result } = response.data
+  const response = await request<Result.Either<unknown, AuthenticationResult>>(config, `${publicUrl(config)}/user/authenticate`, payload)
+  const { error, result } = response.data
   if( result ) {
     getStorage(config).set('auth', result)
   }

@@ -1,6 +1,6 @@
 import type { Property } from '@aeriajs/types'
 
-export const checkForUndefined = (property: Property, propertyName: string, what: Record<string, any>) => {
+export const checkForUndefined = (property: Property, propertyName: string, what: Record<string, unknown>) => {
   if( property.readOnly || property.isTimestamp ) {
     return false
   }

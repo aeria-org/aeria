@@ -37,6 +37,6 @@ export type ApiConfig = {
   errorHandler?: <TError extends Error>(
     context: RouteContext,
     error: TError
-  )=> any | Promise<any>
+  )=> unknown | Promise<unknown>
 }
 

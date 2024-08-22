@@ -1,6 +1,6 @@
 import type { Description } from '@aeriajs/types'
 
-const freshProperties = (properties: Description['properties']): Record<string, any> => Object.entries(properties).reduce((a, [key, property]) => {
+const freshProperties = (properties: Description['properties']): Record<string, unknown> => Object.entries(properties).reduce((a, [key, property]) => {
   const value = (() => {
     if( '$ref' in property ) {
       return {}

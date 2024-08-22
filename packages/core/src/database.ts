@@ -73,7 +73,7 @@ export const prepareCollectionName = (collectionName: string) => {
   return pluralized.toLowerCase()
 }
 
-export const getDatabaseCollection = <TDocument extends Record<string, any>>(collectionName: string) => {
+export const getDatabaseCollection = <TDocument extends Record<string, unknown>>(collectionName: string) => {
   const db = getDatabaseSync()
   return db.collection<PackReferences<TDocument>>(prepareCollectionName(collectionName))
 }

@@ -114,7 +114,7 @@ const disposeOldFiles = async (ctx: PhaseContext, options: { preserveIds?: Objec
   return context.collections.file.model.deleteMany(fileFilters)
 }
 
-const autoCast = (value: any, ctx: Omit<PhaseContext, 'options'> & { options: (TraverseOptions & TraverseNormalized) | {} }): any => {
+const autoCast = (value: any, ctx: Omit<PhaseContext, 'options'> & { options: (TraverseOptions & TraverseNormalized) | {} }): unknown => {
   switch( typeof value ) {
     case 'boolean': {
       return !!value
@@ -191,7 +191,7 @@ const autoCast = (value: any, ctx: Omit<PhaseContext, 'options'> & { options: (T
   return value
 }
 
-const getters = (value: any, ctx: PhaseContext) => {
+const getters = (value: unknown, ctx: PhaseContext) => {
   if( 'getter' in ctx.property ) {
     return ctx.property.getter(ctx.target)
   }
@@ -199,7 +199,7 @@ const getters = (value: any, ctx: PhaseContext) => {
   return value
 }
 
-const validate = (value: any, ctx: PhaseContext) => {
+const validate = (value: unknown, ctx: PhaseContext) => {
   if( ctx.options.recurseDeep ) {
     if( 'items' in ctx.property || 'properties' in ctx.property ) {
       return value
@@ -261,7 +261,7 @@ const moveFiles = async (
   return file.insertedId
 }
 
-const recurseDeep = async (value: any, ctx: PhaseContext) => {
+const recurseDeep = async (value: unknown, ctx: PhaseContext) => {
   if( !value ) {
     return value
   }

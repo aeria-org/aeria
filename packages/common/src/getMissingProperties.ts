@@ -3,7 +3,7 @@ import { checkForUndefined } from './checkForUndefined.js'
 import { evaluateCondition } from './evaluateCondition.js'
 
 export const getMissingProperties = (
-  what: Record<string, any>,
+  what: Record<string, unknown>,
   schema: Omit<JsonSchema, '$id'>,
   required: JsonSchema['required'],
 ) => {

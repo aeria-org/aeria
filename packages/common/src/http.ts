@@ -1,17 +1,17 @@
-import type { RequestMethod } from '@aeriajs/types'
-
 export type RequestParams = Omit<RequestInit, 'headers'> & {
-  method: RequestMethod
-  headers?: Partial<Record<string, string>>
+  headers?: Record<string, string>
 }
 
-export type RequestConfig<ResponseType = any> = {
+export type RequestConfig = {
   params?: RequestParams
-  requestTransformer?: (...args: Parameters<typeof defaultRequestTransformer>)=> Promise<ResponseType>
+  requestTransformer?: (...args: Parameters<typeof defaultRequestTransformer>)=> Promise<{
+    url: string
+    params: RequestParams
+  }>
   responseTransformer?: typeof defaultResponseTransformer
 }
 
-export const defaultRequestTransformer = async (url: string, payload: any, params: RequestParams) => {
+export const defaultRequestTransformer = async (url: string, payload: unknown, params: RequestParams) => {
   const request: {
     url: string
     params: RequestParams
@@ -20,7 +20,7 @@ export const defaultRequestTransformer = async (url: string, payload: any, param
     params,
   }
 
-  if( payload ) {
+  if( typeof payload === 'string' ) {
     if( params.method === 'GET' || params.method === 'HEAD' ) {
       request.url += `?${new URLSearchParams(payload)}`
     } else {
@@ -41,16 +41,16 @@ export const defaultResponseTransformer = async (response: Awaited<ReturnType<ty
   result.data = await response.text()
 
   if( response.headers.get('content-type')?.startsWith('application/json') ) {
-    result.data = JSON.parse(result.data as any)
+    result.data = JSON.parse(String(result.data))
   }
 
   return result
 }
 
-export const request = async <ResponseType = any>(
+export const request = async <TResponseType = unknown>(
   url: string,
-  payload?: any,
-  config?: RequestConfig<ResponseType>,
+  payload?: unknown,
+  config: RequestConfig = {},
 ) => {
   const {
     requestTransformer = defaultRequestTransformer,
@@ -65,15 +65,15 @@ export const request = async <ResponseType = any>(
         }
         : {},
     },
-  } = config || {} as RequestConfig
+  } = config
 
   const transformedRequest = await requestTransformer(url, payload, params)
 
   const response = await fetch(transformedRequest.url, transformedRequest.params)
   const transformedResponse = await responseTransformer(response)
 
-  return transformedResponse as Omit<typeof transformedRequest, 'data'> & {
-    data: ResponseType
+  return transformedResponse as typeof transformedResponse & {
+    data: TResponseType
   }
 }
 
