@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.149
+
+### Patch Changes
+
+- b45b194: Fix reference bugs
+  - @aeriajs/builtins@0.0.149
+  - @aeriajs/security@0.0.149
+
 ## 0.0.148
 
 ### Patch Changes
