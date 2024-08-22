@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.148
+
+### Patch Changes
+
+- 3bb8342: Fix objectids disappearing from payload
+  - @aeriajs/builtins@0.0.148
+  - @aeriajs/security@0.0.148
+
 ## 0.0.147
 
 ### Patch Changes
