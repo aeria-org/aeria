@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.151
+
+### Patch Changes
+
+- 095714e: Infer `Context<T>` in `insertUser()`
+  - @aeriajs/core@0.0.151
+
 ## 0.0.150
 
 ### Patch Changes
