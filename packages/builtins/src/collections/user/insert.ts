@@ -17,4 +17,3 @@ export const insert = async <
   return originalInsert(payload, context)
 }
 
-
