@@ -26,7 +26,7 @@ const internalGetAll = async <TContext extends Context>(
   } = payload
 
   const filters = payload.filters
-    ? structuredClone(payload.filters)
+    ? Object.assign({}, payload.filters)
     : {}
 
   const $text = payload.filters && '$text' in payload.filters
