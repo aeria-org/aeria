@@ -1,16 +1,20 @@
-import type { Context, SchemaWithId, InsertPayload } from '@aeriajs/types'
-import type { description } from './description'
+import type { Context, SchemaWithId, InsertPayload, Description } from '@aeriajs/types'
+import type { description } from './description.js'
 import { insert as originalInsert } from '@aeriajs/core'
 import * as bcrypt from 'bcrypt'
 
-export const insert = async <TInsertPayload extends InsertPayload<SchemaWithId<typeof description>> = InsertPayload<SchemaWithId<typeof description>>>(
+export const insert = async <
+  TDescription extends Description = typeof description,
+  TInsertPayload extends InsertPayload<SchemaWithId<TDescription>> = InsertPayload<SchemaWithId<TDescription>>,
+>(
   payload: NoInfer<TInsertPayload>,
-  context: Context<typeof description>,
+  context: Context<TDescription>,
 ) => {
-  if( payload.what.password ) {
+  if( 'password' in payload.what && typeof payload.what.password === 'string' ) {
     payload.what.password = await bcrypt.hash(payload.what.password, 10)
   }
 
   return originalInsert(payload, context)
 }
+
 

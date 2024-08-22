@@ -1,5 +1,5 @@
 import type { Context } from '@aeriajs/types'
-import type { description } from './description'
+import type { description } from './description.js'
 import * as bcrypt from 'bcrypt'
 import { Result, HTTPStatus } from '@aeriajs/types'
 import { ObjectId } from '@aeriajs/core'
