@@ -25,7 +25,10 @@ const internalGetAll = async <TContext extends Context>(
     offset = 0,
   } = payload
 
-  const filters = payload.filters || {}
+  const filters = payload.filters
+    ? structuredClone(payload.filters)
+    : {}
+
   const $text = payload.filters && '$text' in payload.filters
     ? payload.filters.$text
     : undefined
