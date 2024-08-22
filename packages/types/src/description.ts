@@ -94,7 +94,7 @@ export type LayoutName =
   | 'grid'
   | 'list'
 
-export type LayoutOptions<TDescription extends Description=any> = {
+export type LayoutOptions<TDescription extends Description = any> = {
   title?: PropertiesWithId<TDescription>
   picture?: PropertiesWithId<TDescription>
   badge?: PropertiesWithId<TDescription>
@@ -103,14 +103,15 @@ export type LayoutOptions<TDescription extends Description=any> = {
   translateBadge?: boolean
 }
 
-export type Layout<TDescription extends Description=any> = {
+export type Layout<TDescription extends Description = any> = {
   name: LayoutName
   options?: LayoutOptions<TDescription>
 }
 
 export type SearchOptions<TDescription extends Description> = {
-  placeholder?: string
   indexes: readonly (keyof TDescription['properties'])[]
+  placeholder?: string
+  exactMatches?: boolean
 }
 
 export type RuntimeDescription<TDescription extends Description = any> = Pick<

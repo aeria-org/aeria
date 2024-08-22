@@ -132,6 +132,7 @@ export type ArrayOfRefs = Omit<ArrayProperty, 'items'> & {
 
 export type GetterProperty = {
   getter: (document: any)=> any
+  requires?: string[]
 }
 
 export type ConstProperty = {

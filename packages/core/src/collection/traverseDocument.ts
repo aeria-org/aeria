@@ -406,6 +406,15 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
     }
 
     if( property ) {
+      if( ctx.options.getters && 'getter' in property ) {
+        if( property.requires ) {
+          const missing = property.requires.some((requiredPropName) => !(requiredPropName in target))
+          if( missing ) {
+            continue
+          }
+        }
+      }
+
       if( ctx.options.recurseReferences ) {
         const propCast = 'items' in property
           ? property.items
