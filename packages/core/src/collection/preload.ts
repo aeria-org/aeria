@@ -11,11 +11,11 @@ export type PreloadOptions = {
 
 const preloadMemo: Record<string, Partial<Description> | undefined> = {}
 
-const recurseProperty = async (_property: Property, propertyName: string, description: Partial<Description>): Promise<Property> => {
+const recurseProperty = async (_property: Property, propName: string, description: Partial<Description>): Promise<Property> => {
   const property = Object.assign({}, _property)
 
   if( 'items' in property ) {
-    property.items = await recurseProperty(property.items, propertyName, description)
+    property.items = await recurseProperty(property.items, propName, description)
     return property
   }
 
@@ -117,10 +117,10 @@ export const preloadDescription = async <
 
   if( description.properties ) {
     const properties: [string, Property][] = []
-    for( const [propertyName, property] of Object.entries(description.properties) ) {
+    for( const [propName, property] of Object.entries(description.properties) ) {
       properties.push([
-        propertyName,
-        await recurseProperty(property, propertyName, description),
+        propName,
+        await recurseProperty(property, propName, description),
       ])
     }
 

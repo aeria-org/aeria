@@ -38,15 +38,15 @@ type PhaseContext = {
   isArray?: boolean
 }
 
-const getProperty = (propertyName: string, parentProperty: Property | Description) => {
-  if( propertyName === '_id' ) {
+const getProperty = (propName: string, parentProperty: Property | Description) => {
+  if( propName === '_id' ) {
     return <Property>{
       type: 'string',
     }
   }
 
-  if( 'items' in parentProperty && 'properties' in parentProperty.items && propertyName in parentProperty.items.properties ) {
-    return parentProperty.items.properties[propertyName]
+  if( 'items' in parentProperty && 'properties' in parentProperty.items && propName in parentProperty.items.properties ) {
+    return parentProperty.items.properties[propName]
   }
 
   if( 'additionalProperties' in parentProperty && typeof parentProperty.additionalProperties === 'object' ) {
@@ -54,7 +54,7 @@ const getProperty = (propertyName: string, parentProperty: Property | Descriptio
   }
 
   if( 'properties' in parentProperty ) {
-    return parentProperty.properties[propertyName]
+    return parentProperty.properties[propName]
   }
 }
 

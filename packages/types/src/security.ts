@@ -62,7 +62,7 @@ export type CollectionSecurityPolicy<
 }
 
 export type CollectionHookProps<TPayload = any> = {
-  propertyName?: string
+  propName?: string
   parentId?: string
   childId?: string
   payload: TPayload

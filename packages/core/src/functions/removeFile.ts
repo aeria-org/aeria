@@ -11,7 +11,7 @@ const internalRemoveFile = async <TContext extends Context>(
   context: TContext,
 ) => {
   const {
-    propertyName,
+    propName,
     parentId,
     ...props
   } = payload

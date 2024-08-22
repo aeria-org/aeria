@@ -8,7 +8,7 @@ import type { HTTPStatus, WithACErrors } from './http.js'
 
 export type UploadAuxProps = {
   parentId: string
-  propertyName: string
+  propName: string
 }
 
 export type Pagination = {
