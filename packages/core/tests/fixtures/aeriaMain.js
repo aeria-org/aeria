@@ -17,7 +17,11 @@ exports.default = init({
             type: 'string'
           },
           circularA: {
-            $ref: 'circularA'
+            $ref: 'circularA',
+            populate: [
+              'circularB',
+              'circularB_array',
+            ]
           },
           circularB: {
             $ref: 'circularB'
@@ -25,7 +29,10 @@ exports.default = init({
           circularB_array: {
             type: 'array',
             items: {
-              $ref: 'circularB'
+              $ref: 'circularB',
+              populate: [
+                'circularA',
+              ]
             }
           }
         }
@@ -61,6 +68,9 @@ exports.default = init({
           },
           user: {
             $ref: 'user',
+            populate: [
+              'picture_file',
+            ],
           }
         }
       },
@@ -74,16 +84,25 @@ exports.default = init({
         required: [],
         properties: {
           created_by: {
-            $ref: 'person'
+            $ref: 'person',
+            populate: [
+              'user',
+            ],
           },
           stakeholders: {
             type: 'object',
             properties: {
               owner: {
                 $ref: 'person',
+                populate: [
+                  'user',
+                ],
               },
               qa: {
                 $ref: 'person',
+                populate: [
+                  'user',
+                ],
               }
             }
           },
@@ -126,7 +145,10 @@ exports.default = init({
                           responsibles: {
                             type: 'array',
                             items: {
-                              $ref: 'person'
+                              $ref: 'person',
+                              populate: [
+                                'user',
+                              ],
                             }
                           }
                         }
