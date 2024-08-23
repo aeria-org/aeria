@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.92
+
+### Patch Changes
+
+- f1dad1a: Update `deepMerge()` signature
+
 ## 0.0.91
 
 ### Patch Changes
