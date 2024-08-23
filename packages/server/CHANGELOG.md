@@ -1,5 +1,20 @@
 # @aeriajs/server
 
+## 0.0.156
+
+### Patch Changes
+
+- daa10bb: Refactor handling of Windows path separators
+- Updated dependencies [daa10bb]
+  - @aeriajs/builtins@0.0.154
+  - @aeriajs/server@0.0.156
+  - @aeriajs/types@0.0.80
+  - @aeriajs/core@0.0.154
+  - @aeriajs/common@0.0.93
+  - @aeriajs/entrypoint@0.0.95
+  - @aeriajs/http@0.0.105
+  - @aeriajs/node-http@0.0.105
+
 ## 0.0.155
 
 ### Patch Changes
