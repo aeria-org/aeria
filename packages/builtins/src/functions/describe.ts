@@ -14,22 +14,22 @@ const [Payload, validatePayload] = validator({
     collections: {
       type: 'array',
       items: {
-        type: 'string'
-      }
+        type: 'string',
+      },
     },
     noSerialize: {
-      type: 'boolean'
+      type: 'boolean',
     },
     revalidate: {
-      type: 'boolean'
+      type: 'boolean',
     },
     roles: {
-      type: 'boolean'
+      type: 'boolean',
     },
     router: {
-      type: 'boolean'
+      type: 'boolean',
     },
-  }
+  },
 })
 
 export const describe = async (contextOrPayload: RouteContext | typeof Payload) => {
