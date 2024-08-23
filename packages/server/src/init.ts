@@ -49,7 +49,7 @@ export const getToken = async (request: GenericRequest, context: Context) => {
 
   try {
     const decodedToken: Token = await decodeToken(typeof request.headers.authorization === 'string'
-      ? request.headers.authorization.split('Bearer ').pop()!
+      ? request.headers.authorization.split('Bearer ').at(-1)!
       : '')
 
     if( authenticationGuard(decodedToken) ) {

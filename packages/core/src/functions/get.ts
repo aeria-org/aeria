@@ -76,9 +76,7 @@ const internalGet = async <TContext extends Context>(
 
 export const get = async <TContext extends Context>(
   payload: GetPayload<SchemaWithId<TContext['description']>>,
-  context: TContext extends Context<any>
-    ? TContext
-    : never,
+  context: TContext,
   options: GetOptions = {},
 ): Promise<GetReturnType<SchemaWithId<TContext['description']>>> => {
   if( options.bypassSecurity ) {

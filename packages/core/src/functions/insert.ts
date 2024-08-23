@@ -122,9 +122,7 @@ const internalInsert = async <TContext extends Context>(
 
 export const insert = async <TContext extends Context>(
   payload: InsertPayload<SchemaWithId<TContext['description']>>,
-  context: TContext extends Context<any>
-    ? TContext
-    : never,
+  context: TContext,
   options: InsertOptions = {},
 ): Promise<InsertReturnType<SchemaWithId<TContext['description']>>> => {
   if( options.bypassSecurity ) {

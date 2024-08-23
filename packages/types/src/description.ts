@@ -167,7 +167,7 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
   tableMeta?: readonly PropertiesWithId<TDescription>[]
 
   filtersPresets?: Record<string, FiltersPreset<TDescription>>
-  freshItem?: Partial<Record<PropertiesWithId<TDescription>, any>>
+  freshItem?: Partial<Record<PropertiesWithId<TDescription>, unknown>>
 
   form?: readonly PropertiesWithId<TDescription>[] | Record<PropertiesWithId<TDescription>, string[]>
   writable?: readonly PropertiesWithId<TDescription>[]

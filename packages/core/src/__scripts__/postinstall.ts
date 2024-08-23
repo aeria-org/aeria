@@ -49,7 +49,7 @@ const install = async () => {
     encoding: 'utf8',
   }))
 
-  const dts = makeDts(path.join('..', types))
+  const dts = makeDts(path.join('..', types).split(path.sep).join('/'))
   await fs.promises.writeFile(path.join(aeriaDir, DTS_FILENAME), dts)
 }
 

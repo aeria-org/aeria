@@ -20,7 +20,7 @@ const streamToFs = (metadata: typeof FileMetadata, context: Context) => {
     .digest('hex')
 
   const extension = metadata.name.includes('.')
-    ? metadata.name.split('.').pop()
+    ? metadata.name.split('.').at(-1)
     : 'bin'
 
   const tmpPath = context.config.storage

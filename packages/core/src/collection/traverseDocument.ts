@@ -5,6 +5,7 @@ import { makeValidationError, validateProperty, validateWholeness } from '@aeria
 import { ObjectId } from 'mongodb'
 import { getCollectionAsset } from '../assets.js'
 import { preloadDescription } from './preload.js'
+import * as path from 'path'
 import * as fs from 'fs/promises'
 
 export type TraverseOptions = {
@@ -254,7 +255,7 @@ const moveFiles = async (
   }
 
   const { _id: fileId, ...newFile } = tempFile
-  newFile.absolute_path = `${ctx.options.context.config.storage!.fs}/${tempFile.absolute_path.replace(/\\/g, '/').split('/').pop()}`
+  newFile.absolute_path = `${ctx.options.context.config.storage!.fs}/${tempFile.absolute_path.split(path.sep).at(-1)}`
   await fs.rename(tempFile.absolute_path, newFile.absolute_path)
 
   const file = await ctx.options.context.collections.file.model.insertOne(newFile)
