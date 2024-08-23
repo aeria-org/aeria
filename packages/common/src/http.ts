@@ -11,7 +11,7 @@ export type RequestConfig = {
   responseTransformer?: typeof defaultResponseTransformer
 }
 
-export const defaultRequestTransformer = async (url: string, payload: unknown, params: RequestParams) => {
+export const defaultRequestTransformer = async (url: string, payload: any, params: RequestParams) => {
   const request: {
     url: string
     params: RequestParams
@@ -20,7 +20,7 @@ export const defaultRequestTransformer = async (url: string, payload: unknown, p
     params,
   }
 
-  if( typeof payload === 'string' ) {
+  if( payload ) {
     if( params.method === 'GET' || params.method === 'HEAD' ) {
       request.url += `?${new URLSearchParams(payload)}`
     } else {
