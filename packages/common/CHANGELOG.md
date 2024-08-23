@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.94
+
+### Patch Changes
+
+- 847f57b: Fix `defaultRequestTransformer()`
+
 ## 0.0.93
 
 ### Patch Changes
