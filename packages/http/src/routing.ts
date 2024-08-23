@@ -38,10 +38,10 @@ type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<RouteCont
   request: Omit<RouteContext['request'], 'payload' | 'query'> & {
     payload: TContractWithRoles extends { payload: infer Payload }
       ? PackReferences<InferProperties<Payload>>
-      : any
+      : Record<string, unknown>
     query: TContractWithRoles extends { query: infer Query }
       ? InferProperties<Query>
-      : any
+      : Record<string, unknown>
   }
 }
 
@@ -54,7 +54,7 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
         ? InferProperties<Response> extends infer InferredResponse
           ? InferredResponse | Promise<InferredResponse>
           : never
-        : any
+        : unknown
     ) extends infer Response
       ? (context: TypedContext<TContractWithRoles>)=> Response
       : never,
@@ -66,7 +66,7 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
 >
 
 const checkUnprocessable = (
-  what: any,
+  what: unknown,
   schema: Property | Property[],
   context: RouteContext,
   validateOptions: ValidateOptions = {},
@@ -143,7 +143,7 @@ export const registerRoute = async (
   context: RouteContext,
   method: RequestMethod | RequestMethod[],
   exp: RouteUri,
-  cb: (context: RouteContext)=> any,
+  cb: (context: RouteContext)=> unknown,
   contract?: ContractWithRoles,
   options: RouterOptions = {},
 ) => {
@@ -161,7 +161,7 @@ export const registerRoute = async (
       try {
         context.request.payload = deepMerge(
           safeJson(context.request.body),
-          context.request.payload as any || {},
+          context.request.payload,
           {
             arrays: false,
           },
@@ -273,7 +273,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
     TCallback extends (
       TContractWithRoles extends { response: infer Response }
         ? InferProperties<Response>
-        : any
+        : unknown
     ) extends infer Response
       ? (context: TypedContext<TContractWithRoles>)=> Response
       : never,
@@ -302,10 +302,10 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
 
   const group = <
     TRouter extends {
-      install: (context: RouteContext, options?: RouterOptions)=> any
+      install: (context: RouteContext, options?: RouterOptions)=> unknown
       routesMeta: typeof routesMeta
     },
-  >(exp: RouteUri, router: TRouter, middleware?: (context: RouteContext)=> any) => {
+  >(exp: RouteUri, router: TRouter, middleware?: (context: RouteContext)=> unknown) => {
     const newOptions = Object.assign({}, options)
 
     for( const route in router.routesMeta ) {
@@ -357,7 +357,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
     routes,
     routesMeta,
     group,
-    install: (_context: RouteContext, _options?: RouterOptions) => {
+    install: async (_context: RouteContext, _options?: RouterOptions) => {
       return {} as ReturnType<typeof routerPipe>
     },
   }
@@ -377,7 +377,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
   return new Proxy(router as ProxiedRouter<typeof router>, {
     get: (target, key) => {
       if( REQUEST_METHODS.includes(key as any) ) {
-        return (...args: Parameters<typeof target.route> extends [any, ...infer Params]
+        return (...args: Parameters<typeof target.route> extends [unknown, ...infer Params]
           ? Params
           : never) => target.route(key as RequestMethod, ...args)
       }
