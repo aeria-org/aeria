@@ -40,8 +40,8 @@ export type GenericRequest = Omit<
   readonly method: RequestMethod
   readonly body?: string
   readonly fragments: string[]
-  payload: Record<string, any>
-  query: Record<string, any>
+  payload: Record<string, unknown>
+  query: Record<string, unknown>
 }
 
 export const STREAMED_RESPONSE = Symbol('StreamedResponse')

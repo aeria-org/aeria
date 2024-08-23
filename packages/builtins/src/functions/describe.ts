@@ -2,19 +2,37 @@ import type { Description, Context, RouteContext, StringProperty, EnumProperty }
 import type { description as userDescription } from '../collections/user/description.js'
 import { createContext, preloadDescription, getEndpoints } from '@aeriajs/core'
 import { getCollections, getAvailableRoles } from '@aeriajs/entrypoint'
-import { Result } from '@aeriajs/types'
-import { serialize } from '@aeriajs/common'
+import { Result, ACError } from '@aeriajs/types'
+import { serialize, endpointError } from '@aeriajs/common'
+import { validator } from '@aeriajs/validation'
 import { authenticate } from '../collections/user/authenticate.js'
 
-type Payload = {
-  collections?: string[]
-  noSerialize?: boolean
-  roles?: boolean
-  revalidate?: boolean
-  router?: boolean
-}
+const [Payload, validatePayload] = validator({
+  type: 'object',
+  required: [],
+  properties: {
+    collections: {
+      type: 'array',
+      items: {
+        type: 'string'
+      }
+    },
+    noSerialize: {
+      type: 'boolean'
+    },
+    revalidate: {
+      type: 'boolean'
+    },
+    roles: {
+      type: 'boolean'
+    },
+    router: {
+      type: 'boolean'
+    },
+  }
+})
 
-export const describe = async (contextOrPayload: RouteContext | Payload) => {
+export const describe = async (contextOrPayload: RouteContext | typeof Payload) => {
   const result = {} as {
     descriptions: typeof descriptions
     roles?: string[]
@@ -24,10 +42,20 @@ export const describe = async (contextOrPayload: RouteContext | Payload) => {
     router?: any
   }
 
-  const props = 'request' in contextOrPayload
-    ? contextOrPayload.request.payload
-    : contextOrPayload
+  let props: typeof Payload
+  if( 'request' in contextOrPayload ) {
+    const { error, result: validatedPayload } = validatePayload(contextOrPayload.request.payload)
+    if( error ) {
+      return endpointError({
+        code: ACError.MalformedInput,
+        details: error,
+      })
+    }
 
+    props = validatedPayload
+  } else {
+    props = contextOrPayload
+  }
   if( 'request' in contextOrPayload && props.revalidate ) {
     const { error, result: auth } = await authenticate({
       revalidate: true,

@@ -101,10 +101,16 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
 
   if( id ) {
     requestCopy.payload.filters ??= {}
-    requestCopy.payload.filters._id = id
+    if( requestCopy.payload.filters && typeof requestCopy.payload.filters === 'object' ) {
+      Object.assign(requestCopy.payload.filters, {
+        _id: id
+      })
+    }
 
-    if( 'what' in requestCopy.payload ) {
-      requestCopy.payload.what._id = id
+    if( requestCopy.payload.what && typeof requestCopy.payload.what === 'object' ) {
+      Object.assign(requestCopy.payload.what, {
+        _id: id
+      })
     }
   }
 
