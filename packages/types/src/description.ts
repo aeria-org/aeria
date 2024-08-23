@@ -73,11 +73,18 @@ export type FormLayoutField<TDescription extends Description> = {
   }
 }
 
+export type TableLayoutAction<TDescription extends Description> = {
+  button?: boolean | Condition<TDescription>
+  if?: Condition<TDescription>
+}
+
 export type TableLayout<TDescription extends Description> = {
-  actions: Partial<Record<keyof TDescription['individualActions'], {
-    button?: boolean | Condition<TDescription>
-    if?: Condition<TDescription>
-  }>>
+  actions?: Partial<
+    Record<
+      keyof TDescription['individualActions'],
+      TableLayoutAction<TDescription>
+    >
+  >
 }
 
 export type FiltersPreset<TDescription extends Description> = {
