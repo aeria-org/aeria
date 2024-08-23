@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.80
+
+### Patch Changes
+
+- daa10bb: Refactor handling of Windows path separators
+
 ## 0.0.79
 
 ### Patch Changes

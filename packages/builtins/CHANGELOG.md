@@ -1,5 +1,17 @@
 # @aeriajs/builtins
 
+## 0.0.154
+
+### Patch Changes
+
+- daa10bb: Refactor handling of Windows path separators
+- Updated dependencies [daa10bb]
+  - @aeriajs/types@0.0.80
+  - @aeriajs/core@0.0.154
+  - @aeriajs/common@0.0.93
+  - @aeriajs/entrypoint@0.0.95
+  - @aeriajs/validation@0.0.96
+
 ## 0.0.153
 
 ### Patch Changes

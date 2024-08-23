@@ -1,5 +1,22 @@
 # aeria
 
+## 0.0.165
+
+### Patch Changes
+
+- Updated dependencies [daa10bb]
+  - @aeriajs/builtins@0.0.154
+  - @aeriajs/server@0.0.156
+  - @aeriajs/types@0.0.80
+  - @aeriajs/core@0.0.154
+  - @aeriajs/cli@0.0.96
+  - @aeriajs/common@0.0.93
+  - @aeriajs/entrypoint@0.0.95
+  - @aeriajs/http@0.0.105
+  - @aeriajs/security@0.0.154
+  - @aeriajs/validation@0.0.96
+  - @aeriajs/node-http@0.0.105
+
 ## 0.0.164
 
 ### Patch Changes
