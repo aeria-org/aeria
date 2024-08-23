@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.79
+
+### Patch Changes
+
+- dbf9065: Unpack nested types
+
 ## 0.0.78
 
 ### Patch Changes
