@@ -10,6 +10,7 @@ import { authenticate } from '../collections/user/authenticate.js'
 const [Payload, validatePayload] = validator({
   type: 'object',
   required: [],
+  additionalProperties: true,
   properties: {
     collections: {
       type: 'array',
