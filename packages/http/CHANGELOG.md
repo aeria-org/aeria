@@ -1,5 +1,11 @@
 # @aeriajs/http
 
+## 0.0.107
+
+### Patch Changes
+
+- 6802e27: Make request payload and query types stricter
+
 ## 0.0.106
 
 ### Patch Changes
