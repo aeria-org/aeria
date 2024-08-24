@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.157
+
+### Patch Changes
+
+- b509317: Allow additional properties in `describe()` payload
+  - @aeriajs/core@0.0.157
+
 ## 0.0.156
 
 ### Patch Changes
