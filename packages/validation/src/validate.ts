@@ -131,10 +131,6 @@ export const validateProperty = <TWhat>(
       return Result.result(what)
     }
 
-    if( expectedType === 'boolean' && !what ) {
-      return Result.result(what)
-    }
-
     if( '$ref' in property && typeof what === 'string' ) {
       if( /^[0-9a-fA-F]{24}$/.test(what) ) {
         return Result.result(what)

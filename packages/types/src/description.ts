@@ -40,7 +40,6 @@ export type CollectionActionBase<TDescription extends Description> = {
   label?: string
   icon?: Icon
   ask?: boolean
-  button?: boolean
   translate?: boolean
   roles?: readonly string[]
   requires?: readonly PropertiesWithId<TDescription>[]
