@@ -194,7 +194,7 @@ const autoCast = (value: any, ctx: Omit<PhaseContext, 'options'> & { options: (T
 
 const getters = (value: unknown, ctx: PhaseContext) => {
   if( 'getter' in ctx.property ) {
-    return ctx.property.getter(ctx.target)
+    return ctx.property.getter(ctx.target, ctx.options.context)
   }
 
   return value
@@ -407,6 +407,10 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
     }
 
     if( property ) {
+      if( property.hidden ) {
+        continue
+      }
+
       if( ctx.options.getters && 'getter' in property ) {
         if( property.requires ) {
           const missing = property.requires.some((requiredPropName) => !(requiredPropName in target))

@@ -65,6 +65,7 @@ const internalGet = async <TContext extends Context>(
   }
 
   const result = throwIfError(await traverseDocument(doc, context.description, {
+    context,
     getters: true,
     fromProperties: true,
     recurseReferences: true,

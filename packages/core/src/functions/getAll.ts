@@ -110,6 +110,7 @@ const internalGetAll = async <TContext extends Context>(
 
   for( const doc of result ) {
     documents.push(throwIfError(await traverseDocument(doc, context.description, {
+      context,
       getters: true,
       fromProperties: true,
       recurseReferences: true,
