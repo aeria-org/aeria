@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.81
+
+### Patch Changes
+
+- ba8c59f: Safer handle of hidden properties and allow context in getters
+
 ## 0.0.80
 
 ### Patch Changes

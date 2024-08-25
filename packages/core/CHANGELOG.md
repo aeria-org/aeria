@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.158
+
+### Patch Changes
+
+- ba8c59f: Safer handle of hidden properties and allow context in getters
+- Updated dependencies [ba8c59f]
+  - @aeriajs/types@0.0.81
+  - @aeriajs/builtins@0.0.158
+  - @aeriajs/common@0.0.95
+  - @aeriajs/entrypoint@0.0.97
+  - @aeriajs/http@0.0.108
+  - @aeriajs/security@0.0.158
+  - @aeriajs/validation@0.0.98
+
 ## 0.0.157
 
 ### Patch Changes
