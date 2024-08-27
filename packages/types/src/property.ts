@@ -1,7 +1,7 @@
 import type { PhosphorIcon } from '@phosphor-icons/core'
 import type { ObjectId } from 'mongodb'
 import type { Condition } from './condition.js'
-import type { Context } from './context.js'
+import type { RouteContext } from './context.js'
 
 export type PropertyArrayElement =
   | 'checkbox'
@@ -133,7 +133,7 @@ export type ArrayOfRefs = Omit<ArrayProperty, 'items'> & {
 }
 
 export type GetterProperty = {
-  getter: (document: unknown & { _id: ObjectId }, context: Context)=> unknown
+  getter: (document: unknown & { _id: ObjectId }, context: RouteContext)=> unknown
   requires?: string[]
 }
 

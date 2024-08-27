@@ -1,4 +1,4 @@
-import type { Description, Property, ValidationError, Context } from '@aeriajs/types'
+import type { Description, Property, ValidationError, RouteContext } from '@aeriajs/types'
 import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { throwIfError, pipe, isReference, getValueFromPath, isObjectId, isError } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
@@ -28,7 +28,7 @@ export type TraverseOptions =
   | (TraverseOptionsBase & {
     getters?: true
     moveFiles?: true
-    context: Context
+    context: RouteContext
   })
 
 export type TraverseNormalized = {
