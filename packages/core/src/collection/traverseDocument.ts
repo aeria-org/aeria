@@ -26,11 +26,8 @@ export type TraverseOptions =
     context?: never
   })
   | (TraverseOptionsBase & {
-    getters: true
-    context: Context
-  })
-  | (TraverseOptionsBase & {
-    moveFiles: true
+    getters?: true
+    moveFiles?: true
     context: Context
   })
 

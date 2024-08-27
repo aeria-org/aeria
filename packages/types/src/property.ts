@@ -1,4 +1,5 @@
 import type { PhosphorIcon } from '@phosphor-icons/core'
+import type { ObjectId } from 'mongodb'
 import type { Condition } from './condition.js'
 import type { Context } from './context.js'
 
@@ -132,7 +133,7 @@ export type ArrayOfRefs = Omit<ArrayProperty, 'items'> & {
 }
 
 export type GetterProperty = {
-  getter: (document: unknown, context: Context)=> any
+  getter: (document: unknown & { _id: ObjectId }, context: Context)=> unknown
   requires?: string[]
 }
 
