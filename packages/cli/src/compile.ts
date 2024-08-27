@@ -117,7 +117,7 @@ export const compile = async (additionalOptions?: ts.CompilerOptions) => {
 
   if( diagnostics.length ) {
     diagnostics.forEach((diagnostic) => {
-      if( diagnostic.file && diagnostic.start ) {
+      if( diagnostic.file && typeof diagnostic.start === 'number' ) {
         const { line, character } = ts.getLineAndCharacterOfPosition(
           diagnostic.file,
           diagnostic.start,

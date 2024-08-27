@@ -87,7 +87,7 @@ export type CountPayload<TDocument extends CollectionDocument<OptionalId<any>>> 
 export type GetPayload<TDocument extends CollectionDocument<OptionalId<any>>> = {
   filters: Filters<TDocument>
   project?: Projection<TDocument>
-  populate?: (keyof TDocument | string)[]
+  populate?: (keyof TDocument)[]
 }
 
 export type GetAllPayload<TDocument extends CollectionDocument<OptionalId<any>>> = {
@@ -96,7 +96,7 @@ export type GetAllPayload<TDocument extends CollectionDocument<OptionalId<any>>>
   offset?: number
   limit?: number
   sort?: QuerySort<TDocument>
-  populate?: (keyof TDocument | string)[]
+  populate?: (keyof TDocument)[]
 }
 
 export type InsertPayload<TDocument extends CollectionDocument<any>> = {

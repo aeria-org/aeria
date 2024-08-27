@@ -86,9 +86,8 @@ const internalInsert = async <TContext extends Context>(
 
   }
 
-  let doc: SchemaWithId<any> | null
   if( context.collection.originalFunctions?.get ) {
-    doc = throwIfError(await context.collection.originalFunctions.get({
+    return context.collection.originalFunctions.get({
       filters: {
         _id: newId,
       },
@@ -96,14 +95,14 @@ const internalInsert = async <TContext extends Context>(
       inherited: true,
     }, context), {
       bypassSecurity: true,
-    }))
-  } else {
-    doc = await context.collection.model.findOne({
-      _id: newId,
-    }, {
-      projection,
     })
   }
+
+  const doc = await context.collection.model.findOne({
+    _id: newId,
+  }, {
+    projection,
+  })
 
   if( !doc ) {
     return context.error(HTTPStatus.NotFound, {
@@ -112,6 +111,7 @@ const internalInsert = async <TContext extends Context>(
   }
 
   const result = throwIfError(await traverseDocument(doc, context.description, {
+    context,
     getters: true,
     fromProperties: true,
     recurseReferences: true,

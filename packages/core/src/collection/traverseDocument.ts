@@ -8,19 +8,31 @@ import { preloadDescription } from './preload.js'
 import * as path from 'path'
 import * as fs from 'fs/promises'
 
-export type TraverseOptions = {
+export type TraverseOptionsBase = {
   autoCast?: boolean
-  getters?: boolean
   validate?: boolean
   validateRequired?: Description['required']
-  moveFiles?: boolean
   fromProperties?: boolean
   allowOperators?: boolean
   skipUndefined?: boolean
   recurseDeep?: boolean
   recurseReferences?: boolean
-  context?: Context
 }
+
+export type TraverseOptions =
+  | (TraverseOptionsBase & {
+    getters?: never
+    moveFiles?: never
+    context?: never
+  })
+  | (TraverseOptionsBase & {
+    getters: true
+    context: Context
+  })
+  | (TraverseOptionsBase & {
+    moveFiles: true
+    context: Context
+  })
 
 export type TraverseNormalized = {
   description: Description
@@ -194,6 +206,9 @@ const autoCast = (value: any, ctx: Omit<PhaseContext, 'options'> & { options: (T
 
 const getters = (value: unknown, ctx: PhaseContext) => {
   if( 'getter' in ctx.property ) {
+    if( !ctx.options.context ) {
+      throw new Error
+    }
     return ctx.property.getter(ctx.target, ctx.options.context)
   }
 
@@ -292,7 +307,7 @@ const recurseDeep = async (value: unknown, ctx: PhaseContext) => {
       items.push(result)
     }
 
-    if( ctx.options.moveFiles && '$ref' in ctx.property.items && ctx.property.items.$ref === 'file' ) {
+    if( 'moveFiles' in ctx.options && ctx.options.moveFiles && '$ref' in ctx.property.items && ctx.property.items.$ref === 'file' ) {
       await disposeOldFiles(ctx, {
         preserveIds: items,
       })
@@ -333,7 +348,7 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
     const property = getProperty(propName, ctx.property)
 
     if( ctx.options.skipUndefined ) {
-      if( value === undefined && !(ctx.options.getters && property && 'getter' in property) ) {
+      if( value === undefined && !('getters' in ctx.options && ctx.options.getters && property && 'getter' in property) ) {
         continue
       }
     }
@@ -411,7 +426,7 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
         continue
       }
 
-      if( ctx.options.getters && 'getter' in property ) {
+      if( 'getters' in ctx.options && ctx.options.getters && 'getter' in property ) {
         if( property.requires ) {
           const missing = property.requires.some((requiredPropName) => !(requiredPropName in target))
           if( missing ) {
@@ -511,7 +526,7 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
     functions.push(autoCast)
   }
 
-  if( options.getters ) {
+  if( 'getters' in options && options.getters ) {
     functions.push(getters)
   }
 
@@ -529,7 +544,7 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
     functions.push(validate)
   }
 
-  if( options.moveFiles ) {
+  if( 'moveFiles' in options && options.moveFiles ) {
     functions.push(moveFiles)
   }
 

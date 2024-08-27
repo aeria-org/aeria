@@ -72,12 +72,9 @@ export type ContextOptions = {
 export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
   collections: IndepthCollections
   token: Token<TAcceptedRole>
-
   request: GenericRequest
   response: GenericResponse
-
   log: (message: string, details?: any)=> Promise<any>
-
   error: <
     const THTTPStatus extends HTTPStatus,
     const TEndpointError extends EndpointError,

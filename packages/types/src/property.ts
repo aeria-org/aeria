@@ -132,7 +132,7 @@ export type ArrayOfRefs = Omit<ArrayProperty, 'items'> & {
 }
 
 export type GetterProperty = {
-  getter: (document: unknown, context?: Context)=> any
+  getter: (document: unknown, context: Context)=> any
   requires?: string[]
 }
 
