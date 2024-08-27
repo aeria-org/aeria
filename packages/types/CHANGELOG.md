@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.84
+
+### Patch Changes
+
+- e671856: Refactor types
+
 ## 0.0.83
 
 ### Patch Changes
