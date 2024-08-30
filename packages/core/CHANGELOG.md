@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.162
+
+### Patch Changes
+
+- 1c4886a: Fix password not being inserted
+  - @aeriajs/builtins@0.0.162
+  - @aeriajs/security@0.0.162
+
 ## 0.0.161
 
 ### Patch Changes
