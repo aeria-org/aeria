@@ -40,6 +40,7 @@ const internalInsert = async <TContext extends Context>(
       : context.description.required,
     moveFiles: true,
     skipUndefined: true,
+    preserveHidden: true,
     context,
   })
 

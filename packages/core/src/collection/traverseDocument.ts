@@ -15,6 +15,7 @@ export type TraverseOptionsBase = {
   fromProperties?: boolean
   allowOperators?: boolean
   skipUndefined?: boolean
+  preserveHidden?: boolean
   recurseDeep?: boolean
   recurseReferences?: boolean
 }
@@ -419,7 +420,7 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
     }
 
     if( property ) {
-      if( property.hidden ) {
+      if( !ctx.options.preserveHidden && property.hidden ) {
         continue
       }
 
