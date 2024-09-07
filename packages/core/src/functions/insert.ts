@@ -148,7 +148,7 @@ export const insert = async <TContext extends Context>(
         ...context.collection.middlewares.map((middleware) => middleware.beforeWrite).filter((fn) => !!fn),
         (payload, _initial, context) => {
           return internalInsert(payload, context)
-        }
+        },
       ])
 
       return start(securedPayload, initial, context)
