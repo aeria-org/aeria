@@ -1,6 +1,6 @@
 import type { Context, SchemaWithId, InsertPayload, InsertReturnType } from '@aeriajs/types'
 import { Result, HTTPStatus, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
-import { useSecurity } from '@aeriajs/security'
+import { useSecurity, iterableMiddlewares } from '@aeriajs/security'
 import { throwIfError, endpointErrorSchema } from '@aeriajs/common'
 import { traverseDocument, normalizeProjection, prepareInsert } from '../collection/index.js'
 
@@ -137,6 +137,30 @@ export const insert = async <TContext extends Context>(
       code: error,
     })
   }
+
+  if( context.collection.middlewares ) {
+    const initial = context.error(HTTPStatus.NotFound, {
+      code: ACError.ResourceNotFound,
+    })
+
+    if( Array.isArray(context.collection.middlewares) ) {
+      const start = iterableMiddlewares<InsertReturnType<SchemaWithId<TContext['description']>>, typeof payload>([
+        ...context.collection.middlewares.map((middleware) => middleware.beforeWrite).filter((fn) => !!fn),
+        (payload, _initial, context) => {
+          return internalInsert(payload, context)
+        }
+      ])
+
+      return start(securedPayload, initial, context)
+    }
+
+    if( context.collection.middlewares.beforeWrite ) {
+      return context.collection.middlewares.beforeWrite(securedPayload, initial, context, (payload, _initial, context) => {
+        return internalInsert(payload, context)
+      })
+    }
+  }
+
   return internalInsert(securedPayload, context)
 }
 

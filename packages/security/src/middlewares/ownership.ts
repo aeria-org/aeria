@@ -12,7 +12,7 @@ export const checkOwnershipRead = async <T extends CollectionHookReadPayload>(
   const { token, description } = context
   const payload = throwIfError(initial)
 
-  if( token.authenticated && description.owned ) {
+  if( token.authenticated && description.owned && description.owned !== 'on-write' ) {
     if( !token.roles.includes('root') ) {
       payload.filters.owner = token.sub
     }

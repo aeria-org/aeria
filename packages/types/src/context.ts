@@ -1,5 +1,6 @@
 import type { Collection as MongoCollection } from 'mongodb'
 import type { AcceptedRole } from './token.js'
+import type { Collection } from './collection.js'
 import type { ApiConfig } from './config.js'
 import type { CollectionDocument, CollectionFunctions } from './functions.js'
 import type { Description } from './description.js'
@@ -53,6 +54,7 @@ export type IndepthCollection<TCollection> = TCollection extends {
     model: InferredDescription extends Description
       ? CollectionModel<InferredDescription>
       : never
+    middlewares?: Collection['middlewares']
   }
   : TCollection
 

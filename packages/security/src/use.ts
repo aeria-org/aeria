@@ -18,12 +18,6 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
       payload: newPayload,
     }
 
-    const middlewares = [checkPagination]
-
-    if( context.description.owned !== 'on-write' ) {
-      middlewares.push(checkOwnershipRead)
-    }
-
     const start = iterableMiddlewares<
       Result.Either<
         | ACError.OwnershipError
@@ -31,7 +25,10 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
         TPayload & CollectionHookReadPayload
       >,
       typeof props
-    >(middlewares)
+    >([
+      checkPagination,
+      checkOwnershipRead,
+    ])
 
     return start(props, Result.result(newPayload), context)
   }

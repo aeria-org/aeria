@@ -74,7 +74,7 @@ export type MiddlewareNext = <TReturn, TReturnPayload>(payload: TReturnPayload, 
 export type Middleware<TReturn = any, TPayload = any, TReturnNext extends GenericMiddlewareNext<TReturn, TPayload> = GenericMiddlewareNext<TReturn, TPayload>> = (payload: TPayload, initial: TReturn, context: Context, next: TReturnNext)=> TReturn | Promise<TReturn>
 
 export type CollectionMiddleware = {
-  beforeRead: Middleware
-  beforeWrite: Middleware
+  beforeRead?: Middleware
+  beforeWrite?: Middleware
 }
 
