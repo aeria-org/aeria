@@ -25,7 +25,7 @@ export type AuthenticatedToken<TAcceptedRole extends AcceptedRole = null> = {
   sub: ObjectId
   roles: readonly (
     TAcceptedRole extends null
-      ? string
+      ? UserRole
       : TAcceptedRole
   )[]
   userinfo: Omit<Collections['user']['item'], '_id' | 'roles'> extends infer UserItem
