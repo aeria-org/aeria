@@ -92,6 +92,6 @@ export const limitRate = async (
     throw new Error()
   }
 
-  return Result.result(newEntry.usage[resourceName]!)
+  return Result.result(newEntry.usage[resourceName])
 }
 
