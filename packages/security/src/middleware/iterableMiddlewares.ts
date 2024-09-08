@@ -2,7 +2,7 @@ import type { Middleware, MiddlewareNext, GenericMiddlewareNext, Context } from 
 
 export const iterableMiddlewares = function <TPayload, TReturn, TReturnNext extends GenericMiddlewareNext<TPayload, TReturn> = MiddlewareNext>(
   middlewares: Middleware<TPayload, TReturn, TReturnNext>[],
-  end = (payload: any, _context: Context) => payload,
+  end = (payload: TPayload, _context: Context): any => payload,
 ) {
   const [first, ...subsequent] = middlewares
   const it: Generator<GenericMiddlewareNext<TPayload, TReturn>> = function *() {
