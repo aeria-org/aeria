@@ -8,6 +8,7 @@ eslint.config.js linguist-vendored
 **/tests/fixtures/**/*.js linguist-vendored
 **/tests/fixtures/**/*.mjs linguist-vendored
 
-# scripts with node hashbang will be falsily reported as javascript
+# ignore js/sh scripts
 scripts/*.ts linguist-vendored
+scripts/*.sh linguist-vendored
 
