@@ -1,8 +1,8 @@
-import type { Context, Collection, GetReturnType, GetAllReturnType, CountReturnType, CollectionHookReadPayload } from '@aeriajs/types'
+import type { Context, Collection, GetReturnType, GetAllReturnType, CountReturnType, CollectionReadPayload } from '@aeriajs/types'
 import { iterableMiddlewares } from './iterableMiddlewares.js'
 
 export const applyReadMiddlewares = <TContext extends Context>(
-  payload: CollectionHookReadPayload,
+  payload: CollectionReadPayload,
   context: TContext & {
     collection: Collection
   },

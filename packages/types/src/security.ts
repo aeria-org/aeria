@@ -63,21 +63,21 @@ export type CollectionSecurityPolicy<
   >
 }
 
-export type CollectionHookProps<TPayload = any> = {
+export type CollectionProps<TPayload = any> = {
   propName?: string
   parentId?: string
   childId?: string
   payload: TPayload
 }
 
-export type CollectionHookReadPayload = {
+export type CollectionReadPayload = {
   filters: Record<string, any>
   sort?: Record<string, any>
   limit?: number
   offset?: number
 }
 
-export type CollectionHookWritePayload = {
+export type CollectionWritePayload = {
   what: What<Record<string, any>>
 }
 
@@ -87,7 +87,7 @@ export type MiddlewareNext = <TPayload, TReturn>(payload: TPayload, context: Con
 export type Middleware<TPayload = any, TReturn = any, TReturnNext extends GenericMiddlewareNext<TPayload, TReturn> = GenericMiddlewareNext<TPayload, TReturn>> = (payload: TPayload, context: Context, next: TReturnNext)=> TReturn
 
 export type CollectionMiddleware<TDocument> = {
-  beforeRead?: Middleware<CollectionHookReadPayload, Promise<Result.Either<any, TDocument | TDocument[]>>>
-  beforeWrite?: Middleware<CollectionHookWritePayload, Promise<Result.Either<any, TDocument>>>
+  beforeRead?: Middleware<CollectionReadPayload, Promise<Result.Either<any, TDocument | TDocument[]>>>
+  beforeWrite?: Middleware<CollectionWritePayload, Promise<Result.Either<any, TDocument>>>
 }
 

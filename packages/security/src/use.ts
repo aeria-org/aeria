@@ -1,4 +1,4 @@
-import type { Context, Description, ACError, CollectionHookReadPayload, CollectionHookWritePayload } from '@aeriajs/types'
+import type { Context, Description, ACError, CollectionReadPayload, CollectionWritePayload } from '@aeriajs/types'
 import { Result } from '@aeriajs/types'
 import { iterableMiddlewares } from './middleware/index.js'
 import {
@@ -9,7 +9,7 @@ import {
 } from './middlewares/index.js'
 
 export const useSecurity = <TDescription extends Description>(context: Context<TDescription>) => {
-  const secureReadPayload = async <TPayload extends Partial<CollectionHookReadPayload>>(payload?: TPayload) => {
+  const secureReadPayload = async <TPayload extends Partial<CollectionReadPayload>>(payload?: TPayload) => {
     const newPayload = Object.assign({
       filters: {},
     }, payload)
@@ -39,7 +39,7 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
     return Result.result(result.payload)
   }
 
-  const secureWritePayload = async <TPayload extends CollectionHookWritePayload>(payload?: TPayload) => {
+  const secureWritePayload = async <TPayload extends CollectionWritePayload>(payload?: TPayload) => {
     const newPayload = Object.assign({
       what: {},
     }, payload)

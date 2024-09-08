@@ -1,8 +1,8 @@
-import type { Context, Collection, CollectionHookWritePayload, InsertReturnType } from '@aeriajs/types'
+import type { Context, Collection, CollectionWritePayload, InsertReturnType } from '@aeriajs/types'
 import { iterableMiddlewares } from './iterableMiddlewares.js'
 
 export const applyWriteMiddlewares = <TDocument, TContext extends Context>(
-  payload: CollectionHookWritePayload,
+  payload: CollectionWritePayload,
   context: TContext & {
     collection: Collection
   },
