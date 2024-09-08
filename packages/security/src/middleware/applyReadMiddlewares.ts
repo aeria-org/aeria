@@ -12,22 +12,22 @@ export const applyReadMiddlewares = <TContext extends Context>(
     | CountReturnType
   >,
 ) => {
-  if( !context.collection.middlewares ) {
-    throw new Error
+  if( context.collection.middlewares ) {
+    if( Array.isArray(context.collection.middlewares) ) {
+      const readMiddlewares = context.collection.middlewares.map((middleware) => middleware.beforeRead).filter((fn) => !!fn)
+      const start = iterableMiddlewares<typeof payload, ReturnType<typeof fn>>(
+        readMiddlewares,
+        fn,
+      )
+
+      return start(payload, context)
+    }
+
+    if( context.collection.middlewares.beforeRead ) {
+      return context.collection.middlewares.beforeRead(payload, context, fn)
+    }
   }
 
-  if( Array.isArray(context.collection.middlewares) ) {
-    const ReadMiddlewares = context.collection.middlewares.map((middleware) => middleware.beforeRead).filter((fn) => !!fn)
-    const start = iterableMiddlewares<typeof payload, ReturnType<typeof fn>>(
-      ReadMiddlewares,
-      fn,
-    )
-
-    return start(payload, context)
-  }
-
-  if( context.collection.middlewares.beforeRead ) {
-    return context.collection.middlewares.beforeRead(payload, context, fn)
-  }
+  return fn(payload, context)
 }
 

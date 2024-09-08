@@ -1,5 +1,6 @@
 import type { Context } from './context.js'
 import type { What } from './functions.js'
+import type { Result } from './result.js'
 
 export type OwnershipMode =
   | boolean
@@ -80,13 +81,13 @@ export type CollectionHookWritePayload = {
   what: What<Record<string, any>>
 }
 
-export type GenericMiddlewareNext<TPayload, TReturn> = (payload: TPayload, context: Context)=> TReturn | Promise<TReturn>
-export type MiddlewareNext = <TPayload, TReturn>(payload: TPayload, context: Context)=> TReturn | Promise<TReturn>
+export type GenericMiddlewareNext<TPayload, TReturn> = (payload: TPayload, context: Context)=> TReturn
+export type MiddlewareNext = <TPayload, TReturn>(payload: TPayload, context: Context)=> TReturn
 
-export type Middleware<TPayload = any, TReturn = any, TReturnNext extends GenericMiddlewareNext<TPayload, TReturn> = GenericMiddlewareNext<TPayload, TReturn>> = (payload: TPayload, context: Context, next: TReturnNext)=> TReturn | Promise<TReturn>
+export type Middleware<TPayload = any, TReturn = any, TReturnNext extends GenericMiddlewareNext<TPayload, TReturn> = GenericMiddlewareNext<TPayload, TReturn>> = (payload: TPayload, context: Context, next: TReturnNext)=> TReturn
 
-export type CollectionMiddleware = {
-  beforeRead?: Middleware<CollectionHookReadPayload>
-  beforeWrite?: Middleware<CollectionHookWritePayload>
+export type CollectionMiddleware<TDocument> = {
+  beforeRead?: Middleware<CollectionHookReadPayload, Promise<Result.Either<any, TDocument | TDocument[]>>>
+  beforeWrite?: Middleware<CollectionHookWritePayload, Promise<Result.Either<any, TDocument>>>
 }
 

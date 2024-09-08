@@ -138,10 +138,6 @@ export const insert = async <TContext extends Context>(
     })
   }
 
-  if( context.collection.middlewares ) {
-    return applyWriteMiddlewares(securedPayload, context, internalInsert)
-  }
-
-  return internalInsert(securedPayload, context)
+  return applyWriteMiddlewares(securedPayload, context, internalInsert)
 }
 

@@ -19,7 +19,7 @@ const internalGetAll = async <TContext extends Context>(
   context: TContext,
 ) => {
   const {
-    limit = context.config.paginationLimit!,
+    limit = context.config.defaultPaginationLimit!,
     sort,
     project,
     offset = 0,
@@ -139,10 +139,6 @@ export const getAll = async <TContext extends Context>(
     return Result.error(error)
   }
 
-  if( context.collection.middlewares ) {
-    return applyReadMiddlewares(securedPayload, context, internalGetAll)
-  }
-
-  return internalGetAll(securedPayload, context)
+  return applyReadMiddlewares(securedPayload, context, internalGetAll)
 }
 

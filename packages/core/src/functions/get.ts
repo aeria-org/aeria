@@ -95,10 +95,6 @@ export const get = async <TContext extends Context>(
     })
   }
 
-  if( context.collection.middlewares ) {
-    return applyReadMiddlewares(securedPayload, context, internalGet)
-  }
-
-  return internalGet(securedPayload, context)
+  return applyReadMiddlewares(securedPayload, context, internalGet)
 }
 

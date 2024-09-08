@@ -8,11 +8,10 @@ export const makePagination = async (
     count?: (...args: unknown[])=> unknown
   }>,
 ): Promise<Pagination> => {
-  const limit = payload.limit
-    ? payload.limit
-    : context.config.paginationLimit!
-
-  const offset = payload.offset || 0
+  const {
+    offset = 0 ,
+    limit = context.config.defaultPaginationLimit!,
+  } = payload
 
   const recordsTotal = typeof context.collection.functions.count === 'function'
     ? throwIfError(await context.collection.functions.count({

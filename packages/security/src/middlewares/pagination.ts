@@ -7,8 +7,8 @@ export const checkPagination = async <T extends CollectionHookReadPayload>(
   next: GenericMiddlewareNext<typeof props, typeof props>,
 ) => {
   const { payload } = props.result
-  if( payload.limit ) {
-    if( payload.limit <= 0 || payload.limit > 150 ) {
+  if( payload.limit && context.config.security.paginationLimit ) {
+    if( payload.limit <= 0 || payload.limit > context.config.security.paginationLimit ) {
       return Result.error(ACError.InvalidLimit)
     }
   }

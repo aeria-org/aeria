@@ -19,10 +19,12 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
 
     const start = iterableMiddlewares<
       Result.Result<typeof props>,
-      Result.Either<
-        | ACError.OwnershipError
-        | ACError.InvalidLimit,
-        typeof props
+      Promise<
+        Result.Either<
+          | ACError.OwnershipError
+          | ACError.InvalidLimit,
+          typeof props
+        >
       >
     >([
       checkPagination,
@@ -47,11 +49,13 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
 
     const start = iterableMiddlewares<
       Result.Result<typeof props>,
-      Result.Either<
-        | ACError.OwnershipError
-        | ACError.ResourceNotFound
-        | ACError.TargetImmutable,
-        typeof props
+      Promise<
+        Result.Either<
+          | ACError.OwnershipError
+          | ACError.ResourceNotFound
+          | ACError.TargetImmutable,
+          typeof props
+        >
       >
     >([
       checkOwnershipWrite,

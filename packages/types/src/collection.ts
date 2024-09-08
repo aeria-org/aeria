@@ -12,8 +12,8 @@ export type Collection<TCollection extends Collection = any> = {
   exposedFunctions?: Record<string, AccessCondition>
   security?: CollectionSecurityPolicy<TCollection>
   middlewares?:
-    | CollectionMiddleware
-    | CollectionMiddleware[]
+    | CollectionMiddleware<any>
+    | CollectionMiddleware<any>[]
 }
 
 export type CollectionItem<TCollectionName extends keyof Collections> = Omit<Collections[TCollectionName]['item'], '_id'>

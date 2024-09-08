@@ -7,7 +7,7 @@ export type ApiConfig = {
   baseUrl?: RouteUri
   publicUrl?: string
   port?: number
-  paginationLimit?: number
+  defaultPaginationLimit?: number
   database?: {
     mongodbUrl?: string
     noDatabase?: boolean
@@ -29,6 +29,7 @@ export type ApiConfig = {
       roles: string[]
       active: boolean
     }>
+    paginationLimit?: number
     exposeFunctionsByDefault?:
       | boolean
       | 'unauthenticated'

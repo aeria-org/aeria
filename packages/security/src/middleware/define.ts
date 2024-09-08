@@ -1,5 +1,5 @@
-import type { Middleware } from '@aeriajs/types'
+import type { CollectionMiddleware } from '@aeriajs/types'
 
-export const defineCollectionMiddleware = <TMiddleware extends Middleware>(middleware: TMiddleware) => {
+export const defineCollectionMiddleware = <TCollectionMiddleware extends CollectionMiddleware<unknown>>(middleware: TCollectionMiddleware) => {
   return middleware
 }

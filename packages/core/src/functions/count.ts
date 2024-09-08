@@ -68,10 +68,6 @@ export const count = async <TContext extends Context>(
     return Result.error(error)
   }
 
-  if( context.collection.middlewares ) {
-    return applyReadMiddlewares(securedPayload, context, internalCount)
-  }
-
-  return internalCount(securedPayload, context)
+  return applyReadMiddlewares(securedPayload, context, internalCount)
 }
 
