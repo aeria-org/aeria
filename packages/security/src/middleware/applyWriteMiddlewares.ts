@@ -3,7 +3,7 @@ import { iterableMiddlewares } from './iterableMiddlewares.js'
 
 export const applyWriteMiddlewares = <TDocument, TContext extends Context>(
   payload: CollectionHookWritePayload,
-  context: Omit<TContext, 'collection'> & {
+  context: TContext & {
     collection: Collection
   },
   fn: (p: typeof payload, context: Context)=> Promise<InsertReturnType<TDocument>>,

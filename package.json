@@ -4,6 +4,7 @@
   "packageManager": "pnpm@9.1.0",
   "scripts": {
     "test": "NODE_PATH=../../playground/node_modules pnpm -r test",
+    "build": "./scripts/build.sh",
     "preinstall": "unlink node_modules/@aeriajs || true",
     "postinstall": "husky; rm -rf packages/*/node_modules/@aeriajs",
     "esm-transform": "./scripts/transform-import-extensions.ts",

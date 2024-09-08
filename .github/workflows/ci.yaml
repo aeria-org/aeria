@@ -25,33 +25,15 @@ jobs:
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
-
       - name: Build packages
-        run: |
-          pnpm --filter='./packages/types' build \
-            && pnpm --filter='./packages/common' build \
-            && pnpm --filter='./packages/entrypoint' build \
-            && pnpm --filter='./packages/validation' build \
-            && pnpm --filter='./packages/http' build \
-            && pnpm --filter='./packages/node-http' build \
-            && pnpm --filter='./packages/security' build \
-            && pnpm --filter='./packages/core' build \
-            && pnpm --filter='./packages/builtins' build \
-            && pnpm --filter='./packages/server' build \
-            && pnpm --filter='./packages/aeria-sdk' build \
-            && pnpm --filter='./packages/cli' build \
-            && pnpm --filter='./packages/aeria' build
-
+        run: pnpm build
       - name: Run tests
         run: pnpm -r test
-
       - name: Build playground
         run: |
           pnpm --filter=playground build
-
       - name: Generate packages/builtins-icons
         run: pnpm --filter='./packages/builtins' write-icons
-
       - name: Create release PR
         uses: changesets/action@v1
         with:

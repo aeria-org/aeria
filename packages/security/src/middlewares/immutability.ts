@@ -1,4 +1,5 @@
 import type { Context, CollectionHookProps, GenericMiddlewareNext, What, CollectionHookReadPayload, CollectionHookWritePayload } from '@aeriajs/types'
+import { ObjectId } from 'mongodb'
 import { Result, ACError } from '@aeriajs/types'
 
 const checkImmutability = async <TProps extends CollectionHookProps>(
@@ -13,7 +14,7 @@ const checkImmutability = async <TProps extends CollectionHookProps>(
   if( docId ) {
     if( typeof context.description.immutable === 'function' ) {
       const doc = await context.collection.model.findOne({
-        _id: docId,
+        _id: new ObjectId(docId),
       })
 
       if( !doc ) {

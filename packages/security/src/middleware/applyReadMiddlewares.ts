@@ -3,7 +3,7 @@ import { iterableMiddlewares } from './iterableMiddlewares.js'
 
 export const applyReadMiddlewares = <TContext extends Context>(
   payload: CollectionHookReadPayload,
-  context: Omit<TContext, 'collection'> & {
+  context: TContext & {
     collection: Collection
   },
   fn: (p: typeof payload, context: Context)=> Promise<
