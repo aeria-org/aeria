@@ -39,7 +39,7 @@ export const checkImmutabilityRead = async <T extends CollectionHookReadPayload>
   props: CollectionHookProps<T>,
   initial: Result.Either<unknown, T>,
   context: Context,
-  next: GenericMiddlewareNext<Result.Result<T>, CollectionHookProps<T>>,
+  next: GenericMiddlewareNext<CollectionHookProps<T>, Result.Result<T>>,
 ) => {
   const originalPayload = throwIfError(initial)
   const { result: payload, error } = await checkImmutability(originalPayload.filters._id, props, context)
@@ -54,7 +54,7 @@ export const checkImmutabilityWrite = async <T extends CollectionHookWritePayloa
   props: CollectionHookProps<T>,
   initial: Result.Either<unknown, T>,
   context: Context,
-  next: GenericMiddlewareNext<Result.Result<T>, CollectionHookProps<T>>,
+  next: GenericMiddlewareNext<CollectionHookProps<T>, Result.Result<T>>,
 ) => {
   const originalPayload = throwIfError(initial)
   const { result: payload, error } = await checkImmutability(originalPayload.what._id, props, context)

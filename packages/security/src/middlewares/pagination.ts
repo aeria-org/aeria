@@ -7,7 +7,7 @@ export const checkPagination = async <T extends CollectionHookReadPayload>(
   props: CollectionHookProps<T>,
   initial: Result.Either<unknown, T>,
   context: Context,
-  next: GenericMiddlewareNext<Result.Result<T>, CollectionHookProps<T>>,
+  next: GenericMiddlewareNext<CollectionHookProps<T>, Result.Result<T>>,
 ) => {
   const payload = throwIfError(initial)
   if( payload.limit ) {

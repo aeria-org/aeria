@@ -19,12 +19,12 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
     }
 
     const start = iterableMiddlewares<
+      typeof props,
       Result.Either<
         | ACError.OwnershipError
         | ACError.InvalidLimit,
         TPayload & CollectionHookReadPayload
-      >,
-      typeof props
+      >
     >([
       checkPagination,
       checkOwnershipRead,
@@ -42,13 +42,13 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
     }
 
     const start = iterableMiddlewares<
+      typeof props,
       Result.Either<
         | ACError.OwnershipError
         | ACError.ResourceNotFound
         | ACError.TargetImmutable,
         TPayload
-      >,
-      typeof props
+      >
     >([
       checkOwnershipWrite,
       checkImmutabilityWrite,

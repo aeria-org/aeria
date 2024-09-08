@@ -144,8 +144,9 @@ export const insert = async <TContext extends Context>(
     })
 
     if( Array.isArray(context.collection.middlewares) ) {
-      const start = iterableMiddlewares<InsertReturnType<SchemaWithId<TContext['description']>>, typeof payload>([
-        ...context.collection.middlewares.map((middleware) => middleware.beforeWrite).filter((fn) => !!fn),
+      const writeMiddlewares = context.collection.middlewares.map((middleware) => middleware.beforeWrite).filter((fn) => !!fn)
+      const start = iterableMiddlewares<typeof payload, InsertReturnType<SchemaWithId<TContext['description']>>>([
+        ...writeMiddlewares,
         (payload, _initial, context) => {
           return internalInsert(payload, context)
         },
