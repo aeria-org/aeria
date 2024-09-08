@@ -1,4 +1,4 @@
-import type { Context, Collection, GetReturnType, GetAllReturnType, CountReturnType, CollectionHookReadPayload  } from '@aeriajs/types'
+import type { Context, Collection, GetReturnType, GetAllReturnType, CountReturnType, CollectionHookReadPayload } from '@aeriajs/types'
 import { iterableMiddlewares } from './iterableMiddlewares.js'
 
 export const applyReadMiddlewares = <TContext extends Context>(
@@ -6,11 +6,11 @@ export const applyReadMiddlewares = <TContext extends Context>(
   context: Omit<TContext, 'collection'> & {
     collection: Collection
   },
-  fn: (p: typeof payload, context: Context) => Promise<
+  fn: (p: typeof payload, context: Context)=> Promise<
     | GetReturnType<unknown>
     | GetAllReturnType<unknown>
     | CountReturnType
-  >
+  >,
 ) => {
   if( !context.collection.middlewares ) {
     throw new Error

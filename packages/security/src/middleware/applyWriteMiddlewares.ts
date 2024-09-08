@@ -6,7 +6,7 @@ export const applyWriteMiddlewares = <TContext extends Context>(
   context: Omit<TContext, 'collection'> & {
     collection: Collection
   },
-  fn: (p: typeof payload, context: Context) => Promise<InsertReturnType<unknown>>
+  fn: (p: typeof payload, context: Context)=> Promise<InsertReturnType<unknown>>,
 ) => {
   if( !context.collection.middlewares ) {
     throw new Error

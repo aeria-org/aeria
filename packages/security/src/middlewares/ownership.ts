@@ -1,4 +1,4 @@
-import type { GenericMiddlewareNext, Context, CollectionHookProps, CollectionHookReadPayload, CollectionHookWritePayload  } from '@aeriajs/types'
+import type { GenericMiddlewareNext, Context, CollectionHookProps, CollectionHookReadPayload, CollectionHookWritePayload } from '@aeriajs/types'
 import { Result, ACError } from '@aeriajs/types'
 
 export const checkOwnershipRead = async <T extends CollectionHookReadPayload>(
@@ -15,7 +15,10 @@ export const checkOwnershipRead = async <T extends CollectionHookReadPayload>(
     }
   }
 
-  return next(Result.result({ ...props.result, payload }), context)
+  return next(Result.result({
+    ...props.result,
+    payload,
+  }), context)
 }
 
 export const checkOwnershipWrite = async <T extends CollectionHookWritePayload>(
@@ -38,6 +41,9 @@ export const checkOwnershipWrite = async <T extends CollectionHookWritePayload>(
     return Result.error(ACError.OwnershipError)
   }
 
-  return next(Result.result({ ...props.result, payload }), context)
+  return next(Result.result({
+    ...props.result,
+    payload,
+  }), context)
 }
 

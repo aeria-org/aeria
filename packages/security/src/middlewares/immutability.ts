@@ -1,4 +1,4 @@
-import type { Context, CollectionHookProps, GenericMiddlewareNext, What, CollectionHookReadPayload, CollectionHookWritePayload  } from '@aeriajs/types'
+import type { Context, CollectionHookProps, GenericMiddlewareNext, What, CollectionHookReadPayload, CollectionHookWritePayload } from '@aeriajs/types'
 import { Result, ACError } from '@aeriajs/types'
 
 const checkImmutability = async <TProps extends CollectionHookProps>(
@@ -43,7 +43,10 @@ export const checkImmutabilityRead = async <T extends CollectionHookReadPayload>
     return Result.error(error)
   }
 
-  return next(Result.result({ ...props.result, payload }), context)
+  return next(Result.result({
+    ...props.result,
+    payload,
+  }), context)
 }
 
 export const checkImmutabilityWrite = async <T extends CollectionHookWritePayload>(
@@ -57,6 +60,9 @@ export const checkImmutabilityWrite = async <T extends CollectionHookWritePayloa
     return Result.error(error)
   }
 
-  return next(Result.result({ ...props.result, payload }), context)
+  return next(Result.result({
+    ...props.result,
+    payload,
+  }), context)
 }
 

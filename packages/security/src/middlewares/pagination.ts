@@ -1,4 +1,4 @@
-import type { CollectionHookProps, GenericMiddlewareNext, Context, CollectionHookReadPayload  } from '@aeriajs/types'
+import type { CollectionHookProps, GenericMiddlewareNext, Context, CollectionHookReadPayload } from '@aeriajs/types'
 import { Result, ACError } from '@aeriajs/types'
 
 export const checkPagination = async <T extends CollectionHookReadPayload>(
