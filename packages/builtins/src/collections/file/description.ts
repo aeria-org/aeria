@@ -1,12 +1,13 @@
+import { ObjectId } from 'mongodb'
 import { defineDescription } from '@aeriajs/core'
 import { getConfig } from '@aeriajs/entrypoint'
 
-const link = async (_id: string) => {
+const link = async (_id: ObjectId) => {
   const config = await getConfig()
   return `${config.publicUrl || ''}/file/${_id}`
 }
 
-const timestamp = (lastModified: Date | undefined) => lastModified
+const timestamp = (lastModified: unknown) => lastModified instanceof Date
   ? new Date(lastModified).getTime()
   : 'fresh'
 
@@ -44,13 +45,17 @@ export const description = defineDescription({
       type: 'boolean',
     },
     link: {
-      getter: async (value: any) => {
-        return `${await link(value._id)}/${timestamp(value.last_modified)}`
+      getter: async (doc: object) => {
+        if( '_id' in doc && 'last_modified' in doc && doc._id instanceof ObjectId ) {
+          return `${await link(doc._id)}/${timestamp(doc.last_modified)}`
+        }
       },
     },
     download_link: {
-      getter: async (value: any) => {
-        return `${await link(value._id)}/download/${timestamp(value.last_modified)}`
+      getter: async (doc: object) => {
+        if( '_id' in doc && 'last_modified' in doc && doc._id instanceof ObjectId ) {
+          return `${await link(doc._id)}/download/${timestamp(doc.last_modified)}`
+        }
       },
     },
   },

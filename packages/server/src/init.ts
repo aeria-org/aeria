@@ -27,8 +27,8 @@ export type InitApiConfig = Omit<ApiConfig, keyof typeof DEFAULT_API_CONFIG> & P
 export type InitOptions = {
   config?: InitApiConfig
   router?: ReturnType<typeof createRouter>
-  setup?: (context: Context)=> any
-  callback?: (context: Context)=> any
+  setup?: (context: Context)=> unknown
+  callback?: (context: Context)=> unknown
   collections?: Record<string, Collection & {
     description: NonCircularJsonSchema
   }>

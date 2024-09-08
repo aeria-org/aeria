@@ -26,13 +26,17 @@ export const description = defineDescription({
       type: 'string',
     },
     given_name: {
-      getter: (document: any) => {
-        return document.name?.split(' ')[0]
+      getter: (doc: object) => {
+        if( 'name' in doc && typeof doc.name === 'string' ) {
+          return doc.name.split(' ')[0]
+        }
       },
     },
     family_name: {
-      getter: (document: any) => {
-        return document.name?.split(' ')[1]
+      getter: (doc: object) => {
+        if( 'name' in doc && typeof doc.name === 'string' ) {
+          return doc.name.split(' ')[1]
+        }
       },
     },
     active: {
@@ -64,8 +68,10 @@ export const description = defineDescription({
       accept: ['image/*'],
     },
     picture: {
-      getter: (value: any) => {
-        return value.picture_file?.link
+      getter: (doc: object) => {
+        if( 'picture_file' in doc && doc.picture_file instanceof Object && 'link' in doc.picture_file && typeof doc.picture_file.link === 'string' ) {
+          return doc.picture_file.link
+        }
       },
     },
     group: {

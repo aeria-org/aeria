@@ -28,10 +28,12 @@ export const registerRoutes = () => {
       parentContext,
     })
 
-    const [fileId, options] = context.request.fragments
+    const [fileId, optionsString] = context.request.fragments
+    const options = optionsString.split('/').filter((option) => option === 'picture' || option === 'download')
+
     return context.collections.file.functions.download({
       fileId,
-      options: options.split('/') as any[],
+      options,
     })
   }))
 

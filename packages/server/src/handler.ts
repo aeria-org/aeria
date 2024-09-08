@@ -20,14 +20,14 @@ const getACErrorHttpCode = (code: ACError) => {
 }
 
 export const safeHandle = (
-  fn: (context: RouteContext)=> Promise<object>,
+  fn: (context: RouteContext)=> Promise<unknown>,
   context: RouteContext,
 ) => async () => {
   try {
     const response = await fn(context)
     return response
 
-  } catch(error: any) {
+  } catch(error) {
     if( context.config.errorHandler ) {
       return context.config.errorHandler(context, error)
     }
@@ -38,14 +38,12 @@ export const safeHandle = (
 
     if( context.request.headers['sec-fetch-mode'] === 'cors' ) {
       return Result.error({
-        code: error.code || error.name,
-        message: error.message,
+        code: ACError.UnknownError,
       })
     }
 
-    return context.error(error.httpStatus || HTTPStatus.InternalServerError, {
-      code: error.code || error.name,
-      message: error.message,
+    return context.error(HTTPStatus.InternalServerError, {
+      code: ACError.UnknownError,
     })
   }
 }

@@ -2,7 +2,9 @@ import type { RouteContext, SchemaWithId, TokenRecipient } from '@aeriajs/types'
 import type { description } from './collections/user/description.js'
 import { signToken } from '@aeriajs/core'
 
-export type TokenableUser = Pick<SchemaWithId<typeof description>,
+type User = SchemaWithId<typeof description>
+
+export type TokenableUser = Pick<User,
   | '_id'
   | 'name'
   | 'email'
@@ -42,18 +44,15 @@ export const successfulAuthentication = async <TUser extends TokenableUser>(user
   }
 
   if( context.config.tokenUserProperties ) {
-    const pick = (obj: any, properties: string[]) => properties.reduce((a, prop) => {
-      if( 'prop' in obj ) {
-        return a
-      }
+    const userinfo: {
+      -readonly [P in keyof Partial<User>]: Partial<User>[P]
+    } = {}
 
-      return {
-        ...a,
-        [prop]: obj[prop],
-      }
-    }, {})
+    for( const prop of context.config.tokenUserProperties ) {
+      userinfo[prop as keyof typeof userinfo] = user[prop as keyof typeof user]
+    }
 
-    tokenContent.userinfo = pick(user, context.config.tokenUserProperties)
+    tokenContent.userinfo = userinfo
   }
 
   const token = await signToken(tokenContent)

@@ -1,12 +1,14 @@
 import { Result, type Context } from '@aeriajs/types'
+import { isResult } from '@aeriajs/common'
 import { makePagination } from '@aeriajs/core'
 
-export const appendPagination = async (value: any, context: Context) => {
+export const appendPagination = async (value: unknown, context: Context) => {
   if( context.calledFunction === 'getAll' && value ) {
-    const { error, result } = value
-    if( error ) {
-      return Result.error(error)
+    if( !isResult(value) ) {
+      return value
     }
+
+    const { result } = value
 
     if( Array.isArray(result) ) {
       return Result.result({

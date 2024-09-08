@@ -1,4 +1,5 @@
 import { expect, test } from 'vitest'
+import assert from 'assert'
 import * as fs from 'fs'
 import * as entrypoint from '../dist/index.js'
 
@@ -8,7 +9,7 @@ const relativePath = (path: string) => {
   return path.split('/').slice(-2).join('/')
 }
 
-const onDirectory = async (dir: string, cb: (...args: any[]) => any) => {
+const onDirectory = async <T>(dir: string, cb: (...args: unknown[]) => T) => {
   process.chdir(dir)
   try {
     const result = await cb()
@@ -25,6 +26,8 @@ test('gets correct entrypoint path', async () => {
   const path1 = await onDirectory('tests/fixtures/cjs', entrypoint.getEntrypointPath)
   const path2 = await onDirectory('tests/fixtures/esm', entrypoint.getEntrypointPath)
 
+  assert(path1)
+  assert(path2)
   expect(relativePath(path1)).toBe('aeria/index.js')
   expect(fs.existsSync(path1)).toBe(true)
   expect(relativePath(path2)).toBe('aeria/index.mjs')
@@ -55,11 +58,17 @@ test('retrieves router correctly (esm)', async () => {
 
 test('doesnt mutate collections', async () => {
   const collectionBefore = await onDirectory('tests/fixtures/esm', () => entrypoint.getCollection('test'))
-  collectionBefore.dummy = true
+  assert(collectionBefore)
+  Object.assign(collectionBefore, {
+    dummy: true,
+  })
 
   const collectionAfter = await onDirectory('tests/fixtures/esm', () => entrypoint.getCollection('test'))
   const collections = await onDirectory('tests/fixtures/esm', entrypoint.getCollections)
-  expect(collectionAfter.dummy).toBeFalsy()
-  expect(collections.test.dummy).toBeFalsy()
+  assert(collectionAfter)
+  assert(collections)
+
+  expect(Object.getOwnPropertyDescriptor(collectionAfter, 'dummy')?.value).toBeFalsy()
+  expect(Object.getOwnPropertyDescriptor(collections.test, 'dummy')?.value).toBeFalsy()
 })
 

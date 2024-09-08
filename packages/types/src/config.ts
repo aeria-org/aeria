@@ -35,7 +35,7 @@ export type ApiConfig = {
       | 'unauthenticated'
   }
   tokenUserProperties?: string[]
-  errorHandler?: <TError extends Error>(
+  errorHandler?: <TError>(
     context: RouteContext,
     error: TError
   )=> unknown | Promise<unknown>

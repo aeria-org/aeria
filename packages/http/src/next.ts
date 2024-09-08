@@ -10,7 +10,7 @@ export const next = (): NextObject => {
   }
 }
 
-export const isNext = (object: any): object is NextObject => {
+export const isNext = (object: unknown): object is NextObject => {
   if( !object ) {
     return false
   }

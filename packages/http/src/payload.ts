@@ -1,4 +1,4 @@
-export const safeJson = (candidate: any) => {
+export const safeJson = (candidate: unknown) => {
   if( !candidate || typeof candidate !== 'string' ) {
     return candidate
   }
