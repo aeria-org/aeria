@@ -1,5 +1,5 @@
 import type { Context, SchemaWithId, CountPayload } from '@aeriajs/types'
-import { useSecurity } from '@aeriajs/security'
+import { useSecurity, applyReadMiddlewares } from '@aeriajs/security'
 import { Result } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import { traverseDocument } from '../collection/index.js'
@@ -67,6 +67,11 @@ export const count = async <TContext extends Context>(
   if( error ) {
     return Result.error(error)
   }
+
+  if( context.collection.middlewares ) {
+    return applyReadMiddlewares(securedPayload, context, internalCount)
+  }
+
   return internalCount(securedPayload, context)
 }
 

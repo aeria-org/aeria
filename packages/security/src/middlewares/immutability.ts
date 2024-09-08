@@ -1,11 +1,8 @@
-import type { ObjectId } from 'mongodb'
-import type { Context, CollectionHookProps, GenericMiddlewareNext } from '@aeriajs/types'
-import type { CollectionHookReadPayload, CollectionHookWritePayload } from '../types.js'
+import type { Context, CollectionHookProps, GenericMiddlewareNext, What, CollectionHookReadPayload, CollectionHookWritePayload  } from '@aeriajs/types'
 import { Result, ACError } from '@aeriajs/types'
-import { throwIfError } from '@aeriajs/common'
 
 const checkImmutability = async <TProps extends CollectionHookProps>(
-  docId: ObjectId | undefined,
+  docId: What<unknown>['_id'],
   props: TProps,
   context: Context,
 ) => {
@@ -36,32 +33,30 @@ const checkImmutability = async <TProps extends CollectionHookProps>(
 }
 
 export const checkImmutabilityRead = async <T extends CollectionHookReadPayload>(
-  props: CollectionHookProps<T>,
-  initial: Result.Either<unknown, T>,
+  props: Result.Result<CollectionHookProps<T>>,
   context: Context,
-  next: GenericMiddlewareNext<CollectionHookProps<T>, Result.Result<T>>,
+  next: GenericMiddlewareNext<typeof props, typeof props>,
 ) => {
-  const originalPayload = throwIfError(initial)
-  const { result: payload, error } = await checkImmutability(originalPayload.filters._id, props, context)
+  const { payload: originalPayload } = props.result
+  const { result: payload, error } = await checkImmutability(originalPayload.filters._id, props.result, context)
   if( error ) {
     return Result.error(error)
   }
 
-  return next(payload, Result.result(payload), context)
+  return next(Result.result({ ...props.result, payload }), context)
 }
 
 export const checkImmutabilityWrite = async <T extends CollectionHookWritePayload>(
-  props: CollectionHookProps<T>,
-  initial: Result.Either<unknown, T>,
+  props: Result.Result<CollectionHookProps<T>>,
   context: Context,
-  next: GenericMiddlewareNext<CollectionHookProps<T>, Result.Result<T>>,
+  next: GenericMiddlewareNext<typeof props, typeof props>,
 ) => {
-  const originalPayload = throwIfError(initial)
-  const { result: payload, error } = await checkImmutability(originalPayload.what._id, props, context)
+  const { payload: originalPayload } = props.result
+  const { result: payload, error } = await checkImmutability(originalPayload.what._id, props.result, context)
   if( error ) {
     return Result.error(error)
   }
 
-  return next(payload, Result.result(payload), context)
+  return next(Result.result({ ...props.result, payload }), context)
 }
 

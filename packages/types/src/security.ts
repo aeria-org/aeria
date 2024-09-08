@@ -1,5 +1,5 @@
 import type { Context } from './context.js'
-import type { GetPayload, GetAllPayload, CountPayload, InsertPayload } from './functions.js'
+import type { What } from './functions.js'
 
 export type OwnershipMode =
   | boolean
@@ -69,17 +69,24 @@ export type CollectionHookProps<TPayload = any> = {
   payload: TPayload
 }
 
-export type GenericMiddlewareNext<TPayload, TReturn> = (payload: TPayload, initial: TReturn, context: Context)=> TReturn | Promise<TReturn>
-export type MiddlewareNext = <TPayload, TReturn>(payload: TPayload, initial: TReturn, context: Context)=> TReturn | Promise<TReturn>
+export type CollectionHookReadPayload = {
+  filters: Record<string, any>
+  sort?: Record<string, any>
+  limit?: number
+  offset?: number
+}
 
-export type Middleware<TPayload = any, TReturn = any, TReturnNext extends GenericMiddlewareNext<TPayload, TReturn> = GenericMiddlewareNext<TPayload, TReturn>> = (payload: TPayload, initial: TReturn, context: Context, next: TReturnNext)=> TReturn | Promise<TReturn>
+export type CollectionHookWritePayload = {
+  what: What<Record<string, any>>
+}
 
-export type CollectionMiddleware<TDocument> = {
-  beforeRead?: Middleware<
-    | GetPayload<TDocument>
-    | GetAllPayload<TDocument>
-    | CountPayload<TDocument>
-  >
-  beforeWrite?: Middleware<InsertPayload<TDocument>>
+export type GenericMiddlewareNext<TPayload, TReturn> = (payload: TPayload, context: Context)=> TReturn | Promise<TReturn>
+export type MiddlewareNext = <TPayload, TReturn>(payload: TPayload, context: Context)=> TReturn | Promise<TReturn>
+
+export type Middleware<TPayload = any, TReturn = any, TReturnNext extends GenericMiddlewareNext<TPayload, TReturn> = GenericMiddlewareNext<TPayload, TReturn>> = (payload: TPayload, context: Context, next: TReturnNext)=> TReturn | Promise<TReturn>
+
+export type CollectionMiddleware = {
+  beforeRead?: Middleware<CollectionHookReadPayload>
+  beforeWrite?: Middleware<CollectionHookWritePayload>
 }
 

@@ -1,7 +1,6 @@
-import type { Context, Description, ACError } from '@aeriajs/types'
-import type { CollectionHookReadPayload, CollectionHookWritePayload } from './types.js'
+import type { Context, Description, ACError, CollectionHookReadPayload, CollectionHookWritePayload } from '@aeriajs/types'
 import { Result } from '@aeriajs/types'
-import { iterableMiddlewares } from './middleware.js'
+import { iterableMiddlewares } from './middleware/index.js'
 import {
   checkImmutabilityWrite,
   checkOwnershipRead,
@@ -19,18 +18,23 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
     }
 
     const start = iterableMiddlewares<
-      typeof props,
+      Result.Result<typeof props>,
       Result.Either<
         | ACError.OwnershipError
         | ACError.InvalidLimit,
-        TPayload & CollectionHookReadPayload
+        typeof props
       >
     >([
       checkPagination,
       checkOwnershipRead,
     ])
 
-    return start(props, Result.result(newPayload), context)
+    const { error, result } = await start(Result.result(props), context)
+    if( error ) {
+      return Result.error(error)
+    }
+
+    return Result.result(result.payload)
   }
 
   const secureWritePayload = async <TPayload extends CollectionHookWritePayload>(payload?: TPayload) => {
@@ -42,19 +46,24 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
     }
 
     const start = iterableMiddlewares<
-      typeof props,
+      Result.Result<typeof props>,
       Result.Either<
         | ACError.OwnershipError
         | ACError.ResourceNotFound
         | ACError.TargetImmutable,
-        TPayload
+        typeof props
       >
     >([
       checkOwnershipWrite,
       checkImmutabilityWrite,
     ])
 
-    return start(props, Result.result(newPayload), context)
+    const { error, result } = await start(Result.result(props), context)
+    if( error ) {
+      return Result.error(error)
+    }
+
+    return Result.result(result.payload)
   }
 
   return {

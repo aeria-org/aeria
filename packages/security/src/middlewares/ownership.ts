@@ -1,16 +1,13 @@
-import type { GenericMiddlewareNext, Context, CollectionHookProps } from '@aeriajs/types'
-import type { CollectionHookReadPayload, CollectionHookWritePayload } from '../types.js'
+import type { GenericMiddlewareNext, Context, CollectionHookProps, CollectionHookReadPayload, CollectionHookWritePayload  } from '@aeriajs/types'
 import { Result, ACError } from '@aeriajs/types'
-import { throwIfError } from '@aeriajs/common'
 
 export const checkOwnershipRead = async <T extends CollectionHookReadPayload>(
-  props: CollectionHookProps<T>,
-  initial: Result.Either<unknown, T>,
+  props: Result.Result<CollectionHookProps<T>>,
   context: Context,
-  next: GenericMiddlewareNext<CollectionHookProps<T>, Result.Result<T>>,
+  next: GenericMiddlewareNext<typeof props, typeof props>,
 ) => {
   const { token, description } = context
-  const payload = throwIfError(initial)
+  const { payload } = props.result
 
   if( token.authenticated && description.owned && description.owned !== 'on-write' ) {
     if( !token.roles.includes('root') ) {
@@ -18,25 +15,22 @@ export const checkOwnershipRead = async <T extends CollectionHookReadPayload>(
     }
   }
 
-  return next(props, Result.result(payload), context)
+  return next(Result.result({ ...props.result, payload }), context)
 }
 
 export const checkOwnershipWrite = async <T extends CollectionHookWritePayload>(
-  props: CollectionHookProps<T>,
-  initial: Result.Either<unknown, T>,
+  props: Result.Result<CollectionHookProps<T>>,
   context: Context,
-  next: GenericMiddlewareNext<CollectionHookProps<T>, Result.Result<T>>,
+  next: GenericMiddlewareNext<typeof props, typeof props>,
 ) => {
   const { token, description } = context
-  const { parentId } = props
-
-  const payload = throwIfError(initial)
+  const { payload, parentId } = props.result
 
   if( token.authenticated && description.owned ) {
     if( !payload.what._id || description.owned === 'always' ) {
       payload.what.owner = token.sub
     } else {
-      return next(props, Result.result(payload), context)
+      return next(props, context)
     }
   }
 
@@ -44,6 +38,6 @@ export const checkOwnershipWrite = async <T extends CollectionHookWritePayload>(
     return Result.error(ACError.OwnershipError)
   }
 
-  return next(props, Result.result(payload), context)
+  return next(Result.result({ ...props.result, payload }), context)
 }
 

@@ -1,6 +1,6 @@
 import type { Context, SchemaWithId, GetPayload, GetReturnType } from '@aeriajs/types'
 import type { Document } from 'mongodb'
-import { useSecurity } from '@aeriajs/security'
+import { useSecurity, applyReadMiddlewares } from '@aeriajs/security'
 import { Result, HTTPStatus, ACError } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import {
@@ -93,6 +93,10 @@ export const get = async <TContext extends Context>(
     return context.error(HTTPStatus.Forbidden, {
       code: error,
     })
+  }
+
+  if( context.collection.middlewares ) {
+    return applyReadMiddlewares(securedPayload, context, internalGet)
   }
 
   return internalGet(securedPayload, context)

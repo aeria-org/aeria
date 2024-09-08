@@ -1,6 +1,6 @@
 import type { Context, SchemaWithId, GetAllPayload } from '@aeriajs/types'
 import type { Document } from 'mongodb'
-import { useSecurity } from '@aeriajs/security'
+import { useSecurity, applyReadMiddlewares } from '@aeriajs/security'
 import { Result } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import {
@@ -138,6 +138,11 @@ export const getAll = async <TContext extends Context>(
   if( error ) {
     return Result.error(error)
   }
+
+  if( context.collection.middlewares ) {
+    return applyReadMiddlewares(securedPayload, context, internalGetAll)
+  }
+
   return internalGetAll(securedPayload, context)
 }
 
