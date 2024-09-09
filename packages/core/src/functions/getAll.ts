@@ -105,7 +105,7 @@ const internalGetAll = async <TContext extends Context>(
     })
   }
 
-  const result = await context.collection.model.aggregate(pipeline).toArray()
+  const result = await context.collection.model.aggregate<SchemaWithId<TContext['description']>>(pipeline).toArray()
   const documents: SchemaWithId<TContext['description']>[] = []
 
   for( const doc of result ) {

@@ -113,7 +113,7 @@ const disposeOldFiles = async (ctx: PhaseContext, options: { preserveIds?: Objec
     },
   })
 
-  let file: any
+  let file: Awaited<ReturnType<typeof files.next>>
   while( file = await files.next() ) {
     try {
       await fs.unlink(file.absolute_path)
@@ -125,7 +125,7 @@ const disposeOldFiles = async (ctx: PhaseContext, options: { preserveIds?: Objec
   return context.collections.file.model.deleteMany(fileFilters)
 }
 
-const autoCast = (value: any, ctx: Omit<PhaseContext, 'options'> & { options: (TraverseOptions & TraverseNormalized) | {} }): unknown => {
+const autoCast = (value: unknown, ctx: Omit<PhaseContext, 'options'> & { options: (TraverseOptions & TraverseNormalized) | {} }): unknown => {
   switch( typeof value ) {
     case 'boolean': {
       return !!value
@@ -513,7 +513,7 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
   }
 
   if( !options.validate && Object.keys(what).length === 0 ) {
-    return Result.result({})
+    return Result.result(what)
   }
 
   if( options.recurseDeep ) {
@@ -603,6 +603,6 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
     }))
   }
 
-  return Result.result(result as any)
+  return Result.result(result)
 }
 

@@ -16,7 +16,7 @@ const internalRemoveAll = async <TContext extends Context>(payload: RemoveAllPay
     },
   }
 
-  const filters = throwIfError(await traverseDocument(filtersWithId, context.description, {
+  const filters = throwIfError(await traverseDocument<Record<string, unknown>>(filtersWithId, context.description, {
     autoCast: true,
   }))
 

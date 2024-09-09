@@ -57,7 +57,7 @@ const internalGet = async <TContext extends Context>(
       : project,
   }))
 
-  const doc = await context.collection.model.aggregate(pipeline).next()
+  const doc = await context.collection.model.aggregate<SchemaWithId<TContext['description']>>(pipeline).next()
   if( !doc ) {
     return context.error(HTTPStatus.NotFound, {
       code: ACError.ResourceNotFound,

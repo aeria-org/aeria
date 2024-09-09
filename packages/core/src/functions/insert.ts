@@ -1,4 +1,5 @@
 import type { Context, SchemaWithId, InsertPayload, InsertReturnType } from '@aeriajs/types'
+import { ObjectId } from 'mongodb'
 import { Result, HTTPStatus, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { useSecurity, applyWriteMiddlewares } from '@aeriajs/security'
 import { throwIfError, endpointErrorSchema } from '@aeriajs/common'
@@ -57,7 +58,7 @@ const internalInsert = async <TContext extends Context>(
     })
   }
 
-  const docId = '_id' in what
+  const docId = '_id' in what && what._id instanceof ObjectId
     ? what._id
     : null
 
@@ -82,7 +83,7 @@ const internalInsert = async <TContext extends Context>(
     content.$set ??= {}
     content.$set.updated_at = new Date()
     await context.collection.model.updateOne({
-      _id: docId,
+      _id: newId,
     }, content)
 
   }
