@@ -30,10 +30,7 @@ jobs:
       - name: Run tests
         run: pnpm -r test
       - name: Build playground
-        run: |
-          pnpm --filter=playground build
-      - name: Generate packages/builtins-icons
-        run: pnpm --filter='./packages/builtins' write-icons
+        run: pnpm --filter=playground build
       - name: Create release PR
         uses: changesets/action@v1
         with:
