@@ -50,7 +50,7 @@ export const getCollectionAsset = async <
   return Result.result(asset)
 }
 
-export const getFunction = async <TFunction extends (payload: any, context: Context) => unknown>(
+export const getFunction = async <TFunction extends (payload: any, context: Context)=> unknown>(
   collectionName: string,
   functionName: string,
   token?: Token,
