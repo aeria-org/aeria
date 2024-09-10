@@ -50,12 +50,9 @@ export const getCollectionAsset = async <
   return Result.result(asset)
 }
 
-export const getFunction = async <
-  TCollectionName extends string,
-  TFunctionName extends string,
->(
-  collectionName: TCollectionName,
-  functionName: TFunctionName,
+export const getFunction = async <TFunction extends (payload: any, context: Context) => unknown>(
+  collectionName: string,
+  functionName: string,
   token?: Token,
   options = {
     exposedOnly: false,
@@ -101,6 +98,6 @@ export const getFunction = async <
     return fn(payload, context)
   }
 
-  return Result.result(wrapper)
+  return Result.result(wrapper as TFunction)
 }
 
