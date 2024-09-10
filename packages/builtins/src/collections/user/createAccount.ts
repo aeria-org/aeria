@@ -1,8 +1,12 @@
 import type { Context, SchemaWithId } from '@aeriajs/types'
 import type { description } from './description.js'
-import { Result, HTTPStatus, ACError } from '@aeriajs/types'
+import { HTTPStatus, ACError } from '@aeriajs/types'
 import { validate } from '@aeriajs/validation'
 import * as bcrypt from 'bcrypt'
+
+export enum CreateAccountError {
+  SignupDisallowed = 'SIGNUP_DISALLOWED',
+}
 
 export const createAccount = async (
   payload: Partial<SchemaWithId<typeof description>>,
@@ -11,7 +15,9 @@ export const createAccount = async (
   const userCandidate = Object.assign({}, payload)
 
   if( !context.config.security.allowSignup ) {
-    throw new Error('signup disallowed')
+    return context.error(HTTPStatus.Forbidden, {
+      code: CreateAccountError.SignupDisallowed,
+    })
   }
 
   delete userCandidate._id
@@ -48,8 +54,9 @@ export const createAccount = async (
     })
   }
 
+  let roles: string[] = [], defaults = {}
   if( context.config.security.signupDefaults ) {
-    Object.assign(user, context.config.security.signupDefaults)
+    ({ roles = [], ...defaults } = context.config.security.signupDefaults)
   }
 
   if( user.password ) {
@@ -62,15 +69,12 @@ export const createAccount = async (
     })
   }
 
-  const { insertedId } = await context.collection.model.insertOne(user)
-  const newUser = await context.collection.model.findOne({
-    _id: insertedId,
+  return context.collections.user.functions.insert({
+    what: {
+      ...user,
+      ...defaults,
+      roles,
+    },
   })
-
-  if( !newUser ) {
-    throw new Error()
-  }
-
-  return Result.result(newUser)
 }
 
