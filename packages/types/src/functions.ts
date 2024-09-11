@@ -24,11 +24,9 @@ type FilterProperty<T> = T extends ObjectId
 
 type DocumentFilter<TDocument> = PackReferences<TDocument> extends infer Document
   ? {
-    [P in keyof Document]: null | (
-      Document[P] extends (infer E)[]
-        ? FilterProperty<E>[]
-        : FilterProperty<Document[P]>
-    )
+    [P in keyof Document]: Document[P] extends (infer E)[]
+      ? FilterProperty<E>[]
+      : FilterProperty<Document[P]>
   }
   : never
 
@@ -56,7 +54,7 @@ export type Filters<TDocument> = StrictFilter<TDocument> & Partial<{
         : never
       : any
   ) extends infer Field
-    ? Field | StrictFilterOperators<Field> | null
+    ? Field | StrictFilterOperators<Field>
     : never
 }>
 
@@ -65,7 +63,7 @@ export type What<TDocument> = (
   | { _id?: null } & Omit<PackReferences<TDocument>, '_id'>
 ) extends infer Document
   ? {
-    [P in keyof Document]: Document[P] | null
+    [P in keyof Document]: Document[P]
   }
   : never
 

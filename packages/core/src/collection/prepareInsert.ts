@@ -5,7 +5,7 @@ const prepareCreate = <TDocument>(doc: TDocument, description: Description) => {
 
   for( const propName in doc ) {
     const value = doc[propName]
-    if( value === null || value === undefined ) {
+    if( value === undefined ) {
       continue
     }
 
@@ -24,7 +24,7 @@ const prepareUpdate = <TDocument>(doc: TDocument) => {
   for( const propName in doc ) {
     const value = doc[propName]
 
-    if( value === null || value === undefined ) {
+    if( value === undefined ) {
       result.$unset[propName] = value
       continue
     }
