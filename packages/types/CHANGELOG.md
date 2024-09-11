@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.86
+
+### Patch Changes
+
+- 8a0d70c: Don't use `null` to represent empty values
+
 ## 0.0.85
 
 ### Patch Changes
