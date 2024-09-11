@@ -2,9 +2,9 @@ import { ObjectId } from 'mongodb'
 import { defineDescription } from '@aeriajs/core'
 import { getConfig } from '@aeriajs/entrypoint'
 
-const link = async (_id: ObjectId) => {
+const link = async (fileId: ObjectId) => {
   const config = await getConfig()
-  return `${config.publicUrl || ''}/file/${_id}`
+  return `${config.publicUrl || ''}/file/${fileId}`
 }
 
 const timestamp = (lastModified: unknown) => lastModified instanceof Date

@@ -9,7 +9,22 @@ import { getInfo } from './getInfo.js'
 import { getCurrentUser } from './getCurrentUser.js'
 import { getActivationLink } from './getActivationLink.js'
 
-const exposedFunctions: Record<string, AccessCondition> = {
+const functions = {
+  get,
+  getAll,
+  remove,
+  upload,
+  removeFile,
+  insert,
+  authenticate,
+  activate,
+  createAccount,
+  getInfo,
+  getCurrentUser,
+  getActivationLink,
+}
+
+const exposedFunctions: Record<keyof typeof functions, AccessCondition> = {
   get: true,
   getAll: ['root'],
   remove: ['root'],
@@ -26,20 +41,7 @@ const exposedFunctions: Record<string, AccessCondition> = {
 
 export const user = defineCollection({
   description,
-  functions: {
-    get,
-    getAll,
-    remove,
-    upload,
-    removeFile,
-    insert,
-    authenticate,
-    activate,
-    createAccount,
-    getInfo,
-    getCurrentUser,
-    getActivationLink,
-  },
+  functions,
   contracts: {
     getCurrentUser: {
       response: {
