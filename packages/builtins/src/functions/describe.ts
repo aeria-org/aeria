@@ -40,7 +40,7 @@ export const describe = async (contextOrPayload: RouteContext | typeof Payload) 
     auth?: Awaited<ReturnType<typeof authenticate>> extends Result.Either<unknown, infer Right>
       ? Partial<Right>
       : never
-    router?: any
+    router?: unknown
   }
 
   let props: typeof Payload

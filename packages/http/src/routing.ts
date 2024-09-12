@@ -138,11 +138,11 @@ export const matches = <TRequest extends GenericRequest>(
   }
 }
 
-export const registerRoute = async (
-  context: RouteContext,
+export const registerRoute = async <TRouteContext extends RouteContext>(
+  context: TRouteContext,
   method: RequestMethod | RequestMethod[],
   exp: RouteUri,
-  cb: (context: RouteContext)=> unknown,
+  cb: (context: TRouteContext)=> unknown,
   contract?: ContractWithRoles,
   options: RouterOptions = {},
 ) => {
@@ -265,7 +265,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
   const { exhaust } = options
 
   const routes: ((_: unknown, context: RouteContext, groupOptions?: RouteGroupOptions)=> ReturnType<typeof registerRoute>)[] = []
-  const routesMeta = {} as RoutesMeta
+  const routesMeta: RoutesMeta = {}
 
   const route = <
     const TContractWithRoles extends ContractWithRoles,
@@ -289,10 +289,10 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
 
     routes.push((_, context, groupOptions) => {
       return registerRoute(
-        context,
+        context as TypedContext<TContractWithRoles>,
         method,
         exp,
-        cb as any,
+        cb,
         contract,
         groupOptions || options,
       )
@@ -375,7 +375,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
 
   return new Proxy(router as ProxiedRouter<typeof router>, {
     get: (target, key) => {
-      if( REQUEST_METHODS.includes(key as any) ) {
+      if( REQUEST_METHODS.includes(key as typeof REQUEST_METHODS[number]) ) {
         return (...args: Parameters<typeof target.route> extends [unknown, ...infer Params]
           ? Params
           : never) => target.route(key as RequestMethod, ...args)
