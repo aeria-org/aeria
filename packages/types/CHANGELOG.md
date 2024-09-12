@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.86
+
+### Patch Changes
+
+- e8db177: Release
+
 ## 0.0.85
 
 ### Patch Changes
