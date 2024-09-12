@@ -1,5 +1,5 @@
 import type { JsonSchema } from '@aeriajs/types'
-import { checkForUndefined } from './checkForUndefined.js'
+import { checkForEmptiness } from './checkForEmptiness.js'
 import { evaluateCondition } from './evaluateCondition.js'
 
 export const getMissingProperties = (
@@ -11,7 +11,7 @@ export const getMissingProperties = (
 
   if( Array.isArray(required) ) {
     for( const propName of required ) {
-      const isMissing = checkForUndefined(
+      const isMissing = checkForEmptiness(
         schema.properties[propName],
         propName,
         what,
@@ -37,7 +37,7 @@ export const getMissingProperties = (
         }
       }
 
-      const isMissing = checkForUndefined(
+      const isMissing = checkForEmptiness(
         schema.properties[propName],
         propName,
         what,

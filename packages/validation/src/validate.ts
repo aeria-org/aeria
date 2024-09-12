@@ -72,7 +72,7 @@ export const validateProperty = <TWhat>(
   options: ValidateOptions = {},
 ): Result.Either<PropertyValidationError | ValidationError, unknown> => {
   const { filterOutExtraneous, coerce } = options
-  if( what === undefined ) {
+  if( what === null || what === undefined ) {
     return Result.result(what)
   }
 
