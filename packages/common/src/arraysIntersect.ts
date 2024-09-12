@@ -1,4 +1,4 @@
-export const arraysIntersect = <T extends any[] | readonly any[]>(subject: T | string, arr: T | undefined) => {
+export const arraysIntersect = <T extends unknown[] | readonly unknown[]>(subject: T | string, arr: T | undefined) => {
   if( !arr ) {
     return false
   }

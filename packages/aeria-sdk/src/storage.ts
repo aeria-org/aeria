@@ -2,7 +2,7 @@ import type { InstanceConfig, StorageStrategy } from './types.js'
 import type { AuthenticationResult } from './auth.js'
 import { DEFAULT_STORAGE_NAMESPACE } from './constants.js'
 
-export const storageMemo: Record<string, string> = {}
+export const storageMemo: Record<string, unknown> = {}
 
 export const storageKey = (key: string, config: InstanceConfig) => {
   const namespace = config.storage?.namespace || DEFAULT_STORAGE_NAMESPACE
@@ -41,7 +41,7 @@ export const getStorage = (config: InstanceConfig) => {
           break
       }
     },
-    set: (key: string, value: any) => {
+    set: (key: string, value: unknown) => {
       switch( strategy ) {
         case 'memo':
           storageMemo[key] = value

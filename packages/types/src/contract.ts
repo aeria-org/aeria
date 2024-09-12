@@ -35,7 +35,7 @@ export type ContractToFunction<TContract extends Contract | ContractWithRoles, C
       ? InferProperties<TContract['response']> extends infer InferredResponse
         ? InferredResponse | Promise<InferredResponse>
         : never
-      : any
+      : unknown
   ) extends infer Response
     ? Payload extends undefined
       ? (payload: Payload | undefined, context: ContextParameter)=> Response

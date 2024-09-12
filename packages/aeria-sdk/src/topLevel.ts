@@ -5,28 +5,31 @@ import { publicUrl } from './utils.js'
 
 export type TopLevelObject = {
   describe: {
-    POST: (...args: any)=> Promise<any>
+    POST: (...args: unknown[])=> Promise<string>
   }
 }
 
-const proxify = <TTarget extends ((...args: any)=> any) | Record<string | symbol, unknown>>(
+const proxify = <TTarget extends ((...args: any[])=> unknown) | Record<string | symbol, unknown>>(
   config: InstanceConfig,
   _target: TTarget,
   bearerToken?: string,
   parent?: string,
-): TTarget & TopLevelObject => {
-  return new Proxy(_target as any, {
+) => {
+  return new Proxy(_target as TTarget & TopLevelObject, {
     get: (target, key) => {
+      if( typeof target === 'function' ) {
+        return target
+      }
       if( typeof key === 'symbol' ) {
         return target[key]
       }
 
-      const fn = async (payload: any) => {
+      const fn = async (payload: unknown) => {
         const method = key
         const requestConfig = {
           params: {
             method,
-            headers: {} as Record<string, any>,
+            headers: {} as Record<string, string>,
           },
         } satisfies RequestConfig
 

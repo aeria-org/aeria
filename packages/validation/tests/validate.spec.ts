@@ -38,7 +38,8 @@ test('returns left with validator', () => {
 
 test('returns error on plain object', () => {
   const candidate = Object.assign({}, plainCandidate)
-  candidate.age = '0' as any
+  // @ts-expect-error
+  candidate.age = '0'
 
   const { error } = validate(candidate, plainDescription)
 
@@ -65,7 +66,8 @@ test('validates deep object', () => {
 
 test('returns error on deep object', () => {
   const candidate = Object.assign({}, deepCandidate)
-  deepCandidate.style.color.props.name = 1 as any
+  // @ts-expect-error
+  deepCandidate.style.color.props.name = 1
 
   const { error } = validate(candidate, deepDescription)
 

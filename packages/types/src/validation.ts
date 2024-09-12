@@ -21,8 +21,8 @@ export type PropertyValidationError = {
   type: PropertyValidationErrorCode
   index?: number
   details: {
-    expected: any
-    got: any
+    expected: unknown
+    got: unknown
   }
 }
 

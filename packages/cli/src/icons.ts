@@ -1,12 +1,14 @@
-export const extractIcons = (target: any): string[] => {
+export const extractIcons = (target: unknown): string[] => {
   if( !target || typeof target !== 'object' ) {
     return []
   }
 
   const foundIcons: string[] = []
-  const icon = target.icon || target.icon
+  const icon = 'icon' in target
+    ? target.icon
+    : undefined
 
-  if( icon ) {
+  if( typeof icon === 'string' ) {
     foundIcons.push(icon)
   }
 
