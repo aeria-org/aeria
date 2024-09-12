@@ -1,7 +1,7 @@
 import type { Condition } from '@aeriajs/types'
 import { arraysIntersect } from './arraysIntersect.js'
 
-const equalOrContains = (term1: any, term2: any) => {
+const equalOrContains = (term1: unknown, term2: unknown) => {
   if( Array.isArray(term1) && Array.isArray(term2) ) {
     return arraysIntersect(term1, term2)
   }
@@ -15,13 +15,13 @@ const equalOrContains = (term1: any, term2: any) => {
   }
 }
 
-const evaluatesToTrue = (subject: any, condition: Condition): boolean => {
+const evaluatesToTrue = (subject: unknown, condition: Condition): boolean => {
   if( 'term1' in condition ) {
-    if( !subject ) {
+    if( !subject || typeof subject !== 'object' ) {
       return false
     }
 
-    const term1 = subject[condition.term1]
+    const term1 = subject[condition.term1 as keyof typeof subject]
     if( condition.operator === 'truthy' ) {
       return !!term1
     }
@@ -53,7 +53,7 @@ const evaluatesToTrue = (subject: any, condition: Condition): boolean => {
   return false
 }
 
-export const evaluateCondition = (subject: any, condition: Condition) => {
+export const evaluateCondition = (subject: unknown, condition: Condition) => {
   const result = {
     satisfied: false,
     else: null,
