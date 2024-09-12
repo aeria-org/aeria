@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.100
+
+### Patch Changes
+
+- bb312e4: Revert null removal
+
 ## 0.0.99
 
 ### Patch Changes
