@@ -18,7 +18,6 @@ import { pipe, isGranted, deepMerge, endpointError } from '@aeriajs/common'
 import { validate, type ValidateOptions } from '@aeriajs/validation'
 import { getConfig } from '@aeriajs/entrypoint'
 import { safeJson } from './payload.js'
-import { isNext } from './next.js'
 
 export type RouterOptions = {
   exhaust?: boolean
@@ -346,7 +345,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
 
   const routerPipe = pipe(routes, {
     returnFirst: (value) => {
-      if( value !== undefined && !isNext(value) ) {
+      if( value !== undefined ) {
         return value
       }
     },
@@ -364,7 +363,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
 
   router.install = async (context: RouteContext, options?: RouterOptions) => {
     const result = await routerPipe(undefined, context, options)
-    if( exhaust && (result === undefined || isNext(result)) ) {
+    if( exhaust && result === undefined ) {
       return context.error(HTTPStatus.NotFound, {
         code: ACError.ResourceNotFound,
         message: 'Not found',

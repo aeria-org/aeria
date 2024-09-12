@@ -1,11 +1,11 @@
-import type { Context, Description, Pagination, GetAllPayload } from '@aeriajs/types'
+import type { Context, Description, Pagination, GetAllPayload, CountReturnType } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 
 export const makePagination = async (
   payload: GetAllPayload<any>,
   documents: unknown[],
   context: Context<Description, {
-    count?: (...args: unknown[])=> unknown
+    count?: (...args: unknown[])=> Promise<CountReturnType>
   }>,
 ): Promise<Pagination> => {
   const {

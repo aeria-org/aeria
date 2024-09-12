@@ -2,7 +2,6 @@ import type { RouteContext } from '@aeriajs/types'
 import type { functions } from '@aeriajs/core'
 import { createContext, getFunction } from '@aeriajs/core'
 import { getCollection } from '@aeriajs/entrypoint'
-import { next } from '@aeriajs/http'
 import { ACError, HTTPStatus, Result } from '@aeriajs/types'
 import { pipe } from '@aeriajs/common'
 import { appendPagination } from './appendPagination.js'
@@ -53,7 +52,7 @@ export const customVerbs = () => async (parentContext: RouteContext) => {
 
   const collection = await getCollection(collectionName)
   if( !collection ) {
-    return next()
+    return
   }
 
   const context = await createContext({
@@ -86,7 +85,7 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
 
   const collection = await getCollection(collectionName)
   if( !collection ) {
-    return next()
+    return
   }
 
   const context = await createContext({
