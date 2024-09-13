@@ -49,6 +49,7 @@ export type IndepthCollection<TCollection> = TCollection extends {
   functions?: infer CollFunctions
 }
   ? Omit<TCollection, 'functions'> & {
+    item: SchemaWithId<InferredDescription>
     functions: UnionFunctions<CollFunctions, SchemaWithId<InferredDescription>>
     originalFunctions: CollFunctions
     model: InferredDescription extends Description
