@@ -5,7 +5,7 @@ import { getCollection } from '@aeriajs/entrypoint'
 import { isFunctionExposed, FunctionExposedStatus } from './accessControl.js'
 
 const assetsMemo: {
-  assets: Record<string, Record<string, Awaited<ReturnType<typeof internalGetCollectionAsset>>> | undefined>
+  assets: Record<string, Record<string, unknown> | undefined>
 } = {
   assets: {},
 }

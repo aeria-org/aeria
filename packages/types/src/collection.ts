@@ -1,3 +1,4 @@
+import type { WithId } from 'mongodb'
 import type { AccessCondition } from './accessControl.js'
 import type { CollectionSecurityPolicy, CollectionMiddleware } from './security.js'
 import type { Context } from './context.js'
@@ -6,7 +7,7 @@ import type { Description } from './description.js'
 
 export type Collection<TCollection extends Collection = any> = {
   description: Description
-  item?: any
+  item: WithId<unknown>
   functions?: Record<string, (payload: any, context: Context<any>, ...args: any[])=> any>
   contracts?: Record<string, Contract>
   exposedFunctions?: Record<string, AccessCondition>

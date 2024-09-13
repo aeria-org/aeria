@@ -1,3 +1,4 @@
+import type { WithId } from 'mongodb'
 import type { Description, Property, ValidationError, RouteContext } from '@aeriajs/types'
 import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { throwIfError, pipe, isReference, getValueFromPath, isObjectId, isError } from '@aeriajs/common'
@@ -38,7 +39,7 @@ export type TraverseNormalized = {
 }
 
 type PhaseContext = {
-  target: any
+  target: Record<string, unknown>
   root: {
     _id?: ObjectId | string
   }
@@ -88,7 +89,7 @@ const disposeOldFiles = async (ctx: PhaseContext, options: { preserveIds?: Objec
     return Result.error(TraverseError.InvalidDocumentId)
   }
 
-  let fileIds = getValueFromPath<(ObjectId | null)[]>(doc, ctx.propPath)
+  let fileIds = getValueFromPath<(ObjectId | null)[] | undefined>(doc, ctx.propPath)
   if( !fileIds ) {
     return
   }
@@ -207,7 +208,7 @@ const getters = (value: unknown, ctx: PhaseContext) => {
     if( !ctx.options.context ) {
       throw new Error
     }
-    return ctx.property.getter(ctx.target, ctx.options.context)
+    return ctx.property.getter(ctx.target as WithId<unknown>, ctx.options.context)
   }
 
   return value
@@ -552,9 +553,8 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
   const mutateTarget = (fn: (value: any, ctx: PhaseContext)=> unknown) => {
     return async (value: unknown, ctx: PhaseContext) => {
       const result = await fn(value, ctx)
-      if( ctx.target && typeof ctx.target === 'object' ) {
-        ctx.target[ctx.propName] = result
-      }
+      ctx.target[ctx.propName] = result
+
       return result
     }
   }

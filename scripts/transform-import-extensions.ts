@@ -1,4 +1,4 @@
-#!/usr/bin/env -S node --loader ts-node/esm
+#!/usr/bin/env -S node --import tsx/esm
 
 import { Transform } from 'stream'
 import { glob } from 'glob'

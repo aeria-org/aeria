@@ -1,8 +1,8 @@
-import type { Collection as MongoCollection } from 'mongodb'
+import type { Collection as MongoCollection, WithId } from 'mongodb'
 import type { AcceptedRole } from './token.js'
 import type { Collection } from './collection.js'
 import type { ApiConfig } from './config.js'
-import type { CollectionDocument, CollectionFunctions } from './functions.js'
+import type { CollectionFunctions } from './functions.js'
 import type { Description } from './description.js'
 import type { Result } from './result.js'
 import type { EndpointError } from './endpointError.js'
@@ -14,7 +14,7 @@ import type { Token } from './token.js'
 export type CollectionModel<TDescription extends Description> =
   MongoCollection<Omit<PackReferences<SchemaWithId<TDescription>>, '_id'>>
 
-type OmitContextParameter<TFunction> = TFunction extends ()=> any
+type OmitContextParameter<TFunction> = TFunction extends ()=> unknown
   ? TFunction
   : TFunction extends (payload: undefined, ...args: any[])=> infer Return
     ? ()=> Return
@@ -22,15 +22,15 @@ type OmitContextParameter<TFunction> = TFunction extends ()=> any
       ? (payload: Payload, ...args: Rest)=> Return
       : never
 
-type RestParameters<TFunction> = TFunction extends (payload: any, context: Context<any>, ...args: infer Rest)=> any
+type RestParameters<TFunction> = TFunction extends (payload: any, context: Context<any>, ...args: infer Rest)=> unknown
   ? Rest
   : never
 
-type UnionFunctions<TFunctions, TSchema extends CollectionDocument<any>> = {
+type UnionFunctions<TFunctions, TSchema extends WithId<unknown>> = {
   [P in keyof TFunctions]: (
     P extends keyof CollectionFunctions<any>
       ? CollectionFunctions<TSchema>[P] extends infer CollFunction
-        ? CollFunction extends (...args: any[])=> any
+        ? CollFunction extends (...args: any[])=> unknown
           ? Extract<undefined, Parameters<CollFunction>[0]> extends never
             ? (payload: Parameters<CollFunction>[0], ...args: RestParameters<TFunctions[P]>)=> ReturnType<CollFunction>
             : (payload?: Parameters<CollFunction>[0], ...args: RestParameters<TFunctions[P]>)=> ReturnType<CollFunction>
@@ -38,7 +38,7 @@ type UnionFunctions<TFunctions, TSchema extends CollectionDocument<any>> = {
         : never
       : OmitContextParameter<TFunctions[P]>
   ) extends (...args: infer Args)=> infer Return
-    ? Return extends Promise<any>
+    ? Return extends Promise<unknown>
       ? (...args: Args)=> Return
       : (...args: Args)=> Promise<Return>
     : never
@@ -76,7 +76,7 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
   token: Token<TAcceptedRole>
   request: GenericRequest
   response: GenericResponse
-  log: (message: string, details?: any)=> Promise<any>
+  log: (message: string, details?: unknown)=> Promise<unknown>
   error: <
     const THTTPStatus extends HTTPStatus,
     const TEndpointError extends EndpointError,
@@ -109,7 +109,7 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
 
 export type CollectionContext<
   TDescription extends Description = any,
-  TFunctions = any,
+  TFunctions = Collection['functions'],
 > = {
   description: TDescription
   collectionName?: (keyof Collections & string) | string
@@ -121,12 +121,12 @@ export type CollectionContext<
 
 export type Context<
   TDescription extends Description = Description,
-  TFunctions = any,
+  TFunctions = Collection['functions'],
 > = RouteContext & CollectionContext<TDescription, TFunctions>
 
 export type StrictContext<
   TAcceptedRole extends AcceptedRole = null,
   TDescription extends Description = any,
-  TFunctions = any,
+  TFunctions = Collection['functions'],
 > = RouteContext<TAcceptedRole> & CollectionContext<TDescription, TFunctions>
 

@@ -61,9 +61,9 @@ export type SchemaWithId<TSchema> = Schema<TSchema> & {
   _id: ObjectId
 }
 
-export type InferProperties<TSchema> = TSchema extends readonly any[]
+export type InferProperties<TSchema> = TSchema extends readonly unknown[]
   ? TSchema extends readonly (infer SchemaOption)[]
-    ? SchemaOption extends any
+    ? SchemaOption extends unknown
       ? SchemaOption extends
         | { $ref: infer K }
         | { items: { $ref: infer K } }
@@ -110,15 +110,15 @@ type MapReferences<TSchema> = TSchema extends { properties: infer Properties }
   }
   : never
 
-type PackReferencesAux<T> = T extends (...args: any[])=> any
+type PackReferencesAux<T> = T extends (...args: unknown[])=> unknown
   ? T
   : T extends ObjectId
     ? T
     : T extends { _id: infer Id }
       ? Id
-      : T extends Record<string, any>
+      : T extends Record<string, unknown>
         ? PackReferences<T>
-        : T extends any[] | readonly any[]
+        : T extends unknown[] | readonly unknown[]
           ? PackReferencesAux<T[number]>[]
           : T
 

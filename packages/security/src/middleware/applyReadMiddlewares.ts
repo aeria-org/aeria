@@ -3,18 +3,17 @@ import { iterableMiddlewares } from './iterableMiddlewares.js'
 
 export const applyReadMiddlewares = <TContext extends Context>(
   payload: CollectionReadPayload,
-  context: TContext & {
-    collection: Collection
-  },
+  context: TContext,
   fn: (p: typeof payload, context: Context)=> Promise<
     | GetReturnType<unknown>
     | GetAllReturnType<unknown>
     | CountReturnType
   >,
 ) => {
-  if( context.collection.middlewares ) {
-    if( Array.isArray(context.collection.middlewares) ) {
-      const readMiddlewares = context.collection.middlewares.map((middleware) => middleware.beforeRead).filter((fn) => !!fn)
+  const { middlewares } = context.collection as Collection
+  if( middlewares ) {
+    if( Array.isArray(middlewares) ) {
+      const readMiddlewares = middlewares.map((middleware) => middleware.beforeRead).filter((fn) => !!fn)
       const start = iterableMiddlewares<typeof payload, ReturnType<typeof fn>>(
         readMiddlewares,
         fn,
@@ -23,8 +22,8 @@ export const applyReadMiddlewares = <TContext extends Context>(
       return start(payload, context)
     }
 
-    if( context.collection.middlewares.beforeRead ) {
-      return context.collection.middlewares.beforeRead(payload, context, fn)
+    if( middlewares.beforeRead ) {
+      return middlewares.beforeRead(payload, context, fn)
     }
   }
 

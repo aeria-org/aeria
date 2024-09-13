@@ -13,9 +13,9 @@ import type {
 import { deepMerge, freshItem } from '@aeriajs/common'
 
 export type ExtendCollection<
-  TLeftCollection extends Collection,
+  TLeftCollection extends Omit<Collection, 'item'>,
   TRightCollection,
-> = Omit<TLeftCollection & TRightCollection, 'item'> & {
+> = TLeftCollection & TRightCollection & {
   item: SchemaWithId<(TLeftCollection & TRightCollection)['description']>
 }
 
@@ -40,7 +40,7 @@ export const defineCollection = <
       AccessCondition
     >
   >,
-  const TFunctions extends Record<string, (payload: any, context: StrictContext<unknown>)=> any> & {
+  const TFunctions extends undefined | Record<string, (payload: any, context: StrictContext<any>)=> any> & {
     [P in keyof TContracts | keyof TExposedFunctions]: ContractToFunction<
       P extends keyof TContracts
         ? NonNullable<TContracts[P]>
@@ -80,7 +80,7 @@ export const defineCollection = <
 export const extendCollection = <
   const TLeftCollection extends Collection,
   const TRightCollection extends {
-    [P in keyof Collection]?: Partial<Collection[P]>
+    [P in Exclude<keyof Collection, 'item'>]?: Partial<Collection[P]>
   },
 >(
   left: TLeftCollection,
@@ -88,4 +88,3 @@ export const extendCollection = <
 ) => {
   return deepMerge(left, right) as ExtendCollection<TLeftCollection, TRightCollection>
 }
-

@@ -78,19 +78,17 @@ export type Projection<TDocument> =
 
 export type QuerySort<TDocument> = Partial<Record<keyof WithId<TDocument>, 1 | -1>>
 
-export type CollectionDocument<TDocument> = TDocument
-
-export type CountPayload<TDocument extends CollectionDocument<OptionalId<any>>> = {
+export type CountPayload<TDocument extends OptionalId<unknown>> = {
   filters?: Filters<TDocument>
 }
 
-export type GetPayload<TDocument extends CollectionDocument<OptionalId<any>>> = {
+export type GetPayload<TDocument extends OptionalId<unknown>> = {
   filters: Filters<TDocument>
   project?: Projection<TDocument>
   populate?: (keyof TDocument)[]
 }
 
-export type GetAllPayload<TDocument extends CollectionDocument<OptionalId<any>>> = {
+export type GetAllPayload<TDocument extends OptionalId<unknown>> = {
   filters?: Filters<TDocument>
   project?: Projection<TDocument>
   offset?: number
@@ -99,12 +97,12 @@ export type GetAllPayload<TDocument extends CollectionDocument<OptionalId<any>>>
   populate?: (keyof TDocument)[]
 }
 
-export type InsertPayload<TDocument extends CollectionDocument<any>> = {
+export type InsertPayload<TDocument extends OptionalId<unknown>> = {
   what: What<TDocument>
   project?: Projection<TDocument>
 }
 
-export type RemovePayload<TDocument extends CollectionDocument<OptionalId<any>>> = {
+export type RemovePayload<TDocument extends OptionalId<unknown>> = {
   filters: Filters<TDocument>
 }
 
@@ -158,7 +156,7 @@ export type PaginatedGetAllReturnType<TDocument> = Result.Either<EndpointError, 
   pagination: Pagination
 }>
 
-export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<any>>> = {
+export type CollectionFunctions<TDocument extends OptionalId<unknown>> = {
   count: (payload: CountPayload<TDocument>)=> Promise<CountReturnType>
   get: (payload: GetPayload<TDocument>)=> Promise<GetReturnType<TDocument>>
   getAll: (payload?: GetAllPayload<TDocument>)=> Promise<GetAllReturnType<TDocument>>
@@ -169,7 +167,7 @@ export type CollectionFunctions<TDocument extends CollectionDocument<OptionalId<
   removeFile: (payload: RemoveFilePayload)=> Promise<any>
 }
 
-export type CollectionFunctionsSDK<TDocument extends CollectionDocument<OptionalId<any>>> = {
+export type CollectionFunctionsSDK<TDocument extends OptionalId<unknown>> = {
   count: (payload: CountPayload<TDocument>)=> Promise<WithACErrors<CountReturnType>>
   get: (payload: GetPayload<TDocument>)=> Promise<WithACErrors<GetReturnType<TDocument>>>
   getAll: (payload?: GetAllPayload<TDocument>)=> Promise<WithACErrors<PaginatedGetAllReturnType<TDocument>>>
