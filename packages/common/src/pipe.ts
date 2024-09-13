@@ -1,4 +1,4 @@
-export type PipeOptions<TFunction extends (...args: unknown[]) => unknown> = {
+export type PipeOptions<TFunction extends (...args: unknown[])=> unknown> = {
   returnFirst?: boolean | ((value: unknown)=> ReturnType<TFunction>)
 }
 
