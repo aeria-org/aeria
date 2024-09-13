@@ -11,7 +11,7 @@ export type FinalOperator =
 export type FinalCondition<TSchema extends JsonSchema = any> = {
   operator: FinalOperator
   term1: PropertiesWithId<TSchema>
-  term2: any
+  term2: unknown
   fromState?: boolean
 }
 
@@ -48,6 +48,6 @@ export type Condition<TSchema extends JsonSchema = any> = (
   | OrCondition<TSchema>
   | NotCondition<TSchema>
 ) & {
-  else?: any
+  else?: unknown
 }
 

@@ -1,6 +1,6 @@
 import type { Description } from '@aeriajs/types'
 
-const prepareCreate = <TDocument>(doc: TDocument, description: Description) => {
+export const prepareCreate = <TDocument>(doc: TDocument, description: Description) => {
   const result = Object.assign({}, description.defaults || {})
 
   for( const propName in doc ) {
@@ -15,7 +15,7 @@ const prepareCreate = <TDocument>(doc: TDocument, description: Description) => {
   return result
 }
 
-const prepareUpdate = <TDocument>(doc: TDocument) => {
+export const prepareUpdate = <TDocument>(doc: TDocument) => {
   const result: Record<string, Record<string, unknown>> = {
     $set: {},
     $unset: {},
@@ -33,13 +33,5 @@ const prepareUpdate = <TDocument>(doc: TDocument) => {
   }
 
   return result
-}
-
-export const prepareInsert = <TPayload extends Record<string, unknown>>(payload: TPayload, description: Description) => {
-  const { _id: docId, ...doc } = Object.assign({}, payload)
-
-  return docId
-    ? prepareUpdate(doc)
-    : prepareCreate(doc, description)
 }
 

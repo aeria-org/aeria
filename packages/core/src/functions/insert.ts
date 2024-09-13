@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb'
 import { Result, HTTPStatus, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { useSecurity, applyWriteMiddlewares } from '@aeriajs/security'
 import { throwIfError, endpointErrorSchema } from '@aeriajs/common'
-import { traverseDocument, normalizeProjection, prepareInsert } from '../collection/index.js'
+import { traverseDocument, normalizeProjection, prepareCreate, prepareUpdate } from '../collection/index.js'
 
 export type InsertOptions = {
   bypassSecurity?: boolean
@@ -62,8 +62,6 @@ const internalInsert = async <TContext extends Context>(
     ? what._id
     : null
 
-  const content = prepareInsert(what, context.description)
-
   const projection = payload.project
     ? normalizeProjection(payload.project, context.description)
     : {}
@@ -71,6 +69,7 @@ const internalInsert = async <TContext extends Context>(
   let newId = docId
 
   if( !newId ) {
+    const content = prepareCreate(what, context.description)
     const now = new Date()
     Object.assign(content, {
       created_at: now,
@@ -80,8 +79,10 @@ const internalInsert = async <TContext extends Context>(
     newId = (await context.collection.model.insertOne(content)).insertedId
 
   } else {
+    const content = prepareUpdate(what)
     content.$set ??= {}
     content.$set.updated_at = new Date()
+
     await context.collection.model.updateOne({
       _id: newId,
     }, content)

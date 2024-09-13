@@ -21,8 +21,8 @@ export type CollectionActionRoute = {
     setItem?: boolean
     fetchItem?: boolean
     clearItem?: boolean
-    params?: Record<string, any>
-    query?: Record<string, any>
+    params?: Record<string, unknown>
+    query?: Record<string, unknown>
   }
 }
 
@@ -76,7 +76,7 @@ export type FormLayoutField<TDescription extends Description> = {
   if?: Condition<TDescription>
   component?: {
     name: string
-    props?: Record<string, any>
+    props?: Record<string, unknown>
   }
 }
 
@@ -97,7 +97,7 @@ export type TableLayout<TDescription extends Description> = {
 export type FiltersPreset<TDescription extends Description> = {
   label?: string
   icon?: Icon
-  filters?: Partial<Record<PropertiesWithId<TDescription> | `$${string}`, any>>
+  filters?: Partial<Record<PropertiesWithId<TDescription> | `$${string}`, unknown>>
   table?: readonly PropertiesWithId<TDescription>[]
   badgeFunction?: string
   default?: boolean
@@ -152,7 +152,7 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
 
   icon?: Icon
   indexes?: readonly PropertiesWithId<TDescription>[]
-  defaults?: Record<string, any>
+  defaults?: Record<string, unknown>
 
   // modifiers
   owned?: OwnershipMode

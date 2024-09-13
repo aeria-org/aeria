@@ -30,10 +30,10 @@ const evaluatesToTrue = (subject: unknown, condition: Condition): boolean => {
     switch( operator ) {
       case 'equal': return term1 === term2
       case 'in': return !!equalOrContains(term1, term2)
-      case 'gt': return term1 > term2
-      case 'lt': return term1 < term2
-      case 'gte': return term1 >= term2
-      case 'lte': return term1 <= term2
+      case 'gt': return term1 > Number(term2)
+      case 'lt': return term1 < Number(term2)
+      case 'gte': return term1 >= Number(term2)
+      case 'lte': return term1 <= Number(term2)
       case 'regex': return new RegExp(term2).test(term1)
     }
   }
@@ -56,7 +56,7 @@ const evaluatesToTrue = (subject: unknown, condition: Condition): boolean => {
 export const evaluateCondition = (subject: unknown, condition: Condition) => {
   const result = {
     satisfied: false,
-    else: null,
+    else: null as unknown,
   }
 
   const satisfied = result.satisfied = evaluatesToTrue(subject, condition)
