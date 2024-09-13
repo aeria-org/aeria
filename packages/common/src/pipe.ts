@@ -1,8 +1,8 @@
 export type PipeOptions<TFunction extends (...args: unknown[])=> unknown> = {
-  returnFirst?: boolean | ((value: unknown)=> ReturnType<TFunction>)
+  returnFirst?: boolean | ((value: unknown)=> Awaited<ReturnType<TFunction>> | undefined)
 }
 
-export const pipe = <TFunction extends (...args: unknown[])=> unknown>(functions: TFunction[], options?: PipeOptions<TFunction>) => {
+export const pipe = <TFunction extends (...args: any[])=> unknown>(functions: TFunction[], options?: PipeOptions<TFunction>) => {
   const { returnFirst } = options || {}
 
   return async (

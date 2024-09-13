@@ -1,7 +1,7 @@
-import type { Condition } from '@aeriajs/types'
+import type { JsonSchema } from '@aeriajs/types'
 import { evaluateCondition } from './evaluateCondition.js'
 
-export const isRequired = (propName: string, required: string[] | Record<string, Condition | boolean>, subject: unknown) => {
+export const isRequired = (propName: string, required: NonNullable<JsonSchema['required']>, subject: unknown) => {
   if( Array.isArray(required) ) {
     return required.includes(propName)
   }
@@ -10,8 +10,8 @@ export const isRequired = (propName: string, required: string[] | Record<string,
     return false
   }
 
-  const requiredProp = required[propName]
-  if( typeof requiredProp === 'boolean' ) {
+  const requiredProp = required[propName as keyof typeof required]
+  if( typeof requiredProp !== 'object' ) {
     return requiredProp
   }
 

@@ -1,11 +1,11 @@
-import type { JsonSchema, Condition } from '@aeriajs/types'
+import type { JsonSchema } from '@aeriajs/types'
 import { checkForEmptiness } from './checkForEmptiness.js'
 import { evaluateCondition } from './evaluateCondition.js'
 
 export const getMissingProperties = (
   what: Record<string, unknown>,
   schema: Omit<JsonSchema, '$id'>,
-  required: string[] | Record<string, Condition | boolean>,
+  required: JsonSchema['required'],
 ) => {
   const missingProps: string[] = []
 
@@ -23,7 +23,7 @@ export const getMissingProperties = (
     }
   } else {
     for( const propName in required ) {
-      const requiredProp = required[propName]
+      const requiredProp = required[propName as keyof typeof required]
       if( typeof requiredProp === 'boolean' ) {
         if( !requiredProp ) {
           continue

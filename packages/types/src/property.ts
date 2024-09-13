@@ -25,10 +25,10 @@ export type PropertyFormat =
   | 'date-time'
 
 export type PropertiesWithId<TSchema extends JsonSchema> =
-  keyof TSchema['properties'] | '_id'
+  Extract<keyof TSchema['properties'], string> | '_id'
 
 export type RequiredProperties<TSchema extends JsonSchema> = readonly PropertiesWithId<TSchema>[] | Partial<Record<
-  Exclude<PropertiesWithId<TSchema>, number>,
+  PropertiesWithId<TSchema>,
   Condition<TSchema> | boolean
 >>
 
