@@ -5,7 +5,7 @@ import { evaluateCondition } from './evaluateCondition.js'
 export const getMissingProperties = (
   what: Record<string, unknown>,
   schema: Omit<JsonSchema, '$id'>,
-  required: string[] | Record<string, Condition>,
+  required: string[] | Record<string, Condition | boolean>,
 ) => {
   const missingProps: string[] = []
 

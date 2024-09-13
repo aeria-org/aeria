@@ -1,7 +1,7 @@
 import type { Condition } from '@aeriajs/types'
 import { evaluateCondition } from './evaluateCondition.js'
 
-export const isRequired = (propName: string, required: string[] | Record<string, Condition>, subject: unknown) => {
+export const isRequired = (propName: string, required: string[] | Record<string, Condition | boolean>, subject: unknown) => {
   if( Array.isArray(required) ) {
     return required.includes(propName)
   }
@@ -15,5 +15,5 @@ export const isRequired = (propName: string, required: string[] | Record<string,
     return requiredProp
   }
 
-  return evaluateCondition(subject, requiredProp as Condition).satisfied
+  return evaluateCondition(subject, requiredProp).satisfied
 }
