@@ -1,4 +1,5 @@
-import type { Context, RemoveAllPayload, CollectionItem } from '@aeriajs/types'
+import type { WithId } from 'mongodb'
+import type { Context, RemoveAllPayload } from '@aeriajs/types'
 import { Result, ACError, HTTPStatus } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import { useSecurity } from '@aeriajs/security'
@@ -22,7 +23,7 @@ const internalRemoveAll = async <TContext extends Context>(payload: RemoveAllPay
 
   const it = context.collection.model.find(filters)
 
-  let doc: CollectionItem<any> | null
+  let doc: WithId<unknown> | null
   while( doc = await it.next() ) {
     await cascadingRemove(doc, context)
   }

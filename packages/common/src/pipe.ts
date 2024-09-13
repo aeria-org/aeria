@@ -1,18 +1,18 @@
-export type PipeOptions = {
-  returnFirst?: boolean | ((value: unknown)=> unknown)
+export type PipeOptions<TFunction extends (...args: unknown[]) => unknown> = {
+  returnFirst?: boolean | ((value: unknown)=> ReturnType<TFunction>)
 }
 
-export const pipe = <TFunction extends (...args: any)=> any>(functions: TFunction[], options?: PipeOptions) => {
+export const pipe = <TFunction extends (...args: unknown[])=> unknown>(functions: TFunction[], options?: PipeOptions<TFunction>) => {
   const { returnFirst } = options || {}
 
   return async (
     value: Parameters<TFunction>[0],
     ...args: Parameters<TFunction> extends [unknown, ...infer Tail] ? Tail : []
   ) => {
-    let ret: ReturnType<TFunction> = value
+    let ret = value
 
     for( const fn of functions ) {
-      ret = await fn(ret, ...args)
+      ret = await fn(ret, ...args) as ReturnType<TFunction>
       if( returnFirst && ret !== undefined ) {
         switch( typeof returnFirst ) {
           case 'function': {
@@ -33,3 +33,4 @@ export const pipe = <TFunction extends (...args: any)=> any>(functions: TFunctio
     return ret
   }
 }
+
