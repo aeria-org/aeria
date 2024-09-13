@@ -80,7 +80,6 @@ const internalInsert = async <TContext extends Context>(
 
   } else {
     const content = prepareUpdate(what)
-    content.$set ??= {}
     content.$set.updated_at = new Date()
 
     await context.collection.model.updateOne({

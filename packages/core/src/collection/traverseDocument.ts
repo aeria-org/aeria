@@ -88,7 +88,7 @@ const disposeOldFiles = async (ctx: PhaseContext, options: { preserveIds?: Objec
     return Result.error(TraverseError.InvalidDocumentId)
   }
 
-  let fileIds = getValueFromPath<(ObjectId | null)[]>(doc, ctx.propPath)
+  let fileIds = getValueFromPath<(ObjectId | null)[] | undefined>(doc, ctx.propPath)
   if( !fileIds ) {
     return
   }
