@@ -28,7 +28,7 @@ export type PropertiesWithId<TSchema extends JsonSchema> =
   keyof TSchema['properties'] | '_id'
 
 export type RequiredProperties<TSchema extends JsonSchema> = readonly PropertiesWithId<TSchema>[] | Partial<Record<
-  PropertiesWithId<TSchema>,
+  Exclude<PropertiesWithId<TSchema>, number>,
   Condition<TSchema> | boolean
 >>
 

@@ -1,7 +1,7 @@
-import type { Description, Condition } from '@aeriajs/types'
+import type { Condition } from '@aeriajs/types'
 import { evaluateCondition } from './evaluateCondition.js'
 
-export const isRequired = (propName: string, required: NonNullable<Description['required']>, subject: any) => {
+export const isRequired = (propName: string, required: string[] | Record<string, Condition>, subject: unknown) => {
   if( Array.isArray(required) ) {
     return required.includes(propName)
   }
@@ -10,7 +10,7 @@ export const isRequired = (propName: string, required: NonNullable<Description['
     return false
   }
 
-  const requiredProp = required[propName as any]
+  const requiredProp = required[propName]
   if( typeof requiredProp === 'boolean' ) {
     return requiredProp
   }

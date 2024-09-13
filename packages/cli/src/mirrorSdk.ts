@@ -27,8 +27,8 @@ export const mirrorSdk = async (defaultConfig?: Partial<InstanceConfig>) => {
 
     await writeMirrorFiles(mirror, config)
 
-  } catch( err: any ) {
-    if( err.code !== 'MODULE_NOT_FOUND' ) {
+  } catch( err ) {
+    if( (err as NodeJS.ErrnoException).code !== 'MODULE_NOT_FOUND' ) {
       throw err
     }
 

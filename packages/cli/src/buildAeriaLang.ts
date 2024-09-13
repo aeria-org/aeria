@@ -14,8 +14,8 @@ export const buildAeriaLang = async () => {
         : 'esnext',
     })
 
-  } catch( err: any ) {
-    if( err.code !== 'MODULE_NOT_FOUND' ) {
+  } catch( err ) {
+    if( (err as NodeJS.ErrnoException).code !== 'MODULE_NOT_FOUND' ) {
       throw err
     }
   }
