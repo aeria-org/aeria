@@ -88,7 +88,10 @@ const internalInsert = async <TContext extends Context>(
     filters: {
       _id: newId,
     },
-  }, { ...context, inherited: true } as Context, {
+  }, {
+    ...context,
+    inherited: true,
+  } as Context, {
     bypassSecurity: true,
   }))
 
