@@ -1,4 +1,4 @@
-import type { Description, Property, ValidationError, RouteContext } from '@aeriajs/types'
+import type { Description, Property, ValidationError, RouteContext, SchemaWithId } from '@aeriajs/types'
 import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { throwIfError, pipe, isReference, getValueFromPath, isObjectId, isError } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
@@ -38,7 +38,7 @@ export type TraverseNormalized = {
 }
 
 type PhaseContext = {
-  target: any
+  target: Record<string, unknown>
   root: {
     _id?: ObjectId | string
   }
@@ -207,7 +207,7 @@ const getters = (value: unknown, ctx: PhaseContext) => {
     if( !ctx.options.context ) {
       throw new Error
     }
-    return ctx.property.getter(ctx.target, ctx.options.context)
+    return ctx.property.getter(ctx.target as SchemaWithId<unknown>, ctx.options.context)
   }
 
   return value

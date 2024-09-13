@@ -3,10 +3,11 @@ import type { CollectionSecurityPolicy, CollectionMiddleware } from './security.
 import type { Context } from './context.js'
 import type { Contract } from './contract.js'
 import type { Description } from './description.js'
+import type { SchemaWithId } from './schema.js'
 
 export type Collection<TCollection extends Collection = any> = {
   description: Description
-  item?: any
+  item: SchemaWithId<unknown>
   functions?: Record<string, (payload: any, context: Context<any>, ...args: any[])=> any>
   contracts?: Record<string, Contract>
   exposedFunctions?: Record<string, AccessCondition>

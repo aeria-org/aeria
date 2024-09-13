@@ -33,7 +33,7 @@ export type InferProperty<T> = T extends TestType<{ format: 'date' | 'date-time'
           ? boolean : T extends TestType<{ properties: unknown }>
             ? Schema<T & { timestamps: false }> : T extends TestType<{ additionalProperties: infer K }>
               ? { [P: string]: InferProperty<K> | undefined } : T extends TestType<{ type: 'object' }>
-                ? any : T extends TestType<{ items: infer K }>
+                ? unknown : T extends TestType<{ items: infer K }>
                   ? InferProperty<K>[] : T extends TestType<{ getter: (doc: unknown)=> infer K }>
                     ? Awaited<K> : T extends TestType<{ const: infer K }>
                       ? K : never
@@ -57,13 +57,17 @@ export type Schema<TSchema> = CaseTimestamped<
     InferSchema<TSchema>
   >>
 
-export type SchemaWithId<TSchema> = Schema<TSchema> & {
-  _id: ObjectId
-}
+export type SchemaWithId<TSchema> = unknown extends TSchema
+  ? Record<string, unknown> & {
+    _id: ObjectId
+  }
+  : Schema<TSchema> & {
+    _id: ObjectId
+  }
 
-export type InferProperties<TSchema> = TSchema extends readonly any[]
+export type InferProperties<TSchema> = TSchema extends readonly unknown[]
   ? TSchema extends readonly (infer SchemaOption)[]
-    ? SchemaOption extends any
+    ? SchemaOption extends unknown
       ? SchemaOption extends
         | { $ref: infer K }
         | { items: { $ref: infer K } }
@@ -110,15 +114,15 @@ type MapReferences<TSchema> = TSchema extends { properties: infer Properties }
   }
   : never
 
-type PackReferencesAux<T> = T extends (...args: any[])=> any
+type PackReferencesAux<T> = T extends (...args: unknown[])=> unknown
   ? T
   : T extends ObjectId
     ? T
     : T extends { _id: infer Id }
       ? Id
-      : T extends Record<string, any>
+      : T extends Record<string, unknown>
         ? PackReferences<T>
-        : T extends any[] | readonly any[]
+        : T extends unknown[] | readonly unknown[]
           ? PackReferencesAux<T[number]>[]
           : T
 

@@ -3,7 +3,8 @@ import { ObjectId } from 'mongodb'
 import { Result, HTTPStatus, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { useSecurity, applyWriteMiddlewares } from '@aeriajs/security'
 import { throwIfError, endpointErrorSchema } from '@aeriajs/common'
-import { traverseDocument, normalizeProjection, prepareCreate, prepareUpdate } from '../collection/index.js'
+import { traverseDocument, prepareCreate, prepareUpdate } from '../collection/index.js'
+import { get } from './get.js'
 
 export type InsertOptions = {
   bypassSecurity?: boolean
@@ -62,10 +63,6 @@ const internalInsert = async <TContext extends Context>(
     ? what._id
     : null
 
-  const projection = payload.project
-    ? normalizeProjection(payload.project, context.description)
-    : {}
-
   let newId = docId
 
   if( !newId ) {
@@ -85,41 +82,17 @@ const internalInsert = async <TContext extends Context>(
     await context.collection.model.updateOne({
       _id: newId,
     }, content)
-
   }
 
-  if( context.collection.originalFunctions?.get ) {
-    return context.collection.originalFunctions.get({
-      filters: {
-        _id: newId,
-      },
-    }, Object.assign({
-      inherited: true,
-    }, context), {
-      bypassSecurity: true,
-    })
-  }
-
-  const doc = await context.collection.model.findOne({
-    _id: newId,
-  }, {
-    projection,
-  })
-
-  if( !doc ) {
-    return context.error(HTTPStatus.NotFound, {
-      code: ACError.ResourceNotFound,
-    })
-  }
-
-  const result = throwIfError(await traverseDocument(doc, context.description, {
-    context,
-    getters: true,
-    fromProperties: true,
-    recurseReferences: true,
+  const newDocument = throwIfError(await get({
+    filters: {
+      _id: newId,
+    },
+  }, { ...context, inherited: true } as Context, {
+    bypassSecurity: true,
   }))
 
-  return Result.result(result)
+  return Result.result(newDocument as SchemaWithId<TContext['description']>)
 }
 
 export const insert = async <TContext extends Context>(
