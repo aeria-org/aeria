@@ -3,12 +3,14 @@ import type { PackReferences } from './schema.js'
 
 export type UserRole =
   | (
-    Collections['user']['item']['roles'] extends unknown[]
-      ? Collections['user']['item']['roles'][number] extends infer UserDefinedRole
-        ? UserDefinedRole extends string
-          ? `${UserDefinedRole}${UserDefinedRole}` extends UserDefinedRole
-            ? 'root'
-            : UserDefinedRole
+    Collections['user']['item'] extends { roles: infer Roles }
+      ? Roles extends unknown[]
+        ? Roles[number] extends infer UserDefinedRole
+          ? UserDefinedRole extends string
+            ? `${UserDefinedRole}${UserDefinedRole}` extends UserDefinedRole
+              ? 'root'
+              : UserDefinedRole
+            : never
           : never
         : never
       : never

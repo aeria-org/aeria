@@ -35,7 +35,6 @@
     "eslint-config-aeria": "^0.0.30",
     "glob": "^10.4.1",
     "husky": "^9.0.11",
-    "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
     "vitest": "^2.0.5"
   }

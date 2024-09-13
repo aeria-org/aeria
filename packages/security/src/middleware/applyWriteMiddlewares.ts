@@ -3,14 +3,13 @@ import { iterableMiddlewares } from './iterableMiddlewares.js'
 
 export const applyWriteMiddlewares = <TDocument, TContext extends Context>(
   payload: CollectionWritePayload,
-  context: TContext & {
-    collection: Collection
-  },
+  context: TContext,
   fn: (p: typeof payload, context: Context)=> Promise<InsertReturnType<TDocument>>,
 ) => {
-  if( context.collection.middlewares ) {
-    if( Array.isArray(context.collection.middlewares) ) {
-      const writeMiddlewares = context.collection.middlewares.map((middleware) => middleware.beforeWrite).filter((fn) => !!fn)
+  const { middlewares } = context.collection as Collection
+  if( middlewares ) {
+    if( Array.isArray(middlewares) ) {
+      const writeMiddlewares = middlewares.map((middleware) => middleware.beforeWrite).filter((fn) => !!fn)
       const start = iterableMiddlewares<typeof payload, ReturnType<typeof fn>>(
         writeMiddlewares,
         fn,
@@ -19,8 +18,8 @@ export const applyWriteMiddlewares = <TDocument, TContext extends Context>(
       return start(payload, context)
     }
 
-    if( context.collection.middlewares.beforeWrite ) {
-      return context.collection.middlewares.beforeWrite(payload, context, fn)
+    if( middlewares.beforeWrite ) {
+      return middlewares.beforeWrite(payload, context, fn)
     }
   }
 

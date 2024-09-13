@@ -40,7 +40,7 @@ export const defineCollection = <
       AccessCondition
     >
   >,
-  const TFunctions extends Record<string, (payload: any, context: StrictContext<unknown>)=> any> & {
+  const TFunctions extends undefined | Record<string, (payload: any, context: StrictContext<any>)=> any> & {
     [P in keyof TContracts | keyof TExposedFunctions]: ContractToFunction<
       P extends keyof TContracts
         ? NonNullable<TContracts[P]>

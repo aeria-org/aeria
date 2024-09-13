@@ -6,8 +6,5 @@
     "module": "esnext",
     "esModuleInterop": true,
     "moduleResolution": "node"
-  },
-  "ts-node": {
-    "esm": true
   }
 }

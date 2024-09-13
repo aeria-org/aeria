@@ -1,10 +1,7 @@
 import type { RouteContext, RateLimitingParams } from '@aeriajs/types'
 import { Result, HTTPStatus, RateLimitingError } from '@aeriajs/types'
 
-const buildEntryFilter = (
-  params: RateLimitingParams,
-  context: RouteContext,
-) => {
+const buildEntryFilter = (params: RateLimitingParams, context: RouteContext) => {
   if( params.strategy === 'ip' ) {
     const address = context.response.socket!.remoteAddress
     return {
@@ -21,10 +18,7 @@ const buildEntryFilter = (
   }
 }
 
-export const getOrCreateUsageEntry = async (
-  params: RateLimitingParams,
-  context: RouteContext,
-) => {
+export const getOrCreateUsageEntry = async (params: RateLimitingParams, context: RouteContext) => {
   const filters = buildEntryFilter(params, context)
   const entry = await context.collections.resourceUsage.model.findOneAndUpdate(
     filters,
@@ -46,10 +40,7 @@ export const getOrCreateUsageEntry = async (
   return entry
 }
 
-export const limitRate = async (
-  params: RateLimitingParams,
-  context: RouteContext,
-) => {
+export const limitRate = async (params: RateLimitingParams, context: RouteContext) => {
   const { increment = 1 } = params
 
   const entry = await getOrCreateUsageEntry(params, context)
