@@ -104,7 +104,7 @@ export const describe = async (contextOrPayload: RouteContext | typeof Payload) 
     }
 
     const userRoles = 'enum' in userRolesProperty.items
-      ? userRolesProperty.items.enum
+      ? <string[]>userRolesProperty.items.enum
       : []
 
     result.roles = Array.from(new Set(userRoles.concat(await getAvailableRoles())))

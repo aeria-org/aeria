@@ -163,8 +163,8 @@ export type CollectionFunctions<TDocument extends OptionalId<unknown>> = {
   insert: (payload: InsertPayload<TDocument>)=> Promise<InsertReturnType<TDocument>>
   remove: (payload: RemovePayload<TDocument>)=> Promise<RemoveReturnType<TDocument>>
   // @TODO
-  removeAll: (payload: RemoveAllPayload)=> Promise<any>
-  removeFile: (payload: RemoveFilePayload)=> Promise<any>
+  removeAll: (payload: RemoveAllPayload)=> Promise<unknown>
+  removeFile: (payload: RemoveFilePayload)=> Promise<unknown>
 }
 
 export type CollectionFunctionsSDK<TDocument extends OptionalId<unknown>> = {
@@ -174,7 +174,7 @@ export type CollectionFunctionsSDK<TDocument extends OptionalId<unknown>> = {
   insert: (payload: InsertPayload<TDocument>)=> Promise<WithACErrors<InsertReturnType<TDocument>>>
   remove: (payload: RemovePayload<TDocument>)=> Promise<WithACErrors<RemoveReturnType<TDocument>>>
   // @TODO
-  removeAll: (payload: RemoveAllPayload)=> Promise<any>
-  removeFile: (payload: RemoveFilePayload)=> Promise<any>
+  removeAll: (payload: RemoveAllPayload)=> Promise<unknown>
+  removeFile: (payload: RemoveFilePayload)=> Promise<unknown>
 }
 

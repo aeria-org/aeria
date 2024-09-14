@@ -66,8 +66,8 @@ export type FileProperty = Omit<RefProperty, '$ref'> & {
 }
 
 export type EnumProperty = {
-  enum: readonly any[]
-  default?: any
+  enum: readonly unknown[]
+  default?: unknown
   element?: PropertyArrayElement
 }
 
@@ -94,7 +94,7 @@ export type VariableObjectProperty =
 
 export type ObjectProperty = (FixedObjectProperty | VariableObjectProperty) & {
   type: 'object'
-  default?: any
+  default?: unknown
 }
 
 export type StringProperty = {
@@ -173,7 +173,7 @@ export type PropertyBase = {
   icon?: PhosphorIcon['name']
   translate?: boolean
   hint?: string
-  componentProps?: Record<string, any>
+  componentProps?: Record<string, unknown>
 
   noForm?: boolean
   noLabel?: boolean

@@ -1,6 +1,8 @@
+import type { ObjectId } from 'mongodb'
 import type { Context } from './context.js'
 import type { What } from './functions.js'
 import type { Result } from './result.js'
+import type { QuerySort } from './functions.js'
 
 export type OwnershipMode =
   | boolean
@@ -63,7 +65,7 @@ export type CollectionSecurityPolicy<
   >
 }
 
-export type CollectionProps<TPayload = any> = {
+export type CollectionProps<TPayload> = {
   propName?: string
   parentId?: string
   childId?: string
@@ -71,8 +73,8 @@ export type CollectionProps<TPayload = any> = {
 }
 
 export type CollectionReadPayload = {
-  filters: Record<string, any>
-  sort?: Record<string, any>
+  filters: Record<string, unknown> | unknown[]
+  sort?: QuerySort<unknown>
   limit?: number
   offset?: number
 }

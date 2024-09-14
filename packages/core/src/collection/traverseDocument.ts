@@ -282,7 +282,7 @@ const recurseDeep = async (value: unknown, ctx: PhaseContext) => {
   }
 
   if( 'properties' in ctx.property ) {
-    const { error, result } = await recurse(value, ctx)
+    const { error, result } = await recurse(value as Record<string, unknown>, ctx)
     if( error ) {
       return Result.error(error)
     }
@@ -318,7 +318,7 @@ const recurseDeep = async (value: unknown, ctx: PhaseContext) => {
   return value
 }
 
-const recurse = async <TRecursionTarget extends Record<string, any>>(
+const recurse = async <TRecursionTarget extends Record<string, unknown>>(
   target: TRecursionTarget,
   ctx: Pick<
     PhaseContext,
@@ -343,7 +343,7 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
     : target
 
   for( const propName in entrypoint ) {
-    const value = target[propName]
+    const value = target[propName as keyof typeof target]
     const property = getProperty(propName, ctx.property)
 
     if( ctx.options.skipUndefined ) {
@@ -501,7 +501,7 @@ const recurse = async <TRecursionTarget extends Record<string, any>>(
   return Result.result(Object.fromEntries(entries))
 }
 
-export const traverseDocument = async <const TWhat extends Record<string, unknown> | null>(
+export const traverseDocument = async <TWhat>(
   what: TWhat,
   description: Description,
   _options: TraverseOptions,
@@ -550,8 +550,8 @@ export const traverseDocument = async <const TWhat extends Record<string, unknow
   let traverseError: TraverseError | undefined
   let validationError: Record<string, ValidationError> | undefined
 
-  const mutateTarget = (fn: (value: any, ctx: PhaseContext)=> unknown) => {
-    return async (value: unknown, ctx: PhaseContext) => {
+  const mutateTarget = <TValue>(fn: (value: TValue, ctx: PhaseContext)=> unknown) => {
+    return async (value: TValue, ctx: PhaseContext) => {
       const result = await fn(value, ctx)
       ctx.target[ctx.propName] = result
 

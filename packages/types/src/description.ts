@@ -108,7 +108,7 @@ export type LayoutName =
   | 'grid'
   | 'list'
 
-export type LayoutOptions<TDescription extends Description = any> = {
+export type LayoutOptions<TDescription extends Description = Description> = {
   title?: PropertiesWithId<TDescription>
   picture?: PropertiesWithId<TDescription>
   badge?: PropertiesWithId<TDescription>
@@ -117,7 +117,7 @@ export type LayoutOptions<TDescription extends Description = any> = {
   translateBadge?: boolean
 }
 
-export type Layout<TDescription extends Description = any> = {
+export type Layout<TDescription extends Description = Description> = {
   name: LayoutName
   options?: LayoutOptions<TDescription>
 }
@@ -128,7 +128,7 @@ export type SearchOptions<TDescription extends Description> = {
   exactMatches?: boolean
 }
 
-export type RuntimeDescription<TDescription extends Description = any> = Pick<
+export type RuntimeDescription<TDescription extends Description = Description> = Pick<
   TDescription,
   | 'actions'
   | 'individualActions'
@@ -164,7 +164,7 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
   immutable?:
     | boolean
     | readonly (keyof TDescription['properties'])[]
-    | ((doc: WithId<any>)=> boolean | Promise<boolean>)
+    | ((doc: WithId<unknown>)=> boolean | Promise<boolean>)
 
   // takes an array of something
   route?: readonly string[]

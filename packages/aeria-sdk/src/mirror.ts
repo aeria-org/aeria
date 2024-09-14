@@ -8,8 +8,16 @@ import { publicUrl } from './utils.js'
 
 const DTS_FILENAME = 'aeria-sdk.d.ts'
 
-const mirrorDts = (mirrorObj: any, config: InstanceConfig) => {
-  const collections = mirrorObj.descriptions
+type MirrorObject = {
+  descriptions: unknown
+  router?: unknown
+}
+
+const mirrorDts = (mirrorObj: MirrorObject, config: InstanceConfig) => {
+  const {
+    descriptions,
+    router,
+  } = mirrorObj
 
   return `import type {
   InferProperty,
@@ -21,9 +29,9 @@ const mirrorDts = (mirrorObj: any, config: InstanceConfig) => {
 
 } from '@aeriajs/types'
 
-declare type MirrorDescriptions = ${JSON.stringify(collections, null, 2)}\n
+declare type MirrorDescriptions = ${JSON.stringify(descriptions, null, 2)}\n
 
-declare type MirrorRouter = ${JSON.stringify(mirrorObj.router, null, 2)}\n
+declare type MirrorRouter = ${JSON.stringify(router, null, 2)}\n
 
 ${
   config.integrated
@@ -114,7 +122,7 @@ export const storage = getStorage(config)
 export default aeria
 \n`
 
-export const writeMirrorFiles = async (mirror: any, config: InstanceConfig) => {
+export const writeMirrorFiles = async (mirror: MirrorObject, config: InstanceConfig) => {
   const mirrorPaths = config.mirrorPaths || ['.aeria']
     .map((mirrorPath) => path.join(process.cwd(), mirrorPath))
 
@@ -144,7 +152,7 @@ export const writeMirrorFiles = async (mirror: any, config: InstanceConfig) => {
 export const mirrorRemotely = async (config: InstanceConfig) => {
   const aeria = topLevel(config)
 
-  const mirror = deserialize(await aeria().describe.POST({
+  const mirror = deserialize<MirrorObject>(await aeria().describe.POST({
     router: true,
   }))
 

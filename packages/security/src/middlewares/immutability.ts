@@ -2,9 +2,9 @@ import type { Context, CollectionProps, GenericMiddlewareNext, What, CollectionR
 import { ObjectId } from 'mongodb'
 import { Result, ACError } from '@aeriajs/types'
 
-const checkImmutability = async <TProps extends CollectionProps>(
+const checkImmutability = async <TPayload>(
   docId: What<unknown>['_id'],
-  props: TProps,
+  props: CollectionProps<TPayload>,
   context: Context,
 ) => {
   if( !context.description.immutable ) {
@@ -39,6 +39,14 @@ export const checkImmutabilityRead = async <T extends CollectionReadPayload>(
   next: GenericMiddlewareNext<typeof props, typeof props>,
 ) => {
   const { payload: originalPayload } = props.result
+  if( Array.isArray(originalPayload.filters) ) {
+    return props
+  }
+
+  if( !(originalPayload.filters._id instanceof ObjectId) ) {
+    throw new Error
+  }
+
   const { result: payload, error } = await checkImmutability(originalPayload.filters._id, props.result, context)
   if( error ) {
     return Result.error(error)
