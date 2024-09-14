@@ -1,29 +1,29 @@
 # Aeria ![https://github.com/aeria-org/aeria/actions/workflows/ci.yaml](https://github.com/aeria-org/aeria/actions/workflows/ci.yaml/badge.svg)
 
-<img
-  align="left"
-  src="/assets/aeria-logo.png"
-  alt="Aeria Logo" 
-  width="190px"
-  height="190px"
-/>
+Aeria is a (<10k lines of code) batteries-included **web framework** built on top of **MongoDB**. It lets you define collections using a friendly schema-definition language with support for denormalized data structures, arrays, native MongoDB references, file fields, and more. It also ships important security primitives like Role-Based Access Control.
 
+Why? Because we believed the support for MongoDB offered by other frameworks and libraries was suboptimal in several ways, and no framework was cohesive enough. Aeria has model definition, runtime validation, routing, security, etc, all in one dependency.
 
-```typescript
-router.GET('/get-pets/(\\w+)', (context) => {
-  return context.collections.pet.functions.getAll({
-    filters: {
-      name: context.request.fragments[0]
+```aeria
+collection Pet {
+  properties {
+    name str
+    pictures []{
+      properties {
+        file File @accept(["image/*"])
+        description str
+      }
     }
-  })
-})
+  }
+  functions {
+    get @expose
+    getAll @expose
+    insert @expose(["root"])
+    remove @expose(["root"])
+    upload @expose(["root"])
+  }
+}
 ```
-
-<br clear="left" />
-
-## Introduction
-
-Aeria is a **backend framework** written in <10k lines of code. It features everything needed to build **secure** and **auditable** environments: routing, model definition, runtime validation, rate limiting, et cetera. It also tries to combine the richness of features that will ensure a fast-paced development with a elegant and minimalist coding style.
 
 ## Features
 

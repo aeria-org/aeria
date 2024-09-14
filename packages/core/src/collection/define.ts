@@ -28,19 +28,20 @@ export const defineCollection = <
       | 'functions'
       | 'exposedFunctions'
       | 'security'
+      | 'middlewares'
     >
     : never,
   const TDescription extends Description<TDescription>,
   const TContracts extends {
     [P in keyof TFunctions]?: Contract
   },
-  const TExposedFunctions extends Partial<
+  TExposedFunctions extends Partial<
     Record<
       keyof TFunctions,
       AccessCondition
     >
   >,
-  const TFunctions extends undefined | Record<string, (payload: any, context: StrictContext<any>)=> any> & {
+  TFunctions extends undefined | Record<string, (payload: any, context: StrictContext<any>)=> any> & {
     [P in keyof TContracts | keyof TExposedFunctions]: ContractToFunction<
       P extends keyof TContracts
         ? NonNullable<TContracts[P]>
@@ -62,6 +63,8 @@ export const defineCollection = <
     security?: CollectionSecurityPolicy<{
       functions: TFunctions
     }>
+    // needed because otherwise the node will reach maximum recursion depth
+    middlewares?: Collection['middlewares']
   },
 ) => {
   return Object.assign(

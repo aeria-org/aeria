@@ -84,14 +84,16 @@ const internalInsert = async <TContext extends Context>(
     }, content)
   }
 
+  const inheritedContext: Context = {
+    ...context,
+    inherited: true,
+  }
+
   const newDocument = throwIfError(await get({
     filters: {
       _id: newId,
     },
-  }, {
-    ...context,
-    inherited: true,
-  } as Context, {
+  }, inheritedContext, {
     bypassSecurity: true,
   }))
 
