@@ -6,6 +6,10 @@ export const personCandidate = {
 }
 
 export const [Person1, personValidator] = validator({
+  required: [
+    'name',
+    'age',
+  ],
   properties: {
     name: {
       type: 'string',

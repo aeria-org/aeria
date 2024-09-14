@@ -9,6 +9,8 @@ export enum PropertyValidationErrorCode {
   Extraneous = 'EXTRANEOUS_PROPERTY',
   Unmatching = 'UNMATCHING_PROPERTIES',
   ExtraneousElement = 'EXTRANEOUS_ELEMENT',
+  MoreItemsExpected = 'MORE_ITEMS_EXPECTED',
+  LessItemsExpected = 'LESS_ITEMS_EXPECTED',
   NumericConstraint = 'NUMERIC_CONSTRAINT',
 }
 
@@ -20,7 +22,7 @@ export enum TraverseError {
 export type PropertyValidationError = {
   type: PropertyValidationErrorCode
   index?: number
-  details: {
+  details?: {
     expected: unknown
     got: unknown
   }

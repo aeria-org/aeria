@@ -54,7 +54,7 @@ const getPropertyType = (property: Property) => {
 const makePropertyError = <
   TCode extends PropertyValidationErrorCode,
   TDetails extends PropertyValidationError['details'],
->(type: TCode, details: TDetails) => {
+>(type: TCode, details?: TDetails) => {
   return <const>{
     type,
     details,
@@ -83,17 +83,12 @@ export const validateProperty = <TWhat>(
         if( filterOutExtraneous ) {
           return Result.result(undefined)
         }
-
-        return Result.result(what)
       }
 
       return Result.result(what)
     }
 
-    return Result.error(makePropertyError(PropertyValidationErrorCode.Extraneous, {
-      expected: 'undefined',
-      got: getValueType(what),
-    }))
+    return Result.error(makePropertyError(PropertyValidationErrorCode.Extraneous))
   }
 
   if( 'getter' in property ) {
@@ -168,6 +163,18 @@ export const validateProperty = <TWhat>(
         expected: expectedType,
         got: actualType,
       }))
+    }
+
+    if( property.minItems ) {
+      if( what.length < property.minItems ) {
+        return Result.error(makePropertyError(PropertyValidationErrorCode.MoreItemsExpected))
+      }
+    }
+
+    if( property.maxItems ) {
+      if( what.length > property.maxItems ) {
+        return Result.error(makePropertyError(PropertyValidationErrorCode.LessItemsExpected))
+      }
     }
 
     let i = 0

@@ -1,5 +1,5 @@
-import assert from 'assert'
-import { expect, test } from 'vitest'
+import { expect, test, assert } from 'vitest'
+import { ValidationErrorCode, PropertyValidationErrorCode, type JsonSchema } from '@aeriajs/types'
 import { validate } from '../dist/index.js'
 
 import {
@@ -12,7 +12,7 @@ import {
   personCandidate,
   coercionDescription,
 
-} from './fixtures'
+} from './fixtures/index.js'
 
 test('validates plain object', () => {
   const { result } = validate(plainCandidate, plainDescription)
@@ -33,7 +33,7 @@ test('returns left with validator', () => {
   })
 
   assert(error)
-  assert('code' in error && error.code === 'INVALID_PROPERTIES')
+  assert('code' in error && error.code === ValidationErrorCode.InvalidProperties)
 })
 
 test('returns error on plain object', () => {
@@ -44,7 +44,7 @@ test('returns error on plain object', () => {
   const { error } = validate(candidate, plainDescription)
 
   assert(error)
-  assert('code' in error && error.code === 'INVALID_PROPERTIES')
+  assert('code' in error && error.code === ValidationErrorCode.InvalidProperties)
 })
 
 test('returns error on divergent const', () => {
@@ -54,7 +54,7 @@ test('returns error on divergent const', () => {
   const { error } = validate(candidate, plainDescription)
 
   assert(error)
-  assert('code' in error && error.code === 'INVALID_PROPERTIES')
+  assert('code' in error && error.code === ValidationErrorCode.InvalidProperties)
 })
 
 test('validates deep object', () => {
@@ -72,7 +72,7 @@ test('returns error on deep object', () => {
   const { error } = validate(candidate, deepDescription)
 
   assert(error)
-  assert('code' in error && error.code === 'INVALID_PROPERTIES')
+  assert('code' in error && error.code === ValidationErrorCode.InvalidProperties)
 })
 
 test('conditional required', () => {
@@ -104,5 +104,42 @@ test('coercion during validation', () => {
 
   assert(validEither.result)
   assert(invalidEither.error)
+})
+
+test('validates array length', () => {
+  const arrayDescription: Omit<JsonSchema, '$id'> = {
+    properties: {
+      jobs: {
+        type: 'array',
+        items: {
+          type: 'string',
+        },
+        minItems: 1,
+        maxItems: 1,
+      },
+    },
+  }
+
+  const minItemsEither = validate({
+    jobs: []
+  }, arrayDescription)
+
+  const maxItemsEither = validate({
+    jobs: [
+      'programmer',
+      'doctor',
+    ]
+  }, arrayDescription)
+
+
+  assert(minItemsEither.error)
+  assert('code' in minItemsEither.error && minItemsEither.error.code === ValidationErrorCode.InvalidProperties)
+  assert('type' in minItemsEither.error.errors.jobs)
+  expect(minItemsEither.error.errors.jobs.type).toBe(PropertyValidationErrorCode.MoreItemsExpected)
+
+  assert(maxItemsEither.error)
+  assert('code' in maxItemsEither.error && maxItemsEither.error.code === ValidationErrorCode.InvalidProperties)
+  assert('type' in maxItemsEither.error.errors.jobs)
+  expect(maxItemsEither.error.errors.jobs.type).toBe(PropertyValidationErrorCode.LessItemsExpected)
 })
 

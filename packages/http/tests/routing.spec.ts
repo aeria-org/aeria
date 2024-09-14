@@ -1,6 +1,5 @@
 import type { GenericRequest } from '@aeriajs/types'
-import assert from 'assert'
-import { expect, test } from 'vitest'
+import { expect, test, assert } from 'vitest'
 import { matches } from '../dist/index.js'
 
 test('matches patterns correctly', async () => {

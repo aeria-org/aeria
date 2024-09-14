@@ -48,6 +48,7 @@ export const description = defineDescription({
         type: 'string',
       },
       uniqueItems: true,
+      minItems: 1,
     },
     email: {
       type: 'string',

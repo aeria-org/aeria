@@ -1,5 +1,4 @@
-import assert from 'assert'
-import { expect, test } from 'vitest'
+import { expect, test, assert } from 'vitest'
 import { PropertyValidationErrorCode, ValidationErrorCode } from '@aeriajs/types'
 import { traverseDocument, ObjectId } from '../dist/index.js'
 
@@ -161,7 +160,7 @@ test('autocast deep MongoDB operators', async () => {
     allowOperators: true,
   })
 
-  expect(result).toBeTruthy()
+  assert(result)
   expect(result.items.$elemMatch.date).toBeInstanceOf(Date)
   expect(result.items.$elemMatch.image).toBeInstanceOf(ObjectId)
   expect(result.items.$elemMatch.status).toBe('accepted')
@@ -201,7 +200,7 @@ test('autocast top-level MongoDB operators', async () => {
     allowOperators: true,
   })
 
-  expect(result).toBeTruthy()
+  assert(result)
   expect(result.$and[0].date).toBeInstanceOf(Date)
   expect(result.$and[1].image).toBeInstanceOf(ObjectId)
   expect(result.$and[2].status).toBe('accepted')
