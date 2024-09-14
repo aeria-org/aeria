@@ -56,9 +56,9 @@ export const customVerbs = () => async (parentContext: RouteContext) => {
   }
 
   const context = await createContext({
-    parentContext,
-    collectionName,
+    collectionName: collectionName as keyof Collections,
     calledFunction: functionName,
+    parentContext,
   })
 
   const { error, result: fn } = await getFunction(
@@ -89,9 +89,9 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
   }
 
   const context = await createContext({
-    parentContext,
-    collectionName,
+    collectionName: collectionName as keyof Collections,
     calledFunction: functionName,
+    parentContext,
   })
 
   const requestCopy = Object.assign({}, context.request)
