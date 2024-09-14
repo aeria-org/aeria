@@ -66,7 +66,7 @@ export type IndepthCollections = {
 export type ContextOptions = {
   config?: ApiConfig
   parentContext?: RouteContext | Context
-  collectionName?: string
+  collectionName?: Extract<keyof Collections, string>
   token?: Token
   inherited?: boolean
   calledFunction?: string
@@ -113,7 +113,7 @@ export type CollectionContext<
   TFunctions = Collection['functions'],
 > = {
   description: TDescription
-  collectionName?: (keyof Collections & string) | string
+  collectionName?: Extract<keyof Collections, string>
   collection: TDescription['$id'] extends keyof Collections
     ? IndepthCollection<{ description: TDescription,
       functions: TFunctions }>

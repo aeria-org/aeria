@@ -1,4 +1,4 @@
-import type { AccessCondition } from '@aeriajs/types'
+import type { AccessCondition, Collection } from '@aeriajs/types'
 import { defineCollection, get, getAll, remove, upload, removeFile } from '@aeriajs/core'
 import { description } from './description.js'
 import { authenticate } from './authenticate.js'
@@ -42,6 +42,10 @@ const exposedFunctions: Record<keyof typeof functions, AccessCondition> = {
 export const user = defineCollection({
   description,
   functions,
+})
+
+Object.assign(user, {
+  exposedFunctions,
   contracts: {
     getCurrentUser: {
       response: {
@@ -49,6 +53,5 @@ export const user = defineCollection({
       },
     },
   },
-  exposedFunctions: exposedFunctions as any,
-})
+} satisfies Partial<Collection>)
 

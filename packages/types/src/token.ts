@@ -24,19 +24,21 @@ export type AcceptedRole =
   | null
   | unknown
 
-export type AuthenticatedToken<TAcceptedRole extends AcceptedRole = null> = {
+export type AuthenticatedToken<
+  TAcceptedRole extends AcceptedRole = null,
+  TUserRole = UserRole,
+  TUserInfo = Omit<Collections['user']['item'], '_id' | 'roles'> 
+> = {
   authenticated: true
   sub: ObjectId
   roles: readonly (
     TAcceptedRole extends null
-      ? UserRole
+      ? TUserRole
       : TAcceptedRole
   )[]
-  userinfo: Omit<Collections['user']['item'], '_id' | 'roles'> extends infer UserItem
-    ?
-      | UserItem
-      | PackReferences<UserItem>
-    : never
+  userinfo:  
+    | TUserInfo
+    | PackReferences<TUserInfo>
 }
 
 export type UnauthenticatedToken = {
@@ -50,7 +52,11 @@ export type TokenRecipient = {
 }
 
 // disable distributive conditional type by wrapping TAcceptedRole in a tuple
-export type Token<TAcceptedRole extends AcceptedRole = null> = (
+export type Token<
+  TAcceptedRole extends AcceptedRole = null,
+  TUserRole = UserRole,
+  TUserInfo = Omit<Collections['user']['item'], '_id' | 'roles'> 
+> = (
   null extends TAcceptedRole
     ? true
     : 'unauthenticated' extends TAcceptedRole
@@ -58,7 +64,7 @@ export type Token<TAcceptedRole extends AcceptedRole = null> = (
       : false
 ) extends true
   ?
-    | AuthenticatedToken
+    | AuthenticatedToken<null, TUserRole, TUserInfo>
     | UnauthenticatedToken
   : AuthenticatedToken<TAcceptedRole>
 

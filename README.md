@@ -27,12 +27,11 @@ collection Pet {
 
 ## Features
 
-- 🔒 Secure by design
-- 🤌 Minimalistically crafted DX
-- ⚡ Fast reloads in watch mode with esbuild
-- 🪞 Automatic reflection of HTTP endpoints
-- 🔋 Batteries included (authentication, access control, file management, logging, etc)
-- 😱 _and much more!_
+- Secure by design
+- Minimalistically crafted DX
+- Fast reloads in watch mode with esbuild
+- Automatic reflection of HTTP endpoints
+- Batteries included (authentication, access control, file management, logging, etc)
 
 ## Quickstart
 

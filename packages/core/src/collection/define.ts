@@ -83,7 +83,7 @@ export const defineCollection = <
 export const extendCollection = <
   const TLeftCollection extends Collection,
   const TRightCollection extends {
-    [P in Exclude<keyof Collection, 'item'>]?: Partial<Collection[P]>
+    [P in Exclude<keyof Collection, 'item' | 'middlewares'>]?: Partial<Collection[P]>
   },
 >(
   left: TLeftCollection,
