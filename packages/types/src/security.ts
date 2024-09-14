@@ -1,4 +1,3 @@
-import type { ObjectId } from 'mongodb'
 import type { Context } from './context.js'
 import type { What } from './functions.js'
 import type { Result } from './result.js'
