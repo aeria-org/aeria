@@ -54,7 +54,7 @@ export type Filters<TDocument> = StrictFilter<TDocument> & Partial<{
             ? Id | string
             : Field
         : never
-      : any
+      : unknown
   ) extends infer Field
     ? Field | StrictFilterOperators<Field> | null
     : never
@@ -107,12 +107,12 @@ export type RemovePayload<TDocument extends OptionalId<unknown>> = {
 }
 
 export type RemoveAllPayload = {
-  filters: (string | ObjectId)[]
+  filters: (ObjectId | string)[]
 }
 
 export type RemoveFilePayload = UploadAuxProps & {
   filters: {
-    _id: any
+    _id: ObjectId | string
   }
 }
 

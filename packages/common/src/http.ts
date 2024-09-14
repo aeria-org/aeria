@@ -11,7 +11,7 @@ export type RequestConfig = {
   responseTransformer?: typeof defaultResponseTransformer
 }
 
-export const defaultRequestTransformer = async (url: string, payload: any, params: RequestParams) => {
+export const defaultRequestTransformer = async (url: string, payload: unknown, params: RequestParams) => {
   const request: {
     url: string
     params: RequestParams
@@ -22,11 +22,11 @@ export const defaultRequestTransformer = async (url: string, payload: any, param
 
   if( payload ) {
     if( params.method === 'GET' || params.method === 'HEAD' ) {
-      request.url += `?${new URLSearchParams(payload)}`
+      request.url += `?${new URLSearchParams(payload as ConstructorParameters<typeof URLSearchParams>[0])}`
     } else {
       request.params.body = params.headers?.['content-type']?.startsWith('application/json')
         ? JSON.stringify(payload)
-        : payload
+        : Buffer.from(String(payload))
     }
   }
 

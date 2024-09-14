@@ -6,7 +6,7 @@ export const applyWriteMiddlewares = <TDocument, TContext extends Context>(
   context: TContext,
   fn: (p: typeof payload, context: Context)=> Promise<InsertReturnType<TDocument>>,
 ) => {
-  const { middlewares } = context.collection as Collection
+  const { middlewares }: Collection = context.collection
   if( middlewares ) {
     if( Array.isArray(middlewares) ) {
       const writeMiddlewares = middlewares.map((middleware) => middleware.beforeWrite).filter((fn) => !!fn)

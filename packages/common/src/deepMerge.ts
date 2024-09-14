@@ -7,12 +7,12 @@ export const deepMerge = <
   const TLeft,
   const TRight,
 >(left: TLeft, right: TRight, options?: MergeOptions) => {
-  const result: any = Object.assign({}, left)
+  const result: Record<string, unknown> = Object.assign({}, left)
   const { arrays = true } = options || {}
 
   for( const key in right ) {
     const leftVal = result[key]
-    const rightVal: any = right[key]
+    const rightVal = right[key]
 
     if( options?.callback ) {
       const res = options.callback(key, leftVal, rightVal)
@@ -22,7 +22,7 @@ export const deepMerge = <
       }
     }
 
-    if( Array.isArray(leftVal) && Array.isArray(rightVal) ) {
+    if( Array.isArray(result[key]) && Array.isArray(rightVal) ) {
       result[key] = arrays
         ? result[key].concat(...rightVal)
         : rightVal
