@@ -79,13 +79,13 @@ export type CollectionReadPayload = {
 }
 
 export type CollectionWritePayload = {
-  what: What<Record<string, any>>
+  what: What<Record<string, unknown>>
 }
 
 export type GenericMiddlewareNext<TPayload, TReturn> = (payload: TPayload, context: Context)=> TReturn
 export type MiddlewareNext = <TPayload, TReturn>(payload: TPayload, context: Context)=> TReturn
 
-export type Middleware<TPayload = any, TReturn = any, TReturnNext extends GenericMiddlewareNext<TPayload, TReturn> = GenericMiddlewareNext<TPayload, TReturn>> = (payload: TPayload, context: Context, next: TReturnNext)=> TReturn
+export type Middleware<TPayload = unknown, TReturn = unknown, TReturnNext extends GenericMiddlewareNext<TPayload, TReturn> = GenericMiddlewareNext<TPayload, TReturn>> = (payload: TPayload, context: Context, next: TReturnNext)=> TReturn
 
 export type CollectionMiddleware<TDocument> = {
   beforeRead?: Middleware<CollectionReadPayload, Promise<Result.Either<any, TDocument | TDocument[]>>>
