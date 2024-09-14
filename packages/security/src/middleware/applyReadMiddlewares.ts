@@ -10,7 +10,7 @@ export const applyReadMiddlewares = <TContext extends Context>(
     | CountReturnType
   >,
 ) => {
-  const { middlewares }: Collection = context.collection 
+  const { middlewares }: Collection = context.collection
   if( middlewares ) {
     if( Array.isArray(middlewares) ) {
       const readMiddlewares = middlewares.map((middleware) => middleware.beforeRead).filter((fn) => !!fn)
