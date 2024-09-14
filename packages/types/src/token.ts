@@ -27,7 +27,7 @@ export type AcceptedRole =
 export type AuthenticatedToken<
   TAcceptedRole extends AcceptedRole = null,
   TUserRole = UserRole,
-  TUserInfo = Omit<Collections['user']['item'], '_id' | 'roles'> 
+  TUserInfo = Omit<Collections['user']['item'], '_id' | 'roles'>,
 > = {
   authenticated: true
   sub: ObjectId
@@ -36,7 +36,7 @@ export type AuthenticatedToken<
       ? TUserRole
       : TAcceptedRole
   )[]
-  userinfo:  
+  userinfo:
     | TUserInfo
     | PackReferences<TUserInfo>
 }
@@ -55,7 +55,7 @@ export type TokenRecipient = {
 export type Token<
   TAcceptedRole extends AcceptedRole = null,
   TUserRole = UserRole,
-  TUserInfo = Omit<Collections['user']['item'], '_id' | 'roles'> 
+  TUserInfo = Omit<Collections['user']['item'], '_id' | 'roles'>,
 > = (
   null extends TAcceptedRole
     ? true
