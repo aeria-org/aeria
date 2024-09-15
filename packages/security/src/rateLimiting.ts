@@ -79,7 +79,7 @@ export const limitRate = async (params: RateLimitingParams, context: RouteContex
     },
   )
 
-  if( !newEntry ) {
+  if( !newEntry || !newEntry.usage[resourceName] ) {
     throw new Error()
   }
 

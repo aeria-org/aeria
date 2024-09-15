@@ -1,10 +1,14 @@
 import type { Context } from '@aeriajs/types'
-import type { ObjectId } from 'mongodb'
 import type * as functions from '../functions/index.js'
+import { ObjectId } from 'mongodb'
 import { createContext } from '../context.js'
 import { getFunction } from '../assets.js'
 import { getDatabaseCollection } from '../database.js'
 import { getReferences, type ReferenceMap, type Reference } from './reference.js'
+
+const isObject = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object'
+}
 
 const preferredRemove = async (targetId: ObjectId | ObjectId[], reference: Reference, parentContext: Context) => {
   if( !reference.referencedCollection ) {
@@ -46,7 +50,7 @@ const preferredRemove = async (targetId: ObjectId | ObjectId[], reference: Refer
   })
 }
 
-const internalCascadingRemove = async (target: Record<string, any>, refMap: ReferenceMap, context: Context) => {
+const internalCascadingRemove = async (target: Record<string, unknown>, refMap: ReferenceMap, context: Context) => {
   for( const refName in refMap ) {
     const reference = refMap[refName]
     if( !target[refName] ) {
@@ -54,7 +58,9 @@ const internalCascadingRemove = async (target: Record<string, any>, refMap: Refe
     }
 
     if( reference.isInline || reference.referencedCollection === 'file' ) {
-      await preferredRemove(target[refName], reference, context)
+      if( target[refName] instanceof ObjectId ) {
+        await preferredRemove(target[refName], reference, context)
+      }
     }
 
     if( reference.deepReferences ) {
@@ -65,7 +71,9 @@ const internalCascadingRemove = async (target: Record<string, any>, refMap: Refe
         continue
       }
 
-      await internalCascadingRemove(target[refName], reference.deepReferences, context)
+      if( isObject(target[refName]) ) {
+        await internalCascadingRemove(target[refName], reference.deepReferences, context)
+      }
     }
   }
 }
