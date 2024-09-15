@@ -258,7 +258,7 @@ const moveFiles = async (value: unknown, ctx: PhaseContext) => {
     return Result.error(TraverseError.InvalidTempfile)
   }
 
-  if( value instanceof ObjectId  ) {
+  if( value instanceof ObjectId ) {
     return value
   }
 
