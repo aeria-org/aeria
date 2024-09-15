@@ -63,9 +63,9 @@ export type Filters<TDocument> = StrictFilter<TDocument> & Partial<{
 export type What<TDocument> = (
   | { _id: ObjectId | string } & Partial<Omit<PackReferences<TDocument>, '_id'>>
   | { _id?: null } & Omit<PackReferences<TDocument>, '_id'>
-) extends infer Document
+) extends infer InferredDocument
   ? {
-    [P in keyof Document]: Document[P] | null
+    [P in keyof InferredDocument]: InferredDocument[P] | null
   }
   : never
 

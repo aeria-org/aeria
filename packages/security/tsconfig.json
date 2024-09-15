@@ -17,6 +17,9 @@
       ],
       "@aeriajs/types": [
         "../types/dist"
+      ],
+      "mongodb": [
+        "./node_modules/mongodb"
       ]
     }
   },

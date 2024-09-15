@@ -291,6 +291,9 @@ importers:
       '@aeriajs/types':
         specifier: link:../types
         version: link:../types
+      mongodb:
+        specifier: ^6.5.0
+        version: 6.9.0(socks@2.8.3)
 
   packages/server:
     devDependencies:
