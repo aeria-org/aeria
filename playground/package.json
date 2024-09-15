@@ -21,5 +21,23 @@
     "storage": {
       "strategy": "localStorage"
     }
+  },
+  "dependencies": {
+    "@aeriajs/builtins": "link:../packages/builtins",
+    "@aeriajs/builtins-icons": "link:../packages/builtins-icons",
+    "@aeriajs/cli": "link:../packages/cli",
+    "@aeriajs/common": "link:../packages/common",
+    "@aeriajs/core": "link:../packages/core",
+    "@aeriajs/entrypoint": "link:../packages/entrypoint",
+    "@aeriajs/http": "link:../packages/http",
+    "@aeriajs/node-http": "link:../packages/node-http",
+    "@aeriajs/security": "link:../packages/security",
+    "@aeriajs/server": "link:../packages/server",
+    "@aeriajs/types": "link:../packages/types",
+    "@aeriajs/validation": "link:../packages/validation",
+    "aeria": "link:../packages/aeria"
+  },
+  "peerDependencies": {
+    "mongodb": "^6.5.0"
   }
 }

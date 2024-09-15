@@ -3,6 +3,9 @@
   "compilerOptions": {
     "outDir": "dist",
     "paths": {
+      "@aeriajs/common": [
+        "../common/dist"
+      ],
       "@aeriajs/http": [
         "../http/dist"
       ],

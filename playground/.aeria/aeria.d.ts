@@ -4,7 +4,7 @@ import type {} from '@aeriajs/types'
 declare global {
   type UnpackCollections<TCollections> =  {
     [P in keyof TCollections]: TCollections[P] extends infer Candidate
-      ? Candidate extends (...args: any[]) => infer Coll
+      ? Candidate extends (...args: unknown[]) => infer Coll
         ? Coll
         : Candidate
       : never

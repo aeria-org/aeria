@@ -8,9 +8,6 @@ importers:
 
   .:
     devDependencies:
-      '@aeriajs/access-control':
-        specifier: link:packages/access-control
-        version: link:packages/access-control
       '@aeriajs/builtins':
         specifier: link:packages/builtins
         version: link:packages/builtins
@@ -84,7 +81,7 @@ importers:
         specifier: ^4.19.1
         version: 4.19.1
       typescript:
-        specifier: ^5.4.5
+        specifier: ^5.6.2
         version: 5.6.2
       vitest:
         specifier: ^2.0.5
@@ -276,6 +273,9 @@ importers:
 
   packages/node-http:
     devDependencies:
+      '@aeriajs/common':
+        specifier: link:../common
+        version: link:../common
       '@aeriajs/http':
         specifier: link:../http
         version: link:../http
@@ -344,7 +344,50 @@ importers:
         specifier: link:../types
         version: link:../types
 
-  playground: {}
+  playground:
+    dependencies:
+      '@aeriajs/builtins':
+        specifier: link:../packages/builtins
+        version: link:../packages/builtins
+      '@aeriajs/builtins-icons':
+        specifier: link:../packages/builtins-icons
+        version: link:../packages/builtins-icons
+      '@aeriajs/cli':
+        specifier: link:../packages/cli
+        version: link:../packages/cli
+      '@aeriajs/common':
+        specifier: link:../packages/common
+        version: link:../packages/common
+      '@aeriajs/core':
+        specifier: link:../packages/core
+        version: link:../packages/core
+      '@aeriajs/entrypoint':
+        specifier: link:../packages/entrypoint
+        version: link:../packages/entrypoint
+      '@aeriajs/http':
+        specifier: link:../packages/http
+        version: link:../packages/http
+      '@aeriajs/node-http':
+        specifier: link:../packages/node-http
+        version: link:../packages/node-http
+      '@aeriajs/security':
+        specifier: link:../packages/security
+        version: link:../packages/security
+      '@aeriajs/server':
+        specifier: link:../packages/server
+        version: link:../packages/server
+      '@aeriajs/types':
+        specifier: link:../packages/types
+        version: link:../packages/types
+      '@aeriajs/validation':
+        specifier: link:../packages/validation
+        version: link:../packages/validation
+      aeria:
+        specifier: link:../packages/aeria
+        version: link:../packages/aeria
+      mongodb:
+        specifier: ^6.5.0
+        version: 6.9.0(socks@2.8.3)
 
 packages:
 

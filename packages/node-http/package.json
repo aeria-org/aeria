@@ -32,9 +32,11 @@
     "dist"
   ],
   "devDependencies": {
+    "@aeriajs/common": "link:../common",
     "@aeriajs/http": "link:../http"
   },
   "peerDependencies": {
+    "@aeriajs/common": "^0.0.101",
     "@aeriajs/http": "^0.0.114"
   }
 }
