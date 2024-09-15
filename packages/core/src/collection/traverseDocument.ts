@@ -250,11 +250,15 @@ const isValidTempFile = (value: unknown): value is ValidTempFile => {
 }
 
 const moveFiles = async (value: unknown, ctx: PhaseContext) => {
+  if( !('$ref' in ctx.property) || ctx.property.$ref !== 'file' ) {
+    return value
+  }
+
   if( !isValidTempFile(value) ) {
     return Result.error(TraverseError.InvalidTempfile)
   }
 
-  if( !('$ref' in ctx.property) || ctx.property.$ref !== 'file' || value instanceof ObjectId ) {
+  if( value instanceof ObjectId  ) {
     return value
   }
 
