@@ -22,7 +22,7 @@
       "strategy": "localStorage"
     }
   },
-  "dependencies": {
+  "devDependencies": {
     "@aeriajs/builtins": "link:../packages/builtins",
     "@aeriajs/builtins-icons": "link:../packages/builtins-icons",
     "@aeriajs/cli": "link:../packages/cli",
