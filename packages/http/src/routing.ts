@@ -264,7 +264,7 @@ export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> unk
 export const createRouter = (options: Partial<RouterOptions> = {}) => {
   const { exhaust } = options
 
-  const routes: ((_: unknown, context: RouteContext, groupOptions?: RouteGroupOptions)=> ReturnType<typeof registerRoute>)[] = []
+  const routes: ((_: unknown, context: RouteContext, groupOptions?: RouteGroupOptions)=> unknown)[] = []
   const routesMeta: RoutesMeta = {}
 
   const route = <

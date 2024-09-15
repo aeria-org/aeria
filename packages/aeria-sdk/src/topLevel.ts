@@ -9,7 +9,7 @@ export type TopLevelObject = {
   }
 }
 
-const proxify = <TTarget extends ((...args: any[])=> unknown) | Record<string | symbol, unknown>>(
+const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
   config: InstanceConfig,
   _target: TTarget,
   bearerToken?: string,

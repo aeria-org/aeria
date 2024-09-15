@@ -65,16 +65,16 @@ export const getUserTsconfig = async () => {
   return tsConfig
 }
 
-const findCaseInsensitiveKey = <TObject extends Record<string, any>>(object: TObject, search: any): TObject[keyof TObject] => {
+const findCaseInsensitiveKey = <K extends string | number | symbol, T>(object: Record<K, T>, search: unknown) => {
   if( typeof search !== 'string' ) {
-    return object[search]
+    return object[search as K]
   }
 
   const found = Object.entries(object)
     .find(([key]) => key.toLowerCase() === search.toLowerCase())
 
   return found
-    ? found[1]
+    ? found[1] as T
     : undefined
 }
 

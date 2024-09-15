@@ -37,6 +37,7 @@
   },
   "peerDependencies": {
     "@aeriajs/common": "^0.0.101",
-    "@aeriajs/types": "^0.0.86"
+    "@aeriajs/types": "^0.0.86",
+    "mongodb": "^6.5.0"
   }
 }

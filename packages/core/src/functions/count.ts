@@ -53,7 +53,7 @@ const internalCount = async <TContext extends Context>(
 
 export const count = async <TContext extends Context>(
   payload: CountPayload<SchemaWithId<TContext['description']>>,
-  context: TContext extends Context<any>
+  context: TContext extends Context
     ? TContext
     : never,
   options: CountOptions = {},

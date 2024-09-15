@@ -13,12 +13,10 @@ export type Collection<TCollection extends Collection = any> = {
   exposedFunctions?: Record<string, AccessCondition>
   security?: CollectionSecurityPolicy<TCollection>
   middlewares?:
-    | CollectionMiddleware<any>
-    | CollectionMiddleware<any>[]
+    | CollectionMiddleware<TCollection['item']>
+    | CollectionMiddleware<TCollection['item']>[]
 }
 
 export type CollectionItem<TCollectionName extends keyof Collections> = Omit<Collections[TCollectionName]['item'], '_id'>
 export type CollectionItemWithId<TCollectionName extends keyof Collections> = Collections[TCollectionName]['item']
-
-export type AssetType = keyof Collection
 

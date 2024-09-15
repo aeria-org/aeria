@@ -1,4 +1,4 @@
-import type { AssetType, Context, Collection, Token } from '@aeriajs/types'
+import type { Context, Collection, Token } from '@aeriajs/types'
 import { Result, ACError } from '@aeriajs/types'
 import { limitRate } from '@aeriajs/security'
 import { getCollection } from '@aeriajs/entrypoint'
@@ -12,7 +12,7 @@ const assetsMemo: {
 
 export const internalGetCollectionAsset = async <
   TCollectionName extends string,
-  TAssetName extends keyof Collections[TCollectionName] & AssetType,
+  TAssetName extends keyof Collections[TCollectionName] & keyof Collection,
 >(
   collectionName: TCollectionName,
   assetName: TAssetName,
@@ -29,7 +29,7 @@ export const internalGetCollectionAsset = async <
 
 export const getCollectionAsset = async <
   TCollectionName extends string,
-  TAssetName extends keyof Collections[TCollectionName] & AssetType,
+  TAssetName extends keyof Collections[TCollectionName] & keyof Collection,
 >(
   collectionName: TCollectionName,
   assetName: TAssetName,

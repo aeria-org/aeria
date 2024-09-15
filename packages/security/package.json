@@ -34,13 +34,11 @@
   "devDependencies": {
     "@aeriajs/core": "link:../core",
     "@aeriajs/common": "link:../common",
-    "@aeriajs/types": "link:../types",
-    "mongodb": "^6.5.0"
+    "@aeriajs/types": "link:../types"
   },
   "peerDependencies": {
     "@aeriajs/core": "^0.0.165",
     "@aeriajs/common": "^0.0.101",
-    "@aeriajs/types": "^0.0.86",
-    "mongodb": "^6.5.0"
+    "@aeriajs/types": "^0.0.86"
   }
 }

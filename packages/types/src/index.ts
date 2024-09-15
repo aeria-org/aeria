@@ -14,6 +14,3 @@ export * from './schema.js'
 export * from './security.js'
 export * from './token.js'
 export * from './validation.js'
-export type {
-  WithId, OptionalId,
-} from 'mongodb'

@@ -1,4 +1,4 @@
-import type { FilterOperators, StrictFilter as Filter, WithId, OptionalId, ObjectId } from 'mongodb'
+import type { FilterOperators, StrictFilter as Filter, WithId, ObjectId } from 'mongodb'
 import type { Result } from './result.js'
 import type { EndpointError, StrictEndpointError } from './endpointError.js'
 import type { PackReferences } from './schema.js'
@@ -78,17 +78,17 @@ export type Projection<TDocument> =
 
 export type QuerySort<TDocument> = Partial<Record<keyof WithId<TDocument>, 1 | -1>>
 
-export type CountPayload<TDocument extends OptionalId<unknown>> = {
+export type CountPayload<TDocument extends WithId<unknown>> = {
   filters?: Filters<TDocument>
 }
 
-export type GetPayload<TDocument extends OptionalId<unknown>> = {
+export type GetPayload<TDocument extends WithId<unknown>> = {
   filters: Filters<TDocument>
   project?: Projection<TDocument>
   populate?: (keyof TDocument)[]
 }
 
-export type GetAllPayload<TDocument extends OptionalId<unknown>> = {
+export type GetAllPayload<TDocument extends WithId<unknown>> = {
   filters?: Filters<TDocument>
   project?: Projection<TDocument>
   offset?: number
@@ -97,12 +97,12 @@ export type GetAllPayload<TDocument extends OptionalId<unknown>> = {
   populate?: (keyof TDocument)[]
 }
 
-export type InsertPayload<TDocument extends OptionalId<unknown>> = {
+export type InsertPayload<TDocument extends WithId<unknown>> = {
   what: What<TDocument>
   project?: Projection<TDocument>
 }
 
-export type RemovePayload<TDocument extends OptionalId<unknown>> = {
+export type RemovePayload<TDocument extends WithId<unknown>> = {
   filters: Filters<TDocument>
 }
 
@@ -156,7 +156,7 @@ export type PaginatedGetAllReturnType<TDocument> = Result.Either<EndpointError, 
   pagination: Pagination
 }>
 
-export type CollectionFunctions<TDocument extends OptionalId<unknown>> = {
+export type CollectionFunctions<TDocument extends WithId<unknown> = WithId<unknown>> = {
   count: (payload: CountPayload<TDocument>)=> Promise<CountReturnType>
   get: (payload: GetPayload<TDocument>)=> Promise<GetReturnType<TDocument>>
   getAll: (payload?: GetAllPayload<TDocument>)=> Promise<GetAllReturnType<TDocument>>
@@ -167,7 +167,7 @@ export type CollectionFunctions<TDocument extends OptionalId<unknown>> = {
   removeFile: (payload: RemoveFilePayload)=> Promise<unknown>
 }
 
-export type CollectionFunctionsSDK<TDocument extends OptionalId<unknown>> = {
+export type CollectionFunctionsSDK<TDocument extends WithId<unknown> = WithId<unknown>> = {
   count: (payload: CountPayload<TDocument>)=> Promise<WithACErrors<CountReturnType>>
   get: (payload: GetPayload<TDocument>)=> Promise<WithACErrors<GetReturnType<TDocument>>>
   getAll: (payload?: GetAllPayload<TDocument>)=> Promise<WithACErrors<PaginatedGetAllReturnType<TDocument>>>

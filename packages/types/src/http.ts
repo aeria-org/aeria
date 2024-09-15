@@ -54,7 +54,7 @@ type ExtractCode<TRouteResponse> = TRouteResponse extends EndpointError<infer PC
   ? PCode
   : never
 
-type ExtractHTTPStatus<TRouteResponse> = TRouteResponse extends EndpointError<any, unknown, infer PHTTPStatus>
+type ExtractHTTPStatus<TRouteResponse> = TRouteResponse extends EndpointError<string, unknown, infer PHTTPStatus>
   ? PHTTPStatus
   : never
 
@@ -94,7 +94,7 @@ export type EndpointFunction<
   TRoutePayload,
 > = (
   TRoutePayload extends null
-    ? <T = TRouteResponse>(payload?: any)=> Promise<WithACErrors<T>>
+    ? <T = TRouteResponse>(payload?: unknown)=> Promise<WithACErrors<T>>
     : TRoutePayload extends undefined
       ? <T = TRouteResponse>()=> Promise<WithACErrors<T>>
       : <T = TRouteResponse>(payload: TRoutePayload)=> Promise<WithACErrors<T>>
@@ -105,7 +105,7 @@ export type EndpointFunction<
 export type MakeEndpoint<
   TRoute extends string,
   TRouteMethod extends RequestMethod,
-  TRouteResponse = any,
+  TRouteResponse = unknown,
   TRoutePayload = null,
 > = TRoute extends `/${infer RouteTail}`
   ? MakeEndpoint<RouteTail, TRouteMethod, TRouteResponse, TRoutePayload>

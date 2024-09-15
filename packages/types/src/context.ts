@@ -28,12 +28,12 @@ type RestParameters<TFunction> = TFunction extends (payload: any, context: Conte
 
 type UnionFunctions<TFunctions, TSchema extends WithId<unknown>> = {
   [P in keyof TFunctions]: (
-    P extends keyof CollectionFunctions<any>
+    P extends keyof CollectionFunctions
       ? CollectionFunctions<TSchema>[P] extends infer CollFunction
-        ? CollFunction extends (...args: any[])=> unknown
-          ? Extract<undefined, Parameters<CollFunction>[0]> extends never
-            ? (payload: Parameters<CollFunction>[0], ...args: RestParameters<TFunctions[P]>)=> ReturnType<CollFunction>
-            : (payload?: Parameters<CollFunction>[0], ...args: RestParameters<TFunctions[P]>)=> ReturnType<CollFunction>
+        ? CollFunction extends (...args: infer Args)=> unknown
+          ? Extract<undefined, Args[0]> extends never
+            ? (payload: Args[0], ...args: RestParameters<TFunctions[P]>)=> ReturnType<CollFunction>
+            : (payload?: Args[0], ...args: RestParameters<TFunctions[P]>)=> ReturnType<CollFunction>
           : never
         : never
       : OmitContextParameter<TFunctions[P]>
@@ -109,14 +109,16 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
 }
 
 export type CollectionContext<
-  TDescription extends Description = any,
+  TDescription extends Description,
   TFunctions = Collection['functions'],
 > = {
   description: TDescription
   collectionName?: Extract<keyof Collections, string>
   collection: TDescription['$id'] extends keyof Collections
-    ? IndepthCollection<{ description: TDescription,
-      functions: TFunctions }>
+    ? IndepthCollection<{
+      description: TDescription
+      functions: TFunctions
+    }>
     : IndepthCollection<any>
 }
 

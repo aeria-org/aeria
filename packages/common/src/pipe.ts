@@ -1,18 +1,16 @@
-export type PipeOptions<TFunction extends (...args: unknown[])=> unknown> = {
-  returnFirst?: boolean | ((value: unknown)=> Awaited<ReturnType<TFunction>> | undefined)
+export type PipeOptions<TReturn> = {
+  returnFirst?: boolean | ((value: unknown)=> Awaited<TReturn> | undefined)
 }
 
-export const pipe = <TFunction extends (...args: any[])=> unknown>(functions: TFunction[], options?: PipeOptions<TFunction>) => {
+export const pipe = <TArgs extends unknown[], TReturn>(functions: ((p1: TReturn, ...args: TArgs)=> TReturn)[], options?: PipeOptions<TReturn>) => {
   const { returnFirst } = options || {}
 
-  return async (
-    value: Parameters<TFunction>[0],
-    ...args: Parameters<TFunction> extends [unknown, ...infer Tail] ? Tail : []
-  ) => {
+  return async (value: Awaited<TReturn>, ...args: TArgs) => {
     let ret = value
 
     for( const fn of functions ) {
-      ret = await fn(ret, ...args) as ReturnType<TFunction>
+      ret = await fn(ret, ...args)
+      // eslint-disable-next-line
       if( returnFirst && ret !== undefined ) {
         switch( typeof returnFirst ) {
           case 'function': {

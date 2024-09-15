@@ -38,6 +38,13 @@ export type TraverseNormalized = {
   pipe: <T = unknown>(value: unknown, phaseContext: PhaseContext)=> T | Promise<T>
 }
 
+export type ValidTempFile =
+  | undefined
+  | ObjectId
+  | {
+    tempId: string
+  }
+
 type PhaseContext = {
   target: Record<string, unknown>
   root: {
@@ -231,15 +238,22 @@ const validate = (value: unknown, ctx: PhaseContext) => {
   return value
 }
 
-const moveFiles = async (
-  value:
-    | undefined
-    | ObjectId
-    | {
-      tempId: string
-    },
-  ctx: PhaseContext,
-) => {
+const isValidTempFile = (value: unknown): value is ValidTempFile => {
+  if( value && typeof value === 'object' ) {
+    return 'tempId' in value && typeof value.tempId === 'string'
+  }
+
+  return !!(
+    value === undefined
+    || value instanceof ObjectId
+  )
+}
+
+const moveFiles = async (value: unknown, ctx: PhaseContext) => {
+  if( !isValidTempFile(value) ) {
+    return Result.error(TraverseError.InvalidTempfile)
+  }
+
   if( !('$ref' in ctx.property) || ctx.property.$ref !== 'file' || value instanceof ObjectId ) {
     return value
   }
@@ -506,7 +520,7 @@ export const traverseDocument = async <TWhat>(
   _options: TraverseOptions,
 ) => {
   const options = Object.assign({}, _options) as TraverseOptions & TraverseNormalized
-  const functions = []
+  const functions: ((value: unknown, ctx: PhaseContext)=> unknown)[] = []
 
   if( !what ) {
     return Result.result(what)
@@ -549,7 +563,7 @@ export const traverseDocument = async <TWhat>(
   let traverseError: TraverseError | undefined
   let validationError: Record<string, ValidationError> | undefined
 
-  const mutateTarget = <TValue>(fn: (value: TValue, ctx: PhaseContext)=> unknown) => {
+  const mutateTarget = <TValue, TReturn>(fn: (value: TValue, ctx: PhaseContext)=> TReturn) => {
     return async (value: TValue, ctx: PhaseContext) => {
       const result = await fn(value, ctx)
       ctx.target[ctx.propName] = result
