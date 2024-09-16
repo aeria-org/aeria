@@ -39,6 +39,7 @@ export type TraverseNormalized = {
 }
 
 export type ValidTempFile =
+  | null
   | undefined
   | ObjectId
   | {
@@ -245,6 +246,7 @@ const isValidTempFile = (value: unknown): value is ValidTempFile => {
 
   return !!(
     value === undefined
+    || value === null
     || value instanceof ObjectId
   )
 }
@@ -254,15 +256,15 @@ const moveFiles = async (value: unknown, ctx: PhaseContext) => {
     return value
   }
 
+  if( !isValidTempFile(value) ) {
+    return Result.error(TraverseError.InvalidTempfile)
+  }
+
   if( !value ) {
     if( ctx.root._id && !ctx.isArray ) {
       await disposeOldFiles(ctx)
     }
     return null
-  }
-
-  if( !isValidTempFile(value) ) {
-    return Result.error(TraverseError.InvalidTempfile)
   }
 
   if( value instanceof ObjectId ) {

@@ -1,6 +1,6 @@
 import type { Description, Context, RouteContext, StringProperty, EnumProperty } from '@aeriajs/types'
 import type { description as userDescription } from '../collections/user/description.js'
-import { createContext, preloadDescription, getEndpoints } from '@aeriajs/core'
+import { createContext, preloadDescription, getEndpoints, isValidDescription } from '@aeriajs/core'
 import { getCollections, getAvailableRoles } from '@aeriajs/entrypoint'
 import { Result, ACError } from '@aeriajs/types'
 import { serialize, endpointError } from '@aeriajs/common'
@@ -88,6 +88,12 @@ export const describe = async (contextOrPayload: RouteContext | typeof Payload) 
       : candidate
 
     const { description: rawDescription } = collection
+
+    if( !isValidDescription(rawDescription) ) {
+      throw new Error(
+        `The "${collectionName}" symbol exported from the entrypoint doesn't have a valid description. Make sure only collections are exported from the "import('.').collections".`
+      )
+    }
 
     const description = await preloadDescription(rawDescription)
     descriptions[description.$id] = description

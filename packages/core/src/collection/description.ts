@@ -12,3 +12,15 @@ export const defineDescriptionTuple = <const TDescription extends Description<TD
   TDescription,
 ]
 
+export const isValidDescription = (value: unknown): value is Description => {
+  return !!(
+    value
+    && typeof value === 'object'
+    && '$id' in value
+    && 'properties' in value
+    && value.properties
+    && typeof value.$id === 'string'
+    && typeof value.properties === 'object'
+  )
+}
+
