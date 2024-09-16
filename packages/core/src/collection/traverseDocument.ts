@@ -254,6 +254,13 @@ const moveFiles = async (value: unknown, ctx: PhaseContext) => {
     return value
   }
 
+  if( !value ) {
+    if( ctx.root._id && !ctx.isArray ) {
+      await disposeOldFiles(ctx)
+    }
+    return null
+  }
+
   if( !isValidTempFile(value) ) {
     return Result.error(TraverseError.InvalidTempfile)
   }
@@ -264,13 +271,6 @@ const moveFiles = async (value: unknown, ctx: PhaseContext) => {
 
   if( !ctx.options.context ) {
     throw new Error()
-  }
-
-  if( !value ) {
-    if( ctx.root._id && !ctx.isArray ) {
-      await disposeOldFiles(ctx)
-    }
-    return null
   }
 
   const tempFile = await ctx.options.context.collections.tempFile.model.findOne({

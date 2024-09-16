@@ -26,7 +26,7 @@ export const defaultRequestTransformer = async (url: string, payload: unknown, p
     } else {
       request.params.body = params.headers?.['content-type']?.startsWith('application/json')
         ? JSON.stringify(payload)
-        : Buffer.from(String(payload))
+        : <Buffer>payload
     }
   }
 
