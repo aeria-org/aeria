@@ -90,9 +90,7 @@ export const describe = async (contextOrPayload: RouteContext | typeof Payload) 
     const { description: rawDescription } = collection
 
     if( !isValidDescription(rawDescription) ) {
-      throw new Error(
-        `The "${collectionName}" symbol exported from the entrypoint doesn't have a valid description. Make sure only collections are exported from the "import('.').collections".`
-      )
+      throw new Error(`The "${collectionName}" symbol exported from the entrypoint doesn't have a valid description. Make sure only collections are exported from the "import('.').collections".`)
     }
 
     const description = await preloadDescription(rawDescription)
