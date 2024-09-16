@@ -1,5 +1,23 @@
 # aeria
 
+## 0.0.177
+
+### Patch Changes
+
+- ad785f9: Release
+- Updated dependencies [ad785f9]
+  - @aeriajs/core@0.0.166
+  - @aeriajs/builtins@0.0.166
+  - @aeriajs/cli@0.0.108
+  - @aeriajs/common@0.0.102
+  - @aeriajs/entrypoint@0.0.104
+  - @aeriajs/http@0.0.115
+  - @aeriajs/node-http@0.0.115
+  - @aeriajs/security@0.0.166
+  - @aeriajs/server@0.0.168
+  - @aeriajs/types@0.0.87
+  - @aeriajs/validation@0.0.105
+
 ## 0.0.176
 
 ### Patch Changes
