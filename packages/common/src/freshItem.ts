@@ -2,7 +2,7 @@ import type { Description } from '@aeriajs/types'
 
 const freshProperties = (properties: Description['properties']): Record<string, unknown> => Object.entries(properties).reduce((a, [key, property]) => {
   const value = (() => {
-    if( '$ref' in property ) {
+    if( '$ref' in property && property.inline ) {
       return {}
     }
 
