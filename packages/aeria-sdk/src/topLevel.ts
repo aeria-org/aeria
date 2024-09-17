@@ -17,11 +17,8 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
 ) => {
   return new Proxy(_target as TTarget & TopLevelObject, {
     get: (target, key) => {
-      if( typeof target === 'function' ) {
-        return target
-      }
       if( typeof key === 'symbol' ) {
-        return target[key]
+        return target[key as keyof typeof target]
       }
 
       const fn = async (payload: unknown) => {
