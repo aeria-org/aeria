@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.134
+
+### Patch Changes
+
+- 6d95732: Fix mirror code generation
+
 ## 0.0.133
 
 ### Patch Changes
