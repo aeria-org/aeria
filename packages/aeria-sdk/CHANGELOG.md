@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.133
+
+### Patch Changes
+
+- 9bb7697: Fix `proxify()`
+
 ## 0.0.132
 
 ### Patch Changes
