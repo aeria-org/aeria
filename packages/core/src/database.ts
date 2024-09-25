@@ -60,17 +60,8 @@ export const getDatabaseSync = () => {
   return dbMemo.db
 }
 
-export const prepareCollectionName = (collectionName: string) => {
-  let pluralized: string
-  if( collectionName.endsWith('y') ) {
-    pluralized = collectionName.replace(/y$/, 'ies')
-  } else if( collectionName.endsWith('s') ) {
-    pluralized = `${collectionName}es`
-  } else {
-    pluralized = `${collectionName}s`
-  }
-
-  return pluralized.toLowerCase()
+export const prepareCollectionName = (rawName: string) => {
+  return rawName.toLowerCase()
 }
 
 export const getDatabaseCollection = <TDocument extends Record<string, unknown>>(collectionName: string) => {
