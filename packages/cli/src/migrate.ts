@@ -1,5 +1,5 @@
 import { getCollections } from '@aeriajs/entrypoint'
-import { getDatabase, prepareCollectionName, getDatabaseCollection, getReferences, type ReferenceMap } from '@aeriajs/core'
+import { getDatabase, getDatabaseCollection, getReferences, type ReferenceMap } from '@aeriajs/core'
 import { Result } from '@aeriajs/types'
 import { config as loadEnv } from 'dotenv'
 import { log } from './log.js'
@@ -41,12 +41,11 @@ export const migrate = async () => {
   const collections = await getCollections()
   const session = await getDatabase()
 
-  const createCollection = async (name: string) => {
+  const createCollection = async (collectionName: string) => {
     if( !session.db ) {
       throw new Error()
     }
 
-    const collectionName = prepareCollectionName(name)
     const collection = await session.db.listCollections({
       name: collectionName,
     }).next()

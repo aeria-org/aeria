@@ -60,12 +60,8 @@ export const getDatabaseSync = () => {
   return dbMemo.db
 }
 
-export const prepareCollectionName = (rawName: string) => {
-  return rawName.toLowerCase()
-}
-
 export const getDatabaseCollection = <TDocument extends Record<string, unknown>>(collectionName: string) => {
   const db = getDatabaseSync()
-  return db.collection<PackReferences<TDocument>>(prepareCollectionName(collectionName))
+  return db.collection<PackReferences<TDocument>>(collectionName)
 }
 

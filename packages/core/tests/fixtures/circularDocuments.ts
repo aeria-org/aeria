@@ -19,11 +19,11 @@ export const circularDocuments = (async () => {
     token,
   })
 
-  const { insertedId: circularA1 } = await db.collection('circulara').insertOne({
+  const { insertedId: circularA1 } = await db.collection('circularA').insertOne({
     name: 'rec a1',
   })
 
-  const { insertedId: circularB1 } = await db.collection('circularb').insertOne({
+  const { insertedId: circularB1 } = await db.collection('circularB').insertOne({
     name: 'rec b1',
     circularA: circularA1,
   })

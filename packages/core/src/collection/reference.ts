@@ -2,7 +2,6 @@ import type { FixedObjectProperty, Description } from '@aeriajs/types'
 import type { Document } from 'mongodb'
 import { throwIfError, getReferenceProperty } from '@aeriajs/common'
 import { getCollectionAsset } from '../assets.js'
-import { prepareCollectionName } from '../database.js'
 
 export type Reference = {
   isArray?: boolean
@@ -373,7 +372,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
 
       rootPipeline.unshift({
         $lookup: {
-          from: prepareCollectionName(reference.referencedCollection),
+          from: reference.referencedCollection,
           foreignField: '_id',
           localField,
           as: tempName,
