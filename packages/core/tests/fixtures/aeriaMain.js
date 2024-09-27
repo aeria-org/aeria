@@ -1,10 +1,11 @@
 // @ts-check
-const { init, user, file, get } = require('aeria')
+const { init, user, file, tempFile, get } = require('aeria')
 
 exports.default = init({
   collections: {
     user,
     file,
+    tempFile,
     circularA: {
       functions: {
         get,

@@ -245,7 +245,7 @@ const isValidTempFile = (value: unknown): value is ValidTempFile => {
       return true
     }
 
-    return 'tempId' in value && typeof value.tempId === 'string'
+    return 'tempId' in value && (typeof value.tempId === 'string' || value.tempId instanceof ObjectId)
   }
 
   return !!(
@@ -528,15 +528,16 @@ export const traverseDocument = async <TWhat>(
   description: Description,
   _options: TraverseOptions,
 ) => {
+  const whatCopy = Object.assign({}, what)
   const options = Object.assign({}, _options) as TraverseOptions & TraverseNormalized
   const functions: ((value: unknown, ctx: PhaseContext)=> unknown)[] = []
 
-  if( !what ) {
-    return Result.result(what)
+  if( !whatCopy ) {
+    return Result.result(whatCopy)
   }
 
-  if( !options.validate && Object.keys(what).length === 0 ) {
-    return Result.result(what)
+  if( !options.validate && Object.keys(whatCopy).length === 0 ) {
+    return Result.result(whatCopy)
   }
 
   if( options.recurseDeep ) {
@@ -557,7 +558,7 @@ export const traverseDocument = async <TWhat>(
       descriptionCopy.required = options.validateRequired
     }
 
-    const wholenessError = validateWholeness(what, descriptionCopy)
+    const wholenessError = validateWholeness(whatCopy, descriptionCopy)
     if( wholenessError ) {
       return Result.error(wholenessError)
     }
@@ -603,8 +604,8 @@ export const traverseDocument = async <TWhat>(
     }),
   })
 
-  const { error, result } = await recurse(what, {
-    root: what,
+  const { error, result } = await recurse(whatCopy, {
+    root: whatCopy,
     property: description as Property,
     propPath: '',
     options,

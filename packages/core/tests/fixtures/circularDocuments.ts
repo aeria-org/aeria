@@ -1,7 +1,7 @@
 import type { Token } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import { createContext, insert } from '../../dist/index.js'
-import { dbPromise } from './database'
+import { dbPromise } from './database.js'
 
 const token: Token = {
   authenticated: false,

@@ -1,6 +1,47 @@
-import { expect, test, assert } from 'vitest'
+import type { InsertOneResult } from 'mongodb'
+import type { Context } from '@aeriajs/types'
+import { expect, test, assert, beforeAll, afterAll } from 'vitest'
+import * as fs from 'fs'
 import { PropertyValidationErrorCode, ValidationErrorCode } from '@aeriajs/types'
-import { traverseDocument, ObjectId } from '../dist/index.js'
+import { traverseDocument, ObjectId, getDatabase, createContext } from '../dist/index.js'
+import { dbPromise } from './fixtures/database.js'
+
+let context: Context
+
+let
+  tempFile1: InsertOneResult,
+  tempFile2: InsertOneResult
+
+beforeAll(async () => {
+  await dbPromise
+  context = await createContext({
+    config: {
+      security: {},
+      storage: {
+        fs: '/tmp',
+        tempFs: '/tmp',
+      },
+    },
+  })
+
+  await fs.promises.writeFile('/tmp/tempFile1.bin', '')
+  await fs.promises.writeFile('/tmp/tempFile2.bin', '')
+
+  tempFile1 = await context.collections.tempFile.model.insertOne({
+    name: 'tempFile1.bin',
+    absolute_path: '/tmp/tempFile1.bin',
+  })
+
+  tempFile2 = await context.collections.tempFile.model.insertOne({
+    name: 'tempFile2.bin',
+    absolute_path: '/tmp/tempFile2.bin',
+  })
+})
+
+afterAll(async () => {
+  await fs.promises.unlink('/tmp/tempFile1.bin')
+  await fs.promises.unlink('/tmp/tempFile2.bin')
+})
 
 test('returns a validation error on shallow invalid property', async () => {
   const what = {
@@ -205,3 +246,57 @@ test('autocast top-level MongoDB operators', async () => {
   expect(result.$and[1].image).toBeInstanceOf(ObjectId)
   expect(result.$and[2].status).toBe('accepted')
 })
+
+test('moves single file', async () => {
+  const what = {
+    single_file: {
+      tempId: tempFile1.insertedId,
+    }
+  }
+
+  const { result } = await traverseDocument(what, {
+    $id: 'person',
+    properties: {
+      single_file: {
+        $ref: 'file',
+      },
+    },
+  }, {
+    moveFiles: true,
+    context,
+  })
+
+  assert(result)
+  expect(result.single_file).toBeInstanceOf(ObjectId)
+})
+
+test('moves multiple files', async () => {
+  const what = {
+    multiple_files: [
+      { tempId: tempFile1.insertedId, },
+      { tempId: tempFile2.insertedId, },
+    ]
+  }
+
+  const { result } = await traverseDocument(what, {
+    $id: 'person',
+    properties: {
+      multiple_files: {
+        type: 'array',
+        items: {
+          $ref: 'file',
+        },
+      },
+    },
+  }, {
+    moveFiles: true,
+    recurseDeep: true,
+    context,
+  })
+
+  assert(result)
+  expect(result.multiple_files).toBeInstanceOf(Array)
+  expect(result.multiple_files[0]).toBeInstanceOf(ObjectId)
+  expect(result.multiple_files[1]).toBeInstanceOf(ObjectId)
+})
+

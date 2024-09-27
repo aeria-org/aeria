@@ -19,13 +19,18 @@ const indepthCollection = (collectionName: string, collections: Record<string, C
     ? candidate()
     : candidate
 
+  if( !collection ) {
+    throw new Error(`"${collectionName}" isn't a collection`)
+  }
+
   const proxiedFunctions = new Proxy<NonNullable<IndepthCollection<any>['functions']>>({}, {
     get: (_, functionName) => {
       if( typeof functionName !== 'string' ) {
         throw new Error()
       }
 
-      if( !collection.functions?.[functionName] ) {
+      const fn = collection.functions?.[functionName]
+      if( !fn ) {
         return null
       }
 
@@ -36,7 +41,7 @@ const indepthCollection = (collectionName: string, collections: Record<string, C
           inherited: true,
         })
 
-        return collection.functions![functionName](props, childContext, ...args)
+        return fn(props, childContext, ...args)
       }
     },
   })
