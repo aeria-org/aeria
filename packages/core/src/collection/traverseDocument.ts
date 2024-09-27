@@ -241,13 +241,16 @@ const validate = (value: unknown, ctx: PhaseContext) => {
 
 const isValidTempFile = (value: unknown): value is ValidTempFile => {
   if( value && typeof value === 'object' ) {
+    if( value instanceof ObjectId ) {
+      return true
+    }
+
     return 'tempId' in value && typeof value.tempId === 'string'
   }
 
   return !!(
     value === undefined
     || value === null
-    || value instanceof ObjectId
   )
 }
 
