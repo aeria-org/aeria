@@ -19,10 +19,6 @@ const indepthCollection = (collectionName: string, collections: Record<string, C
     ? candidate()
     : candidate
 
-  if( !collection ) {
-    throw new Error(`"${collectionName}" isn't a collection`)
-  }
-
   const proxiedFunctions = new Proxy<NonNullable<IndepthCollection<any>['functions']>>({}, {
     get: (_, functionName) => {
       if( typeof functionName !== 'string' ) {

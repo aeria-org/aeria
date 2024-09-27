@@ -528,13 +528,13 @@ export const traverseDocument = async <TWhat>(
   description: Description,
   _options: TraverseOptions,
 ) => {
+  if( !what ) {
+    return Result.result(what)
+  }
+
   const whatCopy = Object.assign({}, what)
   const options = Object.assign({}, _options) as TraverseOptions & TraverseNormalized
   const functions: ((value: unknown, ctx: PhaseContext)=> unknown)[] = []
-
-  if( !whatCopy ) {
-    return Result.result(whatCopy)
-  }
 
   if( !options.validate && Object.keys(whatCopy).length === 0 ) {
     return Result.result(whatCopy)
