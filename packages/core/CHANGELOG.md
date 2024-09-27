@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.168
+
+### Patch Changes
+
+- 0248e1b: Fix `moveFiles()` bug
+  - @aeriajs/builtins@0.0.168
+  - @aeriajs/security@0.0.168
+
 ## 0.0.167
 
 ### Patch Changes
