@@ -1,5 +1,18 @@
 # @aeriajs/api
 
+## 0.0.169
+
+### Patch Changes
+
+- d58110e: Fix inconsistent `makePagination()`
+- Updated dependencies [d58110e]
+  - @aeriajs/common@0.0.104
+  - @aeriajs/builtins@0.0.169
+  - @aeriajs/entrypoint@0.0.106
+  - @aeriajs/http@0.0.117
+  - @aeriajs/security@0.0.169
+  - @aeriajs/validation@0.0.107
+
 ## 0.0.168
 
 ### Patch Changes

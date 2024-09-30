@@ -1,6 +1,6 @@
 {
   "name": "aeria",
-  "version": "0.0.179",
+  "version": "0.0.180",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -46,16 +46,16 @@
     "@aeriajs/validation": "link:../validation"
   },
   "peerDependencies": {
-    "@aeriajs/cli": "^0.0.110",
-    "@aeriajs/core": "^0.0.168",
-    "@aeriajs/common": "^0.0.103",
-    "@aeriajs/entrypoint": "^0.0.105",
-    "@aeriajs/http": "^0.0.116",
-    "@aeriajs/node-http": "^0.0.116",
-    "@aeriajs/security": "^0.0.168",
-    "@aeriajs/server": "^0.0.170",
-    "@aeriajs/builtins": "^0.0.168",
+    "@aeriajs/cli": "^0.0.111",
+    "@aeriajs/core": "^0.0.169",
+    "@aeriajs/common": "^0.0.104",
+    "@aeriajs/entrypoint": "^0.0.106",
+    "@aeriajs/http": "^0.0.117",
+    "@aeriajs/node-http": "^0.0.117",
+    "@aeriajs/security": "^0.0.169",
+    "@aeriajs/server": "^0.0.171",
+    "@aeriajs/builtins": "^0.0.169",
     "@aeriajs/types": "^0.0.87",
-    "@aeriajs/validation": "^0.0.106"
+    "@aeriajs/validation": "^0.0.107"
   }
 }

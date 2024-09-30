@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.104
+
+### Patch Changes
+
+- d58110e: Fix inconsistent `makePagination()`
+
 ## 0.0.103
 
 ### Patch Changes
