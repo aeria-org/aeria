@@ -288,6 +288,7 @@ test('moves multiple files', async () => {
     multiple_files: [
       { tempId: tempFile1.insertedId, },
       { tempId: tempFile2.insertedId, },
+      new ObjectId,
     ]
   }
 
@@ -311,6 +312,7 @@ test('moves multiple files', async () => {
   expect(result.multiple_files).toBeInstanceOf(Array)
   expect(result.multiple_files[0]).toBeInstanceOf(ObjectId)
   expect(result.multiple_files[1]).toBeInstanceOf(ObjectId)
+  expect(result.multiple_files[2]).toBeInstanceOf(ObjectId)
   expect(fs.existsSync(path.join(persistentFs, path.basename(tempPath1)))).toBeTruthy()
   expect(fs.existsSync(persistentPath1)).toBeTruthy()
   expect(fs.existsSync(persistentPath2)).toBeTruthy()
