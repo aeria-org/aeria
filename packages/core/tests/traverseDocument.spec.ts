@@ -10,15 +10,19 @@ import { dbPromise } from './fixtures/database.js'
 
 let
   context: Context,
+  persistentFs: string,
+  tempFs: string,
   tempFile1: InsertOneResult,
   tempFile2: InsertOneResult,
   tempPath1: string,
-  tempPath2: string
+  tempPath2: string,
+  persistentPath1: string,
+  persistentPath2: string
 
 beforeAll(async () => {
   await dbPromise
-  const persistentFs = await fs.promises.mkdtemp(path.join(tmpdir(), 'aeria-'))
-  const tempFs = await fs.promises.mkdtemp(path.join(tmpdir(), 'aeria-'))
+  persistentFs = await fs.promises.mkdtemp(path.join(tmpdir(), 'aeria-'))
+  tempFs = await fs.promises.mkdtemp(path.join(tmpdir(), 'aeria-'))
 
   context = await createContext({
     config: {
@@ -32,6 +36,8 @@ beforeAll(async () => {
 
   tempPath1 = path.join(tempFs, 'tempFile1.bin')
   tempPath2 = path.join(tempFs, 'tempFile2.bin')
+  persistentPath1 = path.join(persistentFs, path.basename(tempPath1))
+  persistentPath2 = path.join(persistentFs, path.basename(tempPath2))
 
   await fs.promises.writeFile(tempPath1, '')
   await fs.promises.writeFile(tempPath2, '')
@@ -272,7 +278,9 @@ test('moves single file', async () => {
 
   assert(result)
   expect(result.single_file).toBeInstanceOf(ObjectId)
+  expect(fs.existsSync(persistentPath1)).toBeTruthy()
   await fs.promises.writeFile(tempPath1, '')
+  await fs.promises.unlink(persistentPath1)
 })
 
 test('moves multiple files', async () => {
@@ -303,5 +311,8 @@ test('moves multiple files', async () => {
   expect(result.multiple_files).toBeInstanceOf(Array)
   expect(result.multiple_files[0]).toBeInstanceOf(ObjectId)
   expect(result.multiple_files[1]).toBeInstanceOf(ObjectId)
+  expect(fs.existsSync(path.join(persistentFs, path.basename(tempPath1)))).toBeTruthy()
+  expect(fs.existsSync(persistentPath1)).toBeTruthy()
+  expect(fs.existsSync(persistentPath2)).toBeTruthy()
 })
 
