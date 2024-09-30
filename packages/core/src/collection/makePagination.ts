@@ -1,5 +1,6 @@
 import type { WithId } from 'mongodb'
 import type { Context, Description, Pagination, GetAllPayload, CountReturnType } from '@aeriajs/types'
+import { count } from '../functions/count.js'
 import { throwIfError } from '@aeriajs/common'
 
 export const makePagination = async (
@@ -10,7 +11,7 @@ export const makePagination = async (
   }>,
 ): Promise<Pagination> => {
   const {
-    offset = 0 ,
+    offset = 0,
     limit = context.config.defaultPaginationLimit!,
   } = payload
 
@@ -18,7 +19,9 @@ export const makePagination = async (
     ? throwIfError(await context.collection.functions.count({
       filters: payload.filters,
     }))
-    : await context.collection.model.countDocuments(payload.filters as Record<string, unknown>)
+    : throwIfError(await count({
+      filters: payload.filters,
+    }, context))
 
   return {
     recordsCount: documents.length,

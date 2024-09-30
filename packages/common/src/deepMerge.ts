@@ -3,10 +3,7 @@ export type MergeOptions = {
   callback?: (key: string, leftVal: unknown, rightVal: unknown)=> unknown
 }
 
-export const deepMerge = <
-  const TLeft,
-  const TRight,
->(left: TLeft, right: TRight, options?: MergeOptions) => {
+export const deepMerge = <const TLeft, const TRight>(left: TLeft, right: TRight, options?: MergeOptions) => {
   const result: Record<string, unknown> = Object.assign({}, left)
   const { arrays = true } = options || {}
 
