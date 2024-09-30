@@ -1,46 +1,50 @@
 import type { InsertOneResult } from 'mongodb'
 import type { Context } from '@aeriajs/types'
-import { expect, test, assert, beforeAll, afterAll } from 'vitest'
+import { expect, test, assert, beforeAll } from 'vitest'
 import * as fs from 'fs'
+import * as path from 'path'
+import { tmpdir } from 'os'
 import { PropertyValidationErrorCode, ValidationErrorCode } from '@aeriajs/types'
-import { traverseDocument, ObjectId, getDatabase, createContext } from '../dist/index.js'
+import { traverseDocument, ObjectId, createContext } from '../dist/index.js'
 import { dbPromise } from './fixtures/database.js'
 
-let context: Context
-
 let
+  context: Context,
   tempFile1: InsertOneResult,
-  tempFile2: InsertOneResult
+  tempFile2: InsertOneResult,
+  tempPath1: string,
+  tempPath2: string
 
 beforeAll(async () => {
   await dbPromise
+  const persistentFs = await fs.promises.mkdtemp(path.join(tmpdir(), 'aeria-'))
+  const tempFs = await fs.promises.mkdtemp(path.join(tmpdir(), 'aeria-'))
+
   context = await createContext({
     config: {
       security: {},
       storage: {
-        fs: '/tmp',
-        tempFs: '/tmp',
+        fs: persistentFs,
+        tempFs,
       },
     },
   })
 
-  await fs.promises.writeFile('/tmp/tempFile1.bin', '')
-  await fs.promises.writeFile('/tmp/tempFile2.bin', '')
+  tempPath1 = path.join(tempFs, 'tempFile1.bin')
+  tempPath2 = path.join(tempFs, 'tempFile2.bin')
+
+  await fs.promises.writeFile(tempPath1, '')
+  await fs.promises.writeFile(tempPath2, '')
 
   tempFile1 = await context.collections.tempFile.model.insertOne({
-    name: 'tempFile1.bin',
-    absolute_path: '/tmp/tempFile1.bin',
+    name: path.basename(tempPath1),
+    absolute_path: tempPath1,
   })
 
   tempFile2 = await context.collections.tempFile.model.insertOne({
-    name: 'tempFile2.bin',
-    absolute_path: '/tmp/tempFile2.bin',
+    name: path.basename(tempPath2),
+    absolute_path: tempPath2,
   })
-})
-
-afterAll(async () => {
-  await fs.promises.unlink('/tmp/tempFile1.bin')
-  await fs.promises.unlink('/tmp/tempFile2.bin')
 })
 
 test('returns a validation error on shallow invalid property', async () => {
@@ -268,6 +272,7 @@ test('moves single file', async () => {
 
   assert(result)
   expect(result.single_file).toBeInstanceOf(ObjectId)
+  await fs.promises.writeFile(tempPath1, '')
 })
 
 test('moves multiple files', async () => {

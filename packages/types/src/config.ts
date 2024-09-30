@@ -25,10 +25,10 @@ export type ApiConfig = {
     logSuccessfulAuthentications?: boolean
     authenticationRateLimiting?: RateLimitingParams | null
     allowSignup?: boolean
-    signupDefaults?: Partial<{
-      roles: string[]
-      active: boolean
-    }>
+    signupDefaults?: {
+      roles?: string[]
+      active?: boolean
+    }
     paginationLimit?: number
     exposeFunctionsByDefault?:
       | boolean
