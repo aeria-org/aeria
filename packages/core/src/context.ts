@@ -137,6 +137,7 @@ export const createContext = async <TContextOptions extends ContextOptions>(_opt
     context.description = await preloadDescription(description)
 
     context.collectionName = collectionName
+    context.calledFunction = options.calledFunction
     context.collection = indepthCollection(collectionName, collections, context)
   }
 
