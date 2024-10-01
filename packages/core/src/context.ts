@@ -1,12 +1,4 @@
-import type {
-  Context,
-  ContextOptions,
-  IndepthCollection,
-  IndepthCollections,
-  Token,
-  Collection,
-} from '@aeriajs/types'
-
+import type { Context, ContextOptions, IndepthCollection, IndepthCollections, Collection } from '@aeriajs/types'
 import { throwIfError, endpointError } from '@aeriajs/common'
 import { getCollections } from '@aeriajs/entrypoint'
 import { limitRate } from '@aeriajs/security'
@@ -53,15 +45,21 @@ const indepthCollection = (collectionName: string, collections: Record<string, C
 export const createContext = async (options: ContextOptions = {}) => {
   const {
     collectionName,
-    parentContext = {},
-    token = {} as Token,
+    parentContext,
+    token = {
+      authenticated: false,
+      sub: null,
+    },
   } = options
 
   const { getCollectionAsset } = await import('./assets.js')
   const collections = await getCollections()
 
   const context = Object.assign({} as Context, parentContext)
-  Object.assign(context, options)
+  Object.assign(context, {
+    ...options,
+    token,
+  })
 
   context.log = async (message, details) => {
     return getDatabaseCollection('log').insertOne({
