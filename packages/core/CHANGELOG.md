@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.171
+
+### Patch Changes
+
+- 9ce72a1: Fix `Context`
+- Updated dependencies [9ce72a1]
+  - @aeriajs/types@0.0.88
+  - @aeriajs/builtins@0.0.171
+  - @aeriajs/common@0.0.105
+  - @aeriajs/entrypoint@0.0.107
+  - @aeriajs/http@0.0.118
+  - @aeriajs/security@0.0.171
+  - @aeriajs/validation@0.0.108
+
 ## 0.0.170
 
 ### Patch Changes

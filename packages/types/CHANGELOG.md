@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.88
+
+### Patch Changes
+
+- 9ce72a1: Fix `Context`
+
 ## 0.0.87
 
 ### Patch Changes
