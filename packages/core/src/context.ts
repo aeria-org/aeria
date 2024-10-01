@@ -129,7 +129,7 @@ export const createContext = async <TContextOptions extends ContextOptions>(_opt
     },
     limitRate: (params) => {
       return limitRate(params, context)
-    }
+    },
   }
 
   if( isCollectionContext(context, collectionName) && collectionName ) {
@@ -142,6 +142,6 @@ export const createContext = async <TContextOptions extends ContextOptions>(_opt
 
   return context as TContextOptions extends { collectionName: unknown }
     ? Context
-    : RouteContext 
+    : RouteContext
 }
 
