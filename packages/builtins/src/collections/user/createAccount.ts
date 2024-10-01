@@ -1,4 +1,4 @@
-import type { Context, SchemaWithId } from '@aeriajs/types'
+import type { Context, SchemaWithId, PackReferences } from '@aeriajs/types'
 import type { description } from './description.js'
 import { HTTPStatus, ACError } from '@aeriajs/types'
 import { validate } from '@aeriajs/validation'
@@ -9,7 +9,7 @@ export enum CreateAccountError {
 }
 
 export const createAccount = async (
-  payload: Partial<SchemaWithId<typeof description>>,
+  payload: Partial<PackReferences<SchemaWithId<typeof description>>> & Record<string, unknown>,
   context: Context<typeof description>,
 ) => {
   const userCandidate = Object.assign({}, payload)

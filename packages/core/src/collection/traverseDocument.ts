@@ -58,6 +58,12 @@ type PhaseContext = {
   isArray?: boolean
 }
 
+type FileDocument = {
+  _id: ObjectId
+  absolute_path: string
+  owner: ObjectId | null
+}
+
 const getProperty = (propName: string, parentProperty: Property | Description) => {
   if( propName === '_id' ) {
     return <Property>{
@@ -278,7 +284,7 @@ const moveFiles = async (value: unknown, ctx: PhaseContext) => {
     throw new Error()
   }
 
-  const tempFile = await ctx.options.context.collections.tempFile.model.findOne({
+  const tempFile: FileDocument = await ctx.options.context.collections.tempFile.model.findOne({
     _id: new ObjectId(value.tempId),
   })
 
@@ -292,6 +298,7 @@ const moveFiles = async (value: unknown, ctx: PhaseContext) => {
 
   const { _id: fileId, ...newFile } = tempFile
   newFile.absolute_path = `${ctx.options.context.config.storage!.fs}/${tempFile.absolute_path.split(path.sep).at(-1)}`
+  newFile.owner = ctx.options.context.token.sub
   await fs.rename(tempFile.absolute_path, newFile.absolute_path)
 
   const file = await ctx.options.context.collections.file.model.insertOne(newFile)
