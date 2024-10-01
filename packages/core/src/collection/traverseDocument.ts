@@ -284,7 +284,7 @@ const moveFiles = async (value: unknown, ctx: PhaseContext) => {
     throw new Error()
   }
 
-  const tempFile: FileDocument = await ctx.options.context.collections.tempFile.model.findOne({
+  const tempFile: FileDocument | null = await ctx.options.context.collections.tempFile.model.findOne({
     _id: new ObjectId(value.tempId),
   })
 
