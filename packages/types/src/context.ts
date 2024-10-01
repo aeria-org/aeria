@@ -105,7 +105,6 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
 
   config: ApiConfig
   inherited: boolean
-  calledFunction: string
 }
 
 export type CollectionContext<
@@ -120,6 +119,7 @@ export type CollectionContext<
       functions: TFunctions
     }>
     : IndepthCollection<any>
+  calledFunction?: string
 }
 
 export type Context<

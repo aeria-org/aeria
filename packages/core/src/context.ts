@@ -1,11 +1,22 @@
-import type { Context, ContextOptions, IndepthCollection, IndepthCollections, Collection } from '@aeriajs/types'
+import type {
+  Context,
+  ContextOptions,
+  RouteContext,
+  IndepthCollection,
+  IndepthCollections,
+  Collection,
+  ApiConfig,
+  GenericRequest,
+  GenericResponse,
+} from '@aeriajs/types'
+
 import { throwIfError, endpointError } from '@aeriajs/common'
 import { getCollections } from '@aeriajs/entrypoint'
 import { limitRate } from '@aeriajs/security'
 import { getDatabaseCollection } from './database.js'
 import { preloadDescription } from './collection/preload.js'
 
-const indepthCollection = (collectionName: string, collections: Record<string, Collection | (()=> Collection)>, parentContext: Context) => {
+const indepthCollection = (collectionName: string, collections: Record<string, Collection | (()=> Collection)>, parentContext: RouteContext) => {
   const candidate = collections[collectionName]
   const collection = typeof candidate === 'function'
     ? candidate()
@@ -42,11 +53,16 @@ const indepthCollection = (collectionName: string, collections: Record<string, C
   }
 }
 
-export const createContext = async (options: ContextOptions = {}) => {
+const isCollectionContext = (_context: unknown, collectionName: string | undefined): _context is Context => {
+  return !!collectionName
+}
+
+export const createContext = async <TContextOptions extends ContextOptions>(_options?: TContextOptions) => {
+  const options: ContextOptions = _options || {}
   const {
     collectionName,
     parentContext,
-    token = {
+    token = parentContext?.token || {
       authenticated: false,
       sub: null,
     },
@@ -55,35 +71,68 @@ export const createContext = async (options: ContextOptions = {}) => {
   const { getCollectionAsset } = await import('./assets.js')
   const collections = await getCollections()
 
-  const context = Object.assign({} as Context, parentContext)
-  Object.assign(context, {
-    ...options,
+  let config: ApiConfig
+  if( options.config ) {
+    config = options.config
+  } else if( parentContext?.config ) {
+    config = parentContext.config
+  } else {
+    config = {
+      security: {},
+    }
+  }
+
+  let
+    request: GenericRequest,
+    response: GenericResponse,
+    inherited = !!options.inherited
+
+  if( parentContext ) {
+    request = parentContext.request
+    response = parentContext.response
+    inherited ||= parentContext.inherited
+  } else {
+    request = {} as GenericRequest
+    response = {} as GenericResponse
+  }
+
+  const context: Context | RouteContext = {
     token,
-  })
+    config,
+    inherited,
+    request,
+    response,
+    collections: new Proxy<IndepthCollections>({}, {
+      get: (_, collectionName) => {
+        if( typeof collectionName !== 'string' ) {
+          throw new Error()
+        }
+        return indepthCollection(collectionName, collections, context)
+      },
+    }),
+    log: async (message, details) => {
+      return getDatabaseCollection('log').insertOne({
+        message,
+        details,
+        context: collectionName,
+        owner: token.authenticated
+          ? token.sub
+          : options.parentContext?.token.sub,
+        created_at: new Date(),
+      })
+    },
 
-  context.log = async (message, details) => {
-    return getDatabaseCollection('log').insertOne({
-      message,
-      details,
-      context: collectionName,
-      owner: token.authenticated
-        ? token.sub
-        : options.parentContext?.token.sub,
-      created_at: new Date(),
-    })
+    error: (httpStatus, error) => {
+      return endpointError(Object.assign({
+        httpStatus,
+      }, error))
+    },
+    limitRate: (params) => {
+      return limitRate(params, context)
+    }
   }
 
-  context.error = (httpStatus, error) => {
-    return endpointError(Object.assign({
-      httpStatus,
-    }, error))
-  }
-
-  context.limitRate = (params) => {
-    return limitRate(params, context)
-  }
-
-  if( collectionName ) {
+  if( isCollectionContext(context, collectionName) && collectionName ) {
     const description = throwIfError(await getCollectionAsset(collectionName , 'description'))
     context.description = await preloadDescription(description)
 
@@ -91,15 +140,8 @@ export const createContext = async (options: ContextOptions = {}) => {
     context.collection = indepthCollection(collectionName, collections, context)
   }
 
-  context.collections = new Proxy<IndepthCollections>({}, {
-    get: (_, collectionName) => {
-      if( typeof collectionName !== 'string' ) {
-        throw new Error()
-      }
-      return indepthCollection(collectionName, collections, context)
-    },
-  })
-
-  return context
+  return context as TContextOptions extends { collectionName: unknown }
+    ? Context
+    : RouteContext 
 }
 

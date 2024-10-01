@@ -1,13 +1,4 @@
-import type {
-  Context,
-  Collection,
-  GenericRequest,
-  ApiConfig,
-  Token,
-  AuthenticatedToken,
-  NonCircularJsonSchema,
-} from '@aeriajs/types'
-
+import type { RouteContext, Collection, GenericRequest, ApiConfig, Token, AuthenticatedToken, NonCircularJsonSchema } from '@aeriajs/types'
 import { Result, ACError } from '@aeriajs/types'
 import { endpointError, throwIfError, deepMerge } from '@aeriajs/common'
 import { defineServerOptions, cors, wrapRouteExecution, type createRouter } from '@aeriajs/http'
@@ -27,8 +18,8 @@ export type InitApiConfig = Omit<ApiConfig, keyof typeof DEFAULT_API_CONFIG> & P
 export type InitOptions = {
   config?: InitApiConfig
   router?: ReturnType<typeof createRouter>
-  setup?: (context: Context)=> unknown
-  callback?: (context: Context)=> unknown
+  setup?: (context: RouteContext)=> unknown
+  callback?: (context: RouteContext)=> unknown
   collections?: Record<string, Collection & {
     description: NonCircularJsonSchema
   }>
@@ -39,7 +30,7 @@ const authenticationGuard = (decodedToken: Token): decodedToken is Authenticated
   return true
 }
 
-export const getToken = async (request: GenericRequest, context: Context) => {
+export const getToken = async (request: GenericRequest, context: RouteContext) => {
   if( !request.headers.authorization ) {
     return Result.result({
       authenticated: false,
