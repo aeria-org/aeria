@@ -1,5 +1,13 @@
 # @aeriajs/builtins
 
+## 0.0.170
+
+### Patch Changes
+
+- 782b68a: Assign owner to uploaded files
+- Updated dependencies [782b68a]
+  - @aeriajs/core@0.0.170
+
 ## 0.0.169
 
 ### Patch Changes

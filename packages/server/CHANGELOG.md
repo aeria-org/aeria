@@ -1,5 +1,14 @@
 # @aeriajs/server
 
+## 0.0.172
+
+### Patch Changes
+
+- Updated dependencies [782b68a]
+  - @aeriajs/builtins@0.0.170
+  - @aeriajs/core@0.0.170
+  - @aeriajs/server@0.0.172
+
 ## 0.0.171
 
 ### Patch Changes
