@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.172
+
+### Patch Changes
+
+- fc40fc9: Fix `calledFunction`
+  - @aeriajs/builtins@0.0.172
+  - @aeriajs/security@0.0.172
+
 ## 0.0.171
 
 ### Patch Changes
