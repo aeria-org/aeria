@@ -115,9 +115,7 @@ export const createContext = async <TContextOptions extends ContextOptions>(_opt
         message,
         details,
         context: collectionName,
-        owner: token.authenticated
-          ? token.sub
-          : options.parentContext?.token.sub,
+        owner: token.sub,
         created_at: new Date(),
       })
     },
