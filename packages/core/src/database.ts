@@ -1,5 +1,6 @@
 import type { PackReferences } from '@aeriajs/types'
 import { getConfig } from '@aeriajs/entrypoint'
+import { inspect } from 'util'
 import { MongoClient } from 'mongodb'
 export {
   ObjectId,
@@ -37,11 +38,10 @@ export const getDatabase = async () => {
 
     if( logQueries ) {
       client.on('commandStarted', (event) => {
-        try {
-          console.debug(JSON.stringify(event, null, 2))
-        } catch( err ) {
-          console.debug(event)
-        }
+        console.debug(inspect(event, {
+          colors: true,
+          compact: false,
+        }))
       })
     }
 
