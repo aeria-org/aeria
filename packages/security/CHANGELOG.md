@@ -1,5 +1,12 @@
 # @aeriajs/security
 
+## 0.0.173
+
+### Patch Changes
+
+- Updated dependencies [0f64eb2]
+  - @aeriajs/core@0.0.173
+
 ## 0.0.172
 
 ### Patch Changes
