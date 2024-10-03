@@ -16,7 +16,7 @@ export const prepareCreate = (doc: Record<string, unknown>, description: Descrip
 }
 
 export const prepareUpdate = (doc: Record<string, unknown>) => {
-  const result: Record<string, Record<string, unknown>> = {
+  const result: Record<'$set' | '$unset', Record<string, unknown>> = {
     $set: {},
     $unset: {},
   }
