@@ -13,12 +13,7 @@ const getApplicationSecret = async () => {
   return config.secret
 }
 
-export const signToken = async (_payload: Record<string, unknown>, secret?: string | null, options?: SignOptions) => {
-  const payload = Object.assign({}, _payload)
-
-  delete payload.iat
-  delete payload.exp
-
+export const signToken = async ({ iat, exp, ...payload }: Record<string, unknown>, secret?: string | null, options?: SignOptions) => {
   const signed = jwt.sign(payload, secret || await getApplicationSecret(), options || {
     expiresIn: EXPIRES_IN,
   })
@@ -26,10 +21,7 @@ export const signToken = async (_payload: Record<string, unknown>, secret?: stri
   return signed
 }
 
-export const verifyToken = async <TToken>(token: string, secret?: string) => {
+export const decodeToken = async <TToken>(token: string, secret?: string) => {
   return jwt.verify(token, secret || await getApplicationSecret()) as TToken
 }
 
-export const decodeToken = <TToken>(token: string, secret?: string) => {
-  return verifyToken<TToken>(token, secret)
-}
