@@ -14,11 +14,9 @@ const getApplicationSecret = async () => {
 }
 
 export const signToken = async ({ iat, exp, ...payload }: Record<string, unknown>, secret?: string | null, options?: SignOptions) => {
-  const signed = jwt.sign(payload, secret || await getApplicationSecret(), options || {
+  return jwt.sign(payload, secret || await getApplicationSecret(), options || {
     expiresIn: EXPIRES_IN,
   })
-
-  return signed
 }
 
 export const decodeToken = async <TToken>(token: string, secret?: string) => {
