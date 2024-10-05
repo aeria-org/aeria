@@ -5,6 +5,7 @@ export const DEFAULT_API_CONFIG = {
   port: 3000,
   defaultPaginationLimit: 10,
   security: {
+    tokenExpiration: 36000,
     paginationLimit: 100,
   },
 

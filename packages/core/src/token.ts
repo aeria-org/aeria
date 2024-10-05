@@ -2,24 +2,27 @@ import type { SignOptions } from 'jsonwebtoken'
 import { getConfig } from '@aeriajs/entrypoint'
 import jwt from 'jsonwebtoken'
 
-export const EXPIRES_IN = 36000
-
-const getApplicationSecret = async () => {
+const getTokenConfig = async () => {
   const config = await getConfig()
   if( !config.secret ) {
     throw new Error('application secret is not set')
   }
 
-  return config.secret
+  return {
+    secret: config.secret,
+    tokenExpiration: config.security.tokenExpiration,
+  }
 }
 
 export const signToken = async ({ iat, exp, ...payload }: Record<string, unknown>, secret?: string | null, options?: SignOptions) => {
-  return jwt.sign(payload, secret || await getApplicationSecret(), options || {
-    expiresIn: EXPIRES_IN,
+  const tokenConfig = await getTokenConfig()
+  return jwt.sign(payload, secret || tokenConfig.secret, options || {
+    expiresIn: tokenConfig.tokenExpiration,
   })
 }
 
 export const decodeToken = async <TToken>(token: string, secret?: string) => {
-  return jwt.verify(token, secret || await getApplicationSecret()) as TToken
+  const tokenConfig = await getTokenConfig()
+  return jwt.verify(token, secret || tokenConfig.secret) as TToken
 }
 
