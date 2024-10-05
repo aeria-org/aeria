@@ -1,5 +1,11 @@
 # @aeriajs/entrypoint
 
+## 0.0.108
+
+### Patch Changes
+
+- f80d05d: Add tests for array references inside arrays
+
 ## 0.0.107
 
 ### Patch Changes

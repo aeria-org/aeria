@@ -1,5 +1,16 @@
 # @aeriajs/api
 
+## 0.0.175
+
+### Patch Changes
+
+- f80d05d: Add tests for array references inside arrays
+- Updated dependencies [f80d05d]
+  - @aeriajs/entrypoint@0.0.108
+  - @aeriajs/builtins@0.0.175
+  - @aeriajs/http@0.0.119
+  - @aeriajs/security@0.0.175
+
 ## 0.0.174
 
 ### Patch Changes
