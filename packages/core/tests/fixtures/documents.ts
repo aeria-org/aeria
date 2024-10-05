@@ -70,6 +70,21 @@ export const documents = (async () => {
     }
   ])
 
+  const { insertedIds: { "0": day1, "1": day2 } } = await db.collection('day').insertMany([
+    {
+      people: [
+        person1,
+        person2,
+      ],
+    },
+    {
+      people: [
+        person3,
+      ]
+    },
+  ])
+
+
   const project = throwIfError(await insert({
     what: {
       user_id: user1,
@@ -78,29 +93,38 @@ export const documents = (async () => {
         owner: person1,
         qa: person2
       },
-      cronogram: {
-        days: [
-          {
-            date: {
-              day: 10,
-              month: 7,
-              year: 2000,
+      cronogram: [
+        {
+          date: {
+            day: 10,
+            month: 7,
+            year: 2000,
+          },
+          assignments: [
+            {
+              name: 'assignment 1',
+              status: 'pending',
+              responsibles: [
+                person1,
+                person2,
+                person3,
+                new ObjectId(),
+              ]
             },
-            assignments: [
-              {
-                name: 'assignment 1',
-                status: 'pending',
-                responsibles: [
-                  person1,
-                  person2,
-                  person3,
-                  new ObjectId(),
-                ]
-              }
-            ]
-          }
-        ]
-      }
+            {
+              name: 'assignment 2',
+              status: 'complete',
+              responsibles: [
+                person3,
+              ]
+            }
+          ]
+        }
+      ],
+      cronogram_normalized: [
+        day1,
+        day2,
+      ]
     }
   }, projectContext))
 
@@ -112,6 +136,7 @@ export const documents = (async () => {
     user3,
     person1,
     person2,
+    person3,
     project,
   }
 })()

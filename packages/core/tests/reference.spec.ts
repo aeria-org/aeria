@@ -10,10 +10,10 @@ test('populates top level references', async () => {
     project,
   } = await documents
 
-  expect(person1.equals(project.created_by._id)).toBe(true)
-  expect(user1.equals(project.user_id)).toBe(true)
-  expect(user1.equals(project.created_by.user._id)).toBe(true)
-  expect(file1.equals(project.created_by.user.picture_file._id)).toBe(true)
+  expect(person1.equals(project.created_by._id)).toBeTruthy()
+  expect(user1.equals(project.user_id)).toBeTruthy()
+  expect(user1.equals(project.created_by.user._id)).toBeTruthy()
+  expect(file1.equals(project.created_by.user.picture_file._id)).toBeTruthy()
 })
 
 test('respects the "populate" property', async () => {
@@ -22,7 +22,7 @@ test('respects the "populate" property', async () => {
     project,
   } = await documents
 
-  expect(user1.equals(project.user_id)).toBe(true)
+  expect(user1.equals(project.user_id)).toBeTruthy()
 })
 
 test('populates deep-nested references', async () => {
@@ -36,12 +36,12 @@ test('populates deep-nested references', async () => {
     project,
   } = await documents
 
-  expect(person1.equals(project.stakeholders.owner._id)).toBe(true)
-  expect(user1.equals(project.stakeholders.owner.user._id)).toBe(true)
-  expect(file1.equals(project.stakeholders.owner.user.picture_file._id)).toBe(true)
-  expect(person2.equals(project.stakeholders.qa._id)).toBe(true)
-  expect(user2.equals(project.stakeholders.qa.user._id)).toBe(true)
-  expect(file2.equals(project.stakeholders.qa.user.picture_file._id)).toBe(true)
+  expect(person1.equals(project.stakeholders.owner._id)).toBeTruthy()
+  expect(user1.equals(project.stakeholders.owner.user._id)).toBeTruthy()
+  expect(file1.equals(project.stakeholders.owner.user.picture_file._id)).toBeTruthy()
+  expect(person2.equals(project.stakeholders.qa._id)).toBeTruthy()
+  expect(user2.equals(project.stakeholders.qa.user._id)).toBeTruthy()
+  expect(file2.equals(project.stakeholders.qa.user.picture_file._id)).toBeTruthy()
 })
 
 test('populates array-nested references', async () => {
@@ -55,17 +55,17 @@ test('populates array-nested references', async () => {
     project,
   } = await documents
 
-  expect(project.cronogram.days[0].assignments[0].responsibles.length).toBe(3)
-  expect(project.cronogram.days[0].assignments[0].name).toBe('assignment 1')
-  expect(project.cronogram.days[0].assignments[0].status).toBe('pending')
+  expect(project.cronogram[0].assignments[0].responsibles.length).toBe(3)
+  expect(project.cronogram[0].assignments[0].name).toBe('assignment 1')
+  expect(project.cronogram[0].assignments[0].status).toBe('pending')
 
-  expect(person1.equals(project.cronogram.days[0].assignments[0].responsibles[0]._id)).toBe(true)
-  expect(user1.equals(project.cronogram.days[0].assignments[0].responsibles[0].user._id)).toBe(true)
-  expect(file1.equals(project.cronogram.days[0].assignments[0].responsibles[0].user.picture_file._id)).toBe(true)
-  expect(person2.equals(project.cronogram.days[0].assignments[0].responsibles[1]._id)).toBe(true)
-  expect(user2.equals(project.cronogram.days[0].assignments[0].responsibles[1].user._id)).toBe(true)
-  expect(file2.equals(project.cronogram.days[0].assignments[0].responsibles[1].user.picture_file._id)).toBe(true)
-  expect(project.cronogram.days[0].assignments[0].responsibles[2].user.picture_file === null).toBe(true)
+  expect(person1.equals(project.cronogram[0].assignments[0].responsibles[0]._id)).toBeTruthy()
+  expect(user1.equals(project.cronogram[0].assignments[0].responsibles[0].user._id)).toBeTruthy()
+  expect(file1.equals(project.cronogram[0].assignments[0].responsibles[0].user.picture_file._id)).toBeTruthy()
+  expect(person2.equals(project.cronogram[0].assignments[0].responsibles[1]._id)).toBeTruthy()
+  expect(user2.equals(project.cronogram[0].assignments[0].responsibles[1].user._id)).toBeTruthy()
+  expect(file2.equals(project.cronogram[0].assignments[0].responsibles[1].user.picture_file._id)).toBeTruthy()
+  expect(project.cronogram[0].assignments[0].responsibles[2].user.picture_file === null).toBeTruthy()
 })
 
 test('populates arrays inside arrays', async () => {
@@ -76,9 +76,12 @@ test('populates arrays inside arrays', async () => {
     project,
   } = await documents
 
-  expect(user2.equals(project.cronogram.days[0].assignments[0].responsibles[0].friends[0]._id)).toBe(true)
-  expect(user3.equals(project.cronogram.days[0].assignments[0].responsibles[0].friends[1]._id)).toBe(true)
-  expect(user1.equals(project.cronogram.days[0].assignments[0].responsibles[1].friends[0]._id)).toBe(true)
+  expect(project.cronogram_normalized[0].people[0].friends.length).toBe(2)
+  expect(project.cronogram_normalized[0].people[1].friends.length).toBe(1)
+  expect(project.cronogram_normalized[1].people[0].friends).toBeNull()
+  expect(user2.equals(project.cronogram_normalized[0].people[0].friends[0]._id)).toBeTruthy()
+  expect(user3.equals(project.cronogram_normalized[0].people[0].friends[1]._id)).toBeTruthy()
+  expect(user1.equals(project.cronogram_normalized[0].people[1].friends[0]._id)).toBeTruthy()
 })
 
 test('populates circular references', async () => {

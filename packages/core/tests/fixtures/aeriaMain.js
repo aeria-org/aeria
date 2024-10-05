@@ -82,6 +82,22 @@ exports.default = init({
         },
       },
     },
+    day: {
+      description: {
+        $id: 'day',
+        properties: {
+          people: {
+            type: 'array',
+            items: {
+              $ref: 'person',
+              populate: [
+                'friends',
+              ]
+            }
+          }
+        }
+      },
+    },
     project: {
       functions: {
         get,
@@ -118,57 +134,61 @@ exports.default = init({
             }
           },
           cronogram: {
-            type: 'object',
-            properties: {
-              days: {
-                type: 'array',
-                items: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                date: {
                   type: 'object',
                   properties: {
-                    date: {
-                      type: 'object',
-                      properties: {
-                        day: {
-                          type: 'number'
-                        },
-                        month: {
-                          type: 'number'
-                        },
-                        year: {
-                          type: 'number'
-                        },
-                      }
+                    day: {
+                      type: 'number'
                     },
-                    assignments: {
-                      type: 'array',
-                      items: {
-                        type: 'object',
-                        properties: {
-                          name: {
-                            type: 'string'
-                          },
-                          status: {
-                            enum: [
-                              'pending',
-                              'complete',
-                            ]
-                          },
-                          responsibles: {
-                            type: 'array',
-                            items: {
-                              $ref: 'person',
-                              populate: [
-                                'user',
-                                'friends',
-                              ],
-                            }
-                          }
+                    month: {
+                      type: 'number'
+                    },
+                    year: {
+                      type: 'number'
+                    },
+                  }
+                },
+                assignments: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      name: {
+                        type: 'string'
+                      },
+                      status: {
+                        enum: [
+                          'pending',
+                          'complete',
+                        ]
+                      },
+                      responsibles: {
+                        type: 'array',
+                        items: {
+                          $ref: 'person',
+                          populate: [
+                            'user',
+                            'friends',
+                          ],
                         }
                       }
                     }
                   }
                 }
               }
+            },
+          },
+          cronogram_normalized: {
+            type: 'array',
+            items: {
+              $ref: 'day',
+              populate: [
+                'people',
+              ]
             }
           }
         }

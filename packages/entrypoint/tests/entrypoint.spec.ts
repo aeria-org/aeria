@@ -29,9 +29,9 @@ test('gets correct entrypoint path', async () => {
   assert(path1)
   assert(path2)
   expect(relativePath(path1)).toBe('aeria/index.js')
-  expect(fs.existsSync(path1)).toBe(true)
+  expect(fs.existsSync(path1)).toBeTruthy()
   expect(relativePath(path2)).toBe('aeria/index.mjs')
-  expect(fs.existsSync(path2)).toBe(true)
+  expect(fs.existsSync(path2)).toBeTruthy()
 })
 
 test('imports entrypoint correctly (cjs)', async () => {
