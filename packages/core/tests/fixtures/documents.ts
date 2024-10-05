@@ -52,10 +52,17 @@ export const documents = (async () => {
     {
       name: 'john',
       user: user1,
+      friends: [
+        user2,
+        user3,
+      ],
     },
     {
       name: 'terry',
       user: user2,
+      friends: [
+        user1,
+      ],
     },
     {
       name: 'terry',
@@ -102,6 +109,7 @@ export const documents = (async () => {
     file2,
     user1,
     user2,
+    user3,
     person1,
     person2,
     project,

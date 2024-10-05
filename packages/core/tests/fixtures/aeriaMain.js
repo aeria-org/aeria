@@ -72,8 +72,14 @@ exports.default = init({
             populate: [
               'picture_file',
             ],
-          }
-        }
+          },
+          friends: {
+            type: 'array',
+            items: {
+              $ref: 'user',
+            },
+          },
+        },
       },
     },
     project: {
@@ -153,6 +159,7 @@ exports.default = init({
                               $ref: 'person',
                               populate: [
                                 'user',
+                                'friends',
                               ],
                             }
                           }

@@ -68,6 +68,19 @@ test('populates array-nested references', async () => {
   expect(project.cronogram.days[0].assignments[0].responsibles[2].user.picture_file === null).toBe(true)
 })
 
+test('populates arrays inside arrays', async () => {
+  const {
+    user1,
+    user2,
+    user3,
+    project,
+  } = await documents
+
+  expect(user2.equals(project.cronogram.days[0].assignments[0].responsibles[0].friends[0]._id)).toBe(true)
+  expect(user3.equals(project.cronogram.days[0].assignments[0].responsibles[0].friends[1]._id)).toBe(true)
+  expect(user1.equals(project.cronogram.days[0].assignments[0].responsibles[1].friends[0]._id)).toBe(true)
+})
+
 test('populates circular references', async () => {
   const { circularA2 } = await circularDocuments
   expect(circularA2.name).toBe('rec a2')
@@ -76,6 +89,4 @@ test('populates circular references', async () => {
   expect(circularA2.circularB_array[0].name).toBe('rec b1')
   expect(circularA2.circularB_array[0].circularA.name).toBe('rec a1')
 })
-
-
 

@@ -21,6 +21,7 @@ export type GetReferenceOptions = {
   depth?: number
   maxDepth?: number
   populate?: string[]
+  isArrayElement?: boolean
 }
 
 export type BuildLookupPipelineOptions = {
@@ -44,6 +45,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
     maxDepth = 3,
     memoize,
     populate,
+    isArrayElement,
   } = options
 
   if( memoize ) {
@@ -75,6 +77,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
           maxDepth: refProperty.populateDepth || maxDepth,
           memoize: `${memoize}.${propName}`,
           populate: Array.from(refProperty.populate),
+          isArrayElement: 'items' in property,
         })
 
         if( Object.keys(deepReferences).length > 0 ) {
@@ -120,6 +123,10 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
       reference.isArray = true
     }
 
+    if( isArrayElement ) {
+      reference.isArrayElement = true
+    }
+
     if( depth > 0 ) {
       reference.isRecursive = true
     }
@@ -149,7 +156,7 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
   const refName = path.at(-1)!
 
   let indexOfArray: {}
-  if( reference.isRecursive && !reference.isArrayElement ) {
+  if( reference.isRecursive && !(reference.isArrayElement && reference.isArray === false) ) {
     indexOfArray = {
       $indexOfArray: [
         `$${getTempName(path)}._id`,
@@ -184,7 +191,6 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
       mapIn = recurseSetStage({
         ...reference,
         isArray: false,
-        isArrayElement: true,
       }, path, `$$${newElemName}`)
     } else {
       mapIn = {
@@ -193,7 +199,6 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
           recurseSetStage({
             ...reference,
             isArray: false,
-            isArrayElement: true,
           }, path, `$$${newElemName}`),
         ],
       }
@@ -201,11 +206,25 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
 
     let mapInput = parentElem
     if( reference.isRecursive ) {
-      mapInput = {
-        $arrayElemAt: [
-          `$${getTempName(path.slice(0, -1))}.${refName}`,
-          indexOfArray,
-        ],
+      if( reference.isArrayElement ) {
+        mapInput = {
+          $arrayElemAt: [
+            `$${getTempName(path.slice(0, -1))}.${refName}`,
+            {
+              $indexOfArray: [
+                `$${getTempName(path.slice(0, -1))}._id`,
+                parentElem,
+              ],
+            },
+          ],
+        }
+      } else {
+        mapInput = {
+          $arrayElemAt: [
+            `$${getTempName(path.slice(0, -1))}.${refName}`,
+            indexOfArray,
+          ],
+        }
       }
     }
 
@@ -407,6 +426,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
     if( memoize ) {
       lookupMemo[memoize] = finalPipeline
     }
+
 
     return finalPipeline
   }
