@@ -154,7 +154,7 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
   noCond: false,
 }): Document => {
   const refName = path.at(-1)!
-  const shouldUseArrayIndex = reference.isRecursive && !(reference.isArrayElement && reference.isArray === false) 
+  const shouldUseArrayIndex = reference.isRecursive && !(reference.isArrayElement && reference.isArray === false)
 
   let indexOfArray: {}
   if( shouldUseArrayIndex ) {
