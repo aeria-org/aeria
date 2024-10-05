@@ -427,7 +427,6 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       lookupMemo[memoize] = finalPipeline
     }
 
-
     return finalPipeline
   }
 
