@@ -3,6 +3,7 @@ import type { Description, Property, ValidationError, RouteContext } from '@aeri
 import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { throwIfError, pipe, isReference, getValueFromPath, isObjectId, isError } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
+import { getCollection } from '@aeriajs/entrypoint'
 import { ObjectId } from 'mongodb'
 import { getCollectionAsset } from '../assets.js'
 import { preloadDescription } from './preload.js'
@@ -263,6 +264,11 @@ const isValidTempFile = (value: unknown): value is ValidTempFile => {
 const moveFiles = async (value: unknown, ctx: PhaseContext) => {
   if( !('$ref' in ctx.property) || ctx.property.$ref !== 'file' ) {
     return value
+  }
+
+  const tempFileCollection = await getCollection('tempFile')
+  if( !tempFileCollection ) {
+    throw new Error('The "tempFile" collection is absent, yet it is required to upload files.')
   }
 
   if( !isValidTempFile(value) ) {

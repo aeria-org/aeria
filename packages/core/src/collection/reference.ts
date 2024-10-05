@@ -154,9 +154,10 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
   noCond: false,
 }): Document => {
   const refName = path.at(-1)!
+  const shouldUseArrayIndex = reference.isRecursive && !(reference.isArrayElement && reference.isArray === false) 
 
   let indexOfArray: {}
-  if( reference.isRecursive && !(reference.isArrayElement && reference.isArray === false) ) {
+  if( shouldUseArrayIndex ) {
     indexOfArray = {
       $indexOfArray: [
         `$${getTempName(path)}._id`,
@@ -253,7 +254,7 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
 
     for( const [subRefName, subReference] of Object.entries(reference.deepReferences) ) {
       let newElem: {}
-      if( reference.isRecursive ) {
+      if( shouldUseArrayIndex ) {
         newElem = {
           $arrayElemAt: [
             `$${getTempName(path.slice(0, -1))}.${refName}`,

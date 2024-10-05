@@ -9,6 +9,7 @@ const getTokenConfig = async () => {
   }
 
   return {
+    name: config.name,
     secret: config.secret,
     tokenExpiration: config.security.tokenExpiration,
   }
@@ -16,6 +17,10 @@ const getTokenConfig = async () => {
 
 export const signToken = async ({ iat, exp, ...payload }: Record<string, unknown>, secret?: string | null, options?: SignOptions) => {
   const tokenConfig = await getTokenConfig()
+  if( tokenConfig.name ) {
+    payload.aud = tokenConfig.name
+  }
+
   return jwt.sign(payload, secret || tokenConfig.secret, options || {
     expiresIn: tokenConfig.tokenExpiration,
   })

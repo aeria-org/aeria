@@ -4,6 +4,7 @@ import type { RateLimitingParams } from './security.js'
 import type { CollectionItem } from './collection.js'
 
 export type ApiConfig = {
+  name?: string
   secret?: string
   baseUrl?: RouteUri
   publicUrl?: string

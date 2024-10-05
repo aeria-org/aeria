@@ -1,5 +1,4 @@
 import { Result, ACError, HTTPStatus, type Context } from '@aeriajs/types'
-import { getCollection } from '@aeriajs/entrypoint'
 import { validate, validator } from '@aeriajs/validation'
 import * as path from 'path'
 import { createWriteStream } from 'fs'
@@ -43,11 +42,6 @@ const streamToFs = (metadata: typeof FileMetadata, context: Context) => {
 }
 
 export const upload = async <TContext extends Context>(_props: unknown, context: TContext) => {
-  const tempFileCollection = await getCollection('tempFile')
-  if( !tempFileCollection ) {
-    throw new Error('The "tempFile" collection is absent, yet it is required to upload files.')
-  }
-
   const { error: headersError } = validate(context.request.headers, {
     type: 'object',
     additionalProperties: true,
