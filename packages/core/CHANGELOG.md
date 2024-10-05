@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.174
+
+### Patch Changes
+
+- 1f8c135: Fix array inside array reference resolution
+  - @aeriajs/builtins@0.0.174
+  - @aeriajs/security@0.0.174
+
 ## 0.0.173
 
 ### Patch Changes
