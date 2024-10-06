@@ -1,7 +1,7 @@
 import type { WithId } from 'mongodb'
 import type { Description, Property, ValidationError, RouteContext } from '@aeriajs/types'
 import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
-import { throwIfError, pipe, isReference, getValueFromPath, isObjectId, isError } from '@aeriajs/common'
+import { throwIfError, pipe, isReference, getValueFromPath, isError } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
 import { getCollection } from '@aeriajs/entrypoint'
 import { ObjectId } from 'mongodb'
@@ -179,7 +179,7 @@ const autoCast = (value: unknown, ctx: Omit<PhaseContext, 'options'> & { options
     }
 
     case 'object': {
-      if( !value || isObjectId(value) ) {
+      if( !value || value instanceof ObjectId ) {
         return value
       }
 
