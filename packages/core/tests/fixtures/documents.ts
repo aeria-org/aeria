@@ -111,13 +111,6 @@ export const documents = (async () => {
                 new ObjectId(),
               ]
             },
-            {
-              name: 'assignment 2',
-              status: 'complete',
-              responsibles: [
-                person3,
-              ]
-            }
           ]
         }
       ],

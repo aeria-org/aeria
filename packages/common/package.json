@@ -9,7 +9,7 @@
     "access": "public"
   },
   "scripts": {
-    "test": "echo skipping",
+    "test": "vitest run",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "build": "pnpm build:cjs && pnpm build:esm",

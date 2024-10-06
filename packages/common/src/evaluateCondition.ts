@@ -1,6 +1,20 @@
 import type { Condition } from '@aeriajs/types'
 import { arraysIntersect } from './arraysIntersect.js'
 
+const isCondition = (subject: unknown): subject is Condition => {
+  if( !subject || typeof subject !== 'object' ) {
+    return false
+  }
+
+  return (
+    'and' in subject
+    || 'or' in subject
+    || 'not' in subject
+    || ('operator' in subject && 'term1' in subject)
+  )
+}
+
+
 const equalOrContains = (term1: unknown, term2: unknown) => {
   if( Array.isArray(term1) && Array.isArray(term2) ) {
     return arraysIntersect(term1, term2)
@@ -15,39 +29,45 @@ const equalOrContains = (term1: unknown, term2: unknown) => {
   }
 }
 
-const evaluatesToTrue = (subject: unknown, condition: Condition): boolean => {
-  if( 'term1' in condition ) {
+const evaluateExpression = (subject: unknown, expression: unknown): unknown => {
+  if( !isCondition(expression) ) {
+    return expression
+  }
+
+  if( 'term1' in expression ) {
     if( !subject || typeof subject !== 'object' ) {
       return false
     }
 
-    const term1 = subject[condition.term1 as keyof typeof subject]
-    if( condition.operator === 'truthy' ) {
+    const term1 = subject[expression.term1 as keyof typeof subject]
+    if( expression.operator === 'truthy' ) {
       return !!term1
     }
 
-    const { operator, term2 } = condition
+    const { operator, term2 } = expression
+    const right = evaluateExpression(subject, term2)
+
     switch( operator ) {
-      case 'equal': return term1 === term2
-      case 'in': return !!equalOrContains(term1, term2)
-      case 'gt': return term1 > Number(term2)
-      case 'lt': return term1 < Number(term2)
-      case 'gte': return term1 >= Number(term2)
-      case 'lte': return term1 <= Number(term2)
-      case 'regex': return new RegExp(term2).test(term1)
+      case 'equal': return term1 === right
+      case 'in': return !!equalOrContains(term1, right)
+      case 'gt': return term1 > Number(right)
+      case 'lt': return term1 < Number(right)
+      case 'gte': return term1 >= Number(right)
+      case 'lte': return term1 <= Number(right)
+      case 'regex': return new RegExp(right as string).test(term1)
     }
   }
 
-  if( 'and' in condition ) {
-    return condition.and.every((condition) => evaluatesToTrue(subject, condition))
+  if( 'and' in expression ) {
+    return expression.and.every((expression) => evaluateExpression(subject, expression))
   }
 
-  if( 'or' in condition ) {
-    return condition.or.some((condition) => evaluatesToTrue(subject, condition))
+  if( 'or' in expression ) {
+    return expression.or.some((expression) => evaluateExpression(subject, expression))
   }
 
-  if( 'not' in condition ) {
-    return !evaluatesToTrue(subject, condition.not)
+  if( 'not' in expression ) {
+    return !evaluateExpression(subject, expression.not)
   }
 
   return false
@@ -59,10 +79,11 @@ export const evaluateCondition = (subject: unknown, condition: Condition) => {
     else: null as unknown,
   }
 
-  const satisfied = result.satisfied = evaluatesToTrue(subject, condition)
+  const satisfied = result.satisfied = !!evaluateExpression(subject, condition)
   if( !satisfied && 'else' in condition ) {
     result.else = condition.else
   }
 
   return result
 }
+

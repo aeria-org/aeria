@@ -11,7 +11,11 @@ export type FinalOperator =
 export type FinalCondition<TSchema extends JsonSchema> = {
   operator: FinalOperator
   term1: PropertiesWithId<TSchema>
-  term2: unknown
+  term2:
+    | string
+    | boolean
+    | number
+    | Condition
   fromState?: boolean
 }
 
