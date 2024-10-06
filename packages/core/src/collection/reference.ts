@@ -434,10 +434,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
   return pipeline
 }
 
-export const getLookupPipeline = async (
-  description: Description,
-  options: BuildLookupPipelineOptions,
-) => {
+export const getLookupPipeline = async (description: Description, options: BuildLookupPipelineOptions) => {
   const refMap = await getReferences(description.properties)
   return buildLookupPipeline(refMap, options)
 }
