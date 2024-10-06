@@ -14,7 +14,6 @@ const isCondition = (subject: unknown): subject is Condition => {
   )
 }
 
-
 const equalOrContains = (term1: unknown, term2: unknown) => {
   if( Array.isArray(term1) && Array.isArray(term2) ) {
     return arraysIntersect(term1, term2)
