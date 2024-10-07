@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.89
+
+### Patch Changes
+
+- 2b740eb: Return `get()` error instead of throwing in `insert()`
+
 ## 0.0.88
 
 ### Patch Changes
