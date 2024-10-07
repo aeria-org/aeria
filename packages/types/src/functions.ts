@@ -123,6 +123,7 @@ export type InsertReturnType<TDocument> =
       | ACError.OwnershipError
       | ACError.ResourceNotFound
       | ACError.TargetImmutable
+      | ACError.MalformedInput
       | ValidationErrorCode
       | TraverseError.InvalidDocumentId
       | TraverseError.InvalidTempfile,
@@ -130,6 +131,7 @@ export type InsertReturnType<TDocument> =
       | HTTPStatus.Forbidden
       | HTTPStatus.NotFound
       | HTTPStatus.UnprocessableContent
+      | HTTPStatus.BadRequest
     >,
     TDocument
   >

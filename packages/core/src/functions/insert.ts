@@ -2,7 +2,7 @@ import type { Context, SchemaWithId, InsertPayload, InsertReturnType } from '@ae
 import { ObjectId } from 'mongodb'
 import { Result, HTTPStatus, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { useSecurity, applyWriteMiddlewares } from '@aeriajs/security'
-import { throwIfError, endpointErrorSchema } from '@aeriajs/common'
+import { endpointErrorSchema } from '@aeriajs/common'
 import { traverseDocument, prepareCreate, prepareUpdate } from '../collection/index.js'
 import { get } from './get.js'
 
@@ -15,12 +15,14 @@ export const insertErrorSchema = () => endpointErrorSchema({
     HTTPStatus.Forbidden,
     HTTPStatus.NotFound,
     HTTPStatus.UnprocessableContent,
+    HTTPStatus.BadRequest,
   ],
   code: [
     ACError.InsecureOperator,
     ACError.OwnershipError,
     ACError.ResourceNotFound,
     ACError.TargetImmutable,
+    ACError.MalformedInput,
     ValidationErrorCode.EmptyTarget,
     ValidationErrorCode.InvalidProperties,
     ValidationErrorCode.MissingProperties,
@@ -89,13 +91,17 @@ const internalInsert = async <TContext extends Context>(
     inherited: true,
   }
 
-  const newDocument = throwIfError(await get({
+  const { error: getError, result: newDocument } = await get({
     filters: {
       _id: newId,
     },
   }, inheritedContext, {
     bypassSecurity: true,
-  }))
+  })
+
+  if( getError ) {
+    return Result.error(getError)
+  }
 
   return Result.result(newDocument as SchemaWithId<TContext['description']>)
 }
