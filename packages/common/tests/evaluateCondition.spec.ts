@@ -13,6 +13,19 @@ test('evaluates equality', () => {
   expect(evaluateCondition({ n: 2 }, condition).satisfied).toBeFalsy()
 })
 
+test('evaluates negation', () => {
+  const condition: Condition = {
+    not: {
+      operator: 'equal',
+      term1: 'n',
+      term2: 1,
+    }
+  }
+
+  expect(evaluateCondition({ n: 2 }, condition).satisfied).toBeTruthy()
+  expect(evaluateCondition({ n: 1 }, condition).satisfied).toBeFalsy()
+})
+
 test('evaluates arithmetic comparisons', () => {
   const arithmeticCondition = (operator: FinalOperator): Condition => {
     return {
