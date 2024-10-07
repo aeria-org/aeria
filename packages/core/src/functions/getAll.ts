@@ -12,6 +12,7 @@ import {
 
 export type GetAllOptions = {
   bypassSecurity?: boolean
+  noDefaultLimit?: boolean
 }
 
 const internalGetAll = async <TContext extends Context>(
@@ -19,7 +20,7 @@ const internalGetAll = async <TContext extends Context>(
   context: TContext,
 ) => {
   const {
-    limit = context.config.defaultPaginationLimit!,
+    limit,
     sort,
     project,
     offset = 0,
@@ -137,6 +138,10 @@ export const getAll = async <TContext extends Context>(
   const { error, result: securedPayload } = await security.secureReadPayload(payload)
   if( error ) {
     return Result.error(error)
+  }
+
+  if( !options.noDefaultLimit ) {
+    securedPayload.limit ||= context.config.defaultPaginationLimit
   }
 
   return applyReadMiddlewares(securedPayload, context, internalGetAll)
