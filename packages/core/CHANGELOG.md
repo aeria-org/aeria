@@ -1,5 +1,20 @@
 # @aeriajs/api
 
+## 0.0.176
+
+### Patch Changes
+
+- 2b740eb: Return `get()` error instead of throwing in `insert()`
+- b941b10: Add `noDefaultLimit` option to `getAll()`
+- Updated dependencies [2b740eb]
+  - @aeriajs/types@0.0.89
+  - @aeriajs/builtins@0.0.176
+  - @aeriajs/common@0.0.106
+  - @aeriajs/entrypoint@0.0.109
+  - @aeriajs/http@0.0.120
+  - @aeriajs/security@0.0.176
+  - @aeriajs/validation@0.0.109
+
 ## 0.0.175
 
 ### Patch Changes
