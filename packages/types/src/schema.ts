@@ -41,9 +41,9 @@ export type InferProperty<T> = T extends TestType<{ format: 'date' | 'date-time'
 export type InferSchema<TSchema> = MergeReferences<TSchema> extends infer MappedTypes
   ? TSchema extends { Required: readonly [] }
     ? Partial<MappedTypes>
-    : TSchema extends { required: infer RequiredPropNames }
-      ? RequiredPropNames extends readonly (keyof MappedTypes)[]
-        ? Pick<MappedTypes, RequiredPropNames[number]> extends infer RequiredProps
+    : TSchema extends { required: infer InferredRequired }
+      ? InferredRequired extends readonly (keyof MappedTypes)[]
+        ? Pick<MappedTypes, InferredRequired[number]> extends infer RequiredProps
           ? RequiredProps & Partial<Exclude<MappedTypes, keyof RequiredProps>>
           : never
         : MappedTypes
