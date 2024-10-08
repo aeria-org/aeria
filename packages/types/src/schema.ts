@@ -44,10 +44,10 @@ type ExtractRequiredPropNames<T> = T extends readonly (infer PropName)[]
     ? null
     : keyof {
       [
-      K in keyof T as
-      T[K] extends true
-        ? K
-        : never
+        K in keyof T as
+        T[K] extends true
+          ? K
+          : never
       ]: never
     }
 
