@@ -38,17 +38,16 @@ export type InferProperty<T> = T extends TestType<{ format: 'date' | 'date-time'
                     ? Awaited<K> : T extends TestType<{ const: infer K }>
                       ? K : never
 
-
 type ExtractRequiredPropNames<T> = T extends readonly (infer PropName)[]
   ? PropName
   : Record<never, never> extends T
     ? null
     : keyof {
       [
-        K in keyof T as
-          T[K] extends true
-            ? K
-            : never
+      K in keyof T as
+      T[K] extends true
+        ? K
+        : never
       ]: never
     }
 
@@ -60,7 +59,7 @@ export type InferSchema<TSchema> = MergeReferences<TSchema> extends infer Mapped
         ? Pick<MappedTypes, Extract<keyof MappedTypes, RequiredPropName>> extends infer RequiredProps
           ? RequiredProps & Partial<Exclude<MappedTypes, keyof RequiredProps>>
           : never
-        : Partial<MappedTypes> 
+        : Partial<MappedTypes>
       : MappedTypes
   : never
 
