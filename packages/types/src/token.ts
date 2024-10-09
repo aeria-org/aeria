@@ -51,7 +51,6 @@ export type TokenRecipient = {
   content: string
 }
 
-// disable distributive conditional type by wrapping TAcceptedRole in a tuple
 export type Token<
   TAcceptedRole extends AcceptedRole = null,
   TUserRole = UserRole,
