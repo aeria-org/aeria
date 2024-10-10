@@ -80,9 +80,11 @@ const internalGetAll = async <TContext extends Context>(
     })
   }
 
-  pipeline.push({
-    $limit: limit,
-  })
+  if( limit ) {
+    pipeline.push({
+      $limit: limit,
+    })
+  }
 
   if( project ) {
     const projection = normalizeProjection(project, context.description)
