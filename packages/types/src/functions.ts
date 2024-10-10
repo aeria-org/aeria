@@ -1,6 +1,6 @@
 import type { FilterOperators, StrictFilter as Filter, WithId, ObjectId } from 'mongodb'
-import type { Result } from './result.js'
-import type { EndpointError, StrictEndpointError } from './endpointError.js'
+import type { Result, ExtractError } from './result.js'
+import type { EndpointError } from './endpointError.js'
 import type { PackReferences } from './schema.js'
 import type { ACError } from './accessControl.js'
 import type { ValidationErrorCode, TraverseError } from './validation.js'
@@ -118,7 +118,7 @@ export type RemoveFilePayload = UploadAuxProps & {
 
 export type InsertReturnType<TDocument> =
   Result.Either<
-    StrictEndpointError<
+    EndpointError<
       | ACError.InsecureOperator
       | ACError.OwnershipError
       | ACError.ResourceNotFound
@@ -138,7 +138,7 @@ export type InsertReturnType<TDocument> =
 
 export type GetReturnType<TDocument> =
   Result.Either<
-    StrictEndpointError<
+    EndpointError<
       | ACError.ResourceNotFound
       | ACError.OwnershipError
       | ACError.MalformedInput,
@@ -150,10 +150,21 @@ export type GetReturnType<TDocument> =
     TDocument
   >
 
+export type GetAllReturnType<TDocument> =
+  Result.Either<
+    EndpointError<
+      | ACError.InvalidLimit
+      | ACError.OwnershipError,
+      unknown,
+      | HTTPStatus.Forbidden
+    >,
+    TDocument[]
+  >
+
 export type CountReturnType = Result.Either<EndpointError, number>
-export type GetAllReturnType<TDocument> = Result.Either<EndpointError, TDocument[]>
 export type RemoveReturnType<TDocument> = Result.Either<EndpointError, TDocument>
-export type PaginatedGetAllReturnType<TDocument> = Result.Either<EndpointError, {
+
+export type PaginatedGetAllReturnType<TDocument> = Result.Either<ExtractError<GetAllReturnType<TDocument>>, {
   data: TDocument[]
   pagination: Pagination
 }>

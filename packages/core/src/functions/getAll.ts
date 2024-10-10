@@ -1,7 +1,7 @@
-import type { Context, SchemaWithId, GetAllPayload } from '@aeriajs/types'
+import type { Context, SchemaWithId, GetAllPayload, GetAllReturnType } from '@aeriajs/types'
 import type { Document } from 'mongodb'
 import { useSecurity, applyReadMiddlewares } from '@aeriajs/security'
-import { Result } from '@aeriajs/types'
+import { HTTPStatus, Result } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import {
   traverseDocument,
@@ -128,7 +128,7 @@ export const getAll = async <TContext extends Context>(
   payload: GetAllPayload<SchemaWithId<TContext['description']>> | undefined,
   context: TContext,
   options: GetAllOptions = {},
-) => {
+): Promise<GetAllReturnType<SchemaWithId<TContext['description']>>> => {
   if( !payload ) {
     return internalGetAll({}, context)
   }
@@ -139,7 +139,9 @@ export const getAll = async <TContext extends Context>(
   const security = useSecurity(context)
   const { error, result: securedPayload } = await security.secureReadPayload(payload)
   if( error ) {
-    return Result.error(error)
+    return context.error(HTTPStatus.Forbidden, {
+      code: error,
+    })
   }
 
   if( !options.noDefaultLimit ) {

@@ -2,7 +2,7 @@ import type { Description, Context, RouteContext, StringProperty, EnumProperty }
 import type { description as userDescription } from '../collections/user/description.js'
 import { createContext, preloadDescription, getEndpoints, isValidCollection } from '@aeriajs/core'
 import { getCollections, getAvailableRoles } from '@aeriajs/entrypoint'
-import { Result, ACError } from '@aeriajs/types'
+import { Result, ACError, HTTPStatus } from '@aeriajs/types'
 import { serialize, endpointError } from '@aeriajs/common'
 import { validator } from '@aeriajs/validation'
 import { authenticate } from '../collections/user/authenticate.js'
@@ -48,6 +48,7 @@ export const describe = async (contextOrPayload: RouteContext | typeof Payload) 
     const { error, result: validatedPayload } = validatePayload(contextOrPayload.request.payload)
     if( error ) {
       return endpointError({
+        httpStatus: HTTPStatus.UnprocessableContent,
         code: ACError.MalformedInput,
         details: error,
       })

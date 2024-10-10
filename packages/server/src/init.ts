@@ -1,5 +1,5 @@
 import type { RouteContext, Collection, GenericRequest, ApiConfig, Token, AuthenticatedToken, NonCircularJsonSchema } from '@aeriajs/types'
-import { Result, ACError } from '@aeriajs/types'
+import { Result, ACError, HTTPStatus } from '@aeriajs/types'
 import { endpointError, throwIfError, deepMerge } from '@aeriajs/common'
 import { defineServerOptions, cors, wrapRouteExecution, type createRouter } from '@aeriajs/http'
 import { registerServer } from '@aeriajs/node-http'
@@ -60,6 +60,7 @@ export const getToken = async (request: GenericRequest, context: RouteContext) =
     }
 
     return endpointError({
+      httpStatus: HTTPStatus.Unauthorized,
       code: ACError.AuthenticationError,
     })
   }

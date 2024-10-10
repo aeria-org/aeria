@@ -137,7 +137,7 @@ export const writeMirrorFiles = async (mirror: MirrorObject, config: InstanceCon
     try {
       resolvedPath = syntheticRequire.resolve('aeria-sdk')
     } catch( err ) {
-      console.log(`couldn't locate node_modules in "${mirrorPath}"`)
+      console.warn(`couldn't locate node_modules in "${mirrorPath}"`)
       continue
     }
 

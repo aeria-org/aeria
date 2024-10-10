@@ -80,7 +80,7 @@ export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
   log: (message: string, details?: unknown)=> Promise<unknown>
   error: <
     const THTTPStatus extends HTTPStatus,
-    const TEndpointError extends EndpointError,
+    const TEndpointError extends Omit<EndpointError, 'httpStatus'>,
   >(
     httpStatus: THTTPStatus,
     error: TEndpointError

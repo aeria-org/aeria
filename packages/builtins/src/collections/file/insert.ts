@@ -19,7 +19,7 @@ export const insert = async (
     throw new Error('')
   }
 
-  const what = Object.assign({}, payload.what)
+  const { content, ...what } = Object.assign({}, payload.what)
   what.owner = context.token.sub
 
   const extension = what.name.split('.').at(-1)
@@ -57,7 +57,7 @@ export const insert = async (
     .digest('hex')
 
   what.absolute_path = `${tempPath}/${filenameHash}.${extension}`
-  await writeFile(what.absolute_path, Buffer.from(what.content.split(',').at(-1)!, 'base64'))
+  await writeFile(what.absolute_path, Buffer.from(content.split(',').at(-1)!, 'base64'))
 
   return originalInsert({
     ...payload,
