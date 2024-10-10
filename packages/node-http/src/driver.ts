@@ -53,11 +53,9 @@ export const abstractResponse = (response: http.ServerResponse): GenericResponse
         if( !response.headersSent ) {
           if( isEndpointError(value) ) {
             const { error } = value
-            if( error.httpStatus ) {
-              response.writeHead(error.httpStatus, {
-                'content-type': 'application/json',
-              })
-            }
+            response.writeHead(error.httpStatus, {
+              'content-type': 'application/json',
+            })
 
             Object.assign(value, {
               [ERROR_SYMBOL_DESCRIPTION]: true,
