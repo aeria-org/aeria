@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.92
+
+### Patch Changes
+
+- a29e033: Fix `Condition<T>`
+
 ## 0.0.91
 
 ### Patch Changes
