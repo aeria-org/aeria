@@ -8,6 +8,7 @@ export type ApiConfig = {
   secret?: string
   baseUrl?: RouteUri
   publicUrl?: string
+  host?: string
   port?: number
   defaultPaginationLimit?: number
   database?: {

@@ -86,7 +86,11 @@ export const init = (_options: InitOptions = {}) => {
 
       await warmup()
 
-      const serverOptions = defineServerOptions()
+      const serverOptions = defineServerOptions({
+        host: options.config.host,
+        port: options.config.port,
+      })
+
       const apiRouter = registerRoutes()
 
       const server = registerServer(serverOptions, async (request, response) => {
