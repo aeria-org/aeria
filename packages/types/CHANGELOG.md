@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.90
+
+### Patch Changes
+
+- b498dbd: Refactor endpoint errors
+
 ## 0.0.89
 
 ### Patch Changes

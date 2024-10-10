@@ -1,5 +1,14 @@
 # aeria-sdk
 
+## 0.0.138
+
+### Patch Changes
+
+- b498dbd: Refactor endpoint errors
+- Updated dependencies [b498dbd]
+  - @aeriajs/types@0.0.90
+  - @aeriajs/common@0.0.107
+
 ## 0.0.137
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @aeriajs/builtins
 
+## 0.0.177
+
+### Patch Changes
+
+- b498dbd: Refactor endpoint errors
+- Updated dependencies [b498dbd]
+  - @aeriajs/types@0.0.90
+  - @aeriajs/core@0.0.177
+  - @aeriajs/common@0.0.107
+  - @aeriajs/entrypoint@0.0.110
+  - @aeriajs/validation@0.0.110
+
 ## 0.0.176
 
 ### Patch Changes
