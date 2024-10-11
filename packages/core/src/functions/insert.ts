@@ -1,9 +1,9 @@
-import type { Context, SchemaWithId, InsertPayload, InsertReturnType } from '@aeriajs/types'
+import type { Context, Description, SchemaWithId, InsertPayload, InsertReturnType } from '@aeriajs/types'
 import { ObjectId } from 'mongodb'
 import { Result, HTTPStatus, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { useSecurity, applyWriteMiddlewares } from '@aeriajs/security'
 import { endpointErrorSchema } from '@aeriajs/common'
-import { traverseDocument, prepareCreate } from '../collection/index.js'
+import { traverseDocument } from '../collection/index.js'
 import { get } from './get.js'
 
 export type InsertOptions = {
@@ -30,6 +30,16 @@ export const insertErrorSchema = () => endpointErrorSchema({
     TraverseError.InvalidTempfile,
   ],
 })
+
+const prepareCreate = (doc: Record<string, unknown>, description: Description) => {
+  const result: typeof doc = {}
+  if( description.defaults ) {
+    Object.assign(result, description.defaults)
+  }
+
+  Object.assign(result, doc)
+  return result
+}
 
 const internalInsert = async <TContext extends Context>(
   payload: InsertPayload<SchemaWithId<TContext['description']>>,
