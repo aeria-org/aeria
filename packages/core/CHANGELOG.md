@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.180
+
+### Patch Changes
+
+- 3df5e0c: Save missing values as `null` in `insert()`
+- Updated dependencies [3df5e0c]
+  - @aeriajs/types@0.0.93
+  - @aeriajs/builtins@0.0.180
+  - @aeriajs/common@0.0.110
+  - @aeriajs/entrypoint@0.0.113
+  - @aeriajs/http@0.0.124
+  - @aeriajs/security@0.0.180
+  - @aeriajs/validation@0.0.113
+
 ## 0.0.179
 
 ### Patch Changes
