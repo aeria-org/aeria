@@ -3,7 +3,7 @@ import { ObjectId } from 'mongodb'
 import { Result, HTTPStatus, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { useSecurity, applyWriteMiddlewares } from '@aeriajs/security'
 import { endpointErrorSchema } from '@aeriajs/common'
-import { traverseDocument, prepareCreate, prepareUpdate } from '../collection/index.js'
+import { traverseDocument, prepareCreate } from '../collection/index.js'
 import { get } from './get.js'
 
 export type InsertOptions = {
@@ -35,15 +35,18 @@ const internalInsert = async <TContext extends Context>(
   payload: InsertPayload<SchemaWithId<TContext['description']>>,
   context: TContext,
 ) => {
+  const isUpdate = !!('_id' in payload.what && payload.what._id)
+
   const { error, result: what } = await traverseDocument(payload.what, context.description, {
     recurseDeep: true,
     autoCast: true,
     validate: true,
-    validateRequired: '_id' in payload.what && payload.what._id
+    validateRequired: isUpdate
       ? []
       : context.description.required,
     moveFiles: true,
-    skipUndefined: true,
+    fromProperties: !isUpdate,
+    undefinedToNull: true,
     preserveHidden: true,
     context,
   })
@@ -78,12 +81,14 @@ const internalInsert = async <TContext extends Context>(
     newId = (await context.collection.model.insertOne(content)).insertedId
 
   } else {
-    const content = prepareUpdate(what)
-    content.$set.updated_at = new Date()
-
     await context.collection.model.updateOne({
       _id: newId,
-    }, content)
+    }, {
+      $set: {
+        ...what,
+        updated_at: new Date(),
+      },
+    })
   }
 
   const inheritedContext: Context = {

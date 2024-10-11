@@ -11,6 +11,7 @@ export type ApiConfig = {
   host?: string
   port?: number
   defaultPaginationLimit?: number
+  noWarmup?: boolean
   database?: {
     mongodbUrl?: string
     noDatabase?: boolean

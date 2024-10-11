@@ -16,7 +16,7 @@ export type TraverseOptionsBase = {
   validateRequired?: Description['required']
   fromProperties?: boolean
   allowOperators?: boolean
-  skipUndefined?: boolean
+  undefinedToNull?: boolean
   preserveHidden?: boolean
   recurseDeep?: boolean
   recurseReferences?: boolean
@@ -381,26 +381,39 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
     const value = target[propName as keyof typeof target]
     const property = getProperty(propName, ctx.property)
 
-    if( ctx.options.skipUndefined ) {
-      if( value === undefined && !('getters' in ctx.options && ctx.options.getters && property && 'getter' in property) ) {
-        continue
+    if( propName === '_id' ) {
+      if( value ) {
+        if( ctx.options.autoCast ) {
+          entries.push([
+            propName,
+            autoCast(value, {
+              ...ctx,
+              target,
+              propName,
+              property: {
+                $ref: '',
+              },
+            }),
+          ])
+        } else {
+          entries.push([
+            propName,
+            value,
+          ])
+        }
       }
-    }
-
-    if( ctx.options.autoCast && propName === '_id' ) {
-      entries.push([
-        propName,
-        autoCast(value, {
-          ...ctx,
-          target,
-          propName,
-          property: {
-            $ref: '',
-          },
-        }),
-      ])
 
       continue
+    }
+
+    if( ctx.options.undefinedToNull ) {
+      if( value === undefined ) {
+        entries.push([
+          propName,
+          null
+        ])
+        continue
+      }
     }
 
     if( !property ) {
