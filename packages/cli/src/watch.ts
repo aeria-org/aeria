@@ -52,7 +52,7 @@ export const spawnApi = async () => {
   const tsConfig = await getUserTsconfig()
 
   const api = spawn('node', [
-    '-r',
+    '--import',
     'aeria/loader',
     '--preserve-symlinks',
     '--env-file=.env',
