@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.93
+
+### Patch Changes
+
+- 3df5e0c: Save missing values as `null` in `insert()`
+
 ## 0.0.92
 
 ### Patch Changes

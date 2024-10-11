@@ -1,5 +1,12 @@
 # @aeriajs/node-http
 
+## 0.0.124
+
+### Patch Changes
+
+- @aeriajs/common@0.0.110
+- @aeriajs/http@0.0.124
+
 ## 0.0.123
 
 ### Patch Changes
