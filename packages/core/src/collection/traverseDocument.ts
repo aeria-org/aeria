@@ -410,7 +410,7 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
       if( value === undefined ) {
         entries.push([
           propName,
-          null
+          null,
         ])
         continue
       }
