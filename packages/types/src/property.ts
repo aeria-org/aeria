@@ -71,9 +71,11 @@ export type EnumProperty = {
   element?: PropertyArrayElement
 }
 
-export type ArrayProperty = {
+export type ArrayProperty<T = unknown> = {
   type: 'array'
-  items: Property
+  items: T extends Property
+    ? T
+    : Property
   uniqueItems?: boolean
   minItems?: number
   maxItems?: number
