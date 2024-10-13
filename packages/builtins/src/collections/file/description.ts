@@ -20,6 +20,7 @@ export const description = defineDescription({
     'name',
     'link',
     'type',
+    'size',
   ],
   properties: {
     type: {
