@@ -1,12 +1,15 @@
 import type { WithId } from 'mongodb'
 import type { Description, Property, ValidationError, RouteContext } from '@aeriajs/types'
 import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
-import { throwIfError, pipe, isReference, getValueFromPath, isError } from '@aeriajs/common'
+import { throwIfError, pipe, isReference, getReferenceProperty, getValueFromPath, isError } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
 import { getCollection } from '@aeriajs/entrypoint'
 import { ObjectId } from 'mongodb'
 import { getCollectionAsset } from '../assets.js'
+import { createContext } from '../context.js'
 import { preloadDescription } from './preload.js'
+import { getReferences, type Reference } from './reference.js'
+import { preferredRemove } from './cascadingRemove.js'
 import * as path from 'path'
 import * as fs from 'fs/promises'
 
@@ -19,6 +22,7 @@ export type TraverseOptionsBase = {
   undefinedToNull?: boolean
   preserveHidden?: boolean
   recurseDeep?: boolean
+  cleanupReferences?: boolean
   recurseReferences?: boolean
 }
 
@@ -85,60 +89,52 @@ const getProperty = (propName: string, parentProperty: Property | Description) =
   }
 }
 
-const disposeOldFiles = async (ctx: PhaseContext, options: { preserveIds?: ObjectId[] } = {}) => {
-  if( !options.preserveIds && Array.isArray(ctx.target[ctx.propName]) ) {
-    return
-  }
+const cleanupReferences = async (value: unknown, ctx: PhaseContext) => {
+  if( ctx.root._id ) {
+    const refProperty = getReferenceProperty(ctx.property)
+    if( refProperty && (refProperty.$ref === 'file' || refProperty.inline) ) {
+      if( ctx.isArray && !Array.isArray(value) ) {
+        return value
+      }
 
-  const context = ctx.options.context!
+      const context = ctx.options.context!
 
-  const doc = await context.collections[ctx.options.description.$id].model.findOne({
-    _id: new ObjectId(ctx.root._id),
-  }, {
-    projection: {
-      [ctx.propPath]: 1,
-    },
-  })
+      const doc = await context.collections[ctx.options.description.$id].model.findOne({
+        _id: new ObjectId(ctx.root._id),
+      }, {
+        projection: {
+          [ctx.propPath]: 1,
+        },
+      })
 
-  if( !doc ) {
-    return Result.error(TraverseError.InvalidDocumentId)
-  }
+      if( !doc ) {
+        return Result.error(TraverseError.InvalidDocumentId)
+      }
 
-  let fileIds = getValueFromPath<(ObjectId | null)[] | undefined>(doc, ctx.propPath)
-  if( !fileIds ) {
-    return
-  }
+      let referenceIds = getValueFromPath<(ObjectId | null)[] | ObjectId | undefined>(doc, ctx.propPath)
+      if( !referenceIds ) {
+        return value
+      }
 
-  if( options.preserveIds ) {
-    fileIds = fileIds.filter((id) => !id || !options.preserveIds!.some((fromId) => {
-      return id.equals(fromId)
-    }))
-  }
+      if( Array.isArray(referenceIds) ) {
+        if( !Array.isArray(value) ) {
+          throw new Error
+        }
 
-  const fileFilters = {
-    _id: {
-      $in: Array.isArray(fileIds)
-        ? fileIds
-        : [fileIds],
-    },
-  }
+        referenceIds = referenceIds.filter((oldId) => !(value as ObjectId[]).some((valueId) => valueId.equals(oldId)))
+      }
 
-  const files = context.collections.file.model.find(fileFilters, {
-    projection: {
-      absolute_path: 1,
-    },
-  })
+      const refMap = await getReferences(ctx.options.description.properties)
+      const reference = getValueFromPath<Reference>(refMap, ctx.propPath)
 
-  let file: Awaited<ReturnType<typeof files.next>>
-  while( file = await files.next() ) {
-    try {
-      await fs.unlink(file.absolute_path)
-    } catch( err ) {
-      console.trace(err)
+      await preferredRemove(referenceIds, reference, await createContext({
+        parentContext: context,
+        collectionName: refProperty.$ref,
+      }))
     }
   }
 
-  return context.collections.file.model.deleteMany(fileFilters)
+  return value
 }
 
 const autoCast = (value: unknown, ctx: Omit<PhaseContext, 'options'> & { options: (TraverseOptions & TraverseNormalized) | {} }): unknown => {
@@ -276,9 +272,6 @@ const moveFiles = async (value: unknown, ctx: PhaseContext) => {
   }
 
   if( !value ) {
-    if( ctx.root._id && !ctx.isArray ) {
-      await disposeOldFiles(ctx)
-    }
     return null
   }
 
@@ -296,10 +289,6 @@ const moveFiles = async (value: unknown, ctx: PhaseContext) => {
 
   if( !tempFile ) {
     return Result.error(TraverseError.InvalidTempfile)
-  }
-
-  if( ctx.root._id && !ctx.isArray ) {
-    await disposeOldFiles(ctx)
   }
 
   const { _id: fileId, ...newFile } = tempFile
@@ -339,12 +328,6 @@ const recurseDeep = async (value: unknown, ctx: PhaseContext) => {
       })
 
       items.push(result)
-    }
-
-    if( 'moveFiles' in ctx.options && ctx.options.moveFiles && '$ref' in ctx.property.items && ctx.property.items.$ref === 'file' ) {
-      await disposeOldFiles(ctx, {
-        preserveIds: items,
-      })
     }
 
     return items
@@ -590,6 +573,10 @@ export const traverseDocument = async <TWhat>(
     }
 
     functions.push(validate)
+  }
+
+  if( options.cleanupReferences ) {
+    functions.push(cleanupReferences)
   }
 
   if( 'moveFiles' in options && options.moveFiles ) {

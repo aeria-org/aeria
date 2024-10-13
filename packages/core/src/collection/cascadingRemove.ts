@@ -1,4 +1,4 @@
-import type { Context } from '@aeriajs/types'
+import type { Context, RouteContext } from '@aeriajs/types'
 import type * as functions from '../functions/index.js'
 import { ObjectId } from 'mongodb'
 import { createContext } from '../context.js'
@@ -6,11 +6,34 @@ import { getFunction } from '../assets.js'
 import { getDatabaseCollection } from '../database.js'
 import { getReferences, type ReferenceMap, type Reference } from './reference.js'
 
-const isObject = (value: unknown): value is Record<string, unknown> => {
-  return typeof value === 'object'
+const internalCascadingRemove = async (target: Record<string, unknown>, refMap: ReferenceMap, context: RouteContext) => {
+  for( const refName in refMap ) {
+    const reference = refMap[refName]
+
+    if( !target[refName] ) {
+      continue
+    }
+
+    if( reference.referencedCollection ) {
+      if( reference.isInline || reference.referencedCollection === 'file' ) {
+        if( target[refName] instanceof ObjectId || Array.isArray(target[refName]) ) {
+          await preferredRemove(target[refName], reference, context)
+        }
+      }
+    } else if( reference.deepReferences ) {
+      if( Array.isArray(target[refName]) ) {
+        for( const elem of target[refName] ) {
+          await internalCascadingRemove(elem, reference.deepReferences, context)
+        }
+        continue
+      }
+
+      await internalCascadingRemove(target[refName] as Record<string, unknown>, reference.deepReferences, context)
+    }
+  }
 }
 
-const preferredRemove = async (targetId: ObjectId | ObjectId[], reference: Reference, parentContext: Context) => {
+export const preferredRemove = async (targetId: ObjectId | (ObjectId | null)[], reference: Reference, parentContext: RouteContext) => {
   if( !reference.referencedCollection ) {
     return
   }
@@ -22,16 +45,21 @@ const preferredRemove = async (targetId: ObjectId | ObjectId[], reference: Refer
   })
 
   if( Array.isArray(targetId) ) {
+    if( targetId.length === 0 ) {
+      return
+    }
+
+    const nonNullable = targetId.filter((id) => !!id)
     const { result: removeAll } = await getFunction<typeof functions.removeAll>(reference.referencedCollection, 'removeAll')
     if( removeAll ) {
       return removeAll({
-        filters: targetId,
+        filters: nonNullable,
       }, context)
     }
 
     return coll.deleteMany({
       _id: {
-        $in: targetId,
+        $in: nonNullable,
       },
     })
   }
@@ -48,34 +76,6 @@ const preferredRemove = async (targetId: ObjectId | ObjectId[], reference: Refer
   return coll.deleteOne({
     _id: targetId,
   })
-}
-
-const internalCascadingRemove = async (target: Record<string, unknown>, refMap: ReferenceMap, context: Context) => {
-  for( const refName in refMap ) {
-    const reference = refMap[refName]
-    if( !target[refName] ) {
-      continue
-    }
-
-    if( reference.isInline || reference.referencedCollection === 'file' ) {
-      if( target[refName] instanceof ObjectId ) {
-        await preferredRemove(target[refName], reference, context)
-      }
-    }
-
-    if( reference.deepReferences ) {
-      if( Array.isArray(target[refName]) ) {
-        for( const elem of target[refName] ) {
-          await internalCascadingRemove(elem, reference.deepReferences, context)
-        }
-        continue
-      }
-
-      if( isObject(target[refName]) ) {
-        await internalCascadingRemove(target[refName], reference.deepReferences, context)
-      }
-    }
-  }
 }
 
 export const cascadingRemove = async (target: Record<string, unknown>, context: Context) => {

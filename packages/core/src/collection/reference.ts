@@ -67,8 +67,8 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
     if( refProperty ) {
       const description = throwIfError(await getCollectionAsset(refProperty.$ref, 'description'))
 
-      if( refProperty.populate ) {
-        if( refProperty.populate.length === 0 ) {
+      if( refProperty.inline || refProperty.populate ) {
+        if( refProperty.populate && refProperty.populate.length === 0 ) {
           continue
         }
 
@@ -76,7 +76,9 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
           depth: depth + 1,
           maxDepth: refProperty.populateDepth || maxDepth,
           memoize: `${memoize}.${propName}`,
-          populate: Array.from(refProperty.populate),
+          populate: refProperty.populate
+            ? Array.from(refProperty.populate)
+            : undefined,
           isArrayElement: 'items' in property,
         })
 

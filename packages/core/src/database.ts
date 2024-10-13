@@ -41,6 +41,7 @@ export const getDatabase = async () => {
         console.debug(inspect(event, {
           colors: true,
           compact: false,
+          depth: Infinity,
         }))
       })
     }

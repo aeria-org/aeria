@@ -1,5 +1,5 @@
 // @ts-check
-const { init, user, file, tempFile, get } = require('aeria')
+const { init, user, file, tempFile, get, insert, remove, removeAll } = require('aeria')
 
 exports.default = init({
   collections: {
@@ -9,6 +9,7 @@ exports.default = init({
     circularA: {
       functions: {
         get,
+        insert,
       },
       description: {
         $id: 'circularA',
@@ -19,13 +20,17 @@ exports.default = init({
           },
           circularA: {
             $ref: 'circularA',
-            populate: [
-              'circularB',
-              'circularB_array',
-            ]
+          },
+          circularAs: {
+            type: 'array',
+            items: {
+              $ref: 'circularA',
+              inline: true,
+            },
           },
           circularB: {
-            $ref: 'circularB'
+            $ref: 'circularB',
+            inline: true,
           },
           circularB_array: {
             type: 'array',
@@ -42,16 +47,18 @@ exports.default = init({
     circularB: {
       functions: {
         get,
+        remove,
       },
       description: {
-        $id: 'circularA',
+        $id: 'circularB',
         required: [],
         properties: {
           name: {
             type: 'string',
           },
           circularA: {
-            $ref: 'circularA'
+            $ref: 'circularA',
+            inline: true,
           },
         }
       }

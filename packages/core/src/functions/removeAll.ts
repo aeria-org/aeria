@@ -10,14 +10,11 @@ export type RemoveAllOptions = {
 }
 
 const internalRemoveAll = async <TContext extends Context>(payload: RemoveAllPayload, context: TContext) => {
-  const filtersWithId = {
-    ...payload.filters,
+  const filters = throwIfError(await traverseDocument<Record<string, unknown>>({
     _id: {
       $in: payload.filters,
     },
-  }
-
-  const filters = throwIfError(await traverseDocument<Record<string, unknown>>(filtersWithId, context.description, {
+  }, context.description, {
     autoCast: true,
   }))
 

@@ -46,11 +46,11 @@ export type NonCircularJsonSchema<TJsonSchema extends NonCircularJsonSchema = an
 export type RefProperty = {
   $ref: Exclude<keyof Collections, 'file'> & string
   indexes?: readonly string[]
-  populate?: readonly string[]
   select?: readonly string[]
   inline?: boolean
   form?: readonly string[]
   purge?: boolean
+  populate?: readonly string[]
   populateDepth?: number
   constraints?: Condition
 }
@@ -128,10 +128,6 @@ export type BooleanProperty = {
   type: 'boolean'
   default?: boolean
   element?: 'checkbox'
-}
-
-export type ArrayOfRefs = Omit<ArrayProperty, 'items'> & {
-  items: RefProperty
 }
 
 export type GetterProperty = {

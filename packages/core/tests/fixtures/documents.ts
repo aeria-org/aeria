@@ -1,7 +1,7 @@
 import type { Token } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import { createContext, insert, ObjectId } from '../../dist/index.js'
-import { dbPromise } from './database'
+import { dbPromise } from './database.js'
 
 const token: Token = {
   authenticated: false,
@@ -19,7 +19,7 @@ export const documents = (async () => {
     token,
   })
 
-  const { insertedIds: { "0": file1, "1": file2, } } = await db.collection('file').insertMany([
+  const { insertedIds: { '0': file1, '1': file2, } } = await db.collection('file').insertMany([
     {
       name: 'picture1.jpg',
     },
@@ -28,7 +28,7 @@ export const documents = (async () => {
     }
   ])
 
-  const { insertedIds: { "0": user1, "1": user2, "2": user3, } } = await db.collection('user').insertMany([
+  const { insertedIds: { '0': user1, '1': user2, '2': user3, } } = await db.collection('user').insertMany([
     {
       name: 'john',
       email: 'john@test',
@@ -48,7 +48,7 @@ export const documents = (async () => {
     },
   ])
 
-  const { insertedIds: { "0": person1, "1": person2, "2": person3, } } = await db.collection('person').insertMany([
+  const { insertedIds: { '0': person1, '1': person2, '2': person3, } } = await db.collection('person').insertMany([
     {
       name: 'john',
       user: user1,
@@ -70,7 +70,7 @@ export const documents = (async () => {
     }
   ])
 
-  const { insertedIds: { "0": day1, "1": day2 } } = await db.collection('day').insertMany([
+  const { insertedIds: { '0': day1, '1': day2 } } = await db.collection('day').insertMany([
     {
       people: [
         person1,

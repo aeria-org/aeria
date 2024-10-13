@@ -55,6 +55,7 @@ const internalInsert = async <TContext extends Context>(
       ? []
       : context.description.required,
     moveFiles: true,
+    cleanupReferences: true,
     fromProperties: !isUpdate,
     undefinedToNull: true,
     preserveHidden: true,

@@ -19,9 +19,11 @@ export const circularDocuments = (async () => {
     token,
   })
 
-  const { insertedId: circularA1 } = await db.collection('circularA').insertOne({
-    name: 'rec a1',
-  })
+  const { insertedIds: { '0': circularA1, '1': circularA3, '2': circularA4 } } = await db.collection('circularA').insertMany([
+    { name: 'rec a1', },
+    { name: 'rec a3', },
+    { name: 'rec a4', },
+  ])
 
   const { insertedId: circularB1 } = await db.collection('circularB').insertOne({
     name: 'rec b1',
@@ -33,6 +35,10 @@ export const circularDocuments = (async () => {
       name: 'rec a2',
       circularA: circularA1,
       circularB: circularB1,
+      circularAs: [
+        circularA3,
+        circularA4,
+      ],
       circularB_array: [
         circularB1,
       ],
@@ -42,6 +48,8 @@ export const circularDocuments = (async () => {
   return {
     circularA1,
     circularA2,
+    circularA3,
+    circularA4,
     circularB1,
   }
 })()
