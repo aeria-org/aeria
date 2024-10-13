@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest'
 import assert from 'assert'
 import * as fs from 'fs'
-import * as entrypoint from '../src/index.js'
+import * as entrypoint from '../dist/index.js'
 
 const testsCwd = process.cwd()
 
