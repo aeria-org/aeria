@@ -1,15 +1,16 @@
 import type { InsertOneResult } from 'mongodb'
-import type { Context } from '@aeriajs/types'
+import type { RouteContext } from '@aeriajs/types'
 import { expect, test, assert, beforeAll } from 'vitest'
 import * as fs from 'fs'
 import * as path from 'path'
 import { tmpdir } from 'os'
 import { PropertyValidationErrorCode, ValidationErrorCode } from '@aeriajs/types'
-import { traverseDocument, ObjectId, createContext } from '../src/index.js'
+import { traverseDocument, ObjectId } from '../src/index.js'
+import { createContext } from '../dist/index.js'
 import { dbPromise } from './fixtures/database.js'
 
 let
-  context: Context,
+  context: RouteContext,
   persistentFs: string,
   tempFs: string,
   tempFile1: InsertOneResult,
