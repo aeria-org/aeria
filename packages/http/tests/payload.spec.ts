@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { safeJson } from '../dist/index.js'
+import { safeJson } from '../src/index.js'
 
 test('removes unsafe properties from JSON payload', async () => {
   const parsed1 = safeJson('{ "constructor": "injected" }')

@@ -1,6 +1,6 @@
 import type { Context } from '@aeriajs/types'
 import { expect, test } from 'vitest'
-import { iterableMiddlewares } from '../dist/index.js'
+import { iterableMiddlewares } from '../src/index.js'
 
 const mockContext = () => ({}) as Context
 

@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { pipe } from '../dist/index.js'
+import { pipe } from '../src/index.js'
 
 test('traverses value through pipe', async () => {
   const run = pipe([

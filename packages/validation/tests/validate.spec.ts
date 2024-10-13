@@ -1,6 +1,6 @@
 import { expect, test, assert } from 'vitest'
 import { ValidationErrorCode, PropertyValidationErrorCode, type JsonSchema } from '@aeriajs/types'
-import { validate } from '../dist/index.js'
+import { validate } from '../src/index.js'
 
 import {
   plainCandidate,

@@ -1,6 +1,6 @@
 import type { GenericRequest } from '@aeriajs/types'
 import { expect, test, assert } from 'vitest'
-import { matches } from '../dist/index.js'
+import { matches } from '../src/index.js'
 
 test('matches patterns correctly', async () => {
   const req: Partial<GenericRequest> = {

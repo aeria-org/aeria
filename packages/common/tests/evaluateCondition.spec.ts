@@ -1,6 +1,6 @@
 import type { Condition, FinalOperator } from '@aeriajs/types'
 import { expect, test } from 'vitest'
-import { evaluateCondition } from '../dist/index.js'
+import { evaluateCondition } from '../src/index.js'
 
 test('evaluates equality', () => {
   const condition: Condition = {

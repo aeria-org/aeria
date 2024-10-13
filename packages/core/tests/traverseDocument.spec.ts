@@ -5,7 +5,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { tmpdir } from 'os'
 import { PropertyValidationErrorCode, ValidationErrorCode } from '@aeriajs/types'
-import { traverseDocument, ObjectId, createContext } from '../dist/index.js'
+import { traverseDocument, ObjectId, createContext } from '../src/index.js'
 import { dbPromise } from './fixtures/database.js'
 
 let
