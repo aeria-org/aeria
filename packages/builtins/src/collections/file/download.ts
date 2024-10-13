@@ -4,6 +4,10 @@ import { HTTPStatus, ACError } from '@aeriajs/types'
 import { ObjectId } from '@aeriajs/core'
 import * as fs from 'fs'
 
+export enum DownloadError {
+  RangeNotSatisfiable = 'RANGE_NOT_SATISFIABLE',
+}
+
 export const download = async (
   payload: {
     fileId: string
@@ -28,7 +32,7 @@ export const download = async (
 
   if( !file ) {
     if( !payload.noHeaders ) {
-      context.response.writeHead(404, {
+      context.response.writeHead(HTTPStatus.NotFound, {
         'content-type': 'application/json',
       })
     }
@@ -57,6 +61,16 @@ export const download = async (
       ? parseInt(parts[1])
       : stat.size - 1
 
+    if( start >= stat.size || end >= stat.size ) {
+      context.response.writeHead(HTTPStatus.RangeNotSatisfiable, {
+        'content-type': 'application/json',
+        'content-range': `bytes */${stat.size}`,
+      })
+      return context.error(HTTPStatus.RangeNotSatisfiable, {
+        code: DownloadError.RangeNotSatisfiable,
+      })
+    }
+
     const chunkSize = (end - start) + 1
 
     if( !payload.noHeaders ) {
@@ -78,7 +92,7 @@ export const download = async (
   }
 
   if( !payload.noHeaders ) {
-    context.response.writeHead(200, {
+    context.response.writeHead(HTTPStatus.Ok, {
       'content-type': file.type,
       'content-disposition': `${options.includes('download')
         ? 'attachment; '

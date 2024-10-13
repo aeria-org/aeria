@@ -22,6 +22,7 @@ export enum HTTPStatus {
   Unauthorized = 401,
   Forbidden = 403,
   NotFound = 404,
+  RangeNotSatisfiable = 416,
   UnprocessableContent = 422,
   TooManyRequests = 429,
   InternalServerError = 500,
