@@ -2,8 +2,6 @@
 
 [Documentation](https://aeria.land/docs/aeria/)
 
-![ernane-carreira.jpg](ernane-carreira.jpg)
-
 Aeria is a (<10k lines of code) batteries-included **web framework** built on top of **MongoDB**. It lets you define collections using a friendly [schema-definition language](https://github.com/aeria-org/aeria-lang) with support for denormalized data structures, arrays, native MongoDB references, file fields, and more. It also ships important security primitives like Role-Based Access Control.
 
 Why? Because we believed the support for MongoDB offered by other frameworks and libraries was suboptimal in several ways, and no framework was cohesive enough. Aeria has model definition, runtime validation, routing, security, etc, all in one dependency.

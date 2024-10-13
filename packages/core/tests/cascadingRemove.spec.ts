@@ -16,7 +16,6 @@ beforeAll(async () => {
   })
 })
 
-
 test('cleanupReferences() removes replaced inline reference', async () => {
   const { db } = await dbPromise
   const { circularA2, circularA1, circularB1 } = await circularDocuments
