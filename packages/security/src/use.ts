@@ -10,12 +10,12 @@ import {
 } from './middlewares/index.js'
 
 export const useSecurity = <TDescription extends Description>(context: Context<TDescription>) => {
-  const secureReadPayload = async <TPayload extends Partial<CollectionReadPayload>>(payload?: TPayload) => {
-    const newPayload = Object.assign({
-      filters: {},
-    }, payload)
+  const secureReadPayload = async <TPayload extends Partial<CollectionReadPayload>>(payload: TPayload) => {
     const props = {
-      payload: newPayload,
+      payload: {
+        filters: {},
+        ...payload,
+      },
     }
 
     const start = iterableMiddlewares<Result.Result<typeof props>, ReadMiddlewareReturn<typeof props>>([
@@ -31,12 +31,9 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
     return Result.result(result.payload)
   }
 
-  const secureWritePayload = async <TPayload extends CollectionWritePayload>(payload?: TPayload) => {
-    const newPayload = Object.assign({
-      what: {},
-    }, payload)
+  const secureWritePayload = async <TPayload extends CollectionWritePayload>(payload: TPayload) => {
     const props = {
-      payload: newPayload,
+      payload,
     }
 
     const start = iterableMiddlewares<Result.Result<typeof props>, WriteMiddlewareReturn<typeof props>>([
