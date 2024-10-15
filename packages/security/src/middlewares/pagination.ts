@@ -1,6 +1,6 @@
-import type { CollectionProps, Context, CollectionReadPayload } from '@aeriajs/types'
+import type { Context, CollectionProps, CollectionReadPayload } from '@aeriajs/types'
+import type { ReadMiddlewareReturn } from '../types.js'
 import { Result, ACError } from '@aeriajs/types'
-import { type ReadMiddlewareReturn } from '../types.js'
 
 export const checkPagination = async <T extends CollectionReadPayload>(
   props: Result.Result<CollectionProps<T>>,

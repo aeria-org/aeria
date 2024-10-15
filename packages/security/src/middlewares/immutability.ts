@@ -1,7 +1,7 @@
 import type { Context, CollectionProps, What, CollectionReadPayload, CollectionWritePayload } from '@aeriajs/types'
+import type { ReadMiddlewareReturn, WriteMiddlewareReturn } from '../types.js'
 import { ObjectId } from 'mongodb'
 import { Result, ACError } from '@aeriajs/types'
-import { type ReadMiddlewareReturn, type WriteMiddlewareReturn } from '../types.js'
 
 const checkImmutability = async <TPayload>(
   docId: What<unknown>['_id'],

@@ -1,6 +1,6 @@
 import type { Context, CollectionProps, CollectionReadPayload, CollectionWritePayload } from '@aeriajs/types'
+import type { ReadMiddlewareReturn, WriteMiddlewareReturn } from '../types.js'
 import { Result, ACError } from '@aeriajs/types'
-import { type ReadMiddlewareReturn, type WriteMiddlewareReturn } from '../types.js'
 
 export const checkOwnershipRead = async <T extends CollectionReadPayload>(
   props: Result.Result<CollectionProps<T>>,
