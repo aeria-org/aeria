@@ -1,6 +1,6 @@
 import type { Context, Description, CollectionReadPayload, CollectionWritePayload } from '@aeriajs/types'
 import { Result } from '@aeriajs/types'
-import { ReadMiddlewareReturn, WriteMiddlewareReturn } from './types.js'
+import { type ReadMiddlewareReturn, type WriteMiddlewareReturn } from './types.js'
 import { iterableMiddlewares } from './middleware/index.js'
 import {
   checkImmutabilityWrite,

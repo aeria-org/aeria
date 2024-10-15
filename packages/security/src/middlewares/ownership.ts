@@ -1,11 +1,11 @@
 import type { Context, CollectionProps, CollectionReadPayload, CollectionWritePayload } from '@aeriajs/types'
 import { Result, ACError } from '@aeriajs/types'
-import { ReadMiddlewareReturn, WriteMiddlewareReturn } from '../types.js'
+import { type ReadMiddlewareReturn, type WriteMiddlewareReturn } from '../types.js'
 
 export const checkOwnershipRead = async <T extends CollectionReadPayload>(
   props: Result.Result<CollectionProps<T>>,
   context: Context,
-  next: (payload: typeof props, context: Context) => ReadMiddlewareReturn<CollectionProps<T>>,
+  next: (payload: typeof props, context: Context)=> ReadMiddlewareReturn<CollectionProps<T>>,
 ) => {
   const { token, description } = context
   const { payload } = props.result
@@ -29,7 +29,7 @@ export const checkOwnershipRead = async <T extends CollectionReadPayload>(
 export const checkOwnershipWrite = async <T extends CollectionWritePayload>(
   props: Result.Result<CollectionProps<T>>,
   context: Context,
-  next: (payload: typeof props, context: Context) => WriteMiddlewareReturn<CollectionProps<T>>,
+  next: (payload: typeof props, context: Context)=> WriteMiddlewareReturn<CollectionProps<T>>,
 ) => {
   const { token, description } = context
   const { payload, parentId } = props.result

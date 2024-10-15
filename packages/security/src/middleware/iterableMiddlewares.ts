@@ -14,7 +14,7 @@ export const iterableMiddlewares = function <TPayload, TReturn>(
   }
 
   return (payload: TPayload, context: Context) => {
-    return run(payload, context, 0) as TReturn
+    return run(payload, context, 0)
   }
 }
 
