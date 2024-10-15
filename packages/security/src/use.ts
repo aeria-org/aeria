@@ -18,10 +18,7 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
       payload: newPayload,
     }
 
-    const start = iterableMiddlewares<
-      Result.Result<typeof props>,
-      ReadMiddlewareReturn<typeof props>
-    >([
+    const start = iterableMiddlewares<Result.Result<typeof props>, ReadMiddlewareReturn<typeof props>>([
       checkPagination,
       checkOwnershipRead,
     ])
@@ -42,10 +39,7 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
       payload: newPayload,
     }
 
-    const start = iterableMiddlewares<
-      Result.Result<typeof props>,
-      WriteMiddlewareReturn<typeof props>
-    >([
+    const start = iterableMiddlewares<Result.Result<typeof props>, WriteMiddlewareReturn<typeof props>>([
       checkOwnershipWrite,
       checkImmutabilityWrite,
     ])
