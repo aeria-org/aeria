@@ -1,22 +1,20 @@
-import type { Middleware, MiddlewareNext, GenericMiddlewareNext, Context } from '@aeriajs/types'
+import type { Middleware, Context } from '@aeriajs/types'
 
-export const iterableMiddlewares = function <TPayload, TReturn, TReturnNext extends GenericMiddlewareNext<TPayload, TReturn> = MiddlewareNext>(
-  middlewares: Middleware<TPayload, TReturn, TReturnNext>[],
+export const iterableMiddlewares = function <TPayload, TReturn>(
+  middlewares: Middleware<TPayload, TReturn>[],
   end = (payload: TPayload, _context: Context): any => payload,
 ) {
-  const [first, ...subsequent] = middlewares
-  const it: Generator<GenericMiddlewareNext<TPayload, TReturn>> = function *() {
-    for( const middleware of subsequent.concat([end]) ) {
-      yield (payload: TPayload, context: Context) => {
-        const { value: next } = it.next()
-        return middleware(Object.assign({}, payload), context, next)
-      }
+  const run = (payload: TPayload, context: Context, index: number): TReturn => {
+    if( index === middlewares.length ) {
+      return end(payload, context)
     }
-  }()
+
+    const middleware = middlewares[index]
+    return middleware(payload, context, (payload, context) => run(payload, context, index + 1))
+  }
 
   return (payload: TPayload, context: Context) => {
-    const { value: next } = it.next()
-    return first(Object.assign({}, payload), context, next)
+    return run(payload, context, 0) as TReturn
   }
 }
 

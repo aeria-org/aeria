@@ -1,5 +1,6 @@
-import type { Context, Description, ACError, CollectionReadPayload, CollectionWritePayload } from '@aeriajs/types'
+import type { Context, Description, CollectionReadPayload, CollectionWritePayload } from '@aeriajs/types'
 import { Result } from '@aeriajs/types'
+import { ReadMiddlewareReturn, WriteMiddlewareReturn } from './types.js'
 import { iterableMiddlewares } from './middleware/index.js'
 import {
   checkImmutabilityWrite,
@@ -19,13 +20,7 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
 
     const start = iterableMiddlewares<
       Result.Result<typeof props>,
-      Promise<
-        Result.Either<
-          | ACError.OwnershipError
-          | ACError.InvalidLimit,
-          typeof props
-        >
-      >
+      ReadMiddlewareReturn<typeof props>
     >([
       checkPagination,
       checkOwnershipRead,
@@ -49,14 +44,7 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
 
     const start = iterableMiddlewares<
       Result.Result<typeof props>,
-      Promise<
-        Result.Either<
-          | ACError.OwnershipError
-          | ACError.ResourceNotFound
-          | ACError.TargetImmutable,
-          typeof props
-        >
-      >
+      WriteMiddlewareReturn<typeof props>
     >([
       checkOwnershipWrite,
       checkImmutabilityWrite,
