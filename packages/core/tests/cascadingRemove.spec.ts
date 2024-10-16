@@ -16,6 +16,28 @@ beforeAll(async () => {
   })
 })
 
+test('cleanupReferences() keeps reference when the same ObjectId is passed', async () => {
+  const { db } = await dbPromise
+  const { circularA2, circularB1 } = await circularDocuments
+
+  if( !db ) {
+    throw new Error
+  }
+
+  throwIfError(await context.collections.circularA.functions.insert({
+    what: {
+      _id: circularA2._id,
+      circularB: circularA2.circularB._id,
+    }
+  }))
+
+  const b1 = await db.collection('circularB').findOne({
+    _id: circularB1,
+  })
+
+  expect(b1).toBeTruthy()
+})
+
 test('cleanupReferences() removes replaced inline reference', async () => {
   const { db } = await dbPromise
   const { circularA2, circularA1, circularB1 } = await circularDocuments
