@@ -1,5 +1,13 @@
 # @aeriajs/common
 
+## 0.0.112
+
+### Patch Changes
+
+- 4f9f9dc: Fix cascading remove
+- Updated dependencies [4f9f9dc]
+  - @aeriajs/types@0.0.95
+
 ## 0.0.111
 
 ### Patch Changes

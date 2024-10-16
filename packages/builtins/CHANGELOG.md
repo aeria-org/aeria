@@ -1,5 +1,18 @@
 # @aeriajs/builtins
 
+## 0.0.182
+
+### Patch Changes
+
+- 5ee39fa: Add `size` index to file
+- 4f9f9dc: Fix cascading remove
+- Updated dependencies [4f9f9dc]
+  - @aeriajs/common@0.0.112
+  - @aeriajs/types@0.0.95
+  - @aeriajs/core@0.0.182
+  - @aeriajs/entrypoint@0.0.115
+  - @aeriajs/validation@0.0.115
+
 ## 0.0.181
 
 ### Patch Changes
