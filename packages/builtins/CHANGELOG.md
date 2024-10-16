@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.183
+
+### Patch Changes
+
+- af7c820: Fix `file.remove()` access control
+  - @aeriajs/core@0.0.183
+
 ## 0.0.182
 
 ### Patch Changes
