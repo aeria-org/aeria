@@ -122,6 +122,10 @@ const cleanupReferences = async (value: unknown, ctx: PhaseContext) => {
         }
 
         referenceIds = referenceIds.filter((oldId) => !(value as ObjectId[]).some((valueId) => valueId.equals(oldId)))
+      } else {
+        if( referenceIds.equals(value as ObjectId) ) {
+          return value
+        }
       }
 
       const refMap = await getReferences(ctx.options.description.properties)
