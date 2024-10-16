@@ -4,16 +4,12 @@ import { Result } from '@aeriajs/types'
 import { remove as originalRemove, get, type ObjectId } from '@aeriajs/core'
 import * as fs from 'fs/promises'
 
-export const remove = async (
-payload: RemovePayload<SchemaWithId<typeof description>>, context: Context<typeof description>
-) => {
+export const remove = async (payload: RemovePayload<SchemaWithId<typeof description>>, context: Context<typeof description>) => {
   const { error, result: file } = await get({
     filters: {
       _id: <ObjectId>payload.filters._id,
     },
-    project: [
-      'absolute_path',
-    ],
+    project: ['absolute_path'],
   }, context)
 
   if( error ) {
