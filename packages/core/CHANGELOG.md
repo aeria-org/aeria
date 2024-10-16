@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.184
+
+### Patch Changes
+
+- 267667c: Fix `cascadingRemove()` behavior when the same ObjectId is sent
+  - @aeriajs/builtins@0.0.184
+  - @aeriajs/security@0.0.184
+
 ## 0.0.183
 
 ### Patch Changes
