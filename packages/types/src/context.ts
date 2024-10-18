@@ -1,4 +1,4 @@
-import type { Collection as MongoCollection, WithId } from 'mongodb'
+import type { Collection as MongoCollection } from 'mongodb'
 import type { AcceptedRole } from './token.js'
 import type { Collection } from './collection.js'
 import type { ApiConfig } from './config.js'
@@ -8,6 +8,7 @@ import type { Result } from './result.js'
 import type { EndpointError } from './endpointError.js'
 import type { GenericRequest, GenericResponse, HTTPStatus } from './http.js'
 import type { PackReferences, SchemaWithId } from './schema.js'
+import type { JsonSchema } from './property.js'
 import type { RateLimitingParams, RateLimitingError } from './security.js'
 import type { Token } from './token.js'
 
@@ -26,7 +27,7 @@ type RestParameters<TFunction> = TFunction extends (payload: any, context: Conte
   ? Rest
   : never
 
-type UnionFunctions<TFunctions, TSchema extends WithId<unknown>> = {
+type UnionFunctions<TFunctions, TSchema extends JsonSchema> = {
   [P in keyof TFunctions]: (
     P extends keyof CollectionFunctions
       ? CollectionFunctions<TSchema>[P] extends infer CollFunction
@@ -48,15 +49,17 @@ export type IndepthCollection<TCollection> = TCollection extends {
   description: infer InferredDescription
   functions?: infer CollFunctions
 }
-  ? Omit<TCollection, 'functions'> & {
-    item: SchemaWithId<InferredDescription>
-    functions: UnionFunctions<CollFunctions, SchemaWithId<InferredDescription>>
-    originalFunctions: CollFunctions
-    model: InferredDescription extends Description
-      ? CollectionModel<InferredDescription>
-      : never
-    middlewares?: Collection['middlewares']
-  }
+  ? InferredDescription extends JsonSchema
+    ? Omit<TCollection, 'functions'> & {
+      item: SchemaWithId<InferredDescription>
+      functions: UnionFunctions<CollFunctions, InferredDescription>
+      originalFunctions: CollFunctions
+      model: InferredDescription extends Description
+        ? CollectionModel<InferredDescription>
+        : never
+      middlewares?: Collection['middlewares']
+    }
+    : never
   : TCollection
 
 export type IndepthCollections = {

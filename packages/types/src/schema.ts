@@ -51,7 +51,11 @@ type ExtractRequiredPropNames<T> = T extends readonly (infer PropName)[]
       ]: never
     }
 
-export type InferSchema<TSchema> = MergeReferences<TSchema> extends infer MappedTypes
+type SchemaOptions = {
+  readonly keepTempIds?: boolean
+}
+
+export type InferSchema<TSchema, TSchemaOptions extends SchemaOptions = {}> = MergeReferences<TSchema, TSchemaOptions> extends infer MappedTypes
   ? TSchema extends { required: readonly[] }
     ? Partial<MappedTypes>
     : TSchema extends { required: infer InferredRequired }
@@ -63,14 +67,14 @@ export type InferSchema<TSchema> = MergeReferences<TSchema> extends infer Mapped
       : MappedTypes
   : never
 
-export type Schema<TSchema> = CaseTimestamped<
+export type Schema<TSchema, TSchemaOptions extends SchemaOptions = {}> = CaseTimestamped<
   TSchema,
   CaseOwned<
     TSchema,
-    InferSchema<TSchema>
+    InferSchema<TSchema, TSchemaOptions>
   >>
 
-export type SchemaWithId<TSchema> = Schema<TSchema> & {
+export type SchemaWithId<TSchema, TSchemaOptions extends SchemaOptions = {}> = Schema<TSchema, TSchemaOptions> & {
   _id: ObjectId
 }
 
@@ -101,7 +105,7 @@ export type FilterReadonlyProperties<TProperties> = {
   ]: InferProperty<TProperties[P]>
 }
 
-type MapReferences<TSchema> = TSchema extends { properties: infer Properties }
+type MapReferences<TSchema, TSchemaOptions extends SchemaOptions> = TSchema extends { properties: infer Properties }
   ? {
     -readonly [
     P in keyof Properties as Properties[P] extends
@@ -112,11 +116,24 @@ type MapReferences<TSchema> = TSchema extends { properties: infer Properties }
     ]: Properties[P] extends infer Prop
       ? Prop extends TestType<{ $ref: infer K }>
         ? K extends keyof Collections
-          ? Collections[K]['item']
+          ? TSchemaOptions extends { keepTempIds: true }
+            ? K extends 'file'
+              ? ObjectId | string | {
+                tempId: ObjectId | string
+              }
+              : Collections[K]['item']
+            : Collections[K]['item']
           : never
         : Prop extends TestType<{ items: TestType<{ $ref: infer K }> }>
           ? K extends keyof Collections
-            ? Collections[K]['item'][]
+            // ? Collections[K]['item'][]
+            ? TSchemaOptions extends { keepTempIds: true }
+              ? K extends 'file'
+                ? (ObjectId | string | {
+                  tempId: ObjectId | string
+                })[]
+                : Collections[K]['item'][]
+              : Collections[K]['item'][]
             : never
           : never
       : never
@@ -143,8 +160,8 @@ type CombineProperties<TSchema> = TSchema extends { properties: infer Properties
     : never
   : never
 
-type MergeReferences<TSchema> = CombineProperties<TSchema> extends infer CombinedProperties
-  ? MapReferences<TSchema> extends infer MappedReferences
+type MergeReferences<TSchema, TSchemaOptions extends SchemaOptions> = CombineProperties<TSchema> extends infer CombinedProperties
+  ? MapReferences<TSchema, TSchemaOptions> extends infer MappedReferences
     ? MappedReferences & Omit<CombinedProperties, keyof MappedReferences>
     : never
   : never

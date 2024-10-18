@@ -117,7 +117,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
 
     }
 
-    if( !refProperty?.$ref && !reference.deepReferences ) {
+    if( !refProperty && !reference.deepReferences ) {
       continue
     }
 

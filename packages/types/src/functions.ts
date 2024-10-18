@@ -1,7 +1,8 @@
 import type { FilterOperators, StrictFilter as Filter, WithId, ObjectId } from 'mongodb'
 import type { Result, ExtractError } from './result.js'
 import type { EndpointError } from './endpointError.js'
-import type { PackReferences } from './schema.js'
+import type { SchemaWithId, PackReferences } from './schema.js'
+import type { JsonSchema } from './property.js'
 import type { ACError } from './accessControl.js'
 import type { ValidationErrorCode, TraverseError } from './validation.js'
 import type { HTTPStatus, WithACErrors } from './http.js'
@@ -169,25 +170,33 @@ export type PaginatedGetAllReturnType<TDocument> = Result.Either<ExtractError<Ge
   pagination: Pagination
 }>
 
-export type CollectionFunctions<TDocument extends WithId<unknown> = WithId<unknown>> = {
-  count: (payload: CountPayload<TDocument>)=> Promise<CountReturnType>
-  get: (payload: GetPayload<TDocument>)=> Promise<GetReturnType<TDocument>>
-  getAll: (payload?: GetAllPayload<TDocument>)=> Promise<GetAllReturnType<TDocument>>
-  insert: (payload: InsertPayload<TDocument>)=> Promise<InsertReturnType<TDocument>>
-  remove: (payload: RemovePayload<TDocument>)=> Promise<RemoveReturnType<TDocument>>
-  // @TODO
-  removeAll: (payload: RemoveAllPayload)=> Promise<unknown>
-  removeFile: (payload: RemoveFilePayload)=> Promise<unknown>
-}
+export type CollectionFunctions<TSchema extends JsonSchema = JsonSchema> = SchemaWithId<TSchema> extends infer InferredDocument
+  ? InferredDocument extends WithId<unknown>
+    ? {
+      count: (payload: CountPayload<InferredDocument>)=> Promise<CountReturnType>
+      get: (payload: GetPayload<InferredDocument>)=> Promise<GetReturnType<InferredDocument>>
+      getAll: (payload?: GetAllPayload<InferredDocument>)=> Promise<GetAllReturnType<InferredDocument>>
+      insert: (payload: InsertPayload<SchemaWithId<TSchema, { keepTempIds: true }>>)=> Promise<InsertReturnType<InferredDocument>>
+      remove: (payload: RemovePayload<InferredDocument>)=> Promise<RemoveReturnType<InferredDocument>>
+      // @TODO
+      removeAll: (payload: RemoveAllPayload)=> Promise<unknown>
+      removeFile: (payload: RemoveFilePayload)=> Promise<unknown>
+    }
+    : never
+  : never
 
-export type CollectionFunctionsSDK<TDocument extends WithId<unknown> = WithId<unknown>> = {
-  count: (payload: CountPayload<TDocument>)=> Promise<WithACErrors<CountReturnType>>
-  get: (payload: GetPayload<TDocument>)=> Promise<WithACErrors<GetReturnType<TDocument>>>
-  getAll: (payload?: GetAllPayload<TDocument>)=> Promise<WithACErrors<PaginatedGetAllReturnType<TDocument>>>
-  insert: (payload: InsertPayload<TDocument>)=> Promise<WithACErrors<InsertReturnType<TDocument>>>
-  remove: (payload: RemovePayload<TDocument>)=> Promise<WithACErrors<RemoveReturnType<TDocument>>>
-  // @TODO
-  removeAll: (payload: RemoveAllPayload)=> Promise<unknown>
-  removeFile: (payload: RemoveFilePayload)=> Promise<unknown>
-}
+export type CollectionFunctionsSDK<TSchema extends JsonSchema = JsonSchema> = SchemaWithId<TSchema> extends infer InferredDocument
+  ? InferredDocument extends WithId<unknown>
+    ? {
+      count: (payload: CountPayload<InferredDocument>)=> Promise<WithACErrors<CountReturnType>>
+      get: (payload: GetPayload<InferredDocument>)=> Promise<WithACErrors<GetReturnType<InferredDocument>>>
+      getAll: (payload?: GetAllPayload<InferredDocument>)=> Promise<WithACErrors<PaginatedGetAllReturnType<InferredDocument>>>
+      insert: (payload: InsertPayload<SchemaWithId<TSchema, { keepTempIds: true }>>)=> Promise<WithACErrors<InsertReturnType<InferredDocument>>>
+      remove: (payload: RemovePayload<InferredDocument>)=> Promise<WithACErrors<RemoveReturnType<InferredDocument>>>
+      // @TODO
+      removeAll: (payload: RemoveAllPayload)=> Promise<unknown>
+      removeFile: (payload: RemoveFilePayload)=> Promise<unknown>
+    }
+    : never
+  : never
 

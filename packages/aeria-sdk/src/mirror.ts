@@ -79,7 +79,7 @@ declare module 'aeria-sdk' {
         ? Fn extends keyof CollectionFunctionsSDK
           ? Record<Coll, Record<
               Fn, {
-              POST: CollectionFunctionsSDK<SchemaWithId<MirrorDescriptions[Coll]>>[Fn]
+              POST: CollectionFunctionsSDK<MirrorDescriptions[Coll]>[Fn]
             }
             >>
           : InferEndpoint<Route>
