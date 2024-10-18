@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.96
+
+### Patch Changes
+
+- 7a0ebe6: Keep tempIds in insert payload
+
 ## 0.0.95
 
 ### Patch Changes
