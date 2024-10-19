@@ -1,5 +1,5 @@
 import type { WithId } from 'mongodb'
-import type { Description, Property, ValidationError, RouteContext } from '@aeriajs/types'
+import type { Description, Property, ValidationError, RouteContext, ValidationErrorMissingProperties } from '@aeriajs/types'
 import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { throwIfError, pipe, isReference, getReferenceProperty, getValueFromPath, isError } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
@@ -16,7 +16,7 @@ import * as fs from 'fs/promises'
 export type TraverseOptionsBase = {
   autoCast?: boolean
   validate?: boolean
-  validateRequired?: Description['required']
+  validateWholeness?: boolean | 'deep'
   fromProperties?: boolean
   allowOperators?: boolean
   undefinedToNull?: boolean
@@ -310,6 +310,13 @@ const recurseDeep = async (value: unknown, ctx: PhaseContext) => {
   }
 
   if( 'properties' in ctx.property ) {
+    if( ctx.options.validateWholeness ) {
+      const wholenessError = validateWholeness(value as Record<string, unknown>, ctx.property)
+      if( wholenessError ) {
+        return Result.error(wholenessError)
+      }
+    }
+
     const { error, result } = await recurse(value as Record<string, unknown>, ctx)
     if( error ) {
       return Result.error(error)
@@ -546,7 +553,9 @@ export const traverseDocument = async <TWhat>(
   }
 
   const whatCopy = Object.assign({}, what)
-  const options = Object.assign({}, _options) as TraverseOptions & TraverseNormalized
+  const options = Object.assign({
+    description,
+  }, _options) as TraverseOptions & TraverseNormalized
   const functions: ((value: unknown, ctx: PhaseContext)=> unknown)[] = []
 
   if( !options.validate && Object.keys(whatCopy).length === 0 ) {
@@ -566,14 +575,11 @@ export const traverseDocument = async <TWhat>(
   }
 
   if( options.validate ) {
-    const descriptionCopy = Object.assign({}, description)
-    if( options.validateRequired ) {
-      descriptionCopy.required = options.validateRequired
-    }
-
-    const wholenessError = validateWholeness(whatCopy, descriptionCopy)
-    if( wholenessError ) {
-      return Result.error(wholenessError)
+    if( options.validateWholeness === true ) {
+      const wholenessError = validateWholeness(whatCopy, options.description)
+      if( wholenessError ) {
+        return Result.error(wholenessError)
+      }
     }
 
     functions.push(validate)
@@ -588,7 +594,7 @@ export const traverseDocument = async <TWhat>(
   }
 
   let traverseError: TraverseError | undefined
-  let validationError: Record<string, ValidationError> | undefined
+  let validationError: Record<string, ValidationError> | ValidationErrorMissingProperties | undefined
 
   const mutateTarget = <TValue, TReturn>(fn: (value: TValue, ctx: PhaseContext)=> TReturn) => {
     return async (value: TValue, ctx: PhaseContext) => {
@@ -599,13 +605,12 @@ export const traverseDocument = async <TWhat>(
     }
   }
 
-  options.description = description
-
   Object.assign(options, {
     pipe: pipe(functions.map(mutateTarget), {
       returnFirst: (value) => {
         if( isError(value) ) {
-          const error = value.error as TraverseError | Record<string, ValidationError>
+          const error = value.error as typeof traverseError | typeof validationError
+
           switch( error ) {
             case TraverseError.InvalidDocumentId:
             case TraverseError.InvalidTempfile:
@@ -637,9 +642,13 @@ export const traverseDocument = async <TWhat>(
   }
 
   if( validationError ) {
+    if( validationError.code === ValidationErrorCode.MissingProperties ) {
+      return Result.error(validationError)
+    }
+
     return Result.error(makeValidationError({
       code: ValidationErrorCode.InvalidProperties,
-      errors: validationError,
+      errors: validationError as Record<string, ValidationError>,
     }))
   }
 

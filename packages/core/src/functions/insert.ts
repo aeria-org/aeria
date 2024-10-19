@@ -50,15 +50,15 @@ const internalInsert = async <TContext extends Context>(
   const { error, result: what } = await traverseDocument(payload.what, context.description, {
     recurseDeep: true,
     autoCast: true,
-    validate: true,
-    validateRequired: isUpdate
-      ? []
-      : context.description.required,
     moveFiles: true,
     cleanupReferences: true,
-    fromProperties: !isUpdate,
     undefinedToNull: true,
     preserveHidden: true,
+    validate: true,
+    validateWholeness: isUpdate
+      ? 'deep'
+      : true,
+    fromProperties: !isUpdate,
     context,
   })
 

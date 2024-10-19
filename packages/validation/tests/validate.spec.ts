@@ -1,7 +1,6 @@
 import { expect, test, assert } from 'vitest'
 import { ValidationErrorCode, PropertyValidationErrorCode, type JsonSchema } from '@aeriajs/types'
 import { validate } from '../src/index.js'
-
 import {
   plainCandidate,
   plainDescription,
@@ -60,7 +59,13 @@ test('returns error on divergent const', () => {
 test('validates deep object', () => {
   const { result } = validate(deepCandidate, deepDescription)
 
+  const { error: missingPropertiesError } = validate({
+    status: [],
+    style: {},
+  }, deepDescription)
+
   assert(result)
+  assert(missingPropertiesError)
   expect(JSON.stringify(deepCandidate)).toBe(JSON.stringify(result))
 })
 

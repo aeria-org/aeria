@@ -105,6 +105,36 @@ test('returns a validation error on deep invalid property', async () => {
   expect(error.errors.deep.errors.prop.type).toBe(PropertyValidationErrorCode.Unmatching)
 })
 
+test('returns a validation error on incomplete nested object', async () => {
+  const what = {
+    deep: {
+      prop: null,
+    }
+  }
+
+  const { error } = await traverseDocument(what, {
+    $id: '',
+    properties: {
+      deep: {
+        type: 'object',
+        properties: {
+          prop: {
+            type: 'string',
+          }
+        }
+      }
+    }
+  }, {
+    validate: true,
+    validateWholeness: true,
+    recurseDeep: true,
+  })
+
+  assert(typeof error === 'object')
+  assert(error.code === ValidationErrorCode.MissingProperties)
+  expect(error.errors.prop.type).toBe('missing')
+})
+
 test('returns a validation error on invalid array element', async () => {
   const what = {
     array: [
