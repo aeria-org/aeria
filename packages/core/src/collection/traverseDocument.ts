@@ -599,8 +599,7 @@ export const traverseDocument = async <TWhat>(
 
   let
     traverseError: TraverseError | undefined,
-    validationError: Record<string, ValidationError> | undefined,
-    missingPropertiesError: ValidationErrorMissingProperties | undefined
+    validationError: Record<string, ValidationError> | ValidationErrorMissingProperties | undefined
 
   const mutateTarget = <TValue, TReturn>(fn: (value: TValue, ctx: PhaseContext)=> TReturn) => {
     return async (value: TValue, ctx: PhaseContext) => {
@@ -618,7 +617,6 @@ export const traverseDocument = async <TWhat>(
           const error = value.error as NonNullable<
             | typeof traverseError
             | typeof validationError
-            | typeof missingPropertiesError
           >
           switch( error ) {
             case TraverseError.InvalidDocumentId:
@@ -626,11 +624,7 @@ export const traverseDocument = async <TWhat>(
               traverseError = error
               break
             default: {
-              if( isMissingPropertyError(error) ) {
-                missingPropertiesError = error
-              } else {
-                validationError = error
-              }
+              validationError = error
             }
           }
 
