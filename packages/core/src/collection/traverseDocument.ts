@@ -261,6 +261,10 @@ const isValidTempFile = (value: unknown): value is ValidTempFile => {
   )
 }
 
+const isMissingPropertyError = (error: object): error is ValidationErrorMissingProperties => {
+  return 'code' in error && error.code === ValidationErrorCode.MissingProperties
+}
+
 const moveFiles = async (value: unknown, ctx: PhaseContext) => {
   if( !('$ref' in ctx.property) || ctx.property.$ref !== 'file' ) {
     return value
@@ -593,8 +597,10 @@ export const traverseDocument = async <TWhat>(
     functions.push(moveFiles)
   }
 
-  let traverseError: TraverseError | undefined
-  let validationError: Record<string, ValidationError> | ValidationErrorMissingProperties | undefined
+  let
+    traverseError: TraverseError | undefined,
+    validationError: Record<string, ValidationError> | undefined,
+    missingPropertiesError: ValidationErrorMissingProperties | undefined
 
   const mutateTarget = <TValue, TReturn>(fn: (value: TValue, ctx: PhaseContext)=> TReturn) => {
     return async (value: TValue, ctx: PhaseContext) => {
@@ -609,15 +615,23 @@ export const traverseDocument = async <TWhat>(
     pipe: pipe(functions.map(mutateTarget), {
       returnFirst: (value) => {
         if( isError(value) ) {
-          const error = value.error as typeof traverseError | typeof validationError
-
+          const error = value.error as NonNullable<
+            | typeof traverseError
+            | typeof validationError
+            | typeof missingPropertiesError
+          >
           switch( error ) {
             case TraverseError.InvalidDocumentId:
             case TraverseError.InvalidTempfile:
               traverseError = error
               break
-            default:
-              validationError = error
+            default: {
+              if( isMissingPropertyError(error) ) {
+                missingPropertiesError = error
+              } else {
+                validationError = error
+              }
+            }
           }
 
           return value
@@ -642,13 +656,13 @@ export const traverseDocument = async <TWhat>(
   }
 
   if( validationError ) {
-    if( validationError.code === ValidationErrorCode.MissingProperties ) {
+    if( isMissingPropertyError(validationError) ) {
       return Result.error(validationError)
     }
 
     return Result.error(makeValidationError({
       code: ValidationErrorCode.InvalidProperties,
-      errors: validationError as Record<string, ValidationError>,
+      errors: validationError,
     }))
   }
 
