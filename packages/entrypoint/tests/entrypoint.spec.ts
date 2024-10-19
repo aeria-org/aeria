@@ -9,7 +9,7 @@ const relativePath = (path: string) => {
   return path.split('/').slice(-2).join('/')
 }
 
-const onDirectory = async <T>(dir: string, cb: (...args: unknown[]) => T) => {
+const onDirectory = async <T>(dir: string, cb: () => T) => {
   process.chdir(dir)
   try {
     const result = await cb()
@@ -59,9 +59,7 @@ test('retrieves router correctly (esm)', async () => {
 test('doesnt mutate collections', async () => {
   const collectionBefore = await onDirectory('tests/fixtures/esm', () => entrypoint.getCollection('test'))
   assert(collectionBefore)
-  Object.assign(collectionBefore, {
-    dummy: true,
-  })
+  Object.assign(collectionBefore, { dummy: true })
 
   const collectionAfter = await onDirectory('tests/fixtures/esm', () => entrypoint.getCollection('test'))
   const collections = await onDirectory('tests/fixtures/esm', entrypoint.getCollections)

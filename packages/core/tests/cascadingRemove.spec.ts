@@ -9,11 +9,7 @@ let context: RouteContext
 
 beforeAll(async () => {
   await dbPromise
-  context = await createContext({
-    config: {
-      security: {},
-    },
-  })
+  context = await createContext({ config: { security: {} } })
 })
 
 test('cleanupReferences() keeps reference when the same ObjectId is passed', async () => {
@@ -28,12 +24,10 @@ test('cleanupReferences() keeps reference when the same ObjectId is passed', asy
     what: {
       _id: circularA2._id,
       circularB: circularA2.circularB._id,
-    }
+    },
   }))
 
-  const b1 = await db.collection('circularB').findOne({
-    _id: circularB1,
-  })
+  const b1 = await db.collection('circularB').findOne({ _id: circularB1 })
 
   expect(b1).toBeTruthy()
 })
@@ -50,16 +44,12 @@ test('cleanupReferences() removes replaced inline reference', async () => {
     what: {
       _id: circularA2._id,
       circularB: null,
-    }
+    },
   }))
 
-  const a1 = await db.collection('circularA').findOne({
-    _id: circularA1,
-  })
+  const a1 = await db.collection('circularA').findOne({ _id: circularA1 })
 
-  const b1 = await db.collection('circularB').findOne({
-    _id: circularB1,
-  })
+  const b1 = await db.collection('circularB').findOne({ _id: circularB1 })
 
   expect(circularA2.circularB._id).toBeInstanceOf(ObjectId)
   expect(a1).toBeNull()
@@ -77,19 +67,13 @@ test('cleanupReferences() removes replaced inline reference inside array', async
   throwIfError(await context.collections.circularA.functions.insert({
     what: {
       _id: circularA2._id,
-      circularAs: [
-        circularA3,
-      ],
-    }
+      circularAs: [circularA3],
+    },
   }))
 
-  const a3 = await db.collection('circularA').findOne({
-    _id: circularA3,
-  })
+  const a3 = await db.collection('circularA').findOne({ _id: circularA3 })
 
-  const a4 = await db.collection('circularA').findOne({
-    _id: circularA4,
-  })
+  const a4 = await db.collection('circularA').findOne({ _id: circularA4 })
 
   expect(circularA2.circularB._id).toBeInstanceOf(ObjectId)
   expect(a3).toBeTruthy()

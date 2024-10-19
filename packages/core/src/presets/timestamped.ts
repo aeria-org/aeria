@@ -1,6 +1,6 @@
 import type { JsonSchema } from '@aeriajs/types'
 
-export const timestamped = <const>{
+export const timestamped = ({
   properties: {
     created_at: {
       type: 'string',
@@ -17,4 +17,4 @@ export const timestamped = <const>{
       isTimestamp: true,
     },
   },
-} satisfies Pick<JsonSchema, 'properties'>
+} as const) satisfies Pick<JsonSchema, 'properties'>

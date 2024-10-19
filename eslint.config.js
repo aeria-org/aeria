@@ -1,1 +1,7 @@
-module.exports = [require('eslint-config-aeria')]
+import { srcRules, testRules } from '@eslint-aeria/config'
+
+export default [
+  srcRules,
+  testRules,
+]
+

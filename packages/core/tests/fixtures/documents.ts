@@ -19,16 +19,12 @@ export const documents = (async () => {
     token,
   })
 
-  const { insertedIds: { '0': file1, '1': file2, } } = await db.collection('file').insertMany([
-    {
-      name: 'picture1.jpg',
-    },
-    {
-      name: 'picture2.jpg',
-    }
+  const { insertedIds: { '0': file1, '1': file2 } } = await db.collection('file').insertMany([
+    { name: 'picture1.jpg' },
+    { name: 'picture2.jpg' },
   ])
 
-  const { insertedIds: { '0': user1, '1': user2, '2': user3, } } = await db.collection('user').insertMany([
+  const { insertedIds: { '0': user1, '1': user2, '2': user3 } } = await db.collection('user').insertMany([
     {
       name: 'john',
       email: 'john@test',
@@ -48,7 +44,7 @@ export const documents = (async () => {
     },
   ])
 
-  const { insertedIds: { '0': person1, '1': person2, '2': person3, } } = await db.collection('person').insertMany([
+  const { insertedIds: { '0': person1, '1': person2, '2': person3 } } = await db.collection('person').insertMany([
     {
       name: 'john',
       user: user1,
@@ -60,14 +56,12 @@ export const documents = (async () => {
     {
       name: 'terry',
       user: user2,
-      friends: [
-        user1,
-      ],
+      friends: [user1],
     },
     {
       name: 'terry',
       user: user3,
-    }
+    },
   ])
 
   const { insertedIds: { '0': day1, '1': day2 } } = await db.collection('day').insertMany([
@@ -77,13 +71,8 @@ export const documents = (async () => {
         person2,
       ],
     },
-    {
-      people: [
-        person3,
-      ]
-    },
+    { people: [person3] },
   ])
-
 
   const project = throwIfError(await insert({
     what: {
@@ -91,7 +80,7 @@ export const documents = (async () => {
       created_by: person1,
       stakeholders: {
         owner: person1,
-        qa: person2
+        qa: person2,
       },
       cronogram: [
         {
@@ -109,16 +98,16 @@ export const documents = (async () => {
                 person2,
                 person3,
                 new ObjectId(),
-              ]
+              ],
             },
-          ]
-        }
+          ],
+        },
       ],
       cronogram_normalized: [
         day1,
         day2,
-      ]
-    }
+      ],
+    },
   }, projectContext))
 
   return {

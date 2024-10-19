@@ -55,47 +55,29 @@ beforeAll(async () => {
 })
 
 test('returns a validation error on shallow invalid property', async () => {
-  const what = {
-    prop: 1
-  }
+  const what = { prop: 1 }
 
   const { error } = await traverseDocument(what, {
     $id: '',
-    properties: {
-      prop: {
-        type: 'string',
-      }
-    }
-  }, {
-    validate: true,
-  })
+    properties: { prop: { type: 'string' } },
+  }, { validate: true })
 
   assert(typeof error === 'object')
   expect(error.code).toBe(ValidationErrorCode.InvalidProperties)
 })
 
 test('returns a validation error on deep invalid property', async () => {
-  const what = {
-    deep: {
-      prop: 1
-    }
-  }
+  const what = { deep: { prop: 1 } }
 
   const { error } = await traverseDocument(what, {
     $id: '',
     properties: {
       deep: {
         type: 'object',
-        properties: {
-          prop: {
-            type: 'string',
-          }
-        }
-      }
-    }
-  }, {
-    validate: true,
-  })
+        properties: { prop: { type: 'string' } },
+      },
+    },
+  }, { validate: true })
 
   assert(typeof error === 'object')
   assert(error.code === ValidationErrorCode.InvalidProperties)
@@ -106,24 +88,16 @@ test('returns a validation error on deep invalid property', async () => {
 })
 
 test('returns a validation error on incomplete nested object', async () => {
-  const what = {
-    deep: {
-      prop: null,
-    }
-  }
+  const what = { deep: { prop: null } }
 
   const { error } = await traverseDocument(what, {
     $id: '',
     properties: {
       deep: {
         type: 'object',
-        properties: {
-          prop: {
-            type: 'string',
-          }
-        }
-      }
-    }
+        properties: { prop: { type: 'string' } },
+      },
+    },
   }, {
     validate: true,
     validateWholeness: true,
@@ -141,7 +115,7 @@ test('returns a validation error on invalid array element', async () => {
       '1',
       '2',
       3,
-    ]
+    ],
   }
 
   const { error } = await traverseDocument(what, {
@@ -149,14 +123,10 @@ test('returns a validation error on invalid array element', async () => {
     properties: {
       array: {
         type: 'array',
-        items: {
-          type: 'string'
-        }
-      }
-    }
-  }, {
-    validate: true,
-  })
+        items: { type: 'string' },
+      },
+    },
+  }, { validate: true })
 
   assert(typeof error === 'object')
   assert(error.code === ValidationErrorCode.InvalidProperties)
@@ -172,8 +142,8 @@ test('returns a validation error on invalid array element inside deep property',
         '1',
         '2',
         3,
-      ]
-    }
+      ],
+    },
   }
 
   const { error } = await traverseDocument(what, {
@@ -184,16 +154,12 @@ test('returns a validation error on invalid array element inside deep property',
         properties: {
           array: {
             type: 'array',
-            items: {
-              type: 'string'
-            }
-          }
-        }
-      }
-    }
-  }, {
-    validate: true,
-  })
+            items: { type: 'string' },
+          },
+        },
+      },
+    },
+  }, { validate: true })
 
   assert(typeof error === 'object')
   assert(error.code === ValidationErrorCode.InvalidProperties)
@@ -227,12 +193,8 @@ test('autocast deep MongoDB operators', async () => {
               type: 'string',
               format: 'date-time',
             },
-            image: {
-              $ref: 'file',
-            },
-            status: {
-              type: 'string',
-            },
+            image: { $ref: 'file' },
+            status: { type: 'string' },
           },
         },
       },
@@ -251,15 +213,9 @@ test('autocast deep MongoDB operators', async () => {
 test('autocast top-level MongoDB operators', async () => {
   const what = {
     $and: [
-      {
-        date: '2023-10-31T21:57:45.943Z',
-      },
-      {
-        image: '653c3d448a707ef3d327f624',
-      },
-      {
-        status: 'accepted',
-      },
+      { date: '2023-10-31T21:57:45.943Z' },
+      { image: '653c3d448a707ef3d327f624' },
+      { status: 'accepted' },
     ],
   }
 
@@ -270,12 +226,8 @@ test('autocast top-level MongoDB operators', async () => {
         type: 'string',
         format: 'date-time',
       },
-      image: {
-        $ref: 'file',
-      },
-      status: {
-        type: 'string',
-      },
+      image: { $ref: 'file' },
+      status: { type: 'string' },
     },
   }, {
     autoCast: true,
@@ -289,19 +241,11 @@ test('autocast top-level MongoDB operators', async () => {
 })
 
 test('moves single file', async () => {
-  const what = {
-    single_file: {
-      tempId: tempFile1.insertedId,
-    }
-  }
+  const what = { single_file: { tempId: tempFile1.insertedId } }
 
   const { result } = await traverseDocument(what, {
     $id: 'person',
-    properties: {
-      single_file: {
-        $ref: 'file',
-      },
-    },
+    properties: { single_file: { $ref: 'file' } },
   }, {
     moveFiles: true,
     context,
@@ -317,10 +261,10 @@ test('moves single file', async () => {
 test('moves multiple files', async () => {
   const what = {
     multiple_files: [
-      { tempId: tempFile1.insertedId, },
-      { tempId: tempFile2.insertedId, },
+      { tempId: tempFile1.insertedId },
+      { tempId: tempFile2.insertedId },
       new ObjectId,
-    ]
+    ],
   }
 
   const { result } = await traverseDocument(what, {
@@ -328,9 +272,7 @@ test('moves multiple files', async () => {
     properties: {
       multiple_files: {
         type: 'array',
-        items: {
-          $ref: 'file',
-        },
+        items: { $ref: 'file' },
       },
     },
   }, {

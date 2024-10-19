@@ -11,12 +11,8 @@ export const [Person1, personValidator] = validator({
     'age',
   ],
   properties: {
-    name: {
-      type: 'string',
-    },
-    age: {
-      type: 'number',
-    },
+    name: { type: 'string' },
+    age: { type: 'number' },
   },
 })
 

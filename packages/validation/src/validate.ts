@@ -55,10 +55,10 @@ const makePropertyError = <
   TCode extends PropertyValidationErrorCode,
   TDetails extends PropertyValidationError['details'],
 >(type: TCode, details?: TDetails) => {
-  return <const>{
+  return ({
     type,
     details,
-  } satisfies PropertyValidationError
+  } as const) satisfies PropertyValidationError
 }
 
 export const makeValidationError = <TValidationError extends ValidationError> (error: TValidationError) => {
@@ -329,11 +329,11 @@ export const validator = <const TJsonSchema extends Omit<Description, '$id'> | P
   options: ValidateOptions = {},
 ) => {
 
-  return <const>[
+  return [
     {} as InferSchema<TJsonSchema>,
     <TWhat>(what: TWhat) => {
       return validate(what, schema, options)
     },
-  ]
+  ] as const
 }
 

@@ -53,7 +53,7 @@ const internalGet = async <TContext extends Context>(
   pipeline.push(...buildLookupPipeline(refMap, {
     memoize: context.description.$id,
     project: payload.populate
-      ? <string[]>payload.populate
+      ? payload.populate as string[]
       : project,
   }))
 

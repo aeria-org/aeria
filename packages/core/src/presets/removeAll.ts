@@ -1,6 +1,6 @@
 import type { Description } from '@aeriajs/types'
 
-export const removeAll = <const>{
+export const removeAll = ({
   actions: {
     removeAll: {
       label: 'action.removeAll',
@@ -9,4 +9,4 @@ export const removeAll = <const>{
       translate: true,
     },
   },
-} satisfies Pick<Description, 'actions'>
+} as const) satisfies Pick<Description, 'actions'>

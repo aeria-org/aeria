@@ -1,6 +1,6 @@
 import type { Description } from '@aeriajs/types'
 
-export const crud = <const>{
+export const crud = ({
   actions: {
     spawnAdd: {
       label: 'action.add',
@@ -33,4 +33,4 @@ export const crud = <const>{
       translate: true,
     },
   },
-} satisfies Pick<Description, 'actions' | 'individualActions'>
+} as const) satisfies Pick<Description, 'actions' | 'individualActions'>

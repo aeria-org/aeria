@@ -7,7 +7,7 @@ import * as fs from 'fs/promises'
 export const remove = async (payload: RemovePayload<SchemaWithId<typeof description>>, context: Context<typeof description>) => {
   const { error, result: file } = await get({
     filters: {
-      _id: <ObjectId>payload.filters._id,
+      _id: payload.filters._id as ObjectId,
     },
     project: ['absolute_path'],
   }, context)

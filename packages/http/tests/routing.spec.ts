@@ -9,8 +9,14 @@ test('matches patterns correctly', async () => {
   } satisfies Partial<GenericRequest> as GenericRequest
 
   const shouldMatch1 = matches(req, 'GET', '/test1')
-  const shouldMatch2 = matches({ ...req, url: '/api/test1' }, 'GET', '/test1', { base: '/api' })
-  const shouldMatch3 = matches({ ...req, url: '/test1?query=val' }, 'GET', '/test1')
+  const shouldMatch2 = matches({
+    ...req,
+    url: '/api/test1',
+  }, 'GET', '/test1', { base: '/api' })
+  const shouldMatch3 = matches({
+    ...req,
+    url: '/test1?query=val',
+  }, 'GET', '/test1')
   const shouldntMatch1 = matches(req, 'POST', '/test1')
   const shouldntMatch2 = matches(req, 'GET', '/test1', { base: '/api' })
   const shouldntMatch3 = matches(req, 'GET', '/test12')
@@ -32,7 +38,10 @@ test('matches patterns with fragments correctly', async () => {
   } satisfies Partial<GenericRequest> as GenericRequest
 
   const shouldMatch1 = matches(req, 'GET', '/resource/([0-9]+)/view')
-  const shouldMatch2 = matches({ ...req, url: '/resource/123/view?query=val' }, 'GET', '/resource/([0-9]+)/view')
+  const shouldMatch2 = matches({
+    ...req,
+    url: '/resource/123/view?query=val',
+  }, 'GET', '/resource/([0-9]+)/view')
   const shouldntMatch1 = matches(req, 'GET', '/resource/abc/view')
   const shouldntMatch2 = matches(req, 'GET', '/resource/123/invalid')
 

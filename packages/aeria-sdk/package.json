@@ -7,8 +7,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo skipping",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "build": "pnpm build:cjs && pnpm build:esm",
     "build:cjs": "tsc",
     "build:esm": "esbuild './src/**/*.ts' --outdir=dist --out-extension:.js=.mjs && pnpm build:esm-transform",

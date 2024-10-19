@@ -8,15 +8,9 @@ export const plainCandidate = {
 
 export const plainDescription = {
   properties: {
-    name: {
-      type: 'string',
-    },
-    age: {
-      type: 'number',
-    },
-    job: {
-      const: 'programmer',
-    },
+    name: { type: 'string' },
+    age: { type: 'number' },
+    job: { const: 'programmer' },
   },
-} satisfies Omit<Description, '$id'> 
+} satisfies Omit<Description, '$id'>
 

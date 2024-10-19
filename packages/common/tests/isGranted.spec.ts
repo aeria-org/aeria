@@ -19,7 +19,6 @@ test('check if token has permissions correctly', async () => {
     ],
   }
 
-
   expect(isGranted('unauthenticated', unauthenticated)).toBeTruthy()
   expect(isGranted(['unauthenticated'], unauthenticated)).toBeTruthy()
   // @ts-expect-error
@@ -31,6 +30,4 @@ test('check if token has permissions correctly', async () => {
   expect(isGranted('unauthenticated', authenticated)).toBeTruthy()
   expect(isGranted('unauthenticated-only', authenticated)).toBeFalsy()
 })
-
-
 

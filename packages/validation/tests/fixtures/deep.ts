@@ -11,13 +11,7 @@ export const deepCandidate = {
       status: 'pending',
     },
   ],
-  style: {
-    color: {
-      props: {
-        name: 'red',
-      },
-    },
-  },
+  style: { color: { props: { name: 'red' } } },
 }
 
 export const deepDescription = {
@@ -27,9 +21,7 @@ export const deepDescription = {
       items: {
         type: 'object',
         properties: {
-          user_id: {
-            type: 'string',
-          },
+          user_id: { type: 'string' },
           status: {
             enum: [
               'running',
@@ -47,16 +39,12 @@ export const deepDescription = {
           properties: {
             props: {
               type: 'object',
-              properties: {
-                name: {
-                  type: 'string',
-                },
-              },
+              properties: { name: { type: 'string' } },
             },
           },
         },
       },
     },
   },
-} satisfies Omit<Description, '$id'> 
+} satisfies Omit<Description, '$id'>
 

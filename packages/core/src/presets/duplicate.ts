@@ -1,6 +1,6 @@
 import type { Description } from '@aeriajs/types'
 
-export const duplicate = <const>{
+export const duplicate = ({
   individualActions: {
     duplicate: {
       label: 'action.duplicate',
@@ -9,4 +9,4 @@ export const duplicate = <const>{
       translate: true,
     },
   },
-} satisfies Pick<Description, 'individualActions'>
+} as const) satisfies Pick<Description, 'individualActions'>

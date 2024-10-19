@@ -81,12 +81,8 @@ test('returns error on deep object', () => {
 })
 
 test('conditional required', () => {
-  const validEither = validate({
-    id: 10,
-  }, conditionalDescription)
-  const invalidEither = validate({
-    id: 9,
-  }, conditionalDescription)
+  const validEither = validate({ id: 10 }, conditionalDescription)
+  const invalidEither = validate({ id: 9 }, conditionalDescription)
   assert(validEither.result)
   assert(invalidEither.error)
 })
@@ -96,16 +92,12 @@ test('coercion during validation', () => {
     age: '10',
     weight: '10.5',
 
-  }, coercionDescription, {
-    coerce: true,
-  })
+  }, coercionDescription, { coerce: true })
 
   const invalidEither = validate({
     age: '10.8',
     weight: 'ten',
-  }, coercionDescription, {
-    coerce: true,
-  })
+  }, coercionDescription, { coerce: true })
 
   assert(validEither.result)
   assert(invalidEither.error)
@@ -116,26 +108,21 @@ test('validates array length', () => {
     properties: {
       jobs: {
         type: 'array',
-        items: {
-          type: 'string',
-        },
+        items: { type: 'string' },
         minItems: 1,
         maxItems: 1,
       },
     },
   }
 
-  const minItemsEither = validate({
-    jobs: []
-  }, arrayDescription)
+  const minItemsEither = validate({ jobs: [] }, arrayDescription)
 
   const maxItemsEither = validate({
     jobs: [
       'programmer',
       'doctor',
-    ]
+    ],
   }, arrayDescription)
-
 
   assert(minItemsEither.error)
   assert('code' in minItemsEither.error && minItemsEither.error.code === ValidationErrorCode.InvalidProperties)

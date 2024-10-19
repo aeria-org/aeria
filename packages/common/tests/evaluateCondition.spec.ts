@@ -30,7 +30,7 @@ test('evaluates negation', () => {
       operator: 'equal',
       term1: 'n',
       term2: 1,
-    }
+    },
   }
 
   expect(evaluateCondition({ n: 2 }, condition).satisfied).toBeTruthy()
@@ -65,18 +65,12 @@ test('evaluates "in" array operator', () => {
     arr: [
       'apple',
       'banana',
-    ]
+    ],
   }, condition).satisfied).toBeTruthy()
 
-  expect(evaluateCondition({
-    arr: [
-      'apple',
-    ]
-  }, condition).satisfied).toBeFalsy()
+  expect(evaluateCondition({ arr: ['apple'] }, condition).satisfied).toBeFalsy()
 
-  expect(evaluateCondition({
-    arr: null,
-  }, condition).satisfied).toBeFalsy()
+  expect(evaluateCondition({ arr: null }, condition).satisfied).toBeFalsy()
 })
 
 test('evaluates "and" logic operator', () => {
@@ -91,8 +85,8 @@ test('evaluates "and" logic operator', () => {
         operator: 'equal',
         term1: 'y',
         term2: 2,
-      }
-    ]
+      },
+    ],
   }
   expect(evaluateCondition({
     x: 1,
@@ -117,8 +111,8 @@ test('evaluates "or" logic operator', () => {
         operator: 'equal',
         term1: 'y',
         term2: 2,
-      }
-    ]
+      },
+    ],
   }
 
   expect(evaluateCondition({

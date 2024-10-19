@@ -19,12 +19,8 @@ export const conditionalDescription = {
     },
   },
   properties: {
-    id: {
-      type: 'number',
-    },
-    name: {
-      type: 'string',
-    },
+    id: { type: 'number' },
+    name: { type: 'string' },
   },
-} satisfies Omit<Description, '$id'> 
+} satisfies Omit<Description, '$id'>
 

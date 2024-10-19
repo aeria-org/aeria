@@ -61,10 +61,10 @@ export const describe = async (contextOrPayload: RouteContext | typeof Payload) 
   if( 'request' in contextOrPayload && props.revalidate ) {
     const { error, result: auth } = await authenticate({
       revalidate: true,
-    }, <Context<typeof userDescription>>await createContext({
+    }, (await createContext({
       collectionName: 'user',
       parentContext: contextOrPayload,
-    }))
+    }) as Context<typeof userDescription>))
 
     if( error ) {
       return Result.error(error)
@@ -109,7 +109,7 @@ export const describe = async (contextOrPayload: RouteContext | typeof Payload) 
     }
 
     const userRoles = 'enum' in userRolesProperty.items
-      ? <string[]>userRolesProperty.items.enum
+      ? userRolesProperty.items.enum as string[]
       : []
 
     result.roles = Array.from(new Set(userRoles.concat(await getAvailableRoles())))

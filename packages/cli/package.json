@@ -8,8 +8,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo skipping",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "build": "tsc",
     "prepublishOnly": "pnpm build"
   },

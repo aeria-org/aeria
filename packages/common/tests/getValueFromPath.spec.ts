@@ -6,9 +6,7 @@ test('gets value from path', async () => {
     name: 'terry',
     nested: {
       job: 'programmer',
-      deeper: {
-        x: 1,
-      },
+      deeper: { x: 1 },
     },
   }
 
@@ -16,5 +14,4 @@ test('gets value from path', async () => {
   expect(getValueFromPath(obj, 'nested.job')).toBe('programmer')
   expect(getValueFromPath(obj, 'nested.deeper.x')).toBe(1)
 })
-
 

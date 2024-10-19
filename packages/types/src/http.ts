@@ -4,7 +4,7 @@ import type { EndpointError } from './endpointError.js'
 import type { ACError } from './accessControl.js'
 import type { RateLimitingError } from './security.js'
 
-export const REQUEST_METHODS = <const>[
+export const REQUEST_METHODS = [
   'GET',
   'HEAD',
   'POST',
@@ -14,7 +14,7 @@ export const REQUEST_METHODS = <const>[
   'PATCH',
   'TRACE',
   'SEARCH',
-]
+] as const
 
 export enum HTTPStatus {
   Ok = 200,

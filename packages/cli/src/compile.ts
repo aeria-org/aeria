@@ -135,16 +135,16 @@ export const compile = async (additionalOptions?: ts.CompilerOptions) => {
   }
 
   if( emitResult.emitSkipped ) {
-    return <const>{
+    return {
       success: false,
       diagnostics: diagnostics,
-    }
+    } as const
   }
 
-  return <const>{
+  return {
     success: true,
     program,
-  }
+  } as const
 }
 
 export const compilationPhase = async (options: CompileOptions = {}) => {

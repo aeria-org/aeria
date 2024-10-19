@@ -77,7 +77,7 @@ export const init = (_options: InitOptions = {}) => {
     options,
     listen: async () => {
       const parentContext = await createContext({
-        config: <ApiConfig>options.config,
+        config: options.config as ApiConfig,
       })
 
       if( options.setup ) {

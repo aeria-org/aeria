@@ -1,6 +1,6 @@
 import type { Description } from '@aeriajs/types'
 
-export const view = <const>{
+export const view = ({
   individualActions: {
     viewItem: {
       label: 'action.view',
@@ -12,4 +12,4 @@ export const view = <const>{
       },
     },
   },
-} satisfies Pick<Description, 'individualActions'>
+} as const) satisfies Pick<Description, 'individualActions'>

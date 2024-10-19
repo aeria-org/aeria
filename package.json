@@ -1,5 +1,6 @@
 {
   "name": "aeria-monorepo",
+  "type": "module",
   "private": true,
   "packageManager": "pnpm@9.1.0",
   "scripts": {
@@ -26,12 +27,12 @@
     "@changesets/cli": "^2.27.5",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
+    "@eslint-aeria/config": "~0.0.1",
     "@types/node": "^20.14.2",
     "aeria": "link:packages/aeria",
     "aeria-sdk": "link:packages/aeria-sdk",
     "esbuild": "^0.21.5",
     "eslint": "^9.4.0",
-    "eslint-config-aeria": "^0.0.30",
     "glob": "^10.4.1",
     "husky": "^9.0.11",
     "tsx": "^4.19.1",

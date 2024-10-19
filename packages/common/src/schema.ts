@@ -1,7 +1,7 @@
 import type { Property, HTTPStatus } from '@aeriajs/types'
 
 export const errorSchema = <const TObject extends Property>(object: TObject) => {
-  return <const>{
+  return ({
     type: 'object',
     properties: {
       _tag: {
@@ -12,11 +12,11 @@ export const errorSchema = <const TObject extends Property>(object: TObject) => 
         const: undefined,
       },
     },
-  } satisfies Property
+  } as const) satisfies Property
 }
 
 export const resultSchema = <const TObject extends Property>(object: TObject) => {
-  return <const>{
+  return ({
     type: 'object',
     properties: {
       _tag: {
@@ -27,7 +27,7 @@ export const resultSchema = <const TObject extends Property>(object: TObject) =>
       },
       result: object,
     },
-  } satisfies Property
+  } as const) satisfies Property
 }
 
 export const endpointErrorSchema = <
@@ -37,7 +37,7 @@ export const endpointErrorSchema = <
   httpStatus: THTTPStatus,
   code: TCode
 }) => {
-  return <const>{
+  return ({
     type: 'object',
     properties: {
       _tag: {
@@ -69,11 +69,11 @@ export const endpointErrorSchema = <
         },
       },
     },
-  } satisfies Property
+  } as const) satisfies Property
 }
 
 export const genericEndpointErrorSchema = () => {
-  return <const>{
+  return ({
     type: 'object',
     properties: {
       _tag: {
@@ -105,6 +105,6 @@ export const genericEndpointErrorSchema = () => {
         },
       },
     },
-  } satisfies Property
+  } as const) satisfies Property
 }
 

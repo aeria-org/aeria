@@ -1,10 +1,10 @@
 import type { JsonSchema } from '@aeriajs/types'
 
-export const owned = <const>{
+export const owned = ({
   properties: {
     owner: {
       $ref: 'user',
       noForm: true,
     },
   },
-} satisfies Pick<JsonSchema, 'properties'>
+} as const) satisfies Pick<JsonSchema, 'properties'>

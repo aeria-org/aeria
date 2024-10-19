@@ -71,9 +71,9 @@ type FileDocument = {
 
 const getProperty = (propName: string, parentProperty: Property | Description) => {
   if( propName === '_id' ) {
-    return <Property>{
+    return {
       type: 'string',
-    }
+    } as Property
   }
 
   if( 'items' in parentProperty && 'properties' in parentProperty.items && propName in parentProperty.items.properties ) {
@@ -601,7 +601,7 @@ export const traverseDocument = async <TWhat>(
     traverseError: TraverseError | undefined,
     validationError: Record<string, ValidationError> | ValidationErrorMissingProperties | undefined
 
-  const mutateTarget = <TValue, TReturn>(fn: (value: TValue, ctx: PhaseContext)=> TReturn) => {
+  const mutateTarget = <TValue, TReturn>(fn: (value: TValue, ctx: PhaseContext)=> TReturn | Promise<TReturn>) => {
     return async (value: TValue, ctx: PhaseContext) => {
       const result = await fn(value, ctx)
       ctx.target[ctx.propName] = result

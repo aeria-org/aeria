@@ -3,9 +3,7 @@ import { expect, test } from 'vitest'
 import { isRequired } from '../src/index.js'
 
 test('isRequired() returns correctly with array', async () => {
-  const requiredArray: RequiredProperties<JsonSchema> = [
-    'name',
-  ]
+  const requiredArray: RequiredProperties<JsonSchema> = ['name']
 
   expect(isRequired('name', requiredArray, {})).toBeTruthy()
   expect(isRequired('job', requiredArray, {})).toBeFalsy()
@@ -31,7 +29,7 @@ test('isRequired() returns correctly with condition', async () => {
     },
   }
 
-  expect(isRequired('responsible', requiredCondition, { age: 17, })).toBeTruthy()
-  expect(isRequired('responsible', requiredCondition, { age: 18, })).toBeFalsy()
+  expect(isRequired('responsible', requiredCondition, { age: 17 })).toBeTruthy()
+  expect(isRequired('responsible', requiredCondition, { age: 18 })).toBeFalsy()
 })
 
