@@ -1,4 +1,2 @@
-export const INSECURE_OPERATORS = [
-  '$regex',
-]
+export const INSECURE_OPERATORS = ['$regex']
 
