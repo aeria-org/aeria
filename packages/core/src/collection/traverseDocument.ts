@@ -416,17 +416,15 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
     }
 
     if( value && (value.constructor === Object || value.constructor === Array) ) {
-      const firstKey = Object.keys(value)[0]
+      for( const key in value ) {
+        if( key.startsWith('$') ) {
+          if( !ctx.options.allowOperators ) {
+            return Result.error(ACError.InsecureOperator)
+          }
 
-      // if first propName is preceded by '$' we assume
-      // it contains MongoDB query operators
-      if( firstKey && firstKey.startsWith('$') ) {
-        if( !ctx.options.allowOperators ) {
-          return Result.error(ACError.InsecureOperator)
-        }
-
-        if( INSECURE_OPERATORS.includes(firstKey) ) {
-          return Result.error(ACError.InsecureOperator)
+          if( INSECURE_OPERATORS.includes(key) ) {
+            return Result.error(ACError.InsecureOperator)
+          }
         }
       }
     }

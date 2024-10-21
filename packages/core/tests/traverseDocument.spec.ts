@@ -298,8 +298,8 @@ test('moves multiple files', async () => {
 
 test('forbids MongoDB operators unless explicitly allowed', async () => {
   const { error: shouldFail1 } = await traverseDocument({ name: { $eq: 'terry' } }, description, { allowOperators: false })
-
-  const { error: shouldFail2 } = await traverseDocument({ inexistent: { $eq: 'terry' } }, description, { allowOperators: false })
+  const { error: shouldFail2 } = await traverseDocument({ name: { something: 1, $eq: 'terry' } }, description, { allowOperators: false })
+  const { error: shouldFail3 } = await traverseDocument({ inexistent: { $eq: 'terry' } }, description, { allowOperators: false })
 
   const { result: shouldSucceed } = await traverseDocument({ name: { $eq: 'terry' } }, description, { allowOperators: true })
 
@@ -307,17 +307,21 @@ test('forbids MongoDB operators unless explicitly allowed', async () => {
   expect(shouldFail1).toBe(ACError.InsecureOperator)
   assert(shouldFail2)
   expect(shouldFail2).toBe(ACError.InsecureOperator)
+  assert(shouldFail3)
+  expect(shouldFail3).toBe(ACError.InsecureOperator)
   assert(shouldSucceed)
 })
 
 test('forbids insecure operators', async () => {
-  const { error: error1 } = await traverseDocument({ name: { $regex: 'terry' } }, description, { allowOperators: true })
+  const { error: shoudFail1 } = await traverseDocument({ name: { $regex: 'terry' } }, description, { allowOperators: true })
+  const { error: shoudFail2 } = await traverseDocument({ name: { something: 1, $regex: 'terry' } }, description, { allowOperators: true })
+  const { error: shoudFail3 } = await traverseDocument({ inexistent: { $regex: 'terry' } }, description, { allowOperators: true })
 
-  const { error: error2 } = await traverseDocument({ inexistent: { $regex: 'terry' } }, description, { allowOperators: true })
-
-  assert(error1)
-  expect(error1).toBe(ACError.InsecureOperator)
-  assert(error2)
-  expect(error2).toBe(ACError.InsecureOperator)
+  assert(shoudFail1)
+  expect(shoudFail1).toBe(ACError.InsecureOperator)
+  assert(shoudFail2)
+  expect(shoudFail2).toBe(ACError.InsecureOperator)
+  assert(shoudFail3)
+  expect(shoudFail3).toBe(ACError.InsecureOperator)
 })
 
