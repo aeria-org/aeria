@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.186
+
+### Patch Changes
+
+- 1c7196a: Secure against forbidden operators
+- Updated dependencies [1c7196a]
+  - @aeriajs/security@0.0.186
+  - @aeriajs/types@0.0.97
+  - @aeriajs/builtins@0.0.186
+  - @aeriajs/common@0.0.114
+  - @aeriajs/entrypoint@0.0.117
+  - @aeriajs/http@0.0.128
+  - @aeriajs/validation@0.0.117
+
 ## 0.0.185
 
 ### Patch Changes
