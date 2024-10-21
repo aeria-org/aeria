@@ -415,7 +415,7 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
       }
     }
 
-    if( value && (value.constructor === Object || value.constructor === Array) ) {
+    if( value && typeof value === 'object' ) {
       for( const key in value ) {
         if( key.startsWith('$') ) {
           if( !ctx.options.allowOperators ) {
