@@ -428,52 +428,46 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
         if( INSECURE_OPERATORS.includes(firstKey) ) {
           return Result.error(ACError.InsecureOperator)
         }
+      }
+    }
+
+    if( !property ) {
+      if( value && (value.constructor === Object || value.constructor === Array) ) {
+        if( Array.isArray(value) ) {
+          const operations = []
+          for( const operation of value ) {
+            const { error, result } = await recurse(operation, ctx)
+            if( error ) {
+              return Result.error(error)
+            }
+
+            operations.push(result)
+          }
+
+          entries.push([
+            propName,
+            operations,
+          ])
+          continue
+        }
+
+        const { error, result: operator } = await recurse(value, ctx)
+        if( error ) {
+          return Result.error(error)
+        }
+
+        entries.push([
+          propName,
+          operator,
+        ])
+        continue
+      }
 
         entries.push([
           propName,
           value,
         ])
-        continue
-      }
-
-      if( Array.isArray(value) ) {
-        const operations = []
-        for( const operation of value ) {
-          const { error, result } = await recurse(operation, ctx)
-          if( error ) {
-            return Result.error(error)
-          }
-
-          operations.push(result)
-        }
-
-        entries.push([
-          propName,
-          operations,
-        ])
-        continue
-      }
-
-      const { error, result: operator } = await recurse(value, ctx)
-      if( error ) {
-        return Result.error(error)
-      }
-
-      entries.push([
-        propName,
-        operator,
-      ])
-      continue
-    }
-
-    if( !property ) {
-      entries.push([
-        propName,
-        value,
-      ])
-    }
-
-    if( property ) {
+    } else {
       if( !ctx.options.preserveHidden && property.hidden ) {
         continue
       }

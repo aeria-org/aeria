@@ -1,10 +1,10 @@
 import type { InsertOneResult } from 'mongodb'
-import type { RouteContext } from '@aeriajs/types'
+import type { RouteContext, Description } from '@aeriajs/types'
 import { expect, test, assert, beforeAll } from 'vitest'
 import * as fs from 'fs'
 import * as path from 'path'
 import { tmpdir } from 'os'
-import { PropertyValidationErrorCode, ValidationErrorCode } from '@aeriajs/types'
+import { ACError, PropertyValidationErrorCode, ValidationErrorCode } from '@aeriajs/types'
 import { traverseDocument, ObjectId } from '../src/index.js'
 import { createContext } from '../dist/index.js'
 import { dbPromise } from './fixtures/database.js'
@@ -19,6 +19,15 @@ let
   tempPath2: string,
   persistentPath1: string,
   persistentPath2: string
+
+const description: Description = {
+  $id: 'person',
+  properties: {
+    name: {
+      type: 'string',
+    },
+  },
+}
 
 beforeAll(async () => {
   await dbPromise
@@ -289,5 +298,42 @@ test('moves multiple files', async () => {
   expect(fs.existsSync(path.join(persistentFs, path.basename(tempPath1)))).toBeTruthy()
   expect(fs.existsSync(persistentPath1)).toBeTruthy()
   expect(fs.existsSync(persistentPath2)).toBeTruthy()
+})
+
+test('forbids MongoDB operators unless explicitly allowed', async () => {
+  const { error: shouldFail1 } = await traverseDocument({ name: { $eq: 'terry', }, }, description, {
+    allowOperators: false,
+  })
+
+  const { error: shouldFail2 } = await traverseDocument({ inexistent: { $eq: 'terry', }, }, description, {
+    allowOperators: false,
+  })
+
+  const { result: shouldSucceed } = await traverseDocument({ name: { $eq: 'terry', }, }, description, {
+    allowOperators: true,
+  })
+
+
+  assert(shouldFail1)
+  expect(shouldFail1).toBe(ACError.InsecureOperator)
+  assert(shouldFail2)
+  expect(shouldFail2).toBe(ACError.InsecureOperator)
+  assert(shouldSucceed)
+})
+
+test('forbids insecure operators', async () => {
+  const { error: error1 } = await traverseDocument({ name: { $regex: 'terry', }, }, description, {
+    allowOperators: true,
+  })
+
+  const { error: error2 } = await traverseDocument({ inexistent: { $regex: 'terry', }, }, description, {
+    allowOperators: true,
+  })
+
+
+  assert(error1)
+  expect(error1).toBe(ACError.InsecureOperator)
+  assert(error2)
+  expect(error2).toBe(ACError.InsecureOperator)
 })
 
