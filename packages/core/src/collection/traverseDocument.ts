@@ -463,10 +463,10 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
         continue
       }
 
-        entries.push([
-          propName,
-          value,
-        ])
+      entries.push([
+        propName,
+        value,
+      ])
     } else {
       if( !ctx.options.preserveHidden && property.hidden ) {
         continue

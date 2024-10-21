@@ -22,11 +22,7 @@ let
 
 const description: Description = {
   $id: 'person',
-  properties: {
-    name: {
-      type: 'string',
-    },
-  },
+  properties: { name: { type: 'string' } },
 }
 
 beforeAll(async () => {
@@ -301,18 +297,11 @@ test('moves multiple files', async () => {
 })
 
 test('forbids MongoDB operators unless explicitly allowed', async () => {
-  const { error: shouldFail1 } = await traverseDocument({ name: { $eq: 'terry', }, }, description, {
-    allowOperators: false,
-  })
+  const { error: shouldFail1 } = await traverseDocument({ name: { $eq: 'terry' } }, description, { allowOperators: false })
 
-  const { error: shouldFail2 } = await traverseDocument({ inexistent: { $eq: 'terry', }, }, description, {
-    allowOperators: false,
-  })
+  const { error: shouldFail2 } = await traverseDocument({ inexistent: { $eq: 'terry' } }, description, { allowOperators: false })
 
-  const { result: shouldSucceed } = await traverseDocument({ name: { $eq: 'terry', }, }, description, {
-    allowOperators: true,
-  })
-
+  const { result: shouldSucceed } = await traverseDocument({ name: { $eq: 'terry' } }, description, { allowOperators: true })
 
   assert(shouldFail1)
   expect(shouldFail1).toBe(ACError.InsecureOperator)
@@ -322,14 +311,9 @@ test('forbids MongoDB operators unless explicitly allowed', async () => {
 })
 
 test('forbids insecure operators', async () => {
-  const { error: error1 } = await traverseDocument({ name: { $regex: 'terry', }, }, description, {
-    allowOperators: true,
-  })
+  const { error: error1 } = await traverseDocument({ name: { $regex: 'terry' } }, description, { allowOperators: true })
 
-  const { error: error2 } = await traverseDocument({ inexistent: { $regex: 'terry', }, }, description, {
-    allowOperators: true,
-  })
-
+  const { error: error2 } = await traverseDocument({ inexistent: { $regex: 'terry' } }, description, { allowOperators: true })
 
   assert(error1)
   expect(error1).toBe(ACError.InsecureOperator)
