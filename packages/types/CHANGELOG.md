@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.97
+
+### Patch Changes
+
+- 1c7196a: Secure against forbidden operators
+
 ## 0.0.96
 
 ### Patch Changes
