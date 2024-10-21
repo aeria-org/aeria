@@ -2,15 +2,14 @@ export type PipeOptions<TReturn> = {
   returnFirst?: boolean | ((value: unknown)=> Awaited<TReturn> | undefined)
 }
 
-export const pipe = <TArgs extends unknown[], TReturn>(functions: ((p1: TReturn, ...args: TArgs)=> TReturn | Promise<TReturn>)[], options?: PipeOptions<TReturn>) => {
+export const pipe = <TArgs extends unknown[], TReturn>(functions: ((p1: TReturn | undefined, ...args: TArgs)=> TReturn | Promise<TReturn> | undefined)[], options?: PipeOptions<TReturn>) => {
   const { returnFirst } = options || {}
 
-  return async (value: Awaited<TReturn>, ...args: TArgs) => {
+  return async (value: Awaited<TReturn> | undefined, ...args: TArgs) => {
     let ret = value
 
     for( const fn of functions ) {
       ret = await fn(ret, ...args)
-      // eslint-disable-next-line
       if( returnFirst && ret !== undefined ) {
         switch( typeof returnFirst ) {
           case 'function': {
