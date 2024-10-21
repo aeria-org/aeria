@@ -142,6 +142,7 @@ export type GetReturnType<TDocument> =
     EndpointError<
       | ACError.ResourceNotFound
       | ACError.OwnershipError
+      | ACError.InsecureOperator
       | ACError.MalformedInput,
       unknown,
       | HTTPStatus.Forbidden
@@ -155,6 +156,7 @@ export type GetAllReturnType<TDocument> =
   Result.Either<
     EndpointError<
       | ACError.InvalidLimit
+      | ACError.InsecureOperator
       | ACError.OwnershipError,
       unknown,
       | HTTPStatus.Forbidden

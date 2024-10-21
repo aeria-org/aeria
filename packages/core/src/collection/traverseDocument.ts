@@ -4,6 +4,7 @@ import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/ty
 import { throwIfError, pipe, isReference, getReferenceProperty, getValueFromPath, isError } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
 import { getCollection } from '@aeriajs/entrypoint'
+import { INSECURE_OPERATORS } from '@aeriajs/security'
 import { ObjectId } from 'mongodb'
 import { getCollectionAsset } from '../assets.js'
 import { createContext } from '../context.js'
@@ -414,52 +415,58 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
       }
     }
 
-    if( !property ) {
-      if( value && (value.constructor === Object || value.constructor === Array) ) {
-        // if first propName is preceded by '$' we assume
-        // it contains MongoDB query operators
-        if( Object.keys(value)[0]?.startsWith('$') ) {
-          if( !ctx.options.allowOperators ) {
-            return Result.error(ACError.InsecureOperator)
-          }
+    if( value && (value.constructor === Object || value.constructor === Array) ) {
+      const firstKey = Object.keys(value)[0]
 
-          entries.push([
-            propName,
-            value,
-          ])
-          continue
+      // if first propName is preceded by '$' we assume
+      // it contains MongoDB query operators
+      if( firstKey && firstKey.startsWith('$') ) {
+        if( !ctx.options.allowOperators ) {
+          return Result.error(ACError.InsecureOperator)
         }
 
-        if( Array.isArray(value) ) {
-          const operations = []
-          for( const operation of value ) {
-            const { error, result } = await recurse(operation, ctx)
-            if( error ) {
-              return Result.error(error)
-            }
-
-            operations.push(result)
-          }
-
-          entries.push([
-            propName,
-            operations,
-          ])
-          continue
-        }
-
-        const { error, result: operator } = await recurse(value, ctx)
-        if( error ) {
-          return Result.error(error)
+        if( INSECURE_OPERATORS.includes(firstKey) ) {
+          return Result.error(ACError.InsecureOperator)
         }
 
         entries.push([
           propName,
-          operator,
+          value,
         ])
         continue
       }
 
+      if( Array.isArray(value) ) {
+        const operations = []
+        for( const operation of value ) {
+          const { error, result } = await recurse(operation, ctx)
+          if( error ) {
+            return Result.error(error)
+          }
+
+          operations.push(result)
+        }
+
+        entries.push([
+          propName,
+          operations,
+        ])
+        continue
+      }
+
+      const { error, result: operator } = await recurse(value, ctx)
+      if( error ) {
+        return Result.error(error)
+      }
+
+      entries.push([
+        propName,
+        operator,
+      ])
+      continue
+    }
+
+    if( !property ) {
       entries.push([
         propName,
         value,

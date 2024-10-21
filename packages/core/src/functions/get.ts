@@ -34,11 +34,22 @@ const internalGet = async <TContext extends Context>(
     memoize: context.description.$id,
   })
 
+  const { error: filtersError, result: traversedFilters } = await traverseDocument(filters, context.description, {
+    autoCast: true,
+    allowOperators: true,
+  })
+
+  if( filtersError ) {
+    switch( filtersError ) {
+      case ACError.InsecureOperator: return context.error(HTTPStatus.Forbidden, {
+        code: filtersError,
+      })
+      default: throw new Error
+    }
+  }
+
   pipeline.push({
-    $match: throwIfError(await traverseDocument(filters, context.description, {
-      autoCast: true,
-      allowOperators: true,
-    })),
+    $match: traversedFilters,
   })
 
   if( project ) {

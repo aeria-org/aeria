@@ -1,7 +1,7 @@
 import type { Context, SchemaWithId, GetAllPayload, GetAllReturnType } from '@aeriajs/types'
 import type { Document } from 'mongodb'
 import { useSecurity, applyReadMiddlewares } from '@aeriajs/security'
-import { HTTPStatus, Result } from '@aeriajs/types'
+import { ACError, HTTPStatus, Result } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import {
   traverseDocument,
@@ -65,12 +65,23 @@ const internalGetAll = async <TContext extends Context>(
     })
   }
 
+  const { error: filtersError, result: traversedFilters } = await traverseDocument(filters, context.description, {
+    autoCast: true,
+    allowOperators: true,
+  })
+
+  if( filtersError ) {
+    switch( filtersError ) {
+      case ACError.InsecureOperator: return context.error(HTTPStatus.Forbidden, {
+        code: filtersError,
+      })
+      default: throw new Error
+    }
+  }
+
   if( Object.keys(filters).length > 0 ) {
     pipeline.push({
-      $match: throwIfError(await traverseDocument(filters, context.description, {
-        autoCast: true,
-        allowOperators: true,
-      })),
+      $match: traversedFilters,
     })
   }
 
