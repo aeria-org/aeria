@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.187
+
+### Patch Changes
+
+- f06e0c8: `getCurrentUser()` bug
+  - @aeriajs/core@0.0.187
+
 ## 0.0.186
 
 ### Patch Changes
