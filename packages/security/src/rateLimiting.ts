@@ -1,5 +1,5 @@
 import type { RouteContext, RateLimitingParams } from '@aeriajs/types'
-import { Result, HTTPStatus, RateLimitingError } from '@aeriajs/types'
+import { Result, ACError, HTTPStatus, RateLimitingError } from '@aeriajs/types'
 
 const buildEntryFilter = (params: RateLimitingParams, context: RouteContext) => {
   if( params.strategy === 'ip' ) {
@@ -9,7 +9,7 @@ const buildEntryFilter = (params: RateLimitingParams, context: RouteContext) => 
     }
   }
 
-  if( !context.token.authenticated ) {
+  if( !context.token.sub ) {
     throw new Error('user is not authenticated')
   }
 
@@ -20,7 +20,7 @@ const buildEntryFilter = (params: RateLimitingParams, context: RouteContext) => 
 
 export const getOrCreateUsageEntry = async (params: RateLimitingParams, context: RouteContext) => {
   const filters = buildEntryFilter(params, context)
-  const entry = await context.collections.resourceUsage.model.findOneAndUpdate(
+  return context.collections.resourceUsage.model.findOneAndUpdate(
     filters,
     {
       $setOnInsert: {
@@ -32,18 +32,17 @@ export const getOrCreateUsageEntry = async (params: RateLimitingParams, context:
       returnDocument: 'after',
     },
   )
-
-  if( !entry ) {
-    throw new Error('there was an error creating the entry')
-  }
-
-  return entry
 }
 
 export const limitRate = async (params: RateLimitingParams, context: RouteContext) => {
   const { increment = 1 } = params
 
   const entry = await getOrCreateUsageEntry(params, context)
+  if( !entry ) {
+    return context.error(HTTPStatus.InternalServerError, {
+      code: RateLimitingError.Unauthenticated,
+    })
+  }
 
   const pathname = context.request.url.replace(new RegExp(`^${context.config.baseUrl}`), '')
   const resourceName = new URL(`http://0.com${pathname}`).pathname
