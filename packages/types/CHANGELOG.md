@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.98
+
+### Patch Changes
+
+- 64b5ebc: Add `allowInsecureOperators`
+
 ## 0.0.97
 
 ### Patch Changes

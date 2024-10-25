@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.188
+
+### Patch Changes
+
+- 64b5ebc: Add `allowInsecureOperators`
+- Updated dependencies [64b5ebc]
+  - @aeriajs/types@0.0.98
+  - @aeriajs/builtins@0.0.188
+  - @aeriajs/common@0.0.115
+  - @aeriajs/entrypoint@0.0.118
+  - @aeriajs/http@0.0.129
+  - @aeriajs/security@0.0.188
+  - @aeriajs/validation@0.0.118
+
 ## 0.0.187
 
 ### Patch Changes
