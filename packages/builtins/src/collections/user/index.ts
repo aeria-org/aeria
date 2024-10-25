@@ -9,7 +9,7 @@ import { getInfo } from './getInfo.js'
 import { getCurrentUser } from './getCurrentUser.js'
 import { getActivationLink } from './getActivationLink.js'
 
-const functions = <const>{
+const functions = {
   get,
   getAll,
   remove,
@@ -22,7 +22,7 @@ const functions = <const>{
   getInfo,
   getCurrentUser,
   getActivationLink,
-}
+} as const
 
 const exposedFunctions: Record<keyof typeof functions, AccessCondition> = {
   get: true,
