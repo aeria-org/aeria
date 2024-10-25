@@ -422,7 +422,7 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
             return Result.error(ACError.InsecureOperator)
           }
 
-          if( INSECURE_OPERATORS.includes(key) ) {
+          if( !ctx.options.context?.config.security.allowInsecureOperators && INSECURE_OPERATORS.includes(key) ) {
             return Result.error(ACError.InsecureOperator)
           }
         }
