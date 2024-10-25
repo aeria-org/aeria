@@ -1,5 +1,5 @@
 import type { RouteContext, RateLimitingParams } from '@aeriajs/types'
-import { Result, ACError, HTTPStatus, RateLimitingError } from '@aeriajs/types'
+import { Result, HTTPStatus, RateLimitingError } from '@aeriajs/types'
 
 const buildEntryFilter = (params: RateLimitingParams, context: RouteContext) => {
   if( params.strategy === 'ip' ) {
