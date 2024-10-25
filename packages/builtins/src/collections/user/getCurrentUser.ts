@@ -1,6 +1,7 @@
 import type { Context } from '@aeriajs/types'
 import type { description } from './description.js'
 import { Result } from '@aeriajs/types'
+import { get } from '@aeriajs/core'
 import { defaultSuccessfulAuthentication } from '../../authentication.js'
 
 export enum ActivationError {
@@ -19,11 +20,11 @@ export const getCurrentUser = async (_payload: undefined, context: Context<typeo
     return Result.result(user)
   }
 
-  const { error, result: user } = await context.collections.user.functions.get({
+  const { error, result: user } = await get({
     filters: {
       _id: context.token.sub,
     },
-  })
+  }, context)
 
   if( error ) {
     throw new Error()

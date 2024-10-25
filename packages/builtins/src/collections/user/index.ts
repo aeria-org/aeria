@@ -9,7 +9,7 @@ import { getInfo } from './getInfo.js'
 import { getCurrentUser } from './getCurrentUser.js'
 import { getActivationLink } from './getActivationLink.js'
 
-const functions = {
+const functions = <const>{
   get,
   getAll,
   remove,

@@ -20,7 +20,9 @@ export const insert = async (
   }
 
   const { content, ...what } = Object.assign({}, payload.what)
-  what.owner = context.token.sub
+  if( context.token.sub ) {
+    what.owner = context.token.sub
+  }
 
   const extension = what.name.split('.').at(-1)
 

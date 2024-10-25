@@ -1,12 +1,13 @@
+import type { ObjectId } from 'mongodb'
 import type { Context, SchemaWithId, PackReferences, RemoveAllPayload } from '@aeriajs/types'
 import type { description } from './description.js'
-import { remove as originalRemoveAll } from '@aeriajs/core'
+import { removeAll as originalRemoveAll } from '@aeriajs/core'
 import * as fs from 'fs/promises'
 
 export const removeAll = async (payload: RemoveAllPayload, context: Context<typeof description>) => {
   const files = context.collection.model.find({
     _id: {
-      $in: payload.filters,
+      $in: payload.filters as ObjectId[],
     },
   }, {
     projection: {

@@ -30,15 +30,16 @@ export type AuthenticatedToken<
   TUserInfo = Omit<Collections['user']['item'], '_id' | 'roles'>,
 > = {
   authenticated: true
-  sub: ObjectId
+  sub: ObjectId | null
   roles: readonly (
     TAcceptedRole extends null
       ? TUserRole
       : TAcceptedRole
   )[]
-  userinfo:
+  userinfo: Partial<
     | TUserInfo
     | PackReferences<TUserInfo>
+  >
 }
 
 export type UnauthenticatedToken = {

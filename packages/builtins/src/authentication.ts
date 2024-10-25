@@ -1,4 +1,4 @@
-import type { RouteContext, SchemaWithId, TokenRecipient } from '@aeriajs/types'
+import type { RouteContext, SchemaWithId, TokenRecipient, AuthenticatedToken, UserRole } from '@aeriajs/types'
 import type { description } from './collections/user/description.js'
 import { signToken } from '@aeriajs/core'
 
@@ -13,9 +13,7 @@ export type TokenableUser = Pick<User,
 >
 
 export type SuccessfulAuthentication = {
-  user: TokenableUser & {
-    _id: null
-  }
+  user: TokenableUser
   token: TokenRecipient
 }
 
@@ -25,9 +23,9 @@ export enum AuthenticationError {
 }
 
 export const successfulAuthentication = async <TUser extends TokenableUser>(user: TUser, context: RouteContext): Promise<SuccessfulAuthentication> => {
-  const tokenContent = {
+  const tokenContent: Omit<AuthenticatedToken, 'authenticated'> = {
     sub: user._id,
-    roles: user.roles,
+    roles: user.roles as UserRole[],
     userinfo: {},
   }
 
@@ -45,7 +43,7 @@ export const successfulAuthentication = async <TUser extends TokenableUser>(user
 
   if( context.config.tokenUserProperties ) {
     const userinfo: {
-      -readonly [P in keyof Partial<User>]: Partial<User>[P]
+      -readonly [P in keyof TUser]?: TUser[P]
     } = {}
 
     for( const prop of context.config.tokenUserProperties ) {
@@ -68,10 +66,10 @@ export const successfulAuthentication = async <TUser extends TokenableUser>(user
 
 export const defaultSuccessfulAuthentication = async () => {
   const token = await signToken({
-    _id: null,
+    sub: null,
     roles: ['root'],
     userinfo: {},
-  })
+  } satisfies Omit<AuthenticatedToken, 'authenticated'>)
 
   return {
     user: {
