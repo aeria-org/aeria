@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.190
+
+### Patch Changes
+
+- 8d6f221: Add function schemas
+- Updated dependencies [8d6f221]
+  - @aeriajs/common@0.0.116
+  - @aeriajs/types@0.0.99
+  - @aeriajs/builtins@0.0.190
+  - @aeriajs/entrypoint@0.0.119
+  - @aeriajs/http@0.0.130
+  - @aeriajs/security@0.0.190
+  - @aeriajs/validation@0.0.119
+
 ## 0.0.189
 
 ### Patch Changes
