@@ -1,5 +1,13 @@
 # @aeriajs/common
 
+## 0.0.116
+
+### Patch Changes
+
+- 8d6f221: Add function schemas
+- Updated dependencies [8d6f221]
+  - @aeriajs/types@0.0.99
+
 ## 0.0.115
 
 ### Patch Changes
