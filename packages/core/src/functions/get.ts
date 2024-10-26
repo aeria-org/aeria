@@ -37,6 +37,7 @@ const internalGet = async <TContext extends Context>(
   const { error: filtersError, result: traversedFilters } = await traverseDocument(filters, context.description, {
     autoCast: true,
     allowOperators: true,
+    context,
   })
 
   if( filtersError ) {

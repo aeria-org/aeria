@@ -20,6 +20,7 @@ const internalRemove = async <TContext extends Context>(
 
   const filters = throwIfError(await traverseDocument<Record<string, unknown>>(payload.filters, context.description, {
     autoCast: true,
+    context,
   }))
 
   const target = await context.collection.model.findOne(filters)

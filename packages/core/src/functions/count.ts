@@ -24,6 +24,7 @@ const internalCount = async <TContext extends Context>(
   const traversedFilters = throwIfError(await traverseDocument(filters, context.description, {
     autoCast: true,
     allowOperators: true,
+    context,
   }))
 
   if( $text ) {

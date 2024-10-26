@@ -16,6 +16,7 @@ const internalRemoveAll = async <TContext extends Context>(payload: RemoveAllPay
     },
   }, context.description, {
     autoCast: true,
+    context,
   }))
 
   const it = context.collection.model.find(filters)
