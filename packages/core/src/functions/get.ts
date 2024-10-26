@@ -12,11 +12,13 @@ import {
 
 export type GetOptions = {
   bypassSecurity?: boolean
+  allowInsecureOperators?: boolean
 }
 
 const internalGet = async <TContext extends Context>(
   payload: GetPayload<SchemaWithId<TContext['description']>>,
   context: TContext,
+  options: GetOptions,
 ) => {
   const {
     filters = {},
@@ -37,6 +39,7 @@ const internalGet = async <TContext extends Context>(
   const { error: filtersError, result: traversedFilters } = await traverseDocument(filters, context.description, {
     autoCast: true,
     allowOperators: true,
+    allowInsecureOperators: options.allowInsecureOperators,
     context,
   })
 
@@ -93,7 +96,7 @@ export const get = async <TContext extends Context>(
   options: GetOptions = {},
 ): Promise<GetReturnType<SchemaWithId<TContext['description']>>> => {
   if( options.bypassSecurity ) {
-    return internalGet(payload, context)
+    return internalGet(payload, context, options)
   }
 
   const security = useSecurity(context)
@@ -107,6 +110,8 @@ export const get = async <TContext extends Context>(
     })
   }
 
-  return applyReadMiddlewares(securedPayload, context, internalGet)
+  return applyReadMiddlewares(securedPayload, context, (payload, context) => {
+    return internalGet(payload, context, options)
+  })
 }
 

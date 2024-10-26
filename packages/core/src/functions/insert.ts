@@ -1,35 +1,13 @@
 import type { Context, Description, SchemaWithId, InsertPayload, InsertReturnType } from '@aeriajs/types'
 import { ObjectId } from 'mongodb'
-import { Result, HTTPStatus, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
+import { Result, HTTPStatus } from '@aeriajs/types'
 import { useSecurity, applyWriteMiddlewares } from '@aeriajs/security'
-import { endpointErrorSchema } from '@aeriajs/common'
 import { traverseDocument } from '../collection/index.js'
 import { get } from './get.js'
 
 export type InsertOptions = {
   bypassSecurity?: boolean
 }
-
-export const insertErrorSchema = () => endpointErrorSchema({
-  httpStatus: [
-    HTTPStatus.Forbidden,
-    HTTPStatus.NotFound,
-    HTTPStatus.UnprocessableContent,
-    HTTPStatus.BadRequest,
-  ],
-  code: [
-    ACError.InsecureOperator,
-    ACError.OwnershipError,
-    ACError.ResourceNotFound,
-    ACError.TargetImmutable,
-    ACError.MalformedInput,
-    ValidationErrorCode.EmptyTarget,
-    ValidationErrorCode.InvalidProperties,
-    ValidationErrorCode.MissingProperties,
-    TraverseError.InvalidDocumentId,
-    TraverseError.InvalidTempfile,
-  ],
-})
 
 const prepareCreate = (doc: Record<string, unknown>, description: Description) => {
   const result: typeof doc = {}

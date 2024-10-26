@@ -1,16 +1,18 @@
-import type { Context, SchemaWithId, CountPayload } from '@aeriajs/types'
+import type { Context, SchemaWithId, CountPayload, CountReturnType } from '@aeriajs/types'
 import { useSecurity, applyReadMiddlewares } from '@aeriajs/security'
-import { Result } from '@aeriajs/types'
+import { Result, HTTPStatus } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import { traverseDocument } from '../collection/index.js'
 
 export type CountOptions = {
   bypassSecurity?: boolean
+  allowInsecureOperators?: boolean
 }
 
 const internalCount = async <TContext extends Context>(
   payload: CountPayload<SchemaWithId<TContext['description']>>,
   context: Context,
+  options: CountOptions,
 ) => {
   const { filters = {} } = payload
   const $text = '$text' in filters
@@ -24,6 +26,7 @@ const internalCount = async <TContext extends Context>(
   const traversedFilters = throwIfError(await traverseDocument(filters, context.description, {
     autoCast: true,
     allowOperators: true,
+    allowInsecureOperators: options.allowInsecureOperators,
     context,
   }))
 
@@ -58,17 +61,21 @@ export const count = async <TContext extends Context>(
     ? TContext
     : never,
   options: CountOptions = {},
-) => {
+): Promise<CountReturnType> => {
   if( options.bypassSecurity ) {
-    return internalCount(payload, context)
+    return internalCount(payload, context, options)
   }
 
   const security = useSecurity(context)
   const { error, result: securedPayload } = await security.secureReadPayload(payload)
   if( error ) {
-    return Result.error(error)
+    return context.error(HTTPStatus.Forbidden, {
+      code: error,
+    })
   }
 
-  return applyReadMiddlewares(securedPayload, context, internalCount)
+  return applyReadMiddlewares(securedPayload, context, (payload, context) => {
+    return internalCount(payload, context, options)
+  })
 }
 

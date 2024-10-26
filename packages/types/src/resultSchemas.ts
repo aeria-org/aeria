@@ -1,4 +1,5 @@
-import type { Property, HTTPStatus } from '@aeriajs/types'
+import type { Property } from './property.js'
+import type { HTTPStatus } from './http.js'
 
 export const errorSchema = <const TObject extends Property>(object: TObject) => {
   return ({

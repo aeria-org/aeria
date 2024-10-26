@@ -20,6 +20,7 @@ export type TraverseOptionsBase = {
   validateWholeness?: boolean | 'deep'
   fromProperties?: boolean
   allowOperators?: boolean
+  allowInsecureOperators?: boolean
   undefinedToNull?: boolean
   preserveHidden?: boolean
   recurseDeep?: boolean

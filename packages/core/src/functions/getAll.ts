@@ -13,11 +13,13 @@ import {
 export type GetAllOptions = {
   bypassSecurity?: boolean
   noDefaultLimit?: boolean
+  allowInsecureOperators?: boolean
 }
 
 const internalGetAll = async <TContext extends Context>(
   payload: GetAllPayload<SchemaWithId<TContext['description']>>,
   context: TContext,
+  options: GetAllOptions,
 ) => {
   const {
     limit,
@@ -68,6 +70,7 @@ const internalGetAll = async <TContext extends Context>(
   const { error: filtersError, result: traversedFilters } = await traverseDocument(filters, context.description, {
     autoCast: true,
     allowOperators: true,
+    allowInsecureOperators: options.allowInsecureOperators,
     context,
   })
 
@@ -142,10 +145,10 @@ export const getAll = async <TContext extends Context>(
   options: GetAllOptions = {},
 ): Promise<GetAllReturnType<SchemaWithId<TContext['description']>>> => {
   if( !payload ) {
-    return internalGetAll({}, context)
+    return internalGetAll({}, context, options)
   }
   if( options.bypassSecurity ) {
-    return internalGetAll(payload, context)
+    return internalGetAll(payload, context, options)
   }
 
   const security = useSecurity(context)
@@ -160,6 +163,8 @@ export const getAll = async <TContext extends Context>(
     securedPayload.limit ||= context.config.defaultPaginationLimit
   }
 
-  return applyReadMiddlewares(securedPayload, context, internalGetAll)
+  return applyReadMiddlewares(securedPayload, context, (payload, context) => {
+    return internalGetAll(payload, context, options)
+  })
 }
 

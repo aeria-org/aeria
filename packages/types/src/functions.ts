@@ -1,11 +1,10 @@
 import type { FilterOperators, StrictFilter as Filter, WithId, ObjectId } from 'mongodb'
 import type { Result, ExtractError } from './result.js'
 import type { EndpointError } from './endpointError.js'
-import type { SchemaWithId, PackReferences } from './schema.js'
+import type { SchemaWithId, InferSchema, PackReferences } from './schema.js'
 import type { JsonSchema } from './property.js'
-import type { ACError } from './accessControl.js'
-import type { ValidationErrorCode, TraverseError } from './validation.js'
-import type { HTTPStatus, WithACErrors } from './http.js'
+import type { WithACErrors } from './http.js'
+import type { countErrorSchema, getAllErrorSchema, getErrorSchema, insertErrorSchema } from './functionSchemas.js'
 
 export type UploadAuxProps = {
   parentId: string
@@ -117,54 +116,25 @@ export type RemoveFilePayload = UploadAuxProps & {
   }
 }
 
-export type InsertReturnType<TDocument> =
-  Result.Either<
-    EndpointError<
-      | ACError.InsecureOperator
-      | ACError.OwnershipError
-      | ACError.ResourceNotFound
-      | ACError.TargetImmutable
-      | ACError.MalformedInput
-      | ValidationErrorCode
-      | TraverseError.InvalidDocumentId
-      | TraverseError.InvalidTempfile,
-      unknown,
-      | HTTPStatus.Forbidden
-      | HTTPStatus.NotFound
-      | HTTPStatus.UnprocessableContent
-      | HTTPStatus.BadRequest
-    >,
-    TDocument
-  >
+export type InsertReturnType<TDocument> = Result.Either<
+  ExtractError<InferSchema<ReturnType<typeof insertErrorSchema>>>,
+  TDocument
+>
 
-export type GetReturnType<TDocument> =
-  Result.Either<
-    EndpointError<
-      | ACError.ResourceNotFound
-      | ACError.OwnershipError
-      | ACError.InsecureOperator
-      | ACError.MalformedInput,
-      unknown,
-      | HTTPStatus.Forbidden
-      | HTTPStatus.NotFound
-      | HTTPStatus.BadRequest
-    >,
-    TDocument
-  >
+export type GetReturnType<TDocument> = Result.Either<
+  ExtractError<InferSchema<ReturnType<typeof getErrorSchema>>>,
+  TDocument
+>
 
-export type GetAllReturnType<TDocument> =
-  Result.Either<
-    EndpointError<
-      | ACError.InvalidLimit
-      | ACError.InsecureOperator
-      | ACError.OwnershipError,
-      unknown,
-      | HTTPStatus.Forbidden
-    >,
-    TDocument[]
-  >
+export type GetAllReturnType<TDocument> = Result.Either<
+  ExtractError<InferSchema<ReturnType<typeof getAllErrorSchema>>>,
+  TDocument[]
+>
 
-export type CountReturnType = Result.Either<EndpointError, number>
+export type CountReturnType = Result.Either<
+  ExtractError<InferSchema<ReturnType<typeof countErrorSchema>>>,
+  number
+>
 export type RemoveReturnType<TDocument> = Result.Either<EndpointError, TDocument>
 
 export type PaginatedGetAllReturnType<TDocument> = Result.Either<ExtractError<GetAllReturnType<TDocument>>, {
