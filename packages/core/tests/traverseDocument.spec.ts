@@ -303,17 +303,11 @@ test('cleanup references', async () => {
   }
 
   const { insertedId: refId } = await db.collection('person').insertOne({})
-  const { insertedId: docId } = await db.collection('person').insertOne({
-    nested: {
-      person: refId,
-    }
-  })
+  const { insertedId: docId } = await db.collection('person').insertOne({ nested: { person: refId } })
 
   const { result } = await traverseDocument({
     _id: docId,
-    nested: {
-      person: new ObjectId,
-    }
+    nested: { person: new ObjectId },
   }, {
     $id: 'person',
     properties: {
@@ -323,9 +317,9 @@ test('cleanup references', async () => {
           person: {
             $ref: 'person',
             inline: true,
-          }
-        }
-      }
+          },
+        },
+      },
     },
   }, {
     recurseDeep: true,
@@ -333,9 +327,7 @@ test('cleanup references', async () => {
     context,
   })
 
-  const ref = await db.collection('person').findOne({
-    _id: refId,
-  })
+  const ref = await db.collection('person').findOne({ _id: refId })
 
   assert(result)
   expect(ref).toBeNull()
