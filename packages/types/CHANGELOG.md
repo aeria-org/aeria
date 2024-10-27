@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.100
+
+### Patch Changes
+
+- b895944: Re-export `functionSchemas` as an object
+
 ## 0.0.99
 
 ### Patch Changes
