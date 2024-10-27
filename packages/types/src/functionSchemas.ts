@@ -3,7 +3,7 @@ import { HTTPStatus } from './http.js'
 import { endpointErrorSchema } from './resultSchemas.js'
 import { ValidationErrorCode, TraverseError } from './validation.js'
 
-export const insertErrorSchema = () => endpointErrorSchema({
+export const insertError = () => endpointErrorSchema({
   httpStatus: [
     HTTPStatus.Forbidden,
     HTTPStatus.NotFound,
@@ -24,7 +24,7 @@ export const insertErrorSchema = () => endpointErrorSchema({
   ],
 })
 
-export const getErrorSchema = () => endpointErrorSchema({
+export const getError = () => endpointErrorSchema({
   httpStatus: [
     HTTPStatus.Forbidden,
     HTTPStatus.NotFound,
@@ -38,7 +38,7 @@ export const getErrorSchema = () => endpointErrorSchema({
   ],
 })
 
-export const getAllErrorSchema = () => endpointErrorSchema({
+export const getAllError = () => endpointErrorSchema({
   httpStatus: [HTTPStatus.Forbidden],
   code: [
     ACError.OwnershipError,
@@ -47,7 +47,7 @@ export const getAllErrorSchema = () => endpointErrorSchema({
   ],
 })
 
-export const countErrorSchema = () => endpointErrorSchema({
+export const countError = () => endpointErrorSchema({
   httpStatus: [HTTPStatus.Forbidden],
   code: [
     ACError.OwnershipError,

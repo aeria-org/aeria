@@ -4,7 +4,7 @@ import type { EndpointError } from './endpointError.js'
 import type { SchemaWithId, InferSchema, PackReferences } from './schema.js'
 import type { JsonSchema } from './property.js'
 import type { WithACErrors } from './http.js'
-import type { countErrorSchema, getAllErrorSchema, getErrorSchema, insertErrorSchema } from './functionSchemas.js'
+import type * as functionSchemas from './functionSchemas.js'
 
 export type UploadAuxProps = {
   parentId: string
@@ -117,22 +117,22 @@ export type RemoveFilePayload = UploadAuxProps & {
 }
 
 export type InsertReturnType<TDocument> = Result.Either<
-  ExtractError<InferSchema<ReturnType<typeof insertErrorSchema>>>,
+  ExtractError<InferSchema<ReturnType<typeof functionSchemas.insertError>>>,
   TDocument
 >
 
 export type GetReturnType<TDocument> = Result.Either<
-  ExtractError<InferSchema<ReturnType<typeof getErrorSchema>>>,
+  ExtractError<InferSchema<ReturnType<typeof functionSchemas.getError>>>,
   TDocument
 >
 
 export type GetAllReturnType<TDocument> = Result.Either<
-  ExtractError<InferSchema<ReturnType<typeof getAllErrorSchema>>>,
+  ExtractError<InferSchema<ReturnType<typeof functionSchemas.getAllError>>>,
   TDocument[]
 >
 
 export type CountReturnType = Result.Either<
-  ExtractError<InferSchema<ReturnType<typeof countErrorSchema>>>,
+  ExtractError<InferSchema<ReturnType<typeof functionSchemas.countError>>>,
   number
 >
 export type RemoveReturnType<TDocument> = Result.Either<EndpointError, TDocument>
