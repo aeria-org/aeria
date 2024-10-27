@@ -1,14 +1,14 @@
 import type { Property } from './property.js'
 import type { HTTPStatus } from './http.js'
 
-export const errorSchema = <const TObject extends Property>(object: TObject) => {
+export const errorSchema = <const TError extends Property>(error: TError) => {
   return ({
     type: 'object',
     properties: {
       _tag: {
         const: 'Error',
       },
-      error: object,
+      error,
       result: {
         const: undefined,
       },
@@ -16,7 +16,7 @@ export const errorSchema = <const TObject extends Property>(object: TObject) => 
   } as const) satisfies Property
 }
 
-export const resultSchema = <const TObject extends Property>(object: TObject) => {
+export const resultSchema = <const TResult extends Property>(result: TResult) => {
   return ({
     type: 'object',
     properties: {
@@ -26,7 +26,7 @@ export const resultSchema = <const TObject extends Property>(object: TObject) =>
       error: {
         const: undefined,
       },
-      result: object,
+      result,
     },
   } as const) satisfies Property
 }
