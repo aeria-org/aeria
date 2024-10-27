@@ -1,4 +1,4 @@
-import { init, createRouter, resultSchema, insertErrorSchema, ACError, Result } from 'aeria'
+import { init, createRouter, resultSchema, functionSchemas, ACError, Result } from 'aeria'
 export * as collections from './collections/index.js'
 
 const router = createRouter()
@@ -50,7 +50,7 @@ router.GET('/get-people', async (context) => {
     },
   },
   response: [
-    insertErrorSchema(),
+    functionSchemas.insertError(),
     resultSchema({
       type: 'array',
       items: {
