@@ -5,8 +5,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { tmpdir } from 'os'
 import { ACError, PropertyValidationErrorCode, ValidationErrorCode } from '@aeriajs/types'
-import { traverseDocument, ObjectId } from '../src/index.js'
-import { createContext } from '../dist/index.js'
+import { ObjectId } from '../src/index.js'
+import { createContext, traverseDocument } from '../dist/index.js'
 import { dbPromise } from './fixtures/database.js'
 
 let
@@ -294,6 +294,51 @@ test('moves multiple files', async () => {
   expect(fs.existsSync(path.join(persistentFs, path.basename(tempPath1)))).toBeTruthy()
   expect(fs.existsSync(persistentPath1)).toBeTruthy()
   expect(fs.existsSync(persistentPath2)).toBeTruthy()
+})
+
+test('cleanup references', async () => {
+  const { db } = await dbPromise
+  if( !db ) {
+    throw new Error
+  }
+
+  const { insertedId: refId } = await db.collection('person').insertOne({})
+  const { insertedId: docId } = await db.collection('person').insertOne({
+    nested: {
+      person: refId,
+    }
+  })
+
+  const { result } = await traverseDocument({
+    _id: docId,
+    nested: {
+      person: new ObjectId,
+    }
+  }, {
+    $id: 'person',
+    properties: {
+      nested: {
+        type: 'object',
+        properties: {
+          person: {
+            $ref: 'person',
+            inline: true,
+          }
+        }
+      }
+    },
+  }, {
+    recurseDeep: true,
+    cleanupReferences: true,
+    context,
+  })
+
+  const ref = await db.collection('person').findOne({
+    _id: refId,
+  })
+
+  assert(result)
+  expect(ref).toBeNull()
 })
 
 test('forbids MongoDB operators unless explicitly allowed', async () => {
