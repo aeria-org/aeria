@@ -9,7 +9,7 @@ import { ObjectId } from 'mongodb'
 import { getCollectionAsset } from '../assets.js'
 import { createContext } from '../context.js'
 import { preloadDescription } from './preload.js'
-import { getReferences, type Reference } from './reference.js'
+import { getReferences } from './reference.js'
 import { preferredRemove } from './cascadingRemove.js'
 import * as path from 'path'
 import * as fs from 'fs/promises'
@@ -134,9 +134,7 @@ const cleanupReferences = async (value: unknown, ctx: PhaseContext) => {
         [ctx.propName]: ctx.property,
       })
 
-      const reference = getValueFromPath<Reference>(refMap, ctx.propName)
-
-      await preferredRemove(referenceIds, reference, await createContext({
+      await preferredRemove(referenceIds, refMap[ctx.propName], await createContext({
         parentContext: context,
         collectionName: refProperty.$ref,
       }))

@@ -36,7 +36,7 @@ const getTempName = (path: string[]) => {
   return `_${path.join('_')}`
 }
 
-const referenceMemo: Record<string, ReferenceMap | {} | undefined> = {}
+const referenceMemo: Record<string, ReferenceMap | undefined> = {}
 const lookupMemo: Record<string, Awaited<ReturnType<typeof buildLookupPipeline>> | undefined> = {}
 
 export const getReferences = async (properties: FixedObjectProperty['properties'], options: GetReferenceOptions = {}) => {
