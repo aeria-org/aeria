@@ -1,8 +1,7 @@
 ![Banner](.github/assets/banner.png)
+*Art made by [@Tortoddy100](https://x.com/Tortoddy100)*
 
 [![npm](https://img.shields.io/npm/v/aeria.svg)](https://npmjs.com/package/aeria) ![https://github.com/aeria-org/aeria/actions/workflows/ci.yaml](https://github.com/aeria-org/aeria/actions/workflows/ci.yaml/badge.svg)
-
->$ npm create -y aeria-app hello-world
 
 [Documentation](https://aeria.land/docs/aeria/)
 
@@ -11,6 +10,10 @@ Aeria is a <10k lines of code **web framework** with a strong emphasis in type s
 The project was created to offer a more cohesive and type-safe alternative to projects with CRUD-heavy needs. It is also a modern alternative to Mongoose and Prisma.
 
 ![Demo](.github/assets/demo.gif)
+
+### Quickstart
+
+>$ npm create -y aeria-app hello-world
 
 ### Features
 
