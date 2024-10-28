@@ -1,47 +1,28 @@
-# Aeria ![https://github.com/aeria-org/aeria/actions/workflows/ci.yaml](https://github.com/aeria-org/aeria/actions/workflows/ci.yaml/badge.svg)
+![Banner](.github/assets/banner.png)
+
+[![npm](https://img.shields.io/npm/v/aeria.svg)](https://npmjs.com/package/aeria) ![https://github.com/aeria-org/aeria/actions/workflows/ci.yaml](https://github.com/aeria-org/aeria/actions/workflows/ci.yaml/badge.svg)
+
+>$ npm create -y aeria-app hello-world
 
 [Documentation](https://aeria.land/docs/aeria/)
 
-Aeria is a (<10k lines of code) batteries-included **web framework** built on top of **MongoDB**. It lets you define collections using a friendly [schema-definition language](https://github.com/aeria-org/aeria-lang) with support for denormalized data structures, arrays, native MongoDB references, file fields, and more. It also ships important security primitives like Role-Based Access Control.
+Aeria is a <10k lines of code **web framework** with a strong emphasis in type safety and developer experience. It ships a thin **MongoDB** abstraction layer and a Prisma-like DSL that serves model definition with support for nested objects, arrays, references, upload fields, and more. On top of that a HTTP routing API with very simple bindings is provided to build business logic.
 
-Why? Because we believed the support for MongoDB offered by other frameworks and libraries was suboptimal in several ways, and no framework was cohesive enough. Aeria has model definition, runtime validation, routing, security, etc, all in one dependency.
+The project was created to offer a more cohesive and type-safe alternative to projects with CRUD-heavy needs. It is also a modern alternative to Mongoose and Prisma.
 
-```aeria
-collection Pet {
-  properties {
-    name str
-    pictures []{
-      properties {
-        file File @accept(["image/*"])
-        description str
-      }
-    }
-  }
-  functions {
-    get @expose
-    getAll @expose
-    insert @expose(["root"])
-    remove @expose(["root"])
-    upload @expose(["root"])
-  }
-}
-```
+![Demo](.github/assets/demo.gif)
 
-## Features
+### Features
 
-- Secure by design
-- Minimalistically crafted DX
-- Fast reloads in watch mode with esbuild
-- Automatic reflection of HTTP endpoints
-- Batteries included (authentication, access control, file management, logging, etc)
+- Authentication
+- File management
+- Security (rate limiting, entity ownership, RBAC, etc)
+- tRPC-like SDK with 1:1 typing
+- Ready-to-use dashboard extensible with [Vue](https://github.com/vuejs/core)
 
-## Quickstart
+### Community
 
-```sh
-$ npm create -y aeria-app hello-world
-```
-
-## Community
+Reach out to learn more about Aeria and know about upcoming features.
 
 [![Aeria Server](https://img.shields.io/discord/1218448912185163816.svg?label=Discord&logo=Discord&colorB=7289da&style=for-the-badge)](https://discord.aeria.land/)
 
