@@ -130,8 +130,11 @@ const cleanupReferences = async (value: unknown, ctx: PhaseContext) => {
         }
       }
 
-      const refMap = await getReferences(ctx.options.description.properties)
-      const reference = getValueFromPath<Reference>(refMap, ctx.propPath.split('.').join('.deepReferences.'))
+      const refMap = await getReferences({
+        [ctx.propName]: ctx.property,
+      })
+
+      const reference = getValueFromPath<Reference>(refMap, ctx.propName)
 
       await preferredRemove(referenceIds, reference, await createContext({
         parentContext: context,
