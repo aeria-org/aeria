@@ -70,6 +70,10 @@ type FileDocument = {
   owner: ObjectId | null
 }
 
+const escapeRegExp = (text: string) => {
+  return text.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&')
+}
+
 const getProperty = (propName: string, parentProperty: Property | Description) => {
   if( propName === '_id' ) {
     return {
@@ -422,10 +426,6 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
         if( key.startsWith('$') ) {
           if( !ctx.options.allowOperators ) {
             return Result.error(ACError.InsecureOperator)
-          }
-
-          const escapeRegExp = (text: string) => {
-            return text.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&')
           }
 
           if( key === '$regex' && typeof value[key] === 'string' ) {
