@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.101
+
+### Patch Changes
+
+- 2d9d199: Replace `allowInsecureOperators` by RegExp escaping
+
 ## 0.0.100
 
 ### Patch Changes
