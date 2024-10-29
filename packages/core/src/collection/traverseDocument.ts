@@ -4,7 +4,6 @@ import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/ty
 import { throwIfError, pipe, isReference, getReferenceProperty, getValueFromPath, isError } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
 import { getCollection } from '@aeriajs/entrypoint'
-import { INSECURE_OPERATORS } from '@aeriajs/security'
 import { ObjectId } from 'mongodb'
 import { getCollectionAsset } from '../assets.js'
 import { createContext } from '../context.js'
@@ -424,12 +423,16 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
             return Result.error(ACError.InsecureOperator)
           }
 
-          const allowInsecureOperators = ctx.options.allowInsecureOperators === undefined
-            ? ctx.options.context?.config.security.allowInsecureOperators
-            : ctx.options.allowInsecureOperators
+          const escapeRegExp = (text: string) => {
+            return text.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&')
+          }
 
-          if( !allowInsecureOperators && INSECURE_OPERATORS.includes(key) ) {
-            return Result.error(ACError.InsecureOperator)
+          if( key === '$regex' && typeof value[key] === 'string' ) {
+            entries.push([
+              propName,
+              escapeRegExp(value[key]),
+            ])
+            continue
           }
         }
       }

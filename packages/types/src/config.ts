@@ -30,7 +30,6 @@ export type ApiConfig = {
     logSuccessfulAuthentications?: boolean
     authenticationRateLimiting?: RateLimitingParams | null
     allowSignup?: boolean
-    allowInsecureOperators?: boolean
     signupDefaults?: {
       roles?: string[]
       active?: boolean
