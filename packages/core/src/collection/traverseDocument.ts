@@ -381,8 +381,7 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
     }
     : target
 
-  entrypoint:
-  for( const propName in entrypoint ) {
+  entrypoint: for( const propName in entrypoint ) {
     const value = target[propName as keyof typeof target]
     const property = getProperty(propName, ctx.property)
 
