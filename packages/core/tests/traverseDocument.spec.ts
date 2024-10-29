@@ -356,7 +356,10 @@ test('forbids MongoDB operators unless explicitly allowed', async () => {
 
 test('escapes $regex queries by default', async () => {
   const { result: result1 } = await traverseDocument({ name: { $regex: '^te+rry$' } }, description, { allowOperators: true })
-  const { result: result2 } = await traverseDocument({ name: { $regex: '^te+rry$' } }, description, { allowOperators: true, noRegExpEscaping: true, })
+  const { result: result2 } = await traverseDocument({ name: { $regex: '^te+rry$' } }, description, {
+    allowOperators: true,
+    noRegExpEscaping: true,
+  })
 
   assert(result1)
   expect(result1.name.$regex).toBe('\\^te\\+rry\\$')
