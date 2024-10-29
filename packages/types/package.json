@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/types",
-  "version": "0.0.100",
+  "version": "0.0.101",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.192
+
+### Patch Changes
+
+- 2d9d199: Replace `allowInsecureOperators` by RegExp escaping
+- Updated dependencies [2d9d199]
+  - @aeriajs/security@0.0.192
+  - @aeriajs/types@0.0.101
+  - @aeriajs/builtins@0.0.192
+  - @aeriajs/common@0.0.118
+  - @aeriajs/entrypoint@0.0.121
+  - @aeriajs/http@0.0.132
+  - @aeriajs/validation@0.0.121
+
 ## 0.0.191
 
 ### Patch Changes
