@@ -354,21 +354,13 @@ test('forbids MongoDB operators unless explicitly allowed', async () => {
   assert(shouldSucceed)
 })
 
-test('forbids insecure operators', async () => {
-  const { error: shoudFail1 } = await traverseDocument({ name: { $regex: 'terry' } }, description, { allowOperators: true })
-  const { error: shoudFail2 } = await traverseDocument({
-    name: {
-      something: 1,
-      $regex: 'terry',
-    },
-  }, description, { allowOperators: true })
-  const { error: shoudFail3 } = await traverseDocument({ inexistent: { $regex: 'terry' } }, description, { allowOperators: true })
+test('escapes $regex queries by default', async () => {
+  const { result: result1 } = await traverseDocument({ name: { $regex: '^te+rry$' } }, description, { allowOperators: true })
+  const { result: result2 } = await traverseDocument({ name: { $regex: '^te+rry$' } }, description, { allowOperators: true, noRegExpEscaping: true, })
 
-  assert(shoudFail1)
-  expect(shoudFail1).toBe(ACError.InsecureOperator)
-  assert(shoudFail2)
-  expect(shoudFail2).toBe(ACError.InsecureOperator)
-  assert(shoudFail3)
-  expect(shoudFail3).toBe(ACError.InsecureOperator)
+  assert(result1)
+  expect(result1.name.$regex).toBe('\\^te\\+rry\\$')
+  assert(result2)
+  expect(result2.name.$regex).toBe('^te+rry$')
 })
 

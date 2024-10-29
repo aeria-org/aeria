@@ -19,7 +19,7 @@ export type TraverseOptionsBase = {
   validateWholeness?: boolean | 'deep'
   fromProperties?: boolean
   allowOperators?: boolean
-  allowInsecureOperators?: boolean
+  noRegExpEscaping?: boolean
   undefinedToNull?: boolean
   preserveHidden?: boolean
   recurseDeep?: boolean
@@ -377,6 +377,7 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
     }
     : target
 
+  entrypoint:
   for( const propName in entrypoint ) {
     const value = target[propName as keyof typeof target]
     const property = getProperty(propName, ctx.property)
@@ -428,11 +429,16 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
           }
 
           if( key === '$regex' && typeof value[key] === 'string' ) {
-            entries.push([
-              propName,
-              escapeRegExp(value[key]),
-            ])
-            continue
+            if( !ctx.options.noRegExpEscaping ) {
+              entries.push([
+                propName,
+                {
+                  ...value,
+                  $regex: escapeRegExp(value[key]),
+                },
+              ])
+              continue entrypoint
+            }
           }
         }
       }

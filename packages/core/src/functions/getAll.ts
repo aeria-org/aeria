@@ -13,7 +13,7 @@ import {
 export type GetAllOptions = {
   bypassSecurity?: boolean
   noDefaultLimit?: boolean
-  allowInsecureOperators?: boolean
+  noRegExpEscaping?: boolean
 }
 
 const internalGetAll = async <TContext extends Context>(
@@ -70,7 +70,7 @@ const internalGetAll = async <TContext extends Context>(
   const { error: filtersError, result: traversedFilters } = await traverseDocument(filters, context.description, {
     autoCast: true,
     allowOperators: true,
-    allowInsecureOperators: options.allowInsecureOperators,
+    noRegExpEscaping: options.noRegExpEscaping,
     context,
   })
 

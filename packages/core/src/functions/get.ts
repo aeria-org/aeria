@@ -12,7 +12,7 @@ import {
 
 export type GetOptions = {
   bypassSecurity?: boolean
-  allowInsecureOperators?: boolean
+  noRegExpEscaping?: boolean
 }
 
 const internalGet = async <TContext extends Context>(
@@ -39,7 +39,7 @@ const internalGet = async <TContext extends Context>(
   const { error: filtersError, result: traversedFilters } = await traverseDocument(filters, context.description, {
     autoCast: true,
     allowOperators: true,
-    allowInsecureOperators: options.allowInsecureOperators,
+    noRegExpEscaping: options.noRegExpEscaping,
     context,
   })
 

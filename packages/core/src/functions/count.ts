@@ -6,7 +6,7 @@ import { traverseDocument } from '../collection/index.js'
 
 export type CountOptions = {
   bypassSecurity?: boolean
-  allowInsecureOperators?: boolean
+  noRegExpEscaping?: boolean
 }
 
 const internalCount = async <TContext extends Context>(
@@ -26,7 +26,7 @@ const internalCount = async <TContext extends Context>(
   const traversedFilters = throwIfError(await traverseDocument(filters, context.description, {
     autoCast: true,
     allowOperators: true,
-    allowInsecureOperators: options.allowInsecureOperators,
+    noRegExpEscaping: options.noRegExpEscaping,
     context,
   }))
 
