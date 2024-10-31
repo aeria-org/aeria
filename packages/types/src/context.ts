@@ -47,13 +47,13 @@ type UnionFunctions<TFunctions, TSchema extends JsonSchema> = {
 
 export type IndepthCollection<TCollection> = TCollection extends {
   description: infer InferredDescription
-  functions?: infer CollFunctions
+  functions?: infer InferredFunctions
 }
   ? InferredDescription extends JsonSchema
     ? Omit<TCollection, 'functions'> & {
       item: SchemaWithId<InferredDescription>
-      functions: UnionFunctions<CollFunctions, InferredDescription>
-      originalFunctions: CollFunctions
+      functions: UnionFunctions<InferredFunctions, InferredDescription>
+      originalFunctions: InferredFunctions
       model: InferredDescription extends Description
         ? CollectionModel<InferredDescription>
         : never
