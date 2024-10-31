@@ -1,5 +1,17 @@
 # @aeriajs/builtins
 
+## 0.0.193
+
+### Patch Changes
+
+- f4ea0ae: Fix user picture getter
+- Updated dependencies [f4ea0ae]
+  - @aeriajs/types@0.0.102
+  - @aeriajs/core@0.0.193
+  - @aeriajs/common@0.0.119
+  - @aeriajs/entrypoint@0.0.122
+  - @aeriajs/validation@0.0.122
+
 ## 0.0.192
 
 ### Patch Changes
