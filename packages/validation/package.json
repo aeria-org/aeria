@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/validation",
-  "version": "0.0.121",
+  "version": "0.0.122",
   "description": "## Installation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -36,8 +36,8 @@
     "@aeriajs/types": "link:../types"
   },
   "peerDependencies": {
-    "@aeriajs/common": "^0.0.118",
-    "@aeriajs/types": "^0.0.101",
+    "@aeriajs/common": "^0.0.119",
+    "@aeriajs/types": "^0.0.102",
     "mongodb": "^6.5.0"
   }
 }

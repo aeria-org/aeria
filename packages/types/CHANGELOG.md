@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.102
+
+### Patch Changes
+
+- f4ea0ae: Fix user picture getter
+
 ## 0.0.101
 
 ### Patch Changes
