@@ -36,6 +36,7 @@ export type AuthenticatedToken<
       ? TUserRole
       : TAcceptedRole
   )[]
+  picture?: string
   userinfo: Partial<
     | TUserInfo
     | PackReferences<TUserInfo>

@@ -10,6 +10,7 @@ export type TokenableUser = Pick<User,
   | 'email'
   | 'roles'
   | 'active'
+  | 'picture'
 >
 
 export type SuccessfulAuthentication = {
@@ -26,6 +27,7 @@ export const successfulAuthentication = async <TUser extends TokenableUser>(user
   const tokenContent: Omit<AuthenticatedToken, 'authenticated'> = {
     sub: user._id,
     roles: user.roles as UserRole[],
+    picture: user.picture,
     userinfo: {},
   }
 

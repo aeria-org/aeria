@@ -1,4 +1,5 @@
-import { defineDescription } from '@aeriajs/core'
+import { defineDescription, ObjectId } from '@aeriajs/core'
+import { getFileLink } from '../file/description.js'
 
 /**
  * This description complies with JWT claims specified in RFC-7519.
@@ -70,8 +71,8 @@ export const description = defineDescription({
     },
     picture: {
       getter: (doc: object) => {
-        if( 'picture_file' in doc && doc.picture_file instanceof Object && 'link' in doc.picture_file && typeof doc.picture_file.link === 'string' ) {
-          return doc.picture_file.link
+        if( 'picture_file' in doc && doc.picture_file && typeof doc.picture_file === 'object' && '_id' in doc.picture_file && doc.picture_file._id instanceof ObjectId ) {
+          return getFileLink(doc.picture_file._id)
         }
       },
     },
