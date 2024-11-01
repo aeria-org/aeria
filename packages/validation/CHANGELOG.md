@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.123
+
+### Patch Changes
+
+- 2219cf1: Optimize `if` clausules
+
 ## 0.0.122
 
 ### Patch Changes
