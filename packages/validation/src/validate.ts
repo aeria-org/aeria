@@ -25,29 +25,29 @@ const getValueType = (value: unknown) => {
 }
 
 const getPropertyType = (property: Property) => {
-  if(
-    '$ref' in property
-    || 'properties' in property
-    || 'additionalProperties' in property
-  ) {
-    return 'object'
+  if( 'type' in property ) {
+    if( 'format' in property && property.format ) {
+      if ([
+        'date',
+        'date-time',
+      ].includes(property.format)) {
+        return 'datetime'
+      }
+    }
+
+    return property.type
   }
 
   if( 'enum' in property ) {
     return typeof property.enum[0]
   }
 
-  if( 'format' in property && property.format ) {
-    if ([
-      'date',
-      'date-time',
-    ].includes(property.format)) {
-      return 'datetime'
-    }
-  }
-
-  if( 'type' in property ) {
-    return property.type
+  if(
+    '$ref' in property
+    || 'properties' in property
+    || 'additionalProperties' in property
+  ) {
+    return 'object'
   }
 }
 
@@ -72,10 +72,6 @@ export const validateProperty = <TWhat>(
   options: ValidateOptions = {},
 ): Result.Either<PropertyValidationError | ValidationError, unknown> => {
   const { filterOutExtraneous, coerce } = options
-  if( what === null || what === undefined ) {
-    return Result.result(what)
-  }
-
   if( !property ) {
     if( options.parentProperty && 'additionalProperties' in options.parentProperty && options.parentProperty.additionalProperties ) {
       const extraneous = options.parentProperty.additionalProperties
@@ -91,8 +87,8 @@ export const validateProperty = <TWhat>(
     return Result.error(makePropertyError(PropertyValidationErrorCode.Extraneous))
   }
 
-  if( 'getter' in property ) {
-    return Result.result(undefined)
+  if( what === null || what === undefined ) {
+    return Result.result(what)
   }
 
   if( 'properties' in property ) {
@@ -110,12 +106,16 @@ export const validateProperty = <TWhat>(
     return Result.result(what)
   }
 
-  const expectedType = getPropertyType(property)!
-  const actualType = getValueType(what)
-
   if( 'enum' in property && property.enum.length === 0 ) {
     return Result.result(what)
   }
+
+  if( 'getter' in property ) {
+    return Result.result(undefined)
+  }
+
+  const expectedType = getPropertyType(property)!
+  const actualType = getValueType(what)
 
   if(
     actualType !== expectedType
@@ -253,7 +253,6 @@ export const validateWholeness = (what: Record<string, unknown>, schema: Omit<Js
         ])),
     })
   }
-
 }
 
 export const validate = <
