@@ -14,15 +14,16 @@ import {
 } from './fixtures/index.js'
 
 test('validates plain object', () => {
-  const { result } = validate(plainCandidate, plainDescription)
+  const { result, error } = validate(plainCandidate, plainDescription)
+  console.log(JSON.stringify(error, null, 2))
   assert(result)
-  expect(JSON.stringify(plainCandidate)).toBe(JSON.stringify(result))
+  expect(plainCandidate).toStrictEqual(result)
 })
 
 test('validates object using validator', () => {
   const { result } = personValidator(personCandidate)
   assert(result)
-  expect(JSON.stringify(personCandidate)).toBe(JSON.stringify(result))
+  expect(personCandidate).toStrictEqual(result)
 })
 
 test('returns left with validator', () => {
@@ -66,7 +67,7 @@ test('validates deep object', () => {
 
   assert(result)
   assert(missingPropertiesError)
-  expect(JSON.stringify(deepCandidate)).toBe(JSON.stringify(result))
+  expect(deepCandidate).toStrictEqual(result)
 })
 
 test('returns error on deep object', () => {

@@ -28,11 +28,10 @@ const getValueType = (value: unknown) => {
 const getPropertyType = (property: Property) => {
   if( 'type' in property ) {
     if( 'format' in property && property.format ) {
-      if ([
-        'date',
-        'date-time',
-      ].includes(property.format)) {
-        return 'datetime'
+      switch( property.format ) {
+        case 'date':
+        case 'date-time':
+          return 'datetime'
       }
     }
 
@@ -41,6 +40,10 @@ const getPropertyType = (property: Property) => {
 
   if( 'enum' in property ) {
     return typeof property.enum[0]
+  }
+
+  if( 'const' in property ) {
+    return typeof property.const
   }
 
   if(
@@ -92,35 +95,16 @@ export const validateProperty = <TWhat>(
     return Result.result(what)
   }
 
-  if( 'properties' in property ) {
-    return validate(what, property, options)
-  }
-
-  if( 'const' in property ) {
-    if( what !== property.const ) {
-      return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
-        expected: property.const,
-        got: what,
-      }))
-    }
-
-    return Result.result(what)
-  }
-
-  if( 'enum' in property && property.enum.length === 0 ) {
-    return Result.result(what)
-  }
-
   if( 'getter' in property ) {
     return Result.result(undefined)
   }
 
-  const expectedType = getPropertyType(property)!
+  const expectedType = getPropertyType(property)
   const actualType = getValueType(what)
 
   if(
     actualType !== expectedType
-    && !('items' in property && actualType === 'array')
+    && !(('items' in property || 'enum' in property) && actualType === 'array')
     && !(actualType === 'number' && expectedType === 'integer')
   ) {
     if( expectedType === 'datetime' && what instanceof Date ) {
@@ -128,7 +112,7 @@ export const validateProperty = <TWhat>(
     }
 
     if( '$ref' in property && typeof what === 'string' ) {
-      if( /^[0-9a-fA-F]{24}$/.test(what) ) {
+      if( /^[0-9a-f]{24}$/.test(what) ) {
         return Result.result(what)
       }
     }
@@ -158,6 +142,25 @@ export const validateProperty = <TWhat>(
     }))
   }
 
+  if( 'properties' in property ) {
+    return validate(what, property, options)
+  }
+
+  if( 'enum' in property && property.enum.length === 0 ) {
+    return Result.result(what)
+  }
+
+  if( 'const' in property ) {
+    if( what !== property.const ) {
+      return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+        expected: property.const,
+        got: what,
+      }))
+    }
+
+    return Result.result(what)
+  }
+
   if( 'items' in property ) {
     if( !Array.isArray(what) ) {
       return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
@@ -181,7 +184,6 @@ export const validateProperty = <TWhat>(
     let i = 0
     for( const elem of what ) {
       const { error } = validateProperty(propName, elem, property.items, options)
-
       if( error ) {
         if( 'errors' in error ) {
           continue
@@ -194,35 +196,39 @@ export const validateProperty = <TWhat>(
       i++
     }
   } else if( 'type' in property ) {
-    if( property.type === 'integer' ) {
-      if( !Number.isInteger(what) ) {
-        return Result.error(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
-          expected: 'integer',
-          got: 'invalid_number',
-        }))
+    switch( property.type ) {
+      case 'number':
+      case 'integer': {
+        if( typeof what !== 'number' ) {
+          return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+            expected: expectedType,
+            got: actualType,
+          }))
+        }
+
+        if( property.type === 'integer' ) {
+          if( !Number.isInteger(what) ) {
+            return Result.error(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
+              expected: 'integer',
+              got: 'invalid_number',
+            }))
+          }
+        }
+
+        if(
+          (property.maximum && property.maximum < what)
+        || (property.minimum && property.minimum > what)
+        || (property.exclusiveMaximum && property.exclusiveMaximum <= what)
+        || (property.exclusiveMinimum && property.exclusiveMinimum >= what)
+        ) {
+          return Result.error(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
+            expected: 'number',
+            got: 'invalid_number',
+          }))
+        }
       }
     }
 
-    if( property.type === 'integer' || property.type === 'number' ) {
-      if( typeof what !== 'number' ) {
-        return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
-          expected: expectedType,
-          got: actualType,
-        }))
-      }
-
-      if(
-        (property.maximum && property.maximum < what)
-      || (property.minimum && property.minimum > what)
-      || (property.exclusiveMaximum && property.exclusiveMaximum <= what)
-      || (property.exclusiveMinimum && property.exclusiveMinimum >= what)
-      ) {
-        return Result.error(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
-          expected: 'number',
-          got: 'invalid_number',
-        }))
-      }
-    }
   } else if( 'enum' in property ) {
     if( !property.enum.includes(what) ) {
       return Result.error(makePropertyError(PropertyValidationErrorCode.ExtraneousElement, {
@@ -256,10 +262,7 @@ export const validateWholeness = (what: Record<string, unknown>, schema: Omit<Js
   }
 }
 
-export const validate = <
-  TWhat,
-  const TJsonSchema extends Omit<Description, '$id'> | Property,
->(
+export const validate = <TWhat, const TJsonSchema extends Omit<Description, '$id'> | Property>(
   what: TWhat | undefined,
   schema: TJsonSchema,
   options: ValidateOptions = {},
