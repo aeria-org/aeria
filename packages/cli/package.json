@@ -1,7 +1,7 @@
 {
   "name": "@aeriajs/cli",
   "type": "module",
-  "version": "0.0.137",
+  "version": "0.0.138",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -45,10 +45,10 @@
     "@aeriajs/types": "link:../types"
   },
   "peerDependencies": {
-    "@aeriajs/builtins": "^0.0.195",
-    "@aeriajs/common": "^0.0.119",
-    "@aeriajs/core": "^0.0.195",
-    "@aeriajs/entrypoint": "^0.0.122",
+    "@aeriajs/builtins": "^0.0.196",
+    "@aeriajs/common": "^0.0.120",
+    "@aeriajs/core": "^0.0.196",
+    "@aeriajs/entrypoint": "^0.0.123",
     "@aeriajs/types": "^0.0.102"
   },
   "optionalDependencies": {

@@ -1,5 +1,13 @@
 # @aeriajs/validation
 
+## 0.0.125
+
+### Patch Changes
+
+- f16a92b: Performance enhacements
+- Updated dependencies [f16a92b]
+  - @aeriajs/common@0.0.120
+
 ## 0.0.124
 
 ### Patch Changes
