@@ -18,12 +18,6 @@ export type ValidateOptions = {
   parentProperty?: Omit<Description, '$id'> | Property
 }
 
-const getValueType = (value: unknown) => {
-  return Array.isArray(value)
-    ? 'array'
-    : typeof value
-}
-
 const getPropertyType = (property: Property) => {
   if( 'type' in property ) {
     if( 'format' in property && property.format ) {
@@ -75,14 +69,11 @@ export const validateProperty = <TWhat>(
 ): Result.Either<PropertyValidationError | ValidationError, unknown> => {
   if( !property ) {
     if( options.parentProperty && 'additionalProperties' in options.parentProperty && options.parentProperty.additionalProperties ) {
-      if( typeof options.parentProperty.additionalProperties === 'boolean' ) {
+      if( options.parentProperty.additionalProperties === true ) {
         return Result.result(what)
       }
 
-      return validateProperty(
-        what,
-        options.parentProperty.additionalProperties,
-      )
+      return validateProperty(what, options.parentProperty.additionalProperties)
     }
     if( options.tolerateExtraneous ) {
       return Result.result(undefined)
@@ -100,7 +91,9 @@ export const validateProperty = <TWhat>(
   }
 
   const expectedType = getPropertyType(property)
-  const actualType = getValueType(what)
+  const actualType = Array.isArray(what)
+    ? 'array'
+    : typeof what
 
   if(
     actualType !== expectedType
@@ -239,13 +232,12 @@ export const validateWholeness = (what: Record<string, unknown>, schema: Omit<Js
   if( missingProps.length > 0 ) {
     return makeValidationError({
       code: ValidationErrorCode.MissingProperties,
-      errors: Object.fromEntries(missingProps
-        .map((error) => [
-          error,
-          {
-            type: 'missing',
-          },
-        ])),
+      errors: Object.fromEntries(missingProps.map((error) => [
+        error,
+        {
+          type: 'missing',
+        },
+      ])),
     })
   }
 }
@@ -255,7 +247,7 @@ export const validate = <TWhat, const TJsonSchema extends Omit<Description, '$id
   schema: TJsonSchema,
   options: ValidateOptions = {},
 ) => {
-  if( !what ) {
+  if( what === undefined ) {
     return Result.error(makeValidationError({
       code: ValidationErrorCode.EmptyTarget,
       errors: {},
@@ -264,15 +256,17 @@ export const validate = <TWhat, const TJsonSchema extends Omit<Description, '$id
 
   if( !('properties' in schema) ) {
     const { error } = validateProperty(what, schema)
-    return error
-      ? Result.error(error)
-      : Result.result(what as InferSchema<TJsonSchema>)
+    if( error ) {
+      return Result.error(error)
+    }
+
+    return Result.result(what as InferSchema<TJsonSchema>)
   }
 
-  const wholenessError = validateWholeness(what, schema)
+  const wholenessError = validateWholeness(what as Record<string, unknown>, schema)
   if( wholenessError ) {
     if( options.throwOnError ) {
-      throw new Error(ValidationErrorCode.MissingProperties)
+      throw new TypeError(ValidationErrorCode.MissingProperties)
     }
     return Result.error(wholenessError)
   }
@@ -287,7 +281,11 @@ export const validate = <TWhat, const TJsonSchema extends Omit<Description, '$id
     })
 
     if( error ) {
+      if( options.throwOnError ) {
+        throw new TypeError(ValidationErrorCode.InvalidProperties)
+      }
       errors[propName] = error
+      continue
     }
 
     if( parsed !== undefined ) {
@@ -296,14 +294,6 @@ export const validate = <TWhat, const TJsonSchema extends Omit<Description, '$id
   }
 
   if( Object.keys(errors).length > 0 ) {
-    if( options.throwOnError ) {
-      const error = new TypeError(ValidationErrorCode.InvalidProperties)
-      Object.assign(error, {
-        errors,
-      })
-      throw error
-    }
-
     return Result.error(makeValidationError({
       code: ValidationErrorCode.InvalidProperties,
       errors,
@@ -317,7 +307,6 @@ export const validator = <const TJsonSchema extends Omit<Description, '$id'> | P
   schema: TJsonSchema,
   options: ValidateOptions = {},
 ) => {
-
   return [
     {} as InferSchema<TJsonSchema>,
     <TWhat>(what: TWhat) => {
