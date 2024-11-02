@@ -13,7 +13,6 @@ import { ValidationErrorCode, PropertyValidationErrorCode } from '@aeriajs/types
 
 export type ValidateOptions = {
   tolerateExtraneous?: boolean
-  filterOutExtraneous?: boolean
   throwOnError?: boolean
   coerce?: boolean
   parentProperty?: Omit<Description, '$id'> | Property
@@ -47,9 +46,9 @@ const getPropertyType = (property: Property) => {
   }
 
   if(
-    '$ref' in property
-    || 'properties' in property
+    'properties' in property
     || 'additionalProperties' in property
+    || '$ref' in property
   ) {
     return 'object'
   }
@@ -70,20 +69,21 @@ export const makeValidationError = <TValidationError extends ValidationError> (e
 }
 
 export const validateProperty = <TWhat>(
-  propName: string,
   what: TWhat,
   property: Property | undefined,
   options: ValidateOptions = {},
 ): Result.Either<PropertyValidationError | ValidationError, unknown> => {
   if( !property ) {
     if( options.parentProperty && 'additionalProperties' in options.parentProperty && options.parentProperty.additionalProperties ) {
-      if( options.filterOutExtraneous ) {
-        return Result.result(undefined)
+      if( typeof options.parentProperty.additionalProperties === 'boolean' ) {
+        return Result.result(what)
       }
 
-      return Result.result(what)
+      return validateProperty(
+        what,
+        options.parentProperty.additionalProperties
+      )
     }
-
     if( options.tolerateExtraneous ) {
       return Result.result(undefined)
     }
@@ -104,7 +104,6 @@ export const validateProperty = <TWhat>(
 
   if(
     actualType !== expectedType
-    && !(('items' in property || 'enum' in property) && actualType === 'array')
     && !(actualType === 'number' && expectedType === 'integer')
   ) {
     if( expectedType === 'datetime' && what instanceof Date ) {
@@ -141,29 +140,17 @@ export const validateProperty = <TWhat>(
     }))
   }
 
-  if( 'properties' in property ) {
-    return validate(what, property, options)
-  }
-
-  if( 'enum' in property && property.enum.length === 0 ) {
-    return Result.result(what)
-  }
-
-  if( 'const' in property ) {
-    if( what !== property.const ) {
-      return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
-        expected: property.const,
-        got: what,
-      }))
-    }
-
-    return Result.result(what)
-  }
-
   if( 'type' in property ) {
     switch( property.type ) {
-      case 'number':
       case 'integer': {
+        if( !Number.isInteger(what) ) {
+          return Result.error(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
+            expected: 'integer',
+            got: 'invalid_number',
+          }))
+        }
+      }
+      case 'number': {
         if( typeof what !== 'number' ) {
           return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
             expected: expectedType,
@@ -171,70 +158,73 @@ export const validateProperty = <TWhat>(
           }))
         }
 
-        if( property.type === 'integer' ) {
-          if( !Number.isInteger(what) ) {
-            return Result.error(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
-              expected: 'integer',
-              got: 'invalid_number',
-            }))
-          }
-        }
-
         if(
-          (property.maximum && property.maximum < what)
-        || (property.minimum && property.minimum > what)
-        || (property.exclusiveMaximum && property.exclusiveMaximum <= what)
-        || (property.exclusiveMinimum && property.exclusiveMinimum >= what)
+          (typeof property.maximum === 'number' && property.maximum < what)
+        || (typeof property.minimum === 'number' && property.minimum > what)
+        || (typeof property.exclusiveMaximum === 'number' && property.exclusiveMaximum <= what)
+        || (typeof property.exclusiveMinimum === 'number' && property.exclusiveMinimum >= what)
         ) {
           return Result.error(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
             expected: 'number',
             got: 'invalid_number',
           }))
         }
+        break
       }
-    }
-
-    if( 'items' in property ) {
-      if( !Array.isArray(what) ) {
-        return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
-          expected: expectedType,
-          got: actualType,
-        }))
+      case 'object': {
+        return validate(what, property, options)
       }
-
-      if( property.minItems ) {
-        if( what.length < property.minItems ) {
-          return Result.error(makePropertyError(PropertyValidationErrorCode.MoreItemsExpected))
+      case 'array': {
+        if( !Array.isArray(what) ) {
+          return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+            expected: expectedType,
+            got: actualType,
+          }))
         }
-      }
 
-      if( property.maxItems ) {
-        if( what.length > property.maxItems ) {
-          return Result.error(makePropertyError(PropertyValidationErrorCode.LessItemsExpected))
+        if( property.minItems ) {
+          if( what.length < property.minItems ) {
+            return Result.error(makePropertyError(PropertyValidationErrorCode.MoreItemsExpected))
+          }
         }
-      }
 
-      let i = 0
-      for( const elem of what ) {
-        const { error } = validateProperty(propName, elem, property.items, options)
-        if( error ) {
-          if( 'errors' in error ) {
-            continue
+        if( property.maxItems ) {
+          if( what.length > property.maxItems ) {
+            return Result.error(makePropertyError(PropertyValidationErrorCode.LessItemsExpected))
+          }
+        }
+
+        let i = 0
+        for( const elem of what ) {
+          const { error } = validateProperty(elem, property.items, options)
+          if( error ) {
+            if( 'errors' in error ) {
+              continue
+            }
+
+            error.index = i
+            return Result.error(error)
           }
 
-          error.index = i
-          return Result.error(error)
+          i++
         }
-
-        i++
       }
     }
   }
 
-  if( 'enum' in property ) {
-    if( !property.enum.includes(what) ) {
+  else if( 'enum' in property ) {
+    if( !property.enum.includes(what) && property.enum.length === 0 ) {
       return Result.error(makePropertyError(PropertyValidationErrorCode.ExtraneousElement, {
         expected: property.enum,
+        got: what,
+      }))
+    }
+  }
+
+  else if( 'const' in property ) {
+    if( what !== property.const ) {
+      return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+        expected: property.const,
         got: what,
       }))
     }
@@ -277,7 +267,7 @@ export const validate = <TWhat, const TJsonSchema extends Omit<Description, '$id
   }
 
   if( !('properties' in schema) ) {
-    const { error } = validateProperty('', what, schema)
+    const { error } = validateProperty(what, schema)
     return error
       ? Result.error(error)
       : Result.result(what as InferSchema<TJsonSchema>)
@@ -295,15 +285,10 @@ export const validate = <TWhat, const TJsonSchema extends Omit<Description, '$id
   const resultCopy: Record<string, unknown> = {}
 
   for( const propName in what ) {
-    const { error, result: parsed } = validateProperty(
-      propName,
-      what[propName],
-      schema.properties[propName],
-      {
-        ...options,
-        parentProperty: schema,
-      },
-    )
+    const { error, result: parsed } = validateProperty(what[propName], schema.properties[propName], {
+      ...options,
+      parentProperty: schema,
+    })
 
     if( error ) {
       errors[propName] = error

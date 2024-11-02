@@ -242,7 +242,7 @@ const validate = (value: unknown, ctx: PhaseContext) => {
     }
   }
 
-  const { error } = validateProperty(ctx.propName, value, ctx.property)
+  const { error } = validateProperty(value, ctx.property)
   if( error ) {
     return Result.error({
       [ctx.propName]: error,
