@@ -133,7 +133,6 @@ export const validateProperty = <TWhat>(
       if( expectedType === 'string' && typeof what === 'number' ) {
         return Result.result(String(what))
       }
-
     }
 
     return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
@@ -161,41 +160,7 @@ export const validateProperty = <TWhat>(
     return Result.result(what)
   }
 
-  if( 'items' in property ) {
-    if( !Array.isArray(what) ) {
-      return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
-        expected: expectedType,
-        got: actualType,
-      }))
-    }
-
-    if( property.minItems ) {
-      if( what.length < property.minItems ) {
-        return Result.error(makePropertyError(PropertyValidationErrorCode.MoreItemsExpected))
-      }
-    }
-
-    if( property.maxItems ) {
-      if( what.length > property.maxItems ) {
-        return Result.error(makePropertyError(PropertyValidationErrorCode.LessItemsExpected))
-      }
-    }
-
-    let i = 0
-    for( const elem of what ) {
-      const { error } = validateProperty(propName, elem, property.items, options)
-      if( error ) {
-        if( 'errors' in error ) {
-          continue
-        }
-
-        error.index = i
-        return Result.error(error)
-      }
-
-      i++
-    }
-  } else if( 'type' in property ) {
+  if( 'type' in property ) {
     switch( property.type ) {
       case 'number':
       case 'integer': {
@@ -229,7 +194,44 @@ export const validateProperty = <TWhat>(
       }
     }
 
-  } else if( 'enum' in property ) {
+    if( 'items' in property ) {
+      if( !Array.isArray(what) ) {
+        return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+          expected: expectedType,
+          got: actualType,
+        }))
+      }
+
+      if( property.minItems ) {
+        if( what.length < property.minItems ) {
+          return Result.error(makePropertyError(PropertyValidationErrorCode.MoreItemsExpected))
+        }
+      }
+
+      if( property.maxItems ) {
+        if( what.length > property.maxItems ) {
+          return Result.error(makePropertyError(PropertyValidationErrorCode.LessItemsExpected))
+        }
+      }
+
+      let i = 0
+      for( const elem of what ) {
+        const { error } = validateProperty(propName, elem, property.items, options)
+        if( error ) {
+          if( 'errors' in error ) {
+            continue
+          }
+
+          error.index = i
+          return Result.error(error)
+        }
+
+        i++
+      }
+    }
+  }
+
+  if( 'enum' in property ) {
     if( !property.enum.includes(what) ) {
       return Result.error(makePropertyError(PropertyValidationErrorCode.ExtraneousElement, {
         expected: property.enum,
