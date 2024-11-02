@@ -81,7 +81,7 @@ export const validateProperty = <TWhat>(
 
       return validateProperty(
         what,
-        options.parentProperty.additionalProperties
+        options.parentProperty.additionalProperties,
       )
     }
     if( options.tolerateExtraneous ) {
@@ -210,18 +210,14 @@ export const validateProperty = <TWhat>(
         }
       }
     }
-  }
-
-  else if( 'enum' in property ) {
+  } else if( 'enum' in property ) {
     if( !property.enum.includes(what) && property.enum.length === 0 ) {
       return Result.error(makePropertyError(PropertyValidationErrorCode.ExtraneousElement, {
         expected: property.enum,
         got: what,
       }))
     }
-  }
-
-  else if( 'const' in property ) {
+  } else if( 'const' in property ) {
     if( what !== property.const ) {
       return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
         expected: property.const,
