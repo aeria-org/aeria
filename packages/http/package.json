@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/http",
-  "version": "0.0.134",
+  "version": "0.0.135",
   "description": "## Installation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -41,6 +41,6 @@
     "@aeriajs/common": "^0.0.119",
     "@aeriajs/entrypoint": "^0.0.122",
     "@aeriajs/types": "^0.0.102",
-    "@aeriajs/validation": "^0.0.123"
+    "@aeriajs/validation": "^0.0.124"
   }
 }

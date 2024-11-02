@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.124
+
+### Patch Changes
+
+- 5e3861a: Bugfixes
+
 ## 0.0.123
 
 ### Patch Changes
