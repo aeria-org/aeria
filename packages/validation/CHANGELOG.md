@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.127
+
+### Patch Changes
+
+- ff41e8a: Code optimizations
+
 ## 0.0.126
 
 ### Patch Changes

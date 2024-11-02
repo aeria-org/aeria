@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/validation",
-  "version": "0.0.126",
+  "version": "0.0.127",
   "description": "## Installation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
