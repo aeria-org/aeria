@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.126
+
+### Patch Changes
+
+- cc66f3c: Optimize `validateProperty()`
+
 ## 0.0.125
 
 ### Patch Changes
