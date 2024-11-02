@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.120
+
+### Patch Changes
+
+- f16a92b: Performance enhacements
+
 ## 0.0.119
 
 ### Patch Changes
