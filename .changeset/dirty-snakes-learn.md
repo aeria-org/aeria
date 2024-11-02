@@ -1,5 +1,0 @@
----
-"@aeriajs/validation": patch
----
-
-Bugfixes
