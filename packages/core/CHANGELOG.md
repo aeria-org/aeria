@@ -1,5 +1,15 @@
 # @aeriajs/api
 
+## 0.0.198
+
+### Patch Changes
+
+- Updated dependencies [ff41e8a]
+  - @aeriajs/validation@0.0.127
+  - @aeriajs/builtins@0.0.198
+  - @aeriajs/http@0.0.138
+  - @aeriajs/security@0.0.198
+
 ## 0.0.197
 
 ### Patch Changes
