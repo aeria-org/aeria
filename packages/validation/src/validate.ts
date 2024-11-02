@@ -12,6 +12,7 @@ import { getMissingProperties } from '@aeriajs/common'
 import { ValidationErrorCode, PropertyValidationErrorCode } from '@aeriajs/types'
 
 export type ValidateOptions = {
+  tolerateExtraneous?: boolean
   filterOutExtraneous?: boolean
   throwOnError?: boolean
   coerce?: boolean
@@ -71,17 +72,17 @@ export const validateProperty = <TWhat>(
   property: Property | undefined,
   options: ValidateOptions = {},
 ): Result.Either<PropertyValidationError | ValidationError, unknown> => {
-  const { filterOutExtraneous, coerce } = options
   if( !property ) {
     if( options.parentProperty && 'additionalProperties' in options.parentProperty && options.parentProperty.additionalProperties ) {
-      const extraneous = options.parentProperty.additionalProperties
-      if( typeof extraneous === 'boolean' || Object.keys(extraneous).includes(propName) ) {
-        if( filterOutExtraneous ) {
-          return Result.result(undefined)
-        }
+      if( options.filterOutExtraneous ) {
+        return Result.result(undefined)
       }
 
       return Result.result(what)
+    }
+
+    if( options.tolerateExtraneous ) {
+      return Result.result(undefined)
     }
 
     return Result.error(makePropertyError(PropertyValidationErrorCode.Extraneous))
@@ -132,7 +133,7 @@ export const validateProperty = <TWhat>(
       }
     }
 
-    if( coerce ) {
+    if( options.coerce ) {
       if( expectedType === 'number' && typeof what === 'string' ) {
         const coerced = parseFloat(what)
         if( !isNaN(coerced) ) {
@@ -279,6 +280,9 @@ export const validate = <
 
   const wholenessError = validateWholeness(what, schema)
   if( wholenessError ) {
+    if( options.throwOnError ) {
+      throw new Error(ValidationErrorCode.MissingProperties)
+    }
     return Result.error(wholenessError)
   }
 
