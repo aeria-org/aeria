@@ -10,8 +10,7 @@
     "test": "echo skipping",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "tsc",
-    "prepublishOnly": "pnpm build"
+    "build": "tsc"
   },
   "bin": {
     "aeria": "bin/index.js"

@@ -15,8 +15,7 @@
     "build": "pnpm build:cjs && pnpm build:esm",
     "build:cjs": "tsc",
     "build:esm": "esbuild './src/**/*.ts' --outdir=dist --out-extension:.js=.mjs && pnpm build:esm-transform",
-    "build:esm-transform": "pnpm -w esm-transform $PWD/dist",
-    "prepublishOnly": "pnpm build"
+    "build:esm-transform": "pnpm -w esm-transform $PWD/dist"
   },
   "exports": {
     ".": {

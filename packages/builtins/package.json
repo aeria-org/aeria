@@ -16,8 +16,7 @@
     "build:cjs": "tsc",
     "build:esm": "esbuild './src/**/*.ts' --outdir=dist --out-extension:.js=.mjs && pnpm build:esm-transform",
     "build:esm-transform": "pnpm -w esm-transform $PWD/dist",
-    "write-icons": "pnpm -w write-icons",
-    "prepublishOnly": "pnpm build"
+    "write-icons": "pnpm -w write-icons"
   },
   "keywords": [],
   "author": "",
