@@ -633,9 +633,9 @@ export const traverseDocument = async <TWhat>(
 
         switch( error ) {
           case TraverseError.InvalidDocumentId:
-            case TraverseError.InvalidTempfile:
+          case TraverseError.InvalidTempfile:
             traverseError = error
-          break
+            break
           default: {
             validationError = error
           }
