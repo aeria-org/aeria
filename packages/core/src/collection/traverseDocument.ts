@@ -41,7 +41,7 @@ export type TraverseOptions =
 
 export type TraverseNormalized = {
   description: Description
-  pipe: <T = unknown>(value: unknown, phaseContext: PhaseContext)=> T | Promise<T>
+  pipe: (value: unknown, phaseContext: PhaseContext)=> unknown
 }
 
 export type ValidTempFile =
@@ -342,13 +342,13 @@ const recurseDeep = async (value: unknown, ctx: PhaseContext) => {
 
     const items: ObjectId[] = []
     for( const item of value ) {
-      const result = await ctx.options.pipe<ObjectId>(item, {
+      const result = await ctx.options.pipe(item, {
         ...ctx,
         property: ctx.property.items,
         isArray: true,
       })
 
-      items.push(result)
+      items.push(result as ObjectId)
     }
 
     return items
@@ -623,28 +623,27 @@ export const traverseDocument = async <TWhat>(
     }
   }
 
-  Object.assign(options, {
-    pipe: pipe(functions.map(mutateTarget), {
-      returnFirst: (value) => {
-        if( isError(value) ) {
-          const error = value.error as NonNullable<
-            | typeof traverseError
-            | typeof validationError
-          >
-          switch( error ) {
-            case TraverseError.InvalidDocumentId:
-            case TraverseError.InvalidTempfile:
-              traverseError = error
-              break
-            default: {
-              validationError = error
-            }
-          }
+  options.pipe = pipe(functions.map(mutateTarget), {
+    returnFirst: (value) => {
+      if( isError(value) ) {
+        const error = value.error as NonNullable<
+          | typeof traverseError
+          | typeof validationError
+        >
 
-          return value
+        switch( error ) {
+          case TraverseError.InvalidDocumentId:
+            case TraverseError.InvalidTempfile:
+            traverseError = error
+          break
+          default: {
+            validationError = error
+          }
         }
-      },
-    }),
+
+        return value
+      }
+    },
   })
 
   const { error, result } = await recurse(whatCopy, {
