@@ -2,11 +2,7 @@ import type { RouteContext } from '@aeriajs/types'
 import { createRouter } from '@aeriajs/http'
 import { createContext } from '@aeriajs/core'
 import { builtinFunctions } from '@aeriajs/builtins'
-import {
-  safeHandle,
-  regularVerb,
-  customVerbs,
-} from './handler.js'
+import { safeHandle, regularVerb, customVerbs } from './handler.js'
 
 export const registerRoutes = () => {
   const defaultHandler = (fn: ReturnType<typeof regularVerb>) => {

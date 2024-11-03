@@ -233,7 +233,7 @@ export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> unk
 
     if( result === null ) {
       if( !response.headersSent ) {
-        response.writeHead(204)
+        response.writeHead(HTTPStatus.NoContent)
       }
       response.end(result)
       return
@@ -248,12 +248,12 @@ export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> unk
   } catch( e ) {
     console.trace(e)
     if( !response.headersSent ) {
-      response.writeHead(500)
+      response.writeHead(HTTPStatus.InternalServerError)
     }
 
     if( !response.writableEnded ) {
       return endpointError({
-        httpStatus: 500,
+        httpStatus: HTTPStatus.InternalServerError,
         code: ACError.UnknownError,
         message: 'Internal server error',
       })
