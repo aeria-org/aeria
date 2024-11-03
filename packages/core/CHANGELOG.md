@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.199
+
+### Patch Changes
+
+- f4c23bc: Fix esm bundling
+- Updated dependencies [f4c23bc]
+  - @aeriajs/types@0.0.103
+  - @aeriajs/builtins@0.0.199
+  - @aeriajs/security@0.0.199
+  - @aeriajs/common@0.0.121
+  - @aeriajs/entrypoint@0.0.124
+  - @aeriajs/http@0.0.139
+  - @aeriajs/validation@0.0.128
+
 ## 0.0.198
 
 ### Patch Changes
