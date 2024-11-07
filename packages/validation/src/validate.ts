@@ -165,7 +165,10 @@ export const validateProperty = <TWhat>(
         break
       }
       case 'object': {
-        return validate(what, property, options)
+        if( 'properties' in property ) {
+          return validate(what, property, options)
+        }
+        return Result.result(what)
       }
       case 'array': {
         if( !Array.isArray(what) ) {
