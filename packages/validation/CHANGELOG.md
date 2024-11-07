@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.129
+
+### Patch Changes
+
+- fd2b07e: Fix object property bug
+
 ## 0.0.128
 
 ### Patch Changes
