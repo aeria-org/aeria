@@ -22,7 +22,7 @@ export const log = defineCollection({
       },
       details: {
         type: 'object',
-        variable: true,
+        unstructured: true,
       },
       created_at: {
         type: 'string',

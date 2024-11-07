@@ -1,5 +1,5 @@
 import { expect, test, assert } from 'vitest'
-import { ValidationErrorCode, PropertyValidationErrorCode, type JsonSchema } from '@aeriajs/types'
+import { ValidationErrorCode, PropertyValidationErrorCode, type JsonSchema, type Property } from '@aeriajs/types'
 import { validate } from '../src/index.js'
 import {
   plainCandidate,
@@ -134,5 +134,23 @@ test('validates array length', () => {
   assert('code' in maxItemsEither.error && maxItemsEither.error.code === ValidationErrorCode.InvalidProperties)
   assert('type' in maxItemsEither.error.errors.jobs)
   expect(maxItemsEither.error.errors.jobs.type).toBe(PropertyValidationErrorCode.LessItemsExpected)
+})
+
+test('validates unstructured object', () => {
+  const property: Property = {
+    type: 'object',
+    variable: true,
+  }
+
+  const { error: error1 } = validate({
+    prop: 1,
+  }, property)
+
+  const { error: error2 } = validate(null, property)
+  const { error: error3 } = validate(undefined, property)
+
+  assert(!error1)
+  assert(!error2)
+  assert(error3)
 })
 

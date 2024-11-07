@@ -91,7 +91,7 @@ export type FixedObjectProperty = {
 }
 
 export type VariableObjectProperty =
-  | { variable: true }
+  | { unstructured: true }
   | { additionalProperties: boolean | Property }
 
 export type ObjectProperty = (FixedObjectProperty | VariableObjectProperty) & {
