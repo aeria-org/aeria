@@ -139,7 +139,7 @@ test('validates array length', () => {
 test('validates unstructured object', () => {
   const property: Property = {
     type: 'object',
-    variable: true,
+    additionalProperties: true,
   }
 
   const { error: error1 } = validate({ prop: 1 }, property)
