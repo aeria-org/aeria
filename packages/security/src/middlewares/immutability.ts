@@ -40,10 +40,6 @@ export const checkImmutabilityRead = async <T extends CollectionReadPayload>(
   next: (payload: typeof props, context: Context)=> ReadMiddlewareReturn<CollectionProps<T>>,
 ) => {
   const { payload: originalPayload } = props.result
-  if( Array.isArray(originalPayload.filters) ) {
-    return props
-  }
-
   if( !(originalPayload.filters._id instanceof ObjectId) ) {
     throw new Error
   }

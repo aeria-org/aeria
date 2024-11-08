@@ -65,7 +65,7 @@ export const endpointErrorSchema = <
           },
           details: {
             type: 'object',
-            unstructured: true,
+            additionalProperties: true,
           },
         },
       },
@@ -101,7 +101,7 @@ export const genericEndpointErrorSchema = () => {
           },
           details: {
             type: 'object',
-            unstructured: true,
+            additionalProperties: true,
           },
         },
       },

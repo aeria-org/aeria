@@ -53,7 +53,11 @@ export const preferredRemove = async (targetId: ObjectId | (ObjectId | null)[], 
     const { result: removeAll } = await getFunction<typeof functions.removeAll>(reference.referencedCollection, 'removeAll')
     if( removeAll ) {
       return removeAll({
-        filters: nonNullable,
+        filters: {
+          _id: {
+            $in: nonNullable,
+          },
+        },
       }, context)
     }
 

@@ -143,7 +143,6 @@ test('validates unstructured object', () => {
   }
 
   const { error: error1 } = validate({ prop: 1 }, property)
-
   const { error: error2 } = validate(null, property)
   const { error: error3 } = validate(undefined, property)
 

@@ -68,7 +68,7 @@ export const validateProperty = <TWhat>(
   options: ValidateOptions = {},
 ): Result.Either<PropertyValidationError | ValidationError, unknown> => {
   if( !property ) {
-    if( options.parentProperty && 'additionalProperties' in options.parentProperty && options.parentProperty.additionalProperties ) {
+    if( options.parentProperty && 'additionalProperties' in options.parentProperty ) {
       if( options.parentProperty.additionalProperties === true ) {
         return Result.result(what)
       }

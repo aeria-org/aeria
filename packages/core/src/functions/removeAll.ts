@@ -1,5 +1,5 @@
 import type { WithId } from 'mongodb'
-import type { Context, RemoveAllPayload } from '@aeriajs/types'
+import type { Context, SchemaWithId, RemoveAllPayload } from '@aeriajs/types'
 import { Result, ACError, HTTPStatus } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import { useSecurity } from '@aeriajs/security'
@@ -9,7 +9,10 @@ export type RemoveAllOptions = {
   bypassSecurity?: boolean
 }
 
-const internalRemoveAll = async <TContext extends Context>(payload: RemoveAllPayload, context: TContext) => {
+const internalRemoveAll = async <TContext extends Context>(
+  payload: RemoveAllPayload<SchemaWithId<TContext['description']>>,
+  context: TContext,
+) => {
   const filters = throwIfError(await traverseDocument<Record<string, unknown>>({
     _id: {
       $in: payload.filters,
@@ -30,7 +33,7 @@ const internalRemoveAll = async <TContext extends Context>(payload: RemoveAllPay
 }
 
 export const removeAll = async <TContext extends Context>(
-  payload: RemoveAllPayload,
+  payload: RemoveAllPayload<SchemaWithId<TContext['description']>>,
   context: TContext,
   options: RemoveAllOptions = {},
 ) => {

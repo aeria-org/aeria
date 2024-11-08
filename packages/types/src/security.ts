@@ -72,7 +72,7 @@ export type CollectionProps<TPayload> = {
 }
 
 export type CollectionReadPayload = {
-  filters: Record<string, unknown> | unknown[]
+  filters: Record<string, unknown>
   sort?: QuerySort<unknown>
   limit?: number
   offset?: number
