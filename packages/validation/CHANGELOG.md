@@ -1,5 +1,14 @@
 # @aeriajs/validation
 
+## 0.0.130
+
+### Patch Changes
+
+- 9e08aae: Refactor `additionalProperties`
+- Updated dependencies [9e08aae]
+  - @aeriajs/types@0.0.104
+  - @aeriajs/common@0.0.122
+
 ## 0.0.129
 
 ### Patch Changes
