@@ -44,8 +44,16 @@ export type StrictFilter<TDocument> = RemoveAny<Filter<DocumentFilter<TDocument>
 
 export type StrictFilterOperators<TDocument> = RemoveAny<FilterOperators<DocumentFilter<TDocument>>>
 
+type FlattenObjectKeys<T> = T extends Record<infer K, unknown>
+  ? K extends string
+    ? T[K] extends Record<string, unknown>
+      ? `${K}.${FlattenObjectKeys<T[K]>}`
+      : K
+    : never
+  : never
+
 export type Filters<TDocument> = StrictFilter<TDocument> & Partial<{
-  [P in keyof TDocument | `${Extract<keyof TDocument, string>}.${string}`]: (
+  [P in keyof TDocument | FlattenObjectKeys<TDocument>]: (
     P extends keyof TDocument
       ? TDocument[P] extends infer Field
         ? Field extends ObjectId
