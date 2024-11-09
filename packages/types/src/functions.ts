@@ -53,7 +53,7 @@ type FlattenObjectKeys<T> = T extends T & 0 ? never : T extends Record<infer K, 
   : never
 
 export type Filters<TDocument> = StrictFilter<TDocument> & Partial<{
-  [P in FlattenObjectKeys<TDocument>]: (
+  [P in keyof TDocument | FlattenObjectKeys<TDocument>]: (
     P extends keyof TDocument
       ? TDocument[P] extends infer Field
         ? Field extends ObjectId
