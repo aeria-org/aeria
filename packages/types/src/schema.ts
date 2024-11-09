@@ -1,5 +1,9 @@
 import type { ObjectId } from 'mongodb'
 
+type Prettify<T> = {
+  [K in keyof T]: T[K]
+} & {}
+
 type Owned = {
   owner?: Collections['user']['item']
 }
@@ -68,16 +72,18 @@ export type InferSchema<TSchema, TSchemaOptions extends SchemaOptions = {}> = Me
       : MappedTypes
   : never
 
-export type Schema<TSchema, TSchemaOptions extends SchemaOptions = {}> = CaseTimestamped<
-  TSchema,
-  CaseOwned<
+export type Schema<TSchema, TSchemaOptions extends SchemaOptions = {}> = Prettify<
+  CaseTimestamped<
     TSchema,
-    InferSchema<TSchema, TSchemaOptions>
-  >>
+    CaseOwned<
+      TSchema,
+      InferSchema<TSchema, TSchemaOptions>
+    >>
+  >
 
-export type SchemaWithId<TSchema, TSchemaOptions extends SchemaOptions = {}> = Schema<TSchema, TSchemaOptions> & {
+export type SchemaWithId<TSchema, TSchemaOptions extends SchemaOptions = {}> = Prettify<Schema<TSchema, TSchemaOptions> & {
   _id: ObjectId
-}
+}>
 
 export type InferProperties<TSchema> = TSchema extends readonly unknown[]
   ? TSchema extends readonly (infer SchemaOption)[]
@@ -127,7 +133,6 @@ type MapReferences<TSchema, TSchemaOptions extends SchemaOptions> = TSchema exte
           : never
         : Prop extends TestType<{ items: TestType<{ $ref: infer K }> }>
           ? K extends keyof Collections
-            // ? Collections[K]['item'][]
             ? TSchemaOptions extends { keepTempIds: true }
               ? K extends 'file'
                 ? (ObjectId | string | {
