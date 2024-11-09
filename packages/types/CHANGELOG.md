@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.104
+
+### Patch Changes
+
+- 9e08aae: Refactor `additionalProperties`
+
 ## 0.0.103
 
 ### Patch Changes
