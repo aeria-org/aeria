@@ -79,7 +79,7 @@ export type Schema<TSchema, TSchemaOptions extends SchemaOptions = {}> = Prettif
       TSchema,
       InferSchema<TSchema, TSchemaOptions>
     >>
-  >
+>
 
 export type SchemaWithId<TSchema, TSchemaOptions extends SchemaOptions = {}> = Prettify<Schema<TSchema, TSchemaOptions> & {
   _id: ObjectId
