@@ -1,5 +1,17 @@
 # aeria-build
 
+## 0.0.144
+
+### Patch Changes
+
+- 67a970d: Update aeria-lang
+- Updated dependencies [1b7fde1]
+  - @aeriajs/types@0.0.105
+  - @aeriajs/builtins@0.0.202
+  - @aeriajs/common@0.0.123
+  - @aeriajs/core@0.0.202
+  - @aeriajs/entrypoint@0.0.126
+
 ## 0.0.143
 
 ### Patch Changes

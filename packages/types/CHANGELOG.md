@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.105
+
+### Patch Changes
+
+- 1b7fde1: Stricter `Filters<T>`
+
 ## 0.0.104
 
 ### Patch Changes
