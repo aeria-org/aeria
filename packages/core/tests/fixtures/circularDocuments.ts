@@ -1,22 +1,8 @@
 import type { PackReferences, Token } from '@aeriajs/types'
+import type { CircularA, CircularB } from './types.js'
 import { throwIfError } from '@aeriajs/common'
-import { createContext, insert, ObjectId } from '../../dist/index.js'
+import { createContext, insert } from '../../dist/index.js'
 import { dbPromise } from './database.js'
-
-type CircularA = {
-  _id: ObjectId
-  name: string
-  circularA?: CircularA
-  circularAs?: CircularA[]
-  circularB?: CircularB
-  circularB_array?: CircularB[]
-}
-
-type CircularB = {
-  _id: ObjectId
-  name: string
-  circularA: CircularA
-}
 
 const token: Token = {
   authenticated: false,

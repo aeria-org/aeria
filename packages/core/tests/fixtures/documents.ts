@@ -1,56 +1,9 @@
 import type { PackReferences, Token } from '@aeriajs/types'
-import type { User, File } from '@aeriajs/builtins'
+import type { User } from '@aeriajs/builtins'
+import type { Person, Day, Project, Post } from './types.js'
 import { throwIfError } from '@aeriajs/common'
 import { createContext, insert, ObjectId } from '../../dist/index.js'
 import { dbPromise } from './database.js'
-
-type Person = {
-  _id: ObjectId
-  name: string
-  user: {
-    _id: ObjectId
-    picture_file: File
-  }
-  friends?: User[]
-}
-
-type Day = {
-  _id: ObjectId
-  people: Person[]
-}
-
-type Project = {
-  _id: ObjectId
-  user_id: ObjectId
-  created_by: Person
-  cronogram: {
-    date: {
-      day: number
-      month: number
-      year: number
-    }
-    assignments: {
-      name: string
-      status: string
-      responsibles: Person[]
-    }[]
-  }[]
-  cronogram_normalized: Day[]
-  stakeholders: {
-    owner: Person
-    qa: Person
-  }
-}
-
-type Post = {
-  _id?: ObjectId
-  replies: (Post | ObjectId)[]
-  info: {
-    user: {
-      _id: ObjectId
-    }
-  }
-}
 
 const token: Token = {
   authenticated: false,
@@ -165,20 +118,14 @@ export const documents = (async () => {
   }, projectContext)) as Project
 
   const { insertedId: post1 } = await db.collection<PackReferences<Post>>('post').insertOne({
-    info: {
-      user: user1,
-    },
+    info: { user: user1 },
     replies: [],
   })
 
   const post2 = throwIfError(await insert({
     what: {
-      info: {
-        user: user1,
-      },
-      replies: [
-        post1,
-      ],
+      info: { user: user2 },
+      replies: [post1],
     },
   }, postContext))
 
