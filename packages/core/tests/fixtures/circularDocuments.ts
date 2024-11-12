@@ -1,7 +1,21 @@
 import type { Token } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
-import { createContext, insert } from '../../dist/index.js'
+import { createContext, insert, ObjectId } from '../../dist/index.js'
 import { dbPromise } from './database.js'
+
+type CircularA = {
+  _id: ObjectId
+  name: string
+  circularA: CircularA
+  circularB: CircularB
+  circularB_array: CircularB[]
+}
+
+type CircularB = {
+  _id: ObjectId
+  name: string
+  circularA: CircularA
+}
 
 const token: Token = {
   authenticated: false,
@@ -41,7 +55,7 @@ export const circularDocuments = (async () => {
       ],
       circularB_array: [circularB1],
     },
-  }, circularAContext))
+  }, circularAContext)) as CircularA
 
   return {
     circularA1,

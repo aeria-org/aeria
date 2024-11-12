@@ -20,7 +20,7 @@ export type InitOptions = {
   router?: ReturnType<typeof createRouter>
   setup?: (context: RouteContext)=> unknown
   callback?: (context: RouteContext)=> unknown
-  collections?: Record<string, Collection & {
+  collections?: Record<string, Omit<Collection, 'item'> & {
     description: NonCircularJsonSchema
   }>
 }

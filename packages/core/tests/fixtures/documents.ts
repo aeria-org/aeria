@@ -3,6 +3,51 @@ import { throwIfError } from '@aeriajs/common'
 import { createContext, insert, ObjectId } from '../../dist/index.js'
 import { dbPromise } from './database.js'
 
+type Project = {
+  _id: ObjectId
+  user_id: ObjectId
+  created_by: {
+    _id: ObjectId
+    user: {
+      _id: ObjectId
+      picture_file: {
+        _id: ObjectId
+      }
+    }
+  }
+  cronogram: {
+    assignments: {
+      name: string
+      status: string
+      responsibles: {
+        _id: ObjectId
+        user: {
+          _id: ObjectId
+          picture_file: {
+            _id: ObjectId
+          }
+        }
+      }[]
+    }[]
+  }[]
+  cronogram_normalized: {
+    people: {
+      friends: {
+        _id: ObjectId
+      }[]
+    }[]
+  }[]
+  stakeholders: Record<'owner' | 'qa', {
+    _id: ObjectId
+    user: {
+      _id: ObjectId
+      picture_file: {
+        _id: ObjectId
+      }
+    }
+  }>
+}
+
 const token: Token = {
   authenticated: false,
   sub: null,
@@ -108,7 +153,7 @@ export const documents = (async () => {
         day2,
       ],
     },
-  }, projectContext))
+  }, projectContext)) as Project
 
   return {
     file1,
