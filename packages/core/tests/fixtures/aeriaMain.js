@@ -6,6 +6,31 @@ exports.default = init({
     user,
     file,
     tempFile,
+    post: {
+      functions: {
+        get,
+      },
+      description: {
+        $id: 'post',
+        properties: {
+          replies: {
+            type: 'array',
+            items: {
+              $ref: 'post',
+              inline: true,
+            },
+          },
+          info: {
+            type: 'object',
+            properties: {
+              user: {
+                $ref: 'user',
+              },
+            },
+          },
+        },
+      },
+    },
     circularA: {
       functions: {
         get,

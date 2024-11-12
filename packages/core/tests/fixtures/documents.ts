@@ -1,51 +1,55 @@
-import type { Token } from '@aeriajs/types'
+import type { PackReferences, Token } from '@aeriajs/types'
+import type { User, File } from '@aeriajs/builtins'
 import { throwIfError } from '@aeriajs/common'
 import { createContext, insert, ObjectId } from '../../dist/index.js'
 import { dbPromise } from './database.js'
 
+type Person = {
+  _id: ObjectId
+  name: string
+  user: {
+    _id: ObjectId
+    picture_file: File
+  }
+  friends?: User[]
+}
+
+type Day = {
+  _id: ObjectId
+  people: Person[]
+}
+
 type Project = {
   _id: ObjectId
   user_id: ObjectId
-  created_by: {
-    _id: ObjectId
-    user: {
-      _id: ObjectId
-      picture_file: {
-        _id: ObjectId
-      }
-    }
-  }
+  created_by: Person
   cronogram: {
+    date: {
+      day: number
+      month: number
+      year: number
+    }
     assignments: {
       name: string
       status: string
-      responsibles: {
-        _id: ObjectId
-        user: {
-          _id: ObjectId
-          picture_file: {
-            _id: ObjectId
-          }
-        }
-      }[]
+      responsibles: Person[]
     }[]
   }[]
-  cronogram_normalized: {
-    people: {
-      friends: {
-        _id: ObjectId
-      }[]
-    }[]
-  }[]
-  stakeholders: Record<'owner' | 'qa', {
-    _id: ObjectId
+  cronogram_normalized: Day[]
+  stakeholders: {
+    owner: Person
+    qa: Person
+  }
+}
+
+type Post = {
+  _id?: ObjectId
+  replies: (Post | ObjectId)[]
+  info: {
     user: {
       _id: ObjectId
-      picture_file: {
-        _id: ObjectId
-      }
     }
-  }>
+  }
 }
 
 const token: Token = {
@@ -64,12 +68,17 @@ export const documents = (async () => {
     token,
   })
 
+  const postContext = await createContext({
+    collectionName: 'post',
+    token,
+  })
+
   const { insertedIds: { '0': file1, '1': file2 } } = await db.collection('file').insertMany([
     { name: 'picture1.jpg' },
     { name: 'picture2.jpg' },
   ])
 
-  const { insertedIds: { '0': user1, '1': user2, '2': user3 } } = await db.collection('user').insertMany([
+  const { insertedIds: { '0': user1, '1': user2, '2': user3 } } = await db.collection<Omit<User, '_id'>>('user').insertMany([
     {
       name: 'john',
       email: 'john@test',
@@ -89,7 +98,7 @@ export const documents = (async () => {
     },
   ])
 
-  const { insertedIds: { '0': person1, '1': person2, '2': person3 } } = await db.collection('person').insertMany([
+  const { insertedIds: { '0': person1, '1': person2, '2': person3 } } = await db.collection<PackReferences<Omit<Person, '_id'>>>('person').insertMany([
     {
       name: 'john',
       user: user1,
@@ -109,7 +118,7 @@ export const documents = (async () => {
     },
   ])
 
-  const { insertedIds: { '0': day1, '1': day2 } } = await db.collection('day').insertMany([
+  const { insertedIds: { '0': day1, '1': day2 } } = await db.collection<PackReferences<Omit<Day, '_id'>>>('day').insertMany([
     {
       people: [
         person1,
@@ -152,8 +161,26 @@ export const documents = (async () => {
         day1,
         day2,
       ],
-    },
+    } satisfies PackReferences<Omit<Project, '_id'>>,
   }, projectContext)) as Project
+
+  const { insertedId: post1 } = await db.collection<PackReferences<Post>>('post').insertOne({
+    info: {
+      user: user1,
+    },
+    replies: [],
+  })
+
+  const post2 = throwIfError(await insert({
+    what: {
+      info: {
+        user: user1,
+      },
+      replies: [
+        post1,
+      ],
+    },
+  }, postContext))
 
   return {
     file1,
@@ -165,6 +192,8 @@ export const documents = (async () => {
     person2,
     person3,
     project,
+    post1,
+    post2,
   }
 })()
 

@@ -1,4 +1,4 @@
-import type { Token } from '@aeriajs/types'
+import type { PackReferences, Token } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import { createContext, insert, ObjectId } from '../../dist/index.js'
 import { dbPromise } from './database.js'
@@ -6,9 +6,10 @@ import { dbPromise } from './database.js'
 type CircularA = {
   _id: ObjectId
   name: string
-  circularA: CircularA
-  circularB: CircularB
-  circularB_array: CircularB[]
+  circularA?: CircularA
+  circularAs?: CircularA[]
+  circularB?: CircularB
+  circularB_array?: CircularB[]
 }
 
 type CircularB = {
@@ -33,13 +34,13 @@ export const circularDocuments = (async () => {
     token,
   })
 
-  const { insertedIds: { '0': circularA1, '1': circularA3, '2': circularA4 } } = await db.collection('circularA').insertMany([
+  const { insertedIds: { '0': circularA1, '1': circularA3, '2': circularA4 } } = await db.collection<Omit<CircularA, '_id'>>('circularA').insertMany([
     { name: 'rec a1' },
     { name: 'rec a3' },
     { name: 'rec a4' },
   ])
 
-  const { insertedId: circularB1 } = await db.collection('circularB').insertOne({
+  const { insertedId: circularB1 } = await db.collection<PackReferences<Omit<CircularB, '_id'>>>('circularB').insertOne({
     name: 'rec b1',
     circularA: circularA1,
   })
@@ -54,7 +55,7 @@ export const circularDocuments = (async () => {
         circularA4,
       ],
       circularB_array: [circularB1],
-    },
+    } satisfies PackReferences<Omit<CircularA, '_id'>>,
   }, circularAContext)) as CircularA
 
   return {

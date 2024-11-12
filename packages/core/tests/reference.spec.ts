@@ -76,20 +76,25 @@ test('populates arrays inside arrays', async () => {
     project,
   } = await documents
 
-  expect(project.cronogram_normalized[0].people[0].friends.length).toBe(2)
-  expect(project.cronogram_normalized[0].people[1].friends.length).toBe(1)
+  expect(project.cronogram_normalized[0].people[0].friends!.length).toBe(2)
+  expect(project.cronogram_normalized[0].people[1].friends!.length).toBe(1)
   expect(project.cronogram_normalized[1].people[0].friends).toBeNull()
-  expect(user2.equals(project.cronogram_normalized[0].people[0].friends[0]._id)).toBeTruthy()
-  expect(user3.equals(project.cronogram_normalized[0].people[0].friends[1]._id)).toBeTruthy()
-  expect(user1.equals(project.cronogram_normalized[0].people[1].friends[0]._id)).toBeTruthy()
+  expect(user2.equals(project.cronogram_normalized[0].people[0].friends![0]._id)).toBeTruthy()
+  expect(user3.equals(project.cronogram_normalized[0].people[0].friends![1]._id)).toBeTruthy()
+  expect(user1.equals(project.cronogram_normalized[0].people[1].friends![0]._id)).toBeTruthy()
 })
 
 test('populates circular references', async () => {
   const { circularA2 } = await circularDocuments
   expect(circularA2.name).toBe('rec a2')
-  expect(circularA2.circularA.name).toBe('rec a1')
-  expect(circularA2.circularB.name).toBe('rec b1')
-  expect(circularA2.circularB_array[0].name).toBe('rec b1')
-  expect(circularA2.circularB_array[0].circularA.name).toBe('rec a1')
+  expect(circularA2.circularA!.name).toBe('rec a1')
+  expect(circularA2.circularB!.name).toBe('rec b1')
+  expect(circularA2.circularB_array![0].name).toBe('rec b1')
+  expect(circularA2.circularB_array![0].circularA.name).toBe('rec a1')
+})
+
+test('populates circular references', async () => {
+  const { post1, post2 } = await documents
+  console.log(JSON.stringify(post2, null, 2))
 })
 
