@@ -424,9 +424,10 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       if( reference.isRecursive ) {
         localField = `${getTempName(path)}.${refName}`
       } else {
+        const localFieldPath = newPath.map(([segment]) => segment).join('.')
         localField = path[0] && path[0][1]
-          ? `_${newPath.map(([segment]) => segment).join('.')}`
-          : newPath.map(([segment]) => segment).join('.')
+          ? `_${localFieldPath}`
+          : localFieldPath
       }
 
       rootPipeline.unshift({
