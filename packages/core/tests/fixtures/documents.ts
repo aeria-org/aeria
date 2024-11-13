@@ -117,18 +117,12 @@ export const documents = (async () => {
     } satisfies PackReferences<Omit<Project, '_id'>>,
   }, projectContext)) as Project
 
-  const { insertedId: comment1 } = await db.collection<PackReferences<Omit<Comment, '_id'>>>('comment').insertOne({
-    meta: {
-      user: user1,
-    }
-  })
+  const { insertedId: comment1 } = await db.collection<PackReferences<Omit<Comment, '_id'>>>('comment').insertOne({ meta: { user: user1 } })
 
   const post1 = throwIfError(await insert({
     what: {
       title: 'Hello, world',
-      comments: [
-        comment1,
-      ]
+      comments: [comment1],
     } satisfies PackReferences<Omit<Post, '_id'>>,
   }, postContext)) as Post
 

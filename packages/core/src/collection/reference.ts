@@ -188,7 +188,6 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
       }
     }
 
-
   } else {
     indexOfArray = {
       $indexOfArray: [
@@ -290,7 +289,12 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
           : `${parentElem}.${subRefName}`
       }
 
-      const result = recurseSetStage(subReference, path.concat([[subRefName, 'referencedCollection' in subReference]]), newElem)
+      const result = recurseSetStage(subReference, path.concat([
+        [
+          subRefName,
+          'referencedCollection' in subReference,
+        ],
+      ]), newElem)
 
       stages.push([
         subRefName,
@@ -378,9 +382,14 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       if( !project.includes(refName) ) {
         continue
       }
-   }
+    }
 
-    const newPath = path.concat([[refName, 'referencedCollection' in reference]])
+    const newPath = path.concat([
+      [
+        refName,
+        'referencedCollection' in reference,
+      ],
+    ])
 
     if( reference.deepReferences ) {
       buildLookupPipeline(reference.deepReferences, {
