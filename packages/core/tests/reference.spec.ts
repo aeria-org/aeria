@@ -1,4 +1,5 @@
-import { expect, test } from 'vitest'
+import { expect, assert, test } from 'vitest'
+import { ObjectId } from 'mongodb'
 import { documents } from './fixtures/documents.js'
 import { circularDocuments } from './fixtures/circularDocuments.js'
 
@@ -93,8 +94,10 @@ test('populates circular references', async () => {
   expect(circularA2.circularB_array![0].circularA.name).toBe('rec a1')
 })
 
-test('populates circular references', async () => {
-  const { post1, post2 } = await documents
-  console.log(JSON.stringify(post2, null, 2))
+test('post', async () => {
+  const { post1 } = await documents
+  assert('meta' in post1.comments[0])
+  assert(post1.comments[0].meta.user)
+  expect(post1.comments[0].meta.user._id).toBeInstanceOf(ObjectId)
 })
 

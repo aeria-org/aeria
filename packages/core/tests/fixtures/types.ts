@@ -39,14 +39,19 @@ export type Project = {
   }
 }
 
-export type Post = {
+export type Comment = {
   _id?: ObjectId
-  replies: (Post | ObjectId)[]
-  info: {
+  meta: {
     user: {
       _id: ObjectId
     }
   }
+}
+
+export type Post = {
+  _id?: ObjectId
+  title: string
+  comments: (Comment | ObjectId)[]
 }
 
 export type CircularA = {

@@ -6,6 +6,21 @@ exports.default = init({
     user,
     file,
     tempFile,
+    comment: {
+      description: {
+        $id: 'comment',
+        properties: {
+          meta: {
+            type: 'object',
+            properties: {
+              user: {
+                $ref: 'user',
+              }
+            }
+          }
+        }
+      }
+    },
     post: {
       functions: {
         get,
@@ -13,20 +28,15 @@ exports.default = init({
       description: {
         $id: 'post',
         properties: {
-          replies: {
+          title: {
+            type: 'string'
+          },
+          comments: {
             type: 'array',
             items: {
-              $ref: 'post',
+              $ref: 'comment',
               inline: true,
-            },
-          },
-          info: {
-            type: 'object',
-            properties: {
-              user: {
-                $ref: 'user',
-              },
-            },
+            }
           },
         },
       },

@@ -1,6 +1,6 @@
 import type { PackReferences, Token } from '@aeriajs/types'
 import type { User } from '@aeriajs/builtins'
-import type { Person, Day, Project, Post } from './types.js'
+import type { Person, Day, Project, Post, Comment } from './types.js'
 import { throwIfError } from '@aeriajs/common'
 import { createContext, insert, ObjectId } from '../../dist/index.js'
 import { dbPromise } from './database.js'
@@ -117,17 +117,20 @@ export const documents = (async () => {
     } satisfies PackReferences<Omit<Project, '_id'>>,
   }, projectContext)) as Project
 
-  const { insertedId: post1 } = await db.collection<PackReferences<Post>>('post').insertOne({
-    info: { user: user1 },
-    replies: [],
+  const { insertedId: comment1 } = await db.collection<PackReferences<Omit<Comment, '_id'>>>('comment').insertOne({
+    meta: {
+      user: user1,
+    }
   })
 
-  const post2 = throwIfError(await insert({
+  const post1 = throwIfError(await insert({
     what: {
-      info: { user: user2 },
-      replies: [post1],
-    },
-  }, postContext))
+      title: 'Hello, world',
+      comments: [
+        comment1,
+      ]
+    } satisfies PackReferences<Omit<Post, '_id'>>,
+  }, postContext)) as Post
 
   return {
     file1,
@@ -139,8 +142,8 @@ export const documents = (async () => {
     person2,
     person3,
     project,
+    comment1,
     post1,
-    post2,
   }
 })()
 

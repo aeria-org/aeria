@@ -1,9 +1,5 @@
 import type { ObjectId } from 'mongodb'
 
-type Prettify<T> = {
-  [K in keyof T]: T[K]
-} & {}
-
 type Owned = {
   owner?: Collections['user']['item']
 }
@@ -72,18 +68,16 @@ export type InferSchema<TSchema, TSchemaOptions extends SchemaOptions = {}> = Me
       : MappedTypes
   : never
 
-export type Schema<TSchema, TSchemaOptions extends SchemaOptions = {}> = Prettify<
-  CaseTimestamped<
+export type Schema<TSchema, TSchemaOptions extends SchemaOptions = {}> = CaseTimestamped<
+  TSchema,
+  CaseOwned<
     TSchema,
-    CaseOwned<
-      TSchema,
-      InferSchema<TSchema, TSchemaOptions>
-    >>
->
+    InferSchema<TSchema, TSchemaOptions>
+  >>
 
-export type SchemaWithId<TSchema, TSchemaOptions extends SchemaOptions = {}> = Prettify<Schema<TSchema, TSchemaOptions> & {
+export type SchemaWithId<TSchema, TSchemaOptions extends SchemaOptions = {}> = Schema<TSchema, TSchemaOptions> & {
   _id: ObjectId
-}>
+}
 
 export type InferProperties<TSchema> = TSchema extends readonly unknown[]
   ? TSchema extends readonly (infer SchemaOption)[]

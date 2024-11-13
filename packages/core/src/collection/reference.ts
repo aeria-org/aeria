@@ -26,14 +26,16 @@ export type GetReferenceOptions = {
 
 export type BuildLookupPipelineOptions = {
   rootPipeline?: Document[]
-  path?: string[]
+  path?: PathSegment[]
   tempNames?: string[]
   memoize?: string
   project?: string[]
 }
 
-const getTempName = (path: string[]) => {
-  return `_${path.join('_')}`
+type PathSegment = [segment: string, isRef: boolean]
+
+const getTempName = (path: PathSegment[]) => {
+  return `_${path.map(([segment]) => segment).join('_')}`
 }
 
 const referenceMemo: Record<string, ReferenceMap | undefined> = {}
@@ -152,10 +154,10 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
   return refMap
 }
 
-export const recurseSetStage = (reference: Reference, path: string[], parentElem: {}, options = {
+export const recurseSetStage = (reference: Reference, path: PathSegment[], parentElem: {}, options = {
   noCond: false,
 }): Document => {
-  const refName = path.at(-1)!
+  const [refName, isRef] = path.at(-1)!
   const shouldUseArrayIndex = reference.isRecursive && !(reference.isArrayElement && reference.isArray === false)
 
   let indexOfArray: {}
@@ -176,6 +178,16 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
         },
       ],
     }
+
+    if( !isRef ) {
+      indexOfArray = {
+        $indexOfArray: [
+          `$${getTempName(path.slice(0, -1))}._id`,
+          parentElem,
+        ],
+      }
+    }
+
 
   } else {
     indexOfArray = {
@@ -257,11 +269,20 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
     for( const [subRefName, subReference] of Object.entries(reference.deepReferences) ) {
       let newElem: {}
       if( shouldUseArrayIndex ) {
-        newElem = {
-          $arrayElemAt: [
-            `$${getTempName(path.slice(0, -1))}.${refName}`,
-            indexOfArray,
-          ],
+        if( isRef ) {
+          newElem = {
+            $arrayElemAt: [
+              `$${getTempName(path.slice(0, -1))}.${refName}`,
+              indexOfArray,
+            ],
+          }
+        } else {
+          newElem = {
+            $arrayElemAt: [
+              `$${getTempName(path.slice(0, -1))}.${refName}.${subRefName}`,
+              indexOfArray,
+            ],
+          }
         }
       } else {
         newElem = reference.referencedCollection
@@ -269,7 +290,7 @@ export const recurseSetStage = (reference: Reference, path: string[], parentElem
           : `${parentElem}.${subRefName}`
       }
 
-      const result = recurseSetStage(subReference, path.concat(subRefName), newElem)
+      const result = recurseSetStage(subReference, path.concat([[subRefName, 'referencedCollection' in subReference]]), newElem)
 
       stages.push([
         subRefName,
@@ -357,16 +378,18 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       if( !project.includes(refName) ) {
         continue
       }
-    }
+   }
+
+    const newPath = path.concat([[refName, 'referencedCollection' in reference]])
 
     if( reference.deepReferences ) {
       buildLookupPipeline(reference.deepReferences, {
         rootPipeline,
         tempNames,
-        path: path.concat(refName),
+        path: newPath,
       })
 
-      const result = recurseSetStage(reference, path.concat(refName), `$${refName}`)
+      const result = recurseSetStage(reference, newPath, `$${refName}`)
       setProperties.push([
         refName,
         result,
@@ -374,7 +397,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
     }
 
     if( reference.referencedCollection ) {
-      const tempName = getTempName(path.concat(refName))
+      const tempName = getTempName(newPath)
       const lookupPipeline = []
 
       tempNames.unshift(tempName)
@@ -388,9 +411,14 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
         })
       }
 
-      const localField = reference.isRecursive
-        ? `${getTempName(path)}.${refName}`
-        : path.concat(refName).join('.')
+      let localField: string
+      if( reference.isRecursive ) {
+        localField = `${getTempName(path)}.${refName}`
+      } else {
+        localField = path[0] && path[0][1]
+          ? `_${newPath.map(([segment]) => segment).join('.')}`
+          : newPath.map(([segment]) => segment).join('.')
+      }
 
       rootPipeline.unshift({
         $lookup: {
@@ -403,7 +431,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       })
 
       if( !reference.deepReferences ) {
-        const result = recurseSetStage(reference, path.concat(refName), `$${refName}`)
+        const result = recurseSetStage(reference, newPath, `$${refName}`)
         setProperties.push([
           refName,
           result,

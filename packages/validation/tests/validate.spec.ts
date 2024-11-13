@@ -14,8 +14,7 @@ import {
 } from './fixtures/index.js'
 
 test('validates plain object', () => {
-  const { result, error } = validate(plainCandidate, plainDescription)
-  console.log(JSON.stringify(error, null, 2))
+  const { result } = validate(plainCandidate, plainDescription)
   assert(result)
   expect(plainCandidate).toStrictEqual(result)
 })
