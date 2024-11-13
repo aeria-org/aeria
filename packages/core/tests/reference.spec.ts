@@ -94,7 +94,7 @@ test('populates circular references', async () => {
   expect(circularA2.circularB_array![0].circularA.name).toBe('rec a1')
 })
 
-test('post', async () => {
+test('populates reference in nested structure inside parent reference', async () => {
   const { post1 } = await documents
   assert('meta' in post1.comments[0])
   assert(post1.comments[0].meta.user)
