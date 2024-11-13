@@ -162,24 +162,24 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
 
   let indexOfArray: {}
   if( shouldUseArrayIndex ) {
-    indexOfArray = {
-      $indexOfArray: [
-        `$${getTempName(path)}._id`,
-        {
-          $arrayElemAt: [
-            `$${getTempName(path.slice(0, -1))}.${refName}`,
-            {
-              $indexOfArray: [
-                `$${getTempName(path.slice(0, -1))}._id`,
-                parentElem,
-              ],
-            },
-          ],
-        },
-      ],
-    }
-
-    if( !isRef ) {
+    if( isRef ) {
+      indexOfArray = {
+        $indexOfArray: [
+          `$${getTempName(path)}._id`,
+          {
+            $arrayElemAt: [
+              `$${getTempName(path.slice(0, -1))}.${refName}`,
+              {
+                $indexOfArray: [
+                  `$${getTempName(path.slice(0, -1))}._id`,
+                  parentElem,
+                ],
+              },
+            ],
+          },
+        ],
+      }
+    } else {
       indexOfArray = {
         $indexOfArray: [
           `$${getTempName(path.slice(0, -1))}._id`,
