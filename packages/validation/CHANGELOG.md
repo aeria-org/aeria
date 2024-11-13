@@ -1,5 +1,14 @@
 # @aeriajs/validation
 
+## 0.0.132
+
+### Patch Changes
+
+- ca70f5b: Fix handling of nested structure inside reference
+- Updated dependencies [ca70f5b]
+  - @aeriajs/types@0.0.106
+  - @aeriajs/common@0.0.124
+
 ## 0.0.131
 
 ### Patch Changes
