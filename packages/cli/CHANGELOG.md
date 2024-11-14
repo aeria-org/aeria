@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.146
+
+### Patch Changes
+
+- c81f9fc: Downgrade aeria-lang
+
 ## 0.0.145
 
 ### Patch Changes
