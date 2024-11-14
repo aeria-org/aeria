@@ -1,5 +1,12 @@
 # @aeriajs/types
 
+## 0.0.106
+
+### Patch Changes
+
+- 6f77491: Test build
+- ca70f5b: Fix handling of nested structure inside reference
+
 ## 0.0.105
 
 ### Patch Changes
