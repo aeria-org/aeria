@@ -260,7 +260,7 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
   }
 
   if( reference.deepReferences ) {
-    const stages: [string, Document][] = []
+    const stages: Record<string, Document> = {}
 
     for( const [subRefName, subReference] of Object.entries(reference.deepReferences) ) {
       let newElem: {}
@@ -293,10 +293,7 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
         ],
       ]), newElem)
 
-      stages.push([
-        subRefName,
-        result,
-      ])
+      stages[subRefName] = result
     }
 
     if( reference.referencedCollection ) {
@@ -316,7 +313,7 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
               }, path, parentElem, {
                 noCond: true,
               }),
-              Object.fromEntries(stages),
+              stages,
             ],
           },
           null,
@@ -324,7 +321,7 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
       }
     }
 
-    return Object.fromEntries(stages)
+    return stages
   }
 
   const arrayElemAt = {
@@ -372,7 +369,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
   }
 
   const pipeline: Document[] = []
-  const setProperties: [string, {}][] = []
+  const setProperties: Record<string, {}> = {}
 
   for( const [refName, reference] of Object.entries(refMap) ) {
     if( project ) {
@@ -396,10 +393,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       })
 
       const result = recurseSetStage(reference, newPath, `$${refName}`)
-      setProperties.push([
-        refName,
-        result,
-      ])
+      setProperties[refName] = result
     }
 
     if( reference.referencedCollection ) {
@@ -439,18 +433,15 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
 
       if( !reference.deepReferences ) {
         const result = recurseSetStage(reference, newPath, `$${refName}`)
-        setProperties.push([
-          refName,
-          result,
-        ])
+        setProperties[refName] = result
       }
     }
   }
 
   if( path.length === 0 ) {
-    if( setProperties.length > 0 ) {
+    if( Object.keys(setProperties).length > 0 ) {
       pipeline.push({
-        $set: Object.fromEntries(setProperties),
+        $set: setProperties,
       })
     }
 

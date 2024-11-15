@@ -195,7 +195,7 @@ const autoCast = (value: unknown, ctx: Omit<PhaseContext, 'options'> & { options
         }
 
         if( Object.keys(value).length > 0 ) {
-          const entries: [string, unknown][] = []
+          const entries: Record<string, unknown> = {}
           for( const [k, v] of Object.entries(value) ) {
             const subProperty = !k.startsWith('$')
               ? getProperty(k, ctx.property)
@@ -205,16 +205,13 @@ const autoCast = (value: unknown, ctx: Omit<PhaseContext, 'options'> & { options
               continue
             }
 
-            entries.push([
-              k,
-              autoCast(v, {
-                ...ctx,
-                property: subProperty,
-              }),
-            ])
+            entries[k] = autoCast(v, {
+              ...ctx,
+              property: subProperty,
+            })
           }
 
-          return Object.fromEntries(entries)
+          return entries
         }
       }
 
@@ -373,7 +370,7 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
   | ACError.InsecureOperator,
   TRecursionTarget
 >> => {
-  const entries = []
+  const entries: Record<string, unknown> = {}
   const entrypoint = ctx.options.fromProperties && 'properties' in ctx.property
     ? {
       _id: null,
@@ -388,22 +385,16 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
     if( propName === '_id' ) {
       if( value ) {
         if( ctx.options.autoCast ) {
-          entries.push([
+          entries[propName] = autoCast(value, {
+            ...ctx,
+            target,
             propName,
-            autoCast(value, {
-              ...ctx,
-              target,
-              propName,
-              property: {
-                $ref: '',
-              },
-            }),
-          ])
+            property: {
+              $ref: '',
+            },
+          })
         } else {
-          entries.push([
-            propName,
-            value,
-          ])
+          entries[propName] = value
         }
       }
 
@@ -412,10 +403,7 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
 
     if( ctx.options.undefinedToNull ) {
       if( value === undefined ) {
-        entries.push([
-          propName,
-          null,
-        ])
+        entries[propName] = null
         continue
       }
     }
@@ -429,13 +417,10 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
 
           if( key === '$regex' && typeof value[key] === 'string' ) {
             if( !ctx.options.noRegExpEscaping ) {
-              entries.push([
-                propName,
-                {
-                  ...value,
-                  $regex: escapeRegExp(value[key]),
-                },
-              ])
+              entries[propName] = {
+                ...value,
+                $regex: escapeRegExp(value[key]),
+              }
               continue entrypoint
             }
           }
@@ -456,10 +441,7 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
             operations.push(result)
           }
 
-          entries.push([
-            propName,
-            operations,
-          ])
+          entries[propName] = operations
           continue
         }
 
@@ -468,17 +450,11 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
           return Result.error(error)
         }
 
-        entries.push([
-          propName,
-          operator,
-        ])
+        entries[propName] = operator
         continue
       }
 
-      entries.push([
-        propName,
-        value,
-      ])
+      entries[propName] = value
     } else {
       if( !ctx.options.preserveHidden && property.hidden ) {
         continue
@@ -522,42 +498,33 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
               documents.push(result)
             }
 
-            entries.push([
-              propName,
-              documents,
-            ])
+            entries[propName] = documents
             continue
           }
 
-          const { error, result: document } = await traverseDocument(value, targetDescription, ctx.options)
+          const { error, result: doc } = await traverseDocument(value, targetDescription, ctx.options)
           if( error ) {
             return Result.error(error)
           }
 
-          entries.push([
-            propName,
-            document,
-          ])
+          entries[propName] = doc
           continue
         }
       }
 
-      entries.push([
+      entries[propName] = await ctx.options.pipe(value, {
+        ...ctx,
+        target,
         propName,
-        await ctx.options.pipe(value, {
-          ...ctx,
-          target,
-          propName,
-          propPath: ctx.propPath
-            ? `${ctx.propPath}.${propName}`
-            : propName,
+        propPath: ctx.propPath
+          ? `${ctx.propPath}.${propName}`
+          : propName,
           property,
-        }),
-      ])
+      })
     }
   }
 
-  return Result.result(Object.fromEntries(entries))
+  return Result.result(entries as TRecursionTarget)
 }
 
 export const traverseDocument = async <TWhat>(
