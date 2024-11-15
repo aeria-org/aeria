@@ -9,8 +9,6 @@ Aeria is a minimalistic framework designed to streamline CRUD-based applications
 
 The project was created to offer a more cohesive and straightforward way to create data-centric applications using document databases compared to alternatives like using Mongoose and Express.
 
-![Demo](.github/assets/demo.gif)
-
 ### Quickstart
 
 >$ npm create -y aeria-app hello-world
@@ -22,6 +20,10 @@ The project was created to offer a more cohesive and straightforward way to crea
 - Security (rate limiting, entity ownership, RBAC, etc)
 - tRPC-like SDK with 1:1 typing
 - Ready-to-use dashboard extensible with [Vue](https://github.com/vuejs/core)
+
+### Demo
+
+![Demo](.github/assets/demo.gif)
 
 ### Community
 
