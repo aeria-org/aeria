@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.107
+
+### Patch Changes
+
+- dd5f2f7: Release
+
 ## 0.0.106
 
 ### Patch Changes
