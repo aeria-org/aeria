@@ -89,10 +89,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
         }
       }
 
-      const indexes = refProperty.indexes
-        ? refProperty.indexes
-        : description.indexes || []
-
+      const { indexes = description.indexes || [] } = refProperty
       reference.populate = (refProperty.populate || []).concat(indexes.filter((index) => typeof index === 'string'))
 
     } else {

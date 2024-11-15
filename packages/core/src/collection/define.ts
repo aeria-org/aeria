@@ -63,7 +63,7 @@ export const defineCollection = <
     security?: CollectionSecurityPolicy<{
       functions: TFunctions
     }>
-    // needed because otherwise the node will reach maximum recursion depth
+    // needed because otherwise the node will "reach maximum recursion depth"
     middlewares?: Collection['middlewares']
   },
 ) => {

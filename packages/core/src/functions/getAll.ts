@@ -1,7 +1,7 @@
 import type { Context, SchemaWithId, GetAllPayload, GetAllReturnType } from '@aeriajs/types'
 import type { Document } from 'mongodb'
 import { useSecurity, applyReadMiddlewares } from '@aeriajs/security'
-import { ACError, HTTPStatus, Result } from '@aeriajs/types'
+import { Result, HTTPStatus, ACError } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import {
   traverseDocument,

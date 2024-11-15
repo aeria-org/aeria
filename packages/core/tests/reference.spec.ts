@@ -96,6 +96,13 @@ test('populates circular references', async () => {
 
 test('populates reference in nested structure inside parent reference', async () => {
   const { post1 } = await documents
+  assert('meta' in post1.single_comment)
+  assert(post1.single_comment.meta.user)
+  expect(post1.single_comment.meta.user._id).toBeInstanceOf(ObjectId)
+})
+
+test('populates reference in nested structure inside parent reference (array)', async () => {
+  const { post1 } = await documents
   assert('meta' in post1.comments[0])
   assert(post1.comments[0].meta.user)
   expect(post1.comments[0].meta.user._id).toBeInstanceOf(ObjectId)

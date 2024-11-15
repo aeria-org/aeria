@@ -122,6 +122,7 @@ export const documents = (async () => {
   const post1 = throwIfError(await insert({
     what: {
       title: 'Hello, world',
+      single_comment: comment1,
       comments: [comment1],
     } satisfies PackReferences<Omit<Post, '_id'>>,
   }, postContext)) as Post

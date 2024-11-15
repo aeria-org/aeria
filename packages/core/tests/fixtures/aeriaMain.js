@@ -31,6 +31,10 @@ exports.default = init({
           title: {
             type: 'string'
           },
+          single_comment: {
+            $ref: 'comment',
+            inline: true,
+          },
           comments: {
             type: 'array',
             items: {

@@ -51,6 +51,7 @@ export type Comment = {
 export type Post = {
   _id?: ObjectId
   title: string
+  single_comment: Comment | ObjectId
   comments: (Comment | ObjectId)[]
 }
 
