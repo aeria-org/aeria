@@ -519,7 +519,7 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
         propPath: ctx.propPath
           ? `${ctx.propPath}.${propName}`
           : propName,
-          property,
+        property,
       })
     }
   }
