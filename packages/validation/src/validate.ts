@@ -240,54 +240,56 @@ export const validateProperty = <TWhat>(
 
 export const validateRefs = async <TWhat>(
   what: TWhat,
-  property: Property | Description,
+  property: Property | Description | undefined,
   descriptions?: Record<string, Description>,
 ): Promise<Result.Either<PropertyValidationError | ValidationError, unknown>> => {
-  if( '$ref' in property ) {
-    let description: Description
-    if( descriptions ) {
-      description = descriptions[property.$ref]
-    } else {
-      const collection = await getCollection(property.$ref)
-      if( !collection ) {
+  if( property ) {
+    if( '$ref' in property ) {
+      let description: Description
+      if( descriptions ) {
+        description = descriptions[property.$ref]
+      } else {
+        const collection = await getCollection(property.$ref)
+        if( !collection ) {
+          throw new Error
+        }
+
+        description = collection.description
+      }
+
+      if( typeof what !== 'object' ) {
+        return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+          expected: 'object',
+          got: typeof what,
+        }))
+      }
+
+      return validate(what, description)
+    } else if( 'items' in property ) {
+      if( !Array.isArray(what) ) {
         throw new Error
       }
-
-      description = collection.description
-    }
-
-    if( typeof what !== 'object' ) {
-      return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
-        expected: 'object',
-        got: typeof what,
-      }))
-    }
-
-    return validate(what, description)
-  } else if( 'items' in property ) {
-    if( !Array.isArray(what) ) {
-      throw new Error
-    }
-    for( const elem of what ) {
-      const { error } = await validateRefs(elem, property.items, descriptions)
-      if( error ) {
-        return Result.error(error)
+      for( const elem of what ) {
+        const { error } = await validateRefs(elem, property.items, descriptions)
+        if( error ) {
+          return Result.error(error)
+        }
       }
-    }
-  } else if( 'properties' in property ) {
-    const errors: Record<string, PropertyValidationError | ValidationError> = {}
-    for( const propName in what ) {
-      const { error } = await validateRefs(what[propName], property.properties[propName], descriptions)
-      if( error ) {
-        errors[propName] = error
+    } else if( 'properties' in property ) {
+      const errors: Record<string, PropertyValidationError | ValidationError> = {}
+      for( const propName in what ) {
+        const { error } = await validateRefs(what[propName], property.properties[propName], descriptions)
+        if( error ) {
+          errors[propName] = error
+        }
       }
-    }
 
-    if( Object.keys(errors).length > 0 ) {
-      return Result.error(makeValidationError({
-        code: ValidationErrorCode.InvalidProperties,
-        errors,
-      }))
+      if( Object.keys(errors).length > 0 ) {
+        return Result.error(makeValidationError({
+          code: ValidationErrorCode.InvalidProperties,
+          errors,
+        }))
+      }
     }
   }
 
