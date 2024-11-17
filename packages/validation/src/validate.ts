@@ -241,6 +241,7 @@ export const validateProperty = <TWhat>(
 export const validateRefs = async <TWhat>(
   what: TWhat,
   property: Property | Description | undefined,
+  options?: ValidateOptions,
   descriptions?: Record<string, Description>,
 ): Promise<Result.Either<PropertyValidationError | ValidationError, unknown>> => {
   if( property ) {
@@ -270,7 +271,7 @@ export const validateRefs = async <TWhat>(
         throw new Error
       }
       for( const elem of what ) {
-        const { error } = await validateRefs(elem, property.items, descriptions)
+        const { error } = await validateRefs(elem, property.items, options, descriptions)
         if( error ) {
           return Result.error(error)
         }
@@ -278,7 +279,7 @@ export const validateRefs = async <TWhat>(
     } else if( 'properties' in property ) {
       const errors: Record<string, PropertyValidationError | ValidationError> = {}
       for( const propName in what ) {
-        const { error } = await validateRefs(what[propName], property.properties[propName], descriptions)
+        const { error } = await validateRefs(what[propName], property.properties[propName], options, descriptions)
         if( error ) {
           errors[propName] = error
         }
@@ -319,7 +320,7 @@ export const validateWholeness = (what: Record<string, unknown>, schema: Omit<Js
 export const validate = <TWhat, const TJsonSchema extends Omit<Description, '$id'> | Property>(
   what: TWhat | undefined,
   schema: TJsonSchema,
-  options: ValidateOptions = {},
+  options: ValidateOptions = {} as ValidateOptions,
 ) => {
   if( what === undefined ) {
     return Result.error(makeValidationError({

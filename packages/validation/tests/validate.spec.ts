@@ -186,11 +186,9 @@ test('validateRefs() validates deep refs', async () => {
     breed: 'SRD',
   }
 
-  const { error: error1 } = await validateRefs(pet, property, { pet: petDescription })
-
-  const { error: error2 } = await validateRefs({ pet }, description, { pet: petDescription })
-
-  const { error: error3 } = await validateRefs({ pet: Number() }, description, { pet: petDescription })
+  const { error: error1 } = await validateRefs(pet, property, undefined, { pet: petDescription })
+  const { error: error2 } = await validateRefs({ pet }, description, undefined, { pet: petDescription })
+  const { error: error3 } = await validateRefs({ pet: Number() }, description, undefined, { pet: petDescription })
 
   assert(!error1)
   assert(!error2)
