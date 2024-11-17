@@ -340,6 +340,9 @@ importers:
       '@aeriajs/common':
         specifier: link:../common
         version: link:../common
+      '@aeriajs/entrypoint':
+        specifier: link:../entrypoint
+        version: link:../entrypoint
       '@aeriajs/types':
         specifier: link:../types
         version: link:../types

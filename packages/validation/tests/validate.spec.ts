@@ -1,6 +1,6 @@
 import { expect, test, assert } from 'vitest'
-import { ValidationErrorCode, PropertyValidationErrorCode, type JsonSchema, type Property } from '@aeriajs/types'
-import { validate } from '../src/index.js'
+import { ValidationErrorCode, PropertyValidationErrorCode, type JsonSchema, type Property, Description } from '@aeriajs/types'
+import { validate, validateRefs } from '../src/index.js'
 import {
   plainCandidate,
   plainDescription,
@@ -144,6 +144,69 @@ test('validates unstructured object', () => {
   const { error: error1 } = validate({ prop: 1 }, property)
   const { error: error2 } = validate(null, property)
   const { error: error3 } = validate(undefined, property)
+
+  assert(!error1)
+  assert(!error2)
+  assert(error3)
+})
+
+test('validates unstructured object', () => {
+  const property: Property = {
+    type: 'object',
+    additionalProperties: true,
+  }
+
+  const { error: error1 } = validate({ prop: 1 }, property)
+  const { error: error2 } = validate(null, property)
+  const { error: error3 } = validate(undefined, property)
+
+  assert(!error1)
+  assert(!error2)
+  assert(error3)
+})
+
+test('validateRefs() validates deep refs', async () => {
+  const property: Property = {
+    $ref: 'pet',
+  }
+
+  const description: Property = {
+    type: 'object',
+    properties: {
+      pet: {
+        $ref: 'pet'
+      }
+    }
+  }
+
+  const petDescription: Description = {
+    $id: 'pet',
+    properties: {
+      name: {
+        type: 'string'
+      },
+      breed: {
+        type: 'string'
+      }
+    }
+  }
+
+  const pet = {
+    name: 'thor',
+    breed: 'SRD',
+  }
+
+  const { error: error1 } = await validateRefs(pet, property, {
+    pet: petDescription,
+  })
+
+  const { error: error2 } = await validateRefs({ pet }, description, {
+    pet: petDescription,
+  })
+
+  const { error: error3 } = await validateRefs({ pet: Number() }, description, {
+    pet: petDescription,
+  })
 
   assert(!error1)
   assert(!error2)
