@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.138
+
+### Patch Changes
+
+- 626c839: Add missing parameter
+
 ## 0.0.137
 
 ### Patch Changes
