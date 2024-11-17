@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.211
+
+### Patch Changes
+
+- fdc0888: Make `options` parameter optional in `getLookupPipeline()`'
+  - @aeriajs/builtins@0.0.211
+  - @aeriajs/security@0.0.211
+
 ## 0.0.210
 
 ### Patch Changes
