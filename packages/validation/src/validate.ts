@@ -265,7 +265,7 @@ export const validateRefs = async <TWhat>(
         }))
       }
 
-      return validate(what, description)
+      return validate(what, description, options)
     } else if( 'items' in property ) {
       if( !Array.isArray(what) ) {
         throw new Error
