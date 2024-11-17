@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.135
+
+### Patch Changes
+
+- c043f60: Fix signature
+
 ## 0.0.134
 
 ### Patch Changes
