@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.136
+
+### Patch Changes
+
+- 547f09c: Tolerate undefined property in `validateRefs()`
+
 ## 0.0.135
 
 ### Patch Changes
