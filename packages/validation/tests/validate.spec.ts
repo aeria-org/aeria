@@ -1,6 +1,6 @@
 import { expect, test, assert } from 'vitest'
 import { ValidationErrorCode, PropertyValidationErrorCode, type JsonSchema, type Property, Description } from '@aeriajs/types'
-import { validate, validateRefs } from '../src/index.js'
+import { validate, validateWithRefs } from '../src/index.js'
 import {
   plainCandidate,
   plainDescription,
@@ -165,7 +165,7 @@ test('validates unstructured object', () => {
   assert(error3)
 })
 
-test('validateRefs() validates deep refs', async () => {
+test('validateWithRefs() validates deep refs', async () => {
   const property: Property = { $ref: 'pet' }
 
   const description: Property = {
@@ -186,9 +186,9 @@ test('validateRefs() validates deep refs', async () => {
     breed: 'SRD',
   }
 
-  const { error: error1 } = await validateRefs(pet, property, undefined, { pet: petDescription })
-  const { error: error2 } = await validateRefs({ pet }, description, undefined, { pet: petDescription })
-  const { error: error3 } = await validateRefs({ pet: Number() }, description, undefined, { pet: petDescription })
+  const { error: error1 } = await validateWithRefs(pet, property, undefined, { pet: petDescription })
+  const { error: error2 } = await validateWithRefs({ pet }, description, undefined, { pet: petDescription })
+  const { error: error3 } = await validateWithRefs({ pet: Number() }, description, undefined, { pet: petDescription })
 
   assert(!error1)
   assert(!error2)

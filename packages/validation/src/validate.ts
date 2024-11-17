@@ -16,7 +16,7 @@ export type ValidateOptions = {
   tolerateExtraneous?: boolean
   throwOnError?: boolean
   coerce?: boolean
-  parentProperty?: Omit<Description, '$id'> | Property
+  parentProperty?: Property | Description
 }
 
 const getPropertyType = (property: Property) => {
@@ -317,7 +317,7 @@ export const validateWholeness = (what: Record<string, unknown>, schema: Omit<Js
   }
 }
 
-export const validate = <TWhat, const TJsonSchema extends Omit<Description, '$id'> | Property>(
+export const validate = <TWhat, const TJsonSchema extends Property | Description>(
   what: TWhat | undefined,
   schema: TJsonSchema,
   options: ValidateOptions = {} as ValidateOptions,
@@ -378,7 +378,21 @@ export const validate = <TWhat, const TJsonSchema extends Omit<Description, '$id
   return Result.result(resultCopy as InferSchema<TJsonSchema>)
 }
 
-export const validator = <const TJsonSchema extends Omit<Description, '$id'> | Property>(
+export const validateWithRefs = async <TWhat, const TJsonSchema extends Property | Description>(
+  what: TWhat | undefined,
+  schema: TJsonSchema,
+  options: ValidateOptions = {} as ValidateOptions,
+  descriptions?: Record<string, Description>,
+) => {
+  const { error: refsError } = await validateRefs(what, schema, options, descriptions)
+  if( refsError ) {
+    return Result.error(refsError)
+  }
+
+  return validate(what, schema, options)
+}
+
+export const validator = <const TJsonSchema extends Property | Description>(
   schema: TJsonSchema,
   options: ValidateOptions = {},
 ) => {
