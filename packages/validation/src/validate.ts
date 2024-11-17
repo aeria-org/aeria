@@ -240,7 +240,7 @@ export const validateProperty = <TWhat>(
 
 export const validateRefs = async <TWhat>(
   what: TWhat,
-  property: Property | undefined,
+  property: Property | Description,
   descriptions?: Record<string, Description>,
 ): Promise<Result.Either<PropertyValidationError | ValidationError, unknown>> => {
   if( property ) {
