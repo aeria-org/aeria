@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.134
+
+### Patch Changes
+
+- 23cdb01: Add `validateRefs()`
+
 ## 0.0.133
 
 ### Patch Changes
