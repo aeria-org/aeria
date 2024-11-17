@@ -265,9 +265,7 @@ export const validateRefs = async <TWhat>(
       }
 
       return validate(what, description)
-    }
-
-    else if( 'items' in property ) {
+    } else if( 'items' in property ) {
       if( !Array.isArray(what) ) {
         throw new Error
       }
@@ -277,9 +275,7 @@ export const validateRefs = async <TWhat>(
           return Result.error(error)
         }
       }
-    }
-
-    else if( 'properties' in property ) {
+    } else if( 'properties' in property ) {
       const errors: Record<string, PropertyValidationError | ValidationError> = {}
       for( const propName in what ) {
         const { error } = await validateRefs(what[propName], property.properties[propName], descriptions)
@@ -287,7 +283,6 @@ export const validateRefs = async <TWhat>(
           errors[propName] = error
         }
       }
-
 
       if( Object.keys(errors).length > 0 ) {
         return Result.error(makeValidationError({

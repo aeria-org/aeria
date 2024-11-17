@@ -166,29 +166,19 @@ test('validates unstructured object', () => {
 })
 
 test('validateRefs() validates deep refs', async () => {
-  const property: Property = {
-    $ref: 'pet',
-  }
+  const property: Property = { $ref: 'pet' }
 
   const description: Property = {
     type: 'object',
-    properties: {
-      pet: {
-        $ref: 'pet'
-      }
-    }
+    properties: { pet: { $ref: 'pet' } },
   }
 
   const petDescription: Description = {
     $id: 'pet',
     properties: {
-      name: {
-        type: 'string'
-      },
-      breed: {
-        type: 'string'
-      }
-    }
+      name: { type: 'string' },
+      breed: { type: 'string' },
+    },
   }
 
   const pet = {
@@ -196,17 +186,11 @@ test('validateRefs() validates deep refs', async () => {
     breed: 'SRD',
   }
 
-  const { error: error1 } = await validateRefs(pet, property, {
-    pet: petDescription,
-  })
+  const { error: error1 } = await validateRefs(pet, property, { pet: petDescription })
 
-  const { error: error2 } = await validateRefs({ pet }, description, {
-    pet: petDescription,
-  })
+  const { error: error2 } = await validateRefs({ pet }, description, { pet: petDescription })
 
-  const { error: error3 } = await validateRefs({ pet: Number() }, description, {
-    pet: petDescription,
-  })
+  const { error: error3 } = await validateRefs({ pet: Number() }, description, { pet: petDescription })
 
   assert(!error1)
   assert(!error2)
