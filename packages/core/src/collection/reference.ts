@@ -41,7 +41,7 @@ const getTempName = (path: PathSegment[]) => {
 const referenceMemo: Record<string, ReferenceMap | undefined> = {}
 const lookupMemo: Record<string, Awaited<ReturnType<typeof buildLookupPipeline>> | undefined> = {}
 
-export const getReferences = async (properties: FixedObjectProperty['properties'], options: GetReferenceOptions = {}) => {
+export const getReferences = async (properties: FixedObjectProperty['properties'], options: GetReferenceOptions = {} as GetReferenceOptions) => {
   const {
     depth = 0,
     maxDepth = 3,
@@ -349,7 +349,7 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
   }
 }
 
-export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPipelineOptions = {}): Document[] => {
+export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPipelineOptions = {} as BuildLookupPipelineOptions): Document[] => {
   const {
     rootPipeline = [],
     path = [],
@@ -462,7 +462,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
   return pipeline
 }
 
-export const getLookupPipeline = async (description: Description, options: BuildLookupPipelineOptions) => {
+export const getLookupPipeline = async (description: Description, options?: BuildLookupPipelineOptions) => {
   const refMap = await getReferences(description.properties)
   return buildLookupPipeline(refMap, options)
 }
