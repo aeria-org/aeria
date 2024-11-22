@@ -168,8 +168,7 @@ const autoCast = (value: unknown, ctx: Omit<PhaseContext, 'options'> & { options
             : null
         }
       }
-
-      return value
+      break
     }
 
     case 'number': {
@@ -182,6 +181,7 @@ const autoCast = (value: unknown, ctx: Omit<PhaseContext, 'options'> & { options
           return new Date(value)
         }
       }
+      break
     }
 
     case 'object': {
