@@ -9,7 +9,7 @@ const relativePath = (path: string) => {
   return path.split('/').slice(-2).join('/')
 }
 
-const onDirectory = async <T>(dir: string, cb: () => T) => {
+const onDirectory = async <T>(dir: string, cb: ()=> T) => {
   process.chdir(dir)
   try {
     const result = await cb()
