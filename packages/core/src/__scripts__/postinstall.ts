@@ -38,7 +38,7 @@ declare module 'aeria' {
 //`
 
 const install = async () => {
-  const base = process.env.INIT_CWD || process.cwd()
+  const base = process.env.PWD || process.cwd()
   const aeriaDir = path.join(base, '.aeria')
 
   if( !fs.existsSync(aeriaDir) ) {
