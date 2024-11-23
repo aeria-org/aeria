@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.213
+
+### Patch Changes
+
+- fdcdd5f: Use `OLDPWD` in script
+  - @aeriajs/builtins@0.0.213
+  - @aeriajs/security@0.0.213
+
 ## 0.0.212
 
 ### Patch Changes
