@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.212
+
+### Patch Changes
+
+- bf1825e: Replace `INIT_CWD` with `PWD` to work with workspaces
+  - @aeriajs/builtins@0.0.212
+  - @aeriajs/security@0.0.212
+
 ## 0.0.211
 
 ### Patch Changes
