@@ -38,19 +38,23 @@ declare module 'aeria' {
 //`
 
 const install = async () => {
-  const base = process.env.PWD || process.cwd()
-  const aeriaDir = path.join(base, '.aeria')
+  try {
+    const base = process.env.OLDPWD || process.cwd()
+    const aeriaDir = path.join(base, '.aeria')
 
-  if( !fs.existsSync(aeriaDir) ) {
-    await fs.promises.mkdir(aeriaDir)
+    if( !fs.existsSync(aeriaDir) ) {
+      await fs.promises.mkdir(aeriaDir)
+    }
+
+    const { types = 'src/index.ts' } = JSON.parse(await fs.promises.readFile(path.join(base, 'package.json'), {
+      encoding: 'utf8',
+    }))
+
+    const dts = makeDts(path.join('..', types).split(path.sep).join('/'))
+    await fs.promises.writeFile(path.join(aeriaDir, DTS_FILENAME), dts)
+  } catch( err ) {
+    console.error(err)
   }
-
-  const { types = 'src/index.ts' } = JSON.parse(await fs.promises.readFile(path.join(base, 'package.json'), {
-    encoding: 'utf8',
-  }))
-
-  const dts = makeDts(path.join('..', types).split(path.sep).join('/'))
-  await fs.promises.writeFile(path.join(aeriaDir, DTS_FILENAME), dts)
 }
 
 install()
