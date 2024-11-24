@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.214
+
+### Patch Changes
+
+- 621f325: Revert postinstall script
+  - @aeriajs/builtins@0.0.214
+  - @aeriajs/security@0.0.214
+
 ## 0.0.213
 
 ### Patch Changes
