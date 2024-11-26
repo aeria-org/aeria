@@ -7,7 +7,7 @@
 
 Aeria is a minimalistic framework designed to streamline CRUD-based applications with a type-safe, developer-friendly experience. It ships a thin **MongoDB** abstraction layer and a [Prisma-like DSL](https://github.com/aeria-org/aeria-lang) that serves model definition with support for nested objects, arrays, references, upload fields, and more, making it ideal for applications with complex data structures and relational logic. On top of that a HTTP routing API with very simple bindings is provided to build business logic.
 
-The project was created to offer a more cohesive and straightforward way to create data-centric applications using document databases compared to alternatives like using Mongoose and Express.
+The project was created to offer a more cohesive and straightforward way to create data-centric applications using document databases compared to alternatives like Express/Mongoose.
 
 ### Quickstart
 
@@ -28,6 +28,6 @@ The project was created to offer a more cohesive and straightforward way to crea
 ### Community
 
 Reach out to learn more about Aeria and know about upcoming features.
-
+k
 [![Aeria Server](https://img.shields.io/discord/1218448912185163816.svg?label=Discord&logo=Discord&colorB=7289da&style=for-the-badge)](https://discord.aeria.land/)
 

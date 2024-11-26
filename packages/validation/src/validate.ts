@@ -320,7 +320,7 @@ export const validateWholeness = (what: Record<string, unknown>, schema: Omit<Js
 export const validate = <TWhat, const TJsonSchema extends Property | Description>(
   what: TWhat | undefined,
   schema: TJsonSchema,
-  options: ValidateOptions = {} as ValidateOptions,
+  options: ValidateOptions = {},
 ) => {
   if( what === undefined ) {
     return Result.error(makeValidationError({
@@ -381,7 +381,7 @@ export const validate = <TWhat, const TJsonSchema extends Property | Description
 export const validateWithRefs = async <TWhat, const TJsonSchema extends Property | Description>(
   what: TWhat | undefined,
   schema: TJsonSchema,
-  options: ValidateOptions = {} as ValidateOptions,
+  options: ValidateOptions = {},
   descriptions?: Record<string, Description>,
 ) => {
   const { error: refsError } = await validateRefs(what, schema, options, descriptions)
