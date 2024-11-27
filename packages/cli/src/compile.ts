@@ -89,7 +89,10 @@ export const getTsconfig = async (additionalOptions?: ts.CompilerOptions) => {
 }
 
 export const compile = async (additionalOptions?: ts.CompilerOptions) => {
-  const fileList = await Array.fromAsync(glob(['!(node_modules|dist)/**/*.ts', '.**/*.ts']))
+  const fileList = await Array.fromAsync(glob([
+    '!(node_modules|dist)/**/*.ts',
+    '.**/*.ts',
+  ]))
   const tsConfig = await getTsconfig(additionalOptions)
 
   const selectedFiles = fileList.filter((file) => {
