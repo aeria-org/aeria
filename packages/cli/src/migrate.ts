@@ -1,7 +1,6 @@
 import { getCollections } from '@aeriajs/entrypoint'
 import { getDatabase, getDatabaseCollection, getReferences, type ReferenceMap } from '@aeriajs/core'
 import { Result } from '@aeriajs/types'
-import { config as loadEnv } from 'dotenv'
 import { log } from './log.js'
 
 const recurseReferences = (refMap: ReferenceMap, indexMap: Record<string, Set<string>>) => {
@@ -35,7 +34,7 @@ export const migrate = async () => {
   }
 
   if( process.env.NODE_ENV !== 'production' ) {
-    loadEnv()
+    process.loadEnvFile()
   }
 
   const collections = await getCollections()
