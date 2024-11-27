@@ -26,6 +26,9 @@
     "bin",
     "dist"
   ],
+  "engines": {
+    "node": ">=22"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -33,7 +36,6 @@
     "chokidar": "^3.6.0",
     "dotenv": "^16.4.5",
     "esbuild": "^0.20.2",
-    "glob": "^10.3.10",
     "json5": "^2.2.3"
   },
   "devDependencies": {

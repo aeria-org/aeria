@@ -1,10 +1,8 @@
 import * as esbuild from 'esbuild'
-import { glob } from 'glob'
+import { glob } from 'fs/promises'
 
 export const init = async (options: esbuild.BuildOptions = {}) => {
-  const fileList = await glob('src/**/*.ts', {
-    dot: true,
-  })
+  const fileList = await Array.fromAsync(glob('src/**/*.ts'))
 
   const ctx = await esbuild.context(Object.assign({
     entryPoints: fileList,

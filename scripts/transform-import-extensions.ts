@@ -1,7 +1,6 @@
 #!/usr/bin/env -S node --import tsx/esm
 
 import { Transform } from 'stream'
-import { glob } from 'glob'
 import * as fs from 'fs'
 
 const renameExtensions = () => new Transform({
@@ -14,7 +13,7 @@ const renameExtensions = () => new Transform({
 })
 
 const main = async () => {
-  const fileList = await glob(`${process.argv[2]}/**/*.mjs`)
+  const fileList = await Array.fromAsync(fs.promises.glob(`${process.argv[2]}/**/*.mjs`))
   for( const file of fileList ) {
     const tempPath = `${file}.tmp`
 

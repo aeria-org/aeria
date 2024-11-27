@@ -4,7 +4,7 @@ import * as path from 'path'
 import * as transpile from './transpile.js'
 import { fileURLToPath } from 'url'
 import { readFile } from 'fs/promises'
-import { glob } from 'glob'
+import { glob } from 'fs/promises'
 import { Result } from '@aeriajs/types'
 import { deepMerge } from '@aeriajs/common'
 import { log } from './log.js'
@@ -89,11 +89,7 @@ export const getTsconfig = async (additionalOptions?: ts.CompilerOptions) => {
 }
 
 export const compile = async (additionalOptions?: ts.CompilerOptions) => {
-  const fileList = await glob('**/*.ts', {
-    ignore: ['node_modules/**/*.ts'],
-    dot: true,
-  })
-
+  const fileList = await Array.fromAsync(glob(['!(node_modules|dist)/**/*.ts', '.**/*.ts']))
   const tsConfig = await getTsconfig(additionalOptions)
 
   const selectedFiles = fileList.filter((file) => {
