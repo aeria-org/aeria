@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.158
+
+### Patch Changes
+
+- 4cdcf71: Use native Node `fs.glob()` instead of `glob` package
+
 ## 0.0.157
 
 ### Patch Changes
