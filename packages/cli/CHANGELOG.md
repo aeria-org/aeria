@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.159
+
+### Patch Changes
+
+- 5f73aff: Remove `dotenv` dependency
+
 ## 0.0.158
 
 ### Patch Changes
