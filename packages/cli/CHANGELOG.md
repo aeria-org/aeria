@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.160
+
+### Patch Changes
+
+- 1b23e39: Don't throw if `.env` is not found
+
 ## 0.0.159
 
 ### Patch Changes
