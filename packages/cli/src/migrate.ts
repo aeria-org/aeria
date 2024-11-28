@@ -34,7 +34,10 @@ export const migrate = async () => {
   }
 
   if( process.env.NODE_ENV !== 'production' ) {
-    process.loadEnvFile()
+    try {
+      process.loadEnvFile()
+    } catch( err ) {
+    }
   }
 
   const collections = await getCollections()
