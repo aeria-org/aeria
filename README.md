@@ -28,6 +28,6 @@ The project was created to offer a more cohesive and straightforward way to crea
 ### Community
 
 Reach out to learn more about Aeria and know about upcoming features.
-k
+
 [![Aeria Server](https://img.shields.io/discord/1218448912185163816.svg?label=Discord&logo=Discord&colorB=7289da&style=for-the-badge)](https://discord.aeria.land/)
 

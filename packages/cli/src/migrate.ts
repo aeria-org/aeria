@@ -1,6 +1,7 @@
 import { getCollections } from '@aeriajs/entrypoint'
 import { getDatabase, getDatabaseCollection, getReferences, type ReferenceMap } from '@aeriajs/core'
 import { Result } from '@aeriajs/types'
+import { isRunningOnCI } from './ci.js'
 import { log } from './log.js'
 
 const recurseReferences = (refMap: ReferenceMap, indexMap: Record<string, Set<string>>) => {
@@ -23,13 +24,7 @@ const recurseReferences = (refMap: ReferenceMap, indexMap: Record<string, Set<st
 }
 
 export const migrate = async () => {
-  if(
-    process.env.GITHUB_ACTIONS
-    || process.env.TRAVIS
-    || process.env.CIRCLECI
-    || process.env.GITLAB_CI
-    || process.env.IS_CI
-  ) {
+  if( isRunningOnCI() ) {
     return Result.result('skipping (continuos integration detected)')
   }
 
