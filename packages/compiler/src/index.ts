@@ -132,6 +132,10 @@ export const parse = (tokens: Token[]) => {
     while( !match(TokenType.RightBracket) ) {
       const { value: propName } = consume(TokenType.Identifier)
       properties[propName] = consumePropertyType()
+
+      if( match(TokenType.Comma) ) {
+        consume(TokenType.Comma)
+      }
     }
 
     consume(TokenType.RightBracket)
@@ -342,7 +346,7 @@ contract GetPerson {
   }
   query
     | { properties { name str } }
-    | { properties { age num } }
+    | { properties { name str, age num } }
     | str
 }
 `

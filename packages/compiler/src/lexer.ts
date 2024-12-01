@@ -4,7 +4,8 @@ export enum TokenType {
   LeftParens = 'LEFT_PARENS',
   RightParens = 'RIGHT_PARENS',
   Pipe = 'PIPE',
-  Number = 'Number',
+  Comma = 'COMMA',
+  Number = 'NUMBER',
   Identifier = 'IDENTIFIER',
   AttributeName = 'ATTRIBUTE_NAME',
 }
@@ -47,6 +48,10 @@ const TOKENS: TokenConfig[] = [
   {
     type: TokenType.Pipe,
     matcher: /\|/,
+  },
+  {
+    type: TokenType.Comma,
+    matcher: /,/,
   },
   {
     type: TokenType.Number,
