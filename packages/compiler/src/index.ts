@@ -38,8 +38,7 @@ export type ASTNodeType = ASTNode['type']
 export const parse = (tokens: Token[]) => {
   let current = 0
 
-  const match = ({ expected, value }: { expected: TokenType,
-    value?: string }) => {
+  const match = (expected: TokenType, value?: string) => {
     const token = tokens[current]
     if( token.type === expected ) {
       if( value !== undefined ) {
@@ -51,13 +50,9 @@ export const parse = (tokens: Token[]) => {
     return false
   }
 
-  const consume = ({ expected, value }: { expected: TokenType,
-    value?: string }) => {
+  const consume = (expected: TokenType, value?: string) => {
     const token = tokens[current]
-    if( match({
-      expected,
-      value,
-    }) ) {
+    if( match(expected, value) ) {
       current++
       return token
     }
@@ -68,28 +63,19 @@ export const parse = (tokens: Token[]) => {
   const consumePropertyType = (): Property => {
     let property: Property
 
-    if( match({
-      expected: TokenType.LeftBracket,
-    }) ) {
-      consume({
-        expected: TokenType.LeftBracket,
-      })
+    if( match(TokenType.LeftBracket) ) {
+      consume(TokenType.LeftBracket)
 
       property = {
         type: 'object',
         properties: {},
       }
 
-      while( !match({
-        expected: TokenType.RightBracket,
-      }) ) {
+      while( !match(TokenType.RightBracket) ) {
         const { value: keyword } = tokens[current]
         switch( keyword ) {
           case 'properties': {
-            consume({
-              expected: TokenType.Identifier,
-              value: 'properties',
-            })
+            consume(TokenType.Identifier, 'properties')
             property.properties = consumePropertiesBlock()
             break
           }
@@ -98,14 +84,10 @@ export const parse = (tokens: Token[]) => {
         }
       }
 
-      consume({
-        expected: TokenType.RightBracket,
-      })
+      consume(TokenType.RightBracket)
 
     } else {
-      const { value: propType } = consume({
-        expected: TokenType.Identifier,
-      })
+      const { value: propType } = consume(TokenType.Identifier)
       switch( propType ) {
         case 'str':
         case 'bool':
@@ -117,32 +99,22 @@ export const parse = (tokens: Token[]) => {
           break
         }
         default:
-          throw new Error(propType)
+          throw new Error(`invalid property type "${propType}"`)
       }
     }
 
-    while( match({
-      expected: TokenType.AttributeName,
-    }) ) {
-      const { value: attributeName } = consume({
-        expected: TokenType.AttributeName,
-      })
+    while( match(TokenType.AttributeName) ) {
+      const { value: attributeName } = consume(TokenType.AttributeName)
       let insideParens = false
-      if( match({
-        expected: TokenType.LeftParens,
-      }) ) {
-        consume({
-          expected: TokenType.LeftParens,
-        })
+      if( match(TokenType.LeftParens) ) {
+        consume(TokenType.LeftParens)
         insideParens = true
       }
 
       const attributeValue = tokens[current++].value
 
       if( insideParens ) {
-        consume({
-          expected: TokenType.RightParens,
-        })
+        consume(TokenType.RightParens)
       }
 
       Object.assign(property, {
@@ -154,44 +126,28 @@ export const parse = (tokens: Token[]) => {
   }
 
   const consumePropertiesBlock = () => {
-    consume({
-      expected: TokenType.LeftBracket,
-    })
+    consume(TokenType.LeftBracket)
 
     const properties: Record<string, Property> = {}
-    while( !match({
-      expected: TokenType.RightBracket,
-    }) ) {
-      const { value: propName } = consume({
-        expected: TokenType.Identifier,
-      })
+    while( !match(TokenType.RightBracket) ) {
+      const { value: propName } = consume(TokenType.Identifier)
       properties[propName] = consumePropertyType()
     }
 
-    consume({
-      expected: TokenType.RightBracket,
-    })
+    consume(TokenType.RightBracket)
     return properties
   }
 
   const consumeMultiplePropertyTypes = () => {
-    if( match({
-      expected: TokenType.Pipe,
-    }) ) {
-      consume({
-        expected: TokenType.Pipe,
-      })
+    if( match(TokenType.Pipe) ) {
+      consume(TokenType.Pipe)
 
       const properties = []
       while( current < tokens.length ) {
         properties.push(consumePropertyType())
 
-        if( match({
-          expected: TokenType.Pipe,
-        }) ) {
-          consume({
-            expected: TokenType.Pipe,
-          })
+        if( match(TokenType.Pipe) ) {
+          consume(TokenType.Pipe)
         } else {
           break
         }
@@ -204,16 +160,9 @@ export const parse = (tokens: Token[]) => {
   }
 
   const consumeCollection = (ast: ASTNode[]): ASTCollectionNode => {
-    consume({
-      expected: TokenType.Identifier,
-      value: 'collection',
-    })
-    const { value: name } = consume({
-      expected: TokenType.Identifier,
-    })
-    consume({
-      expected: TokenType.LeftBracket,
-    })
+    consume(TokenType.Identifier, 'collection')
+    const { value: name } = consume(TokenType.Identifier)
+    consume(TokenType.LeftBracket)
 
     const node: ASTCollectionNode = {
       type: 'collection',
@@ -221,24 +170,16 @@ export const parse = (tokens: Token[]) => {
       properties: {},
     }
 
-    while( !match({
-      expected: TokenType.RightBracket,
-    }) ) {
+    while( !match(TokenType.RightBracket) ) {
       const { value: propType } = tokens[current]
       switch( propType ) {
         case 'properties': {
-          consume({
-            expected: TokenType.Identifier,
-            value: 'properties',
-          })
+          consume(TokenType.Identifier, 'properties')
           node.properties = consumePropertiesBlock()
           break
         }
         case 'functions': {
-          consume({
-            expected: TokenType.Identifier,
-            value: 'functions',
-          })
+          consume(TokenType.Identifier, 'functions')
           node.functions = consumeFunctionsBlock(ast)
           break
         }
@@ -247,35 +188,22 @@ export const parse = (tokens: Token[]) => {
       }
     }
 
-    consume({
-      expected: TokenType.RightBracket,
-    })
+    consume(TokenType.RightBracket)
     return node
   }
 
   const consumeContract = (): ASTContractNode => {
-    consume({
-      expected: TokenType.Identifier,
-      value: 'contract',
-    })
-    const { value: name } = consume({
-      expected: TokenType.Identifier,
-    })
-    consume({
-      expected: TokenType.LeftBracket,
-    })
+    consume(TokenType.Identifier, 'contract')
+    const { value: name } = consume(TokenType.Identifier)
+    consume(TokenType.LeftBracket)
 
     const node: ASTContractNode = {
       type: 'contract',
       name,
     }
 
-    while( !match({
-      expected: TokenType.RightBracket,
-    }) ) {
-      const { value: keyword } = consume({
-        expected: TokenType.Identifier,
-      })
+    while( !match(TokenType.RightBracket) ) {
+      const { value: keyword } = consume(TokenType.Identifier)
       switch( keyword ) {
         case 'payload': {
           node.payload = consumeMultiplePropertyTypes()
@@ -288,36 +216,20 @@ export const parse = (tokens: Token[]) => {
       }
     }
 
-    consume({
-      expected: TokenType.RightBracket,
-    })
+    consume(TokenType.RightBracket)
     return node
   }
 
   const consumeFunctionsBlock = (ast: ASTNode[]) => {
-    consume({
-      expected: TokenType.LeftBracket,
-    })
+    consume(TokenType.LeftBracket)
 
     const functions: Record<string, AccessCondition> = {}
-    while( !match({
-      expected: TokenType.RightBracket,
-    }) ) {
-      if( match({
-        expected: TokenType.AttributeName,
-        value: 'include',
-      }) ) {
-        consume({
-          expected: TokenType.AttributeName,
-          value: 'include',
-        })
-        consume({
-          expected: TokenType.LeftParens,
-        })
+    while( !match(TokenType.RightBracket) ) {
+      if( match(TokenType.AttributeName, 'include') ) {
+        consume(TokenType.AttributeName, 'include')
+        consume(TokenType.LeftParens)
 
-        const { value: functionSetName } = consume({
-          expected: TokenType.Identifier,
-        })
+        const { value: functionSetName } = consume(TokenType.Identifier)
 
         const functionset = getNode(ast, {
           type: 'functionset',
@@ -329,44 +241,27 @@ export const parse = (tokens: Token[]) => {
         }
 
         Object.assign(functions, functionset.functions)
-        consume({
-          expected: TokenType.RightParens,
-        })
+        consume(TokenType.RightParens)
 
         continue
       }
 
-      const { value: functionName } = consume({
-        expected: TokenType.Identifier,
-      })
+      const { value: functionName } = consume(TokenType.Identifier)
       functions[functionName] = false
 
-      while( match({
-        expected: TokenType.AttributeName,
-        value: 'expose',
-      }) ) {
-        consume({
-          expected: TokenType.AttributeName,
-          value: 'expose',
-        })
+      while( match(TokenType.AttributeName, 'expose') ) {
+        consume(TokenType.AttributeName, 'expose')
         functions[functionName] = true
       }
     }
 
-    consume({
-      expected: TokenType.RightBracket,
-    })
+    consume(TokenType.RightBracket)
     return functions
   }
 
   const consumeFunctionSet = (ast: ASTNode[]): ASTFunctionSetNode => {
-    consume({
-      expected: TokenType.Identifier,
-      value: 'functionset',
-    })
-    const { value: name } = consume({
-      expected: TokenType.Identifier,
-    })
+    consume(TokenType.Identifier, 'functionset')
+    const { value: name } = consume(TokenType.Identifier)
     const node: ASTFunctionSetNode = {
       type: 'functionset',
       name,
