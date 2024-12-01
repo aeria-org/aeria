@@ -200,6 +200,12 @@ importers:
         specifier: ^6.5.0
         version: 6.10.0
 
+  packages/compiler:
+    devDependencies:
+      '@phosphor-icons/core':
+        specifier: ^2.1.1
+        version: 2.1.1
+
   packages/core:
     dependencies:
       jsonwebtoken:
