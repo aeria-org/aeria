@@ -1,7 +1,7 @@
 import type { Property, ContractWithRoles, AccessCondition } from '@aeriajs/types'
 import { tokenize, TokenType, type Token } from './lexer'
 import { generateCode } from './codegen'
-import { getNode } from './ast'
+import { findNode } from './ast'
 
 const PropertyType = {
   str: 'string',
@@ -231,7 +231,7 @@ export const parse = (tokens: Token[]) => {
 
         const { value: functionSetName } = consume(TokenType.Identifier)
 
-        const functionset = getNode(ast, {
+        const functionset = findNode(ast, {
           type: 'functionset',
           name: functionSetName,
         })

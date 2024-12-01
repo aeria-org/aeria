@@ -1,6 +1,6 @@
 import type { ASTNode, ASTNodeType } from './index.js'
 
-export const getNode = <TASTNodeType extends ASTNodeType>(
+export const findNode = <TASTNodeType extends ASTNodeType>(
   ast: ASTNode[],
   { type, name }: { type: TASTNodeType,
     name: string },
