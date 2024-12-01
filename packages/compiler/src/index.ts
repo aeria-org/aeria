@@ -3,12 +3,12 @@ import { tokenize, TokenType, type Token } from './lexer'
 import { generateCode } from './codegen'
 import { getNode } from './ast'
 
-const PropertyType = <const>{
+const PropertyType = {
   str: 'string',
   int: 'integer',
   num: 'number',
   bool: 'boolean',
-}
+} as const
 
 type ASTCollectionNode = {
   type: 'collection'
