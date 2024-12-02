@@ -9,12 +9,8 @@ export const PropertyType = {
 } as const
 
 export const PropertyModifiers = {
-  Error: {
-    //
-  },
-  Result: {
-    //
-  },
+  Error: {},
+  Result: {},
 } as const
 
 export type PropertyNode = {
@@ -56,7 +52,6 @@ export type Node =
   | CollectionNode
   | ContractNode
   | FunctionSetNode
-
 
 export type NodeType = Node['type']
 

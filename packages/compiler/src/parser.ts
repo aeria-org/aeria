@@ -28,7 +28,9 @@ export const parse = (tokens: Token[]) => {
     throw new Error(`expected "${expected}" but found "${token.type}" instead`)
   }
 
-  const consumePropertyType = (options = { allowModifiers: false }): AST.PropertyNode => {
+  const consumePropertyType = (options = {
+    allowModifiers: false,
+  }): AST.PropertyNode => {
     let property: Property
     let nestedProperties: Record<string, AST.PropertyNode> | undefined
     let modifier: string | undefined
@@ -134,7 +136,9 @@ export const parse = (tokens: Token[]) => {
     return node
   }
 
-  const consumePropertiesBlock = (options = { allowModifiers: false }) => {
+  const consumePropertiesBlock = (options = {
+    allowModifiers: false,
+  }) => {
     consume(TokenType.LeftBracket)
 
     const properties: Record<string, AST.PropertyNode> = {}
@@ -151,7 +155,9 @@ export const parse = (tokens: Token[]) => {
     return properties
   }
 
-  const consumeMultiplePropertyTypes = (options = { allowModifiers: false }) => {
+  const consumeMultiplePropertyTypes = (options = {
+    allowModifiers: false,
+  }) => {
     if( match(TokenType.Pipe) ) {
       consume(TokenType.Pipe)
 
@@ -219,15 +225,21 @@ export const parse = (tokens: Token[]) => {
       const { value: keyword } = consume(TokenType.Identifier)
       switch( keyword ) {
         case 'payload': {
-          node.payload = consumeMultiplePropertyTypes({ allowModifiers: true })
+          node.payload = consumeMultiplePropertyTypes({
+            allowModifiers: true,
+          })
           break
         }
         case 'query': {
-          node.query = consumeMultiplePropertyTypes({ allowModifiers: true })
+          node.query = consumeMultiplePropertyTypes({
+            allowModifiers: true,
+          })
           break
         }
         case 'response': {
-          node.response = consumeMultiplePropertyTypes({ allowModifiers: true })
+          node.response = consumeMultiplePropertyTypes({
+            allowModifiers: true,
+          })
           break
         }
       }
