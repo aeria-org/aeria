@@ -21,9 +21,15 @@ functionset Writable {
   removeAll
 }
 
+collection File extends aeria.file {}
+collection TempFile extends aeria.tempFile {}
+collection User extends aeria.user {}
+
 collection Animal {
+  owned true
   properties {
     name str
+    specie enum @values(["dog", "cat"])
     details {
       properties {
         age num @minimum(10)

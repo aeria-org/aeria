@@ -8,10 +8,21 @@ export const PropertyType = {
   enum: 'enum',
 } as const
 
-export const PropertyModifiers = {
-  Error: {},
-  Result: {},
-} as const
+export const PropertyModifiers: Record<string, ExportSymbol> = {
+  Error: {
+    packageName: 'aeria',
+    symbolName: 'errorSchema',
+  },
+  Result: {
+    packageName: 'aeria',
+    symbolName: 'resultSchema'
+  },
+}
+
+export type ExportSymbol = {
+  packageName: string
+  symbolName: string
+}
 
 export type PropertyNode = {
   type: 'property'
@@ -23,6 +34,8 @@ export type PropertyNode = {
 export type CollectionNode = {
   type: 'collection'
   name: string
+  extends?: ExportSymbol
+  owned?: boolean
   properties: Record<string, PropertyNode>
   functions?: Record<string, AccessCondition>
 }
