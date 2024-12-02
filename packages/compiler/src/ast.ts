@@ -15,7 +15,7 @@ export const PropertyModifiers: Record<string, ExportSymbol> = {
   },
   Result: {
     packageName: 'aeria',
-    symbolName: 'resultSchema'
+    symbolName: 'resultSchema',
   },
 }
 

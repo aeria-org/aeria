@@ -26,7 +26,9 @@ export const parse = (tokens: Token[]) => {
     }
 
     console.log(token)
-    throw new Error(`expected "${expected}"${value ? ` with value "${value}"` : ""} but found "${token.type}" instead`)
+    throw new Error(`expected "${expected}"${value
+      ? ` with value "${value}"`
+      : ''} but found "${token.type}" instead`)
   }
 
   const consumeArray = (type: TokenType) => {
@@ -121,7 +123,6 @@ export const parse = (tokens: Token[]) => {
         insideParens = true
       }
 
-
       if( 'enum' in property && attributeName === 'values' ) {
         property.enum = consumeArray(TokenType.QuotedString)
       } else {
@@ -204,7 +205,7 @@ export const parse = (tokens: Token[]) => {
       properties: {},
     }
 
-    if( match(TokenType.Keyword, "extends") ) {
+    if( match(TokenType.Keyword, 'extends') ) {
       consume(TokenType.Keyword)
       const { value: packageName } = consume(TokenType.Identifier)
       consume(TokenType.Dot)
@@ -223,7 +224,7 @@ export const parse = (tokens: Token[]) => {
       switch( keyword ) {
         case 'owned': {
           let value: string
-          if( match(TokenType.QuotedString, "on-write") ) {
+          if( match(TokenType.QuotedString, 'on-write') ) {
             value = consume(TokenType.QuotedString).value
           } else {
             value = consume(TokenType.Boolean).value

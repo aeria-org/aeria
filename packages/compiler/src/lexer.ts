@@ -21,7 +21,7 @@ export type TokenConfig = {
   type:
     | TokenType
     | null
-  matcher: 
+  matcher:
     | RegExp
     | string
     | string[]
@@ -144,7 +144,7 @@ export const tokenize = function *(input: string): Generator<Token> {
           [value] = matched
         }
       } else {
-        let segment = input.slice(index, index + input.slice(index).search(/[ \t\n]+/))
+        const segment = input.slice(index, index + input.slice(index).search(/[ \t\n]+/))
         if( segment && matcher.includes(segment) ) {
           value = segment
         }
