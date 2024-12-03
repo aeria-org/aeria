@@ -202,6 +202,9 @@ importers:
 
   packages/compiler:
     devDependencies:
+      '@aeriajs/types':
+        specifier: link:../types
+        version: link:../types
       '@phosphor-icons/core':
         specifier: ^2.1.1
         version: 2.1.1
