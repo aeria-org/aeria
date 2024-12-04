@@ -15,6 +15,7 @@ export enum TokenType {
   Identifier = 'IDENTIFIER',
   QuotedString = 'QUOTED_STRING',
   AttributeName = 'ATTRIBUTE_NAME',
+  LineBreak = "LINE_BREAK"
 }
 
 export type TokenConfig = {
@@ -31,13 +32,18 @@ export type TokenConfig = {
 export type Token = {
   type: TokenType
   index: number
+  line:number
   value: string
 }
 
 const TOKENS: TokenConfig[] = [
   {
     type: null,
-    matcher: /\r?[ \t\n]+/,
+    matcher: /\r?[ \t]+/,
+  },
+  {
+    type: TokenType.LineBreak,
+    matcher:'\n'
   },
   {
     type: TokenType.Comment,
@@ -123,10 +129,10 @@ const TOKENS: TokenConfig[] = [
 
 export const tokenize = function *(input: string): Generator<Token> {
   let index = 0
-
+  let line = 1
   while( index < input.length ) {
     let hasMatch = false
-
+    
     for( const { type, matcher, valueExtractor } of TOKENS ) {
       let value: string | undefined
 
@@ -134,11 +140,9 @@ export const tokenize = function *(input: string): Generator<Token> {
         if( input.slice(index).startsWith(matcher) ) {
           value = matcher
         }
-
       } else if( matcher instanceof RegExp ) {
         const currentMatcher = new RegExp(matcher.source, 'y')
         currentMatcher.lastIndex = index
-
         const matched = currentMatcher.exec(input)
         if( matched ) {
           [value] = matched
@@ -149,12 +153,14 @@ export const tokenize = function *(input: string): Generator<Token> {
           value = segment
         }
       }
-
       if( value ) {
         index += value.length
 
         switch( type ) {
           case null: break
+          case TokenType.LineBreak: 
+            line++ 
+            break
           case TokenType.Comment: {
             while( input[index++] !== '\n' ) {}
             break
@@ -164,6 +170,7 @@ export const tokenize = function *(input: string): Generator<Token> {
               yield {
                 type,
                 index,
+                line,
                 value: valueExtractor(value),
               }
               continue
@@ -172,6 +179,7 @@ export const tokenize = function *(input: string): Generator<Token> {
             yield {
               type,
               index,
+              line,
               value,
             }
           }

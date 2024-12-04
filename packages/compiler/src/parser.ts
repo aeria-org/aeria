@@ -24,15 +24,13 @@ export const parse = (tokens: Token[]) => {
     const token = tokens[current]
     if( match(expected, value) ) {
       current++
-      console.log(token)
       return Result.result(token)
     }
-    console.log(token)
     return Result.error({message:`expected "${expected}"${value
       ? ` with value "${value}"`
       : ''} but found "${token.type}" instead`,
       location:{
-        line:0,
+        line:token.line,
         index:token.index,
         start:0,
         end:0,
@@ -102,8 +100,8 @@ export const parse = (tokens: Token[]) => {
             Result.error({
               message:`invalid keyword "${keyword}"`,
               location:{
-                line:0,
-                index:0,
+                line:tokens[current].line,
+                index:tokens[current].index,
                 start:0,
                 end:0,
               }
@@ -142,8 +140,8 @@ export const parse = (tokens: Token[]) => {
           return Result.error({
             message: `invalid reference "${identifier}"`,
             location:{
-              line:0,
-              index:0,
+              line:token.line,
+              index:token.index,
               start:0,
               end:0
             }
@@ -198,8 +196,8 @@ export const parse = (tokens: Token[]) => {
         return Result.error({
           message: `invalid modifier: "${modifier}"` as never,
           location:{
-            line:0,
-            index:0,
+            line:tokens[current].line,
+            index:tokens[current].index,
             start:0,
             end:0
           }
@@ -351,8 +349,8 @@ export const parse = (tokens: Token[]) => {
           return Result.error({
             message: `invalid token "${keyword}"`,
             location:{
-              line:0,
-              index:0,
+              line:tokens[current].line,
+              index:tokens[current].index,
               start:0,
               end:0
             }
@@ -448,8 +446,8 @@ export const parse = (tokens: Token[]) => {
           return Result.error({
             message: `functionset "${functionSetName} not found"`,
             location:{
-              line:0,
-              index:0,
+              line:tokens[current].line,
+              index:tokens[current].index,
               start:0,
               end:0
             }
@@ -536,8 +534,8 @@ export const parse = (tokens: Token[]) => {
         return Result.error({
           message: `invalid declaration type: "${declType}"`,
           location:{
-            line:0,
-            index:0,
+            line:tokens[current].line,
+            index:tokens[current].index,
             start:0,
             end:0
           }

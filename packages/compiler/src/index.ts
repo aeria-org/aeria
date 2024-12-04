@@ -9,8 +9,7 @@ export const compile = (input: string) => {
   return generateCode(ast)
 }
 
-const inputCode = `
-functionset Readable {
+const inputCode = `functionset Readable {
   get
   getAll @expose
 }
@@ -20,7 +19,7 @@ functionset Writable {
   remove
   removeAll
 }
-
+foudass da silva
 collection File extends aeria.file {}
 collection TempFile extends aeria.tempFile {}
 collection User extends aeria.user {}
