@@ -1,4 +1,5 @@
 export enum TokenType {
+  LineBreak = "LINE_BREAK",
   Comment = 'COMMENT',
   LeftBracket = 'LEFT_BRACKET',
   RightBracket = 'RIGHT_BRACKET',
@@ -14,8 +15,7 @@ export enum TokenType {
   Keyword = 'KEYWORD',
   Identifier = 'IDENTIFIER',
   QuotedString = 'QUOTED_STRING',
-  AttributeName = 'ATTRIBUTE_NAME',
-  LineBreak = "LINE_BREAK"
+  AttributeName = 'ATTRIBUTE_NAME'  
 }
 
 export type TokenConfig = {
