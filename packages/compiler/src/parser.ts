@@ -24,16 +24,16 @@ export const parse = (tokens: Token[]) => {
     const token = tokens[current]
     if( match(expected, value) ) {
       current++
+      console.log(token)
       return Result.result(token)
     }
-
     console.log(token)
     return Result.error({message:`expected "${expected}"${value
       ? ` with value "${value}"`
       : ''} but found "${token.type}" instead`,
       location:{
         line:0,
-        index:0,
+        index:token.index,
         start:0,
         end:0,
       }
@@ -45,12 +45,12 @@ export const parse = (tokens: Token[]) => {
 
     const array: unknown[] = []
     while( !match(TokenType.RightSquareBracket) ) {
-      const { error, result: value } = consume(type)
+      const { error, result: token } = consume(type)
       if(error){
         return Result.error(error)
       }
-      array.push(value)
-
+      array.push(token.value)
+      
       if( match(TokenType.Comma) ) {
         consume(TokenType.Comma)
       }
@@ -87,7 +87,7 @@ export const parse = (tokens: Token[]) => {
       }
 
       while( !match(TokenType.RightBracket) ) {
-        const { value: keyword } = tokens[current]
+        const keyword = tokens[current].value
         switch( keyword ) {
           case 'properties': {
             consume(TokenType.Keyword, 'properties')
@@ -118,7 +118,7 @@ export const parse = (tokens: Token[]) => {
       if(error){
         return Result.error(error)
       }
-      const {value: identifier} = token
+      const identifier = token.value
       if( guards.isNativePropertyType(identifier) ) {
         switch( identifier ) {
           case 'enum': {
@@ -162,7 +162,7 @@ export const parse = (tokens: Token[]) => {
       if(error){
         return Result.error(error)
       }
-      const {value: attributeName} = token
+      const attributeName = token.value
       let insideParens = false
       if( match(TokenType.LeftParens) ) {
         consume(TokenType.LeftParens)
@@ -225,7 +225,7 @@ export const parse = (tokens: Token[]) => {
       if(error){
         return Result.error(error)
       }
-      const {value:propName} = token
+      const propName = token.value
       const {error:consumePropertyTypeError, result: prop} = consumePropertyType(options)
       if(consumePropertyTypeError){
         return Result.error(consumePropertyTypeError)
@@ -273,7 +273,7 @@ export const parse = (tokens: Token[]) => {
     if(error){
       return Result.error(error)
     }
-    const { value: name } = result
+    const name = result.value
 
     const node: AST.CollectionNode = {
       type: 'collection',
@@ -283,14 +283,19 @@ export const parse = (tokens: Token[]) => {
 
     if( match(TokenType.Keyword, 'extends') ) {
       consume(TokenType.Keyword)
-      const {error, result} = consume(TokenType.Identifier)
-      if(error){
-        return Result.error(error)
+      const {error:packageNameIdentifierError, result:packageNameIdentifier} = consume(TokenType.Identifier)
+      if(packageNameIdentifierError){
+        return Result.error(packageNameIdentifierError)
       }
-      const { value: packageName } = result
+      const packageName = packageNameIdentifier.value
+
       consume(TokenType.Dot)
 
-      const { value: symbolName } = result
+      const {error:symbolIdentifierError, result:symbolIdentifier} = consume(TokenType.Identifier)
+      if(symbolIdentifierError){
+        return Result.error(symbolIdentifierError)
+      }
+      const symbolName = symbolIdentifier.value
       node.extends = {
         packageName,
         symbolName,
@@ -304,7 +309,7 @@ export const parse = (tokens: Token[]) => {
       if(error){
         return Result.error(error)
       }
-      const { value: keyword } = result
+      const keyword = result.value
       
       switch( keyword ) {
         case 'owned': {
@@ -366,7 +371,7 @@ export const parse = (tokens: Token[]) => {
     if(error){
       return Result.error(error)
     }
-    const {value:name} = result
+    const name = result.value
     consume(TokenType.LeftBracket)
 
     const node: AST.ContractNode = {
@@ -379,7 +384,7 @@ export const parse = (tokens: Token[]) => {
       if(error){
         return Result.error(error)
       }
-      const {value:keyword} = result
+      const keyword = result.value
       switch( keyword ) {
         case 'payload': {
           const {error, result} = consumeMultiplePropertyTypes({
@@ -432,7 +437,7 @@ export const parse = (tokens: Token[]) => {
           return Result.error(error)
         }
 
-        const { value: functionSetName } = result
+        const functionSetName = result.value
 
         const functionset = AST.findNode(ast, {
           type: 'functionset',
@@ -463,7 +468,7 @@ export const parse = (tokens: Token[]) => {
         return Result.error(error)
       }
 
-      const { value: functionName } = result
+      const functionName = result.value
       functions[functionName] = false
 
       while( match(TokenType.AttributeName, 'expose') ) {
@@ -482,7 +487,7 @@ export const parse = (tokens: Token[]) => {
     if(error){
       return Result.error(error)
     }
-    const { value: name } = result
+    const name = result.value
 
     const {error: functionBlockError, result:functionBlock } = consumeFunctionsBlock(ast)
     if(functionBlockError){
@@ -500,7 +505,7 @@ export const parse = (tokens: Token[]) => {
 
   const ast: AST.Node[] = []
   while( current < tokens.length ) {
-    const { value: declType } = tokens[current]
+    const declType = tokens[current].value
 
     switch( declType ) {
       case 'collection': {
