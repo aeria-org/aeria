@@ -39,7 +39,10 @@ export const parse = (tokens: Token[]) => {
   }
 
   const consumeArray = (type: TokenType) => {
-    consume(TokenType.LeftSquareBracket)
+    const {error:leftBError } = consume(TokenType.LeftSquareBracket)
+    if(leftBError){
+      return Result.error(leftBError)
+    }
 
     const array: unknown[] = []
     while( !match(TokenType.RightSquareBracket) ) {
@@ -50,11 +53,18 @@ export const parse = (tokens: Token[]) => {
       array.push(token.value)
       
       if( match(TokenType.Comma) ) {
-        consume(TokenType.Comma)
+        const{error} = consume(TokenType.Comma)
+        if(error){
+          return Result.error(error)
+        }
       }
     }
 
-    consume(TokenType.RightSquareBracket)
+    const {error:rightBError } = consume(TokenType.RightSquareBracket)
+    if(rightBError){
+      return Result.error(rightBError)
+    }
+
     return Result.result(array)
   }
 
@@ -77,8 +87,10 @@ export const parse = (tokens: Token[]) => {
     }
 
     if( match(TokenType.LeftBracket) ) {
-      consume(TokenType.LeftBracket)
-
+      const {error: leftBError} = consume(TokenType.LeftBracket)
+      if(leftBError){
+        return Result.error(leftBError)
+      }
       property = {
         type: 'object',
         properties: {},
@@ -88,7 +100,10 @@ export const parse = (tokens: Token[]) => {
         const keyword = tokens[current].value
         switch( keyword ) {
           case 'properties': {
-            consume(TokenType.Keyword, 'properties')
+            const {error: keywordError} = consume(TokenType.Keyword, 'properties')
+            if(keywordError){
+              return Result.error(keywordError)
+            }
             const {error:propBlockError, result:propBlock} = consumePropertiesBlock(options)
             if(propBlockError){
               return Result.error(propBlockError)
@@ -109,8 +124,10 @@ export const parse = (tokens: Token[]) => {
         }
       }
 
-      consume(TokenType.RightBracket)
-
+      const {error: rightBError} = consume(TokenType.RightBracket)
+      if(rightBError){
+        return Result.error(rightBError)
+      }
     } else {
       const { error, result:token } = consume(TokenType.Identifier)
       if(error){
@@ -163,7 +180,10 @@ export const parse = (tokens: Token[]) => {
       const attributeName = token.value
       let insideParens = false
       if( match(TokenType.LeftParens) ) {
-        consume(TokenType.LeftParens)
+        const {error: leftParensError} = consume(TokenType.LeftParens)
+        if(leftParensError){
+          return Result.error(leftParensError)
+        }
         insideParens = true
       }
 
@@ -181,7 +201,10 @@ export const parse = (tokens: Token[]) => {
       }
 
       if( insideParens ) {
-        consume(TokenType.RightParens)
+        const {error: rightParensError} = consume(TokenType.RightParens)
+        if(rightParensError){
+          return Result.error(rightParensError)
+        }
       }
     }
 
@@ -214,8 +237,10 @@ export const parse = (tokens: Token[]) => {
   const consumePropertiesBlock = (options = {
     allowModifiers: false,
   }): Result.Either<Diagnostic, Record<string, AST.PropertyNode>> => {
-    consume(TokenType.LeftBracket)
-
+    const {error: leftBError} = consume(TokenType.LeftBracket)
+    if(leftBError){
+      return Result.error(leftBError)
+    }
     const properties: Record<string, AST.PropertyNode> = {}
     while( !match(TokenType.RightBracket) ) {
       //const { value: propName } = consume(TokenType.Identifier)
@@ -230,11 +255,19 @@ export const parse = (tokens: Token[]) => {
       }
       properties[propName] = prop
       if( match(TokenType.Comma) ) {
+        const {error: commaError} = consume(TokenType.Comma)
+        if(commaError){
+          return Result.error(commaError)
+        }
         consume(TokenType.Comma)
       }
     }
 
-    consume(TokenType.RightBracket)
+    const {error: rightBError} = consume(TokenType.RightBracket)
+    if(rightBError){
+      return Result.error(rightBError)
+    }
+
     return Result.result(properties)
   }
 
@@ -242,7 +275,10 @@ export const parse = (tokens: Token[]) => {
     allowModifiers: false,
   }): Result.Either<Diagnostic, AST.PropertyNode[] | AST.PropertyNode> => {
     if( match(TokenType.Pipe) ) {
-      consume(TokenType.Pipe)
+      const {error: pipeError} = consume(TokenType.Pipe)
+      if(pipeError){
+        return Result.error(pipeError)
+      }
 
       const properties = []
       while( current < tokens.length ) {
@@ -253,7 +289,10 @@ export const parse = (tokens: Token[]) => {
         properties.push(result)
 
         if( match(TokenType.Pipe) ) {
-          consume(TokenType.Pipe)
+          const {error: pipeError} = consume(TokenType.Pipe)
+          if(pipeError){
+            return Result.error(pipeError)
+          }
         } else {
           break
         }
@@ -266,7 +305,11 @@ export const parse = (tokens: Token[]) => {
   }
 
   const consumeCollection = (ast: AST.Node[]): Result.Either<Diagnostic,AST.CollectionNode> => {
-    consume(TokenType.Keyword, 'collection')
+    const {error: keywordError} = consume(TokenType.Keyword, 'collection')
+    if(keywordError){
+      return Result.error(keywordError)
+    }
+
     const {error, result} = consume(TokenType.Identifier)
     if(error){
       return Result.error(error)
@@ -280,14 +323,21 @@ export const parse = (tokens: Token[]) => {
     }
 
     if( match(TokenType.Keyword, 'extends') ) {
-      consume(TokenType.Keyword)
+      const {error: keywordError} = consume(TokenType.Keyword)
+      if(keywordError){
+        return Result.error(keywordError)
+      }
+      
       const {error:packageNameIdentifierError, result:packageNameIdentifier} = consume(TokenType.Identifier)
       if(packageNameIdentifierError){
         return Result.error(packageNameIdentifierError)
       }
       const packageName = packageNameIdentifier.value
 
-      consume(TokenType.Dot)
+      const {error: dotError} = consume(TokenType.Dot)
+      if(dotError){
+        return Result.error(dotError)
+      }
 
       const {error:symbolIdentifierError, result:symbolIdentifier} = consume(TokenType.Identifier)
       if(symbolIdentifierError){
@@ -300,7 +350,10 @@ export const parse = (tokens: Token[]) => {
       }
     }
 
-    consume(TokenType.LeftBracket)
+    const {error:leftBError}= consume(TokenType.LeftBracket)
+    if(leftBError){
+      return Result.error(leftBError)
+    }
 
     while( !match(TokenType.RightBracket) ) {
       const{error, result} = consume(TokenType.Keyword)
@@ -359,18 +412,29 @@ export const parse = (tokens: Token[]) => {
       }
     }
 
-    consume(TokenType.RightBracket)
+    const {error:rightBError} = consume(TokenType.RightBracket)
+    if(rightBError){
+      return Result.error(rightBError)
+    }
     return Result.result(node)
   }
 
   const consumeContract = (): Result.Either<Diagnostic,AST.ContractNode> => {
-    consume(TokenType.Keyword, 'contract')
+    const {error: keywordError} = consume(TokenType.Keyword, 'contract')
+    if(keywordError){
+      return Result.error(keywordError)
+    }
+
     const {error, result} = consume(TokenType.Identifier)
     if(error){
       return Result.error(error)
     }
     const name = result.value
-    consume(TokenType.LeftBracket)
+    
+    const {error: leftBError} = consume(TokenType.LeftBracket)
+    if(leftBError){
+      return Result.error(leftBError)
+    }
 
     const node: AST.ContractNode = {
       type: 'contract',
@@ -417,18 +481,32 @@ export const parse = (tokens: Token[]) => {
       }
     }
 
-    consume(TokenType.RightBracket)
+    const {error:rightBError} = consume(TokenType.RightBracket)
+    if(rightBError){
+      return Result.error(rightBError)
+    }
+
     return Result.result(node)
   }
 
   const consumeFunctionsBlock = (ast: AST.Node[]): Result.Either<Diagnostic,Record<string, AccessCondition>> => {
-    consume(TokenType.LeftBracket)
+    const {error:leftBError} = consume(TokenType.LeftBracket)
+    if(leftBError){
+      return Result.error(leftBError)
+    }
 
     const functions: Record<string, AccessCondition> = {}
     while( !match(TokenType.RightBracket) ) {
       if( match(TokenType.AttributeName, 'include') ) {
-        consume(TokenType.AttributeName)
-        consume(TokenType.LeftParens)
+        const {error: attributeNameError} =consume(TokenType.AttributeName)   
+        if(attributeNameError){
+          return Result.error(attributeNameError)
+        }
+
+        const {error:LeftParensError} = consume(TokenType.LeftParens)
+        if(LeftParensError){
+          return Result.error(LeftParensError)
+        }
 
         const{error, result} = consume(TokenType.Identifier)
         if(error){
@@ -456,7 +534,10 @@ export const parse = (tokens: Token[]) => {
         }
 
         Object.assign(functions, functionset.functions)
-        consume(TokenType.RightParens)
+        const {error: rightParensError} = consume(TokenType.RightParens)
+        if(rightParensError){
+          return Result.error(rightParensError)
+        }
 
         continue
       }
@@ -470,17 +551,26 @@ export const parse = (tokens: Token[]) => {
       functions[functionName] = false
 
       while( match(TokenType.AttributeName, 'expose') ) {
-        consume(TokenType.AttributeName, 'expose')
+        const {error: attributeNameError} = consume(TokenType.AttributeName, 'expose')
+        if(attributeNameError){
+          return Result.error(attributeNameError)
+        }
         functions[functionName] = true
       }
     }
 
-    consume(TokenType.RightBracket)
+    const {error: rightBError} = consume(TokenType.RightBracket)
+    if(rightBError){
+      return Result.error(rightBError)
+    }
     return Result.result(functions)
   }
 
   const consumeFunctionSet = (ast: AST.Node[]): Result.Either<Diagnostic,AST.FunctionSetNode> => {
-    consume(TokenType.Keyword, 'functionset')
+    const {error: keywordError} = consume(TokenType.Keyword, 'functionset')
+    if(keywordError){
+      return Result.error(keywordError)
+    }
     const {error, result} = consume(TokenType.Identifier)
     if(error){
       return Result.error(error)
