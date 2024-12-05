@@ -3,7 +3,7 @@ import { TokenType, type Token } from './lexer'
 
 import * as AST from './ast'
 import * as guards from './guards'
-import { type Diagnostic } from './diagnostic'
+import { makeLocation, type Diagnostic } from './diagnostic'
 
 export const parse = (tokens: Token[]) => {
   let current = 0
@@ -31,12 +31,7 @@ export const parse = (tokens: Token[]) => {
       message: `expected "${expected}"${value
         ? ` with value "${value}"`
         : ''} but found "${token.type}" instead`,
-      location: {
-        line: token.line,
-        index: token.index,
-        start: token.start,
-        end: token.end,
-      },
+      location: makeLocation(token),
     })
   }
 
@@ -116,12 +111,7 @@ export const parse = (tokens: Token[]) => {
           default:
             return Result.error({
               message: `invalid keyword "${keyword}"`,
-              location: {
-                line: tokens[current].line,
-                index: tokens[current].index,
-                start: tokens[current].start,
-                end: tokens[current].end,
-              },
+              location: makeLocation(tokens[current]),
             })
         }
       }
@@ -158,12 +148,7 @@ export const parse = (tokens: Token[]) => {
         if( !collection ) {
           return Result.error({
             message: `invalid reference "${identifier}"`,
-            location: {
-              line: token.line,
-              index: token.index,
-              start: token.start,
-              end: token.end,
-            },
+            location: makeLocation(token),
           })
         }
 
@@ -219,12 +204,7 @@ export const parse = (tokens: Token[]) => {
       if( !guards.isValidPropertyModifier(modifier) ) {
         return Result.error({
           message: `invalid modifier: "${modifier}"` as never,
-          location: {
-            line: tokens[current].line,
-            index: tokens[current].index,
-            start: tokens[current].start,
-            end: tokens[current].end,
-          },
+          location: makeLocation(tokens[current]),
         })
         //throw new Error(`invalid modifier: "${modifier}"`)
       }
@@ -401,12 +381,7 @@ export const parse = (tokens: Token[]) => {
         default:
           return Result.error({
             message: `invalid token "${keyword}"`,
-            location: {
-              line: tokens[current].line,
-              index: tokens[current].index,
-              start: tokens[current].start,
-              end: tokens[current].end,
-            },
+            location: makeLocation(tokens[current]),
           })
       }
     }
@@ -522,12 +497,7 @@ export const parse = (tokens: Token[]) => {
         if( !functionset ) {
           return Result.error({
             message: `functionset "${functionSetName} not found"`,
-            location: {
-              line: tokens[current].line,
-              index: tokens[current].index,
-              start: tokens[current].start,
-              end: tokens[current].end,
-            },
+            location: makeLocation(tokens[current]),
           })
         }
 
@@ -621,12 +591,7 @@ export const parse = (tokens: Token[]) => {
       default:
         return Result.error({
           message: `invalid declaration type: "${declType}"`,
-          location: {
-            line: tokens[current].line,
-            index: tokens[current].index,
-            start: tokens[current].start,
-            end: tokens[current].end,
-          },
+          location: makeLocation(tokens[current]),
         })
     }
   }
