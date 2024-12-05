@@ -112,7 +112,7 @@ export const parse = (tokens: Token[]) => {
             break
           }
           default:
-            Result.error({
+            return Result.error({
               message:`invalid keyword "${keyword}"`,
               location:{
                 line:tokens[current].line,
