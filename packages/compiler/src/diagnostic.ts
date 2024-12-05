@@ -10,7 +10,14 @@ export type Diagnostic = {
   }
 }
 
-export function makeLocation(token: Token){
+export type Location = {
+  index:number,
+  line:number,
+  start:number,
+  end:number,
+}
+
+export const makeLocation = (token:Token):Location => {
   return{
     index:token.index,
     line:token.line,
