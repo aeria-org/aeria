@@ -3,7 +3,7 @@ import { TokenType, type Token } from './lexer'
 
 import * as AST from './ast'
 import * as guards from './guards'
-import { Diagnostic } from './diagnostic';
+import { type Diagnostic } from './diagnostic'
 
 export const parse = (tokens: Token[]) => {
   let current = 0
@@ -26,22 +26,24 @@ export const parse = (tokens: Token[]) => {
       current++
       return Result.result(token)
     }
-    return Result.error({message:`expected "${expected}"${value
-      ? ` with value "${value}"`
-      : ''} but found "${token.type}" instead`,
-      location:{
-        line:token.line,
-        index:token.index,
-        start:0,
-        end:0,
-      }
+    console.log(token)
+    return Result.error({
+      message: `expected "${expected}"${value
+        ? ` with value "${value}"`
+        : ''} but found "${token.type}" instead`,
+      location: {
+        line: token.line,
+        index: token.index,
+        start: token.start,
+        end: token.end,
+      },
     })
   }
 
   const consumeArray = (type: TokenType) => {
-    const {error:leftBError } = consume(TokenType.LeftSquareBracket)
-    if(leftBError){
-      return Result.error(leftBError)
+    const { error: leftBracketError } = consume(TokenType.LeftSquareBracket)
+    if(leftBracketError){
+      return Result.error(leftBracketError)
     }
 
     const array: unknown[] = []
@@ -51,18 +53,18 @@ export const parse = (tokens: Token[]) => {
         return Result.error(error)
       }
       array.push(token.value)
-      
+
       if( match(TokenType.Comma) ) {
-        const{error} = consume(TokenType.Comma)
+        const{ error } = consume(TokenType.Comma)
         if(error){
           return Result.error(error)
         }
       }
     }
 
-    const {error:rightBError } = consume(TokenType.RightSquareBracket)
-    if(rightBError){
-      return Result.error(rightBError)
+    const { error: rightBracketError } = consume(TokenType.RightSquareBracket)
+    if(rightBracketError){
+      return Result.error(rightBracketError)
     }
 
     return Result.result(array)
@@ -78,7 +80,7 @@ export const parse = (tokens: Token[]) => {
     if( options.allowModifiers ) {
       if( match(TokenType.Identifier) && tokens[current + 1].type === TokenType.LeftBracket ) {
 
-        const {error, result: token} = consume(TokenType.Identifier)
+        const { error, result: token } = consume(TokenType.Identifier)
         if(error){
           return Result.error(error)
         }
@@ -87,9 +89,9 @@ export const parse = (tokens: Token[]) => {
     }
 
     if( match(TokenType.LeftBracket) ) {
-      const {error: leftBError} = consume(TokenType.LeftBracket)
-      if(leftBError){
-        return Result.error(leftBError)
+      const { error: leftBracketError } = consume(TokenType.LeftBracket)
+      if(leftBracketError){
+        return Result.error(leftBracketError)
       }
       property = {
         type: 'object',
@@ -100,11 +102,11 @@ export const parse = (tokens: Token[]) => {
         const keyword = tokens[current].value
         switch( keyword ) {
           case 'properties': {
-            const {error: keywordError} = consume(TokenType.Keyword, 'properties')
+            const { error: keywordError } = consume(TokenType.Keyword, 'properties')
             if(keywordError){
               return Result.error(keywordError)
             }
-            const {error:propBlockError, result:propBlock} = consumePropertiesBlock(options)
+            const { error: propBlockError, result: propBlock } = consumePropertiesBlock(options)
             if(propBlockError){
               return Result.error(propBlockError)
             }
@@ -113,23 +115,23 @@ export const parse = (tokens: Token[]) => {
           }
           default:
             return Result.error({
-              message:`invalid keyword "${keyword}"`,
-              location:{
-                line:tokens[current].line,
-                index:tokens[current].index,
-                start:0,
-                end:0,
-              }
+              message: `invalid keyword "${keyword}"`,
+              location: {
+                line: tokens[current].line,
+                index: tokens[current].index,
+                start: tokens[current].start,
+                end: tokens[current].end,
+              },
             })
         }
       }
 
-      const {error: rightBError} = consume(TokenType.RightBracket)
-      if(rightBError){
-        return Result.error(rightBError)
+      const { error: rightBracketError } = consume(TokenType.RightBracket)
+      if(rightBracketError){
+        return Result.error(rightBracketError)
       }
     } else {
-      const { error, result:token } = consume(TokenType.Identifier)
+      const { error, result: token } = consume(TokenType.Identifier)
       if(error){
         return Result.error(error)
       }
@@ -156,14 +158,13 @@ export const parse = (tokens: Token[]) => {
         if( !collection ) {
           return Result.error({
             message: `invalid reference "${identifier}"`,
-            location:{
-              line:token.line,
-              index:token.index,
-              start:0,
-              end:0
-            }
-          }
-          )
+            location: {
+              line: token.line,
+              index: token.index,
+              start: token.start,
+              end: token.end,
+            },
+          })
         }
 
         property = {
@@ -173,14 +174,14 @@ export const parse = (tokens: Token[]) => {
     }
 
     while( match(TokenType.AttributeName) ) {
-      const { error, result:token } = consume(TokenType.AttributeName)
+      const { error, result: token } = consume(TokenType.AttributeName)
       if(error){
         return Result.error(error)
       }
       const attributeName = token.value
       let insideParens = false
       if( match(TokenType.LeftParens) ) {
-        const {error: leftParensError} = consume(TokenType.LeftParens)
+        const { error: leftParensError } = consume(TokenType.LeftParens)
         if(leftParensError){
           return Result.error(leftParensError)
         }
@@ -188,7 +189,7 @@ export const parse = (tokens: Token[]) => {
       }
 
       if( 'enum' in property && attributeName === 'values' ) {
-        const{error, result} = consumeArray(TokenType.QuotedString)
+        const{ error, result } = consumeArray(TokenType.QuotedString)
         if(error){
           return Result.error(error)
         }
@@ -201,7 +202,7 @@ export const parse = (tokens: Token[]) => {
       }
 
       if( insideParens ) {
-        const {error: rightParensError} = consume(TokenType.RightParens)
+        const { error: rightParensError } = consume(TokenType.RightParens)
         if(rightParensError){
           return Result.error(rightParensError)
         }
@@ -218,14 +219,13 @@ export const parse = (tokens: Token[]) => {
       if( !guards.isValidPropertyModifier(modifier) ) {
         return Result.error({
           message: `invalid modifier: "${modifier}"` as never,
-          location:{
-            line:tokens[current].line,
-            index:tokens[current].index,
-            start:0,
-            end:0
-          }
-        }
-        )
+          location: {
+            line: tokens[current].line,
+            index: tokens[current].index,
+            start: tokens[current].start,
+            end: tokens[current].end,
+          },
+        })
         //throw new Error(`invalid modifier: "${modifier}"`)
       }
       node.modifier = modifier
@@ -237,25 +237,25 @@ export const parse = (tokens: Token[]) => {
   const consumePropertiesBlock = (options = {
     allowModifiers: false,
   }): Result.Either<Diagnostic, Record<string, AST.PropertyNode>> => {
-    const {error: leftBError} = consume(TokenType.LeftBracket)
-    if(leftBError){
-      return Result.error(leftBError)
+    const { error: leftBracketError } = consume(TokenType.LeftBracket)
+    if(leftBracketError){
+      return Result.error(leftBracketError)
     }
     const properties: Record<string, AST.PropertyNode> = {}
     while( !match(TokenType.RightBracket) ) {
       //const { value: propName } = consume(TokenType.Identifier)
-      const {error, result: token} = consume(TokenType.Identifier)
+      const { error, result: token } = consume(TokenType.Identifier)
       if(error){
         return Result.error(error)
       }
       const propName = token.value
-      const {error:consumePropertyTypeError, result: prop} = consumePropertyType(options)
+      const { error: consumePropertyTypeError, result: prop } = consumePropertyType(options)
       if(consumePropertyTypeError){
         return Result.error(consumePropertyTypeError)
       }
       properties[propName] = prop
       if( match(TokenType.Comma) ) {
-        const {error: commaError} = consume(TokenType.Comma)
+        const { error: commaError } = consume(TokenType.Comma)
         if(commaError){
           return Result.error(commaError)
         }
@@ -263,9 +263,9 @@ export const parse = (tokens: Token[]) => {
       }
     }
 
-    const {error: rightBError} = consume(TokenType.RightBracket)
-    if(rightBError){
-      return Result.error(rightBError)
+    const { error: rightBracketError } = consume(TokenType.RightBracket)
+    if(rightBracketError){
+      return Result.error(rightBracketError)
     }
 
     return Result.result(properties)
@@ -275,21 +275,21 @@ export const parse = (tokens: Token[]) => {
     allowModifiers: false,
   }): Result.Either<Diagnostic, AST.PropertyNode[] | AST.PropertyNode> => {
     if( match(TokenType.Pipe) ) {
-      const {error: pipeError} = consume(TokenType.Pipe)
+      const { error: pipeError } = consume(TokenType.Pipe)
       if(pipeError){
         return Result.error(pipeError)
       }
 
       const properties = []
       while( current < tokens.length ) {
-        const {error,result} = consumePropertyType(options)
+        const { error,result } = consumePropertyType(options)
         if(error){
           return Result.error(error)
         }
         properties.push(result)
 
         if( match(TokenType.Pipe) ) {
-          const {error: pipeError} = consume(TokenType.Pipe)
+          const { error: pipeError } = consume(TokenType.Pipe)
           if(pipeError){
             return Result.error(pipeError)
           }
@@ -305,12 +305,12 @@ export const parse = (tokens: Token[]) => {
   }
 
   const consumeCollection = (ast: AST.Node[]): Result.Either<Diagnostic,AST.CollectionNode> => {
-    const {error: keywordError} = consume(TokenType.Keyword, 'collection')
+    const { error: keywordError } = consume(TokenType.Keyword, 'collection')
     if(keywordError){
       return Result.error(keywordError)
     }
 
-    const {error, result} = consume(TokenType.Identifier)
+    const { error, result } = consume(TokenType.Identifier)
     if(error){
       return Result.error(error)
     }
@@ -323,23 +323,23 @@ export const parse = (tokens: Token[]) => {
     }
 
     if( match(TokenType.Keyword, 'extends') ) {
-      const {error: keywordError} = consume(TokenType.Keyword)
+      const { error: keywordError } = consume(TokenType.Keyword)
       if(keywordError){
         return Result.error(keywordError)
       }
-      
-      const {error:packageNameIdentifierError, result:packageNameIdentifier} = consume(TokenType.Identifier)
+
+      const { error: packageNameIdentifierError, result: packageNameIdentifier } = consume(TokenType.Identifier)
       if(packageNameIdentifierError){
         return Result.error(packageNameIdentifierError)
       }
       const packageName = packageNameIdentifier.value
 
-      const {error: dotError} = consume(TokenType.Dot)
+      const { error: dotError } = consume(TokenType.Dot)
       if(dotError){
         return Result.error(dotError)
       }
 
-      const {error:symbolIdentifierError, result:symbolIdentifier} = consume(TokenType.Identifier)
+      const { error: symbolIdentifierError, result: symbolIdentifier } = consume(TokenType.Identifier)
       if(symbolIdentifierError){
         return Result.error(symbolIdentifierError)
       }
@@ -350,29 +350,29 @@ export const parse = (tokens: Token[]) => {
       }
     }
 
-    const {error:leftBError}= consume(TokenType.LeftBracket)
-    if(leftBError){
-      return Result.error(leftBError)
+    const { error: leftBracketError } = consume(TokenType.LeftBracket)
+    if(leftBracketError){
+      return Result.error(leftBracketError)
     }
 
     while( !match(TokenType.RightBracket) ) {
-      const{error, result} = consume(TokenType.Keyword)
+      const{ error, result } = consume(TokenType.Keyword)
       if(error){
         return Result.error(error)
       }
       const keyword = result.value
-      
+
       switch( keyword ) {
         case 'owned': {
           let value: string
           if( match(TokenType.QuotedString, 'on-write') ) {
-            const{error, result} = consume(TokenType.QuotedString)
+            const{ error, result } = consume(TokenType.QuotedString)
             if(error){
               return Result.error(error)
             }
             value = result.value
           } else {
-            const{error, result} = consume(TokenType.Boolean)
+            const{ error, result } = consume(TokenType.Boolean)
             if(error){
               return Result.error(error)
             }
@@ -383,7 +383,7 @@ export const parse = (tokens: Token[]) => {
           break
         }
         case 'properties': {
-          const{error, result} = consumePropertiesBlock()
+          const{ error, result } = consumePropertiesBlock()
           if(error){
             return Result.error(error)
           }
@@ -391,7 +391,7 @@ export const parse = (tokens: Token[]) => {
           break
         }
         case 'functions': {
-          const{error, result} = consumeFunctionsBlock(ast)
+          const{ error, result } = consumeFunctionsBlock(ast)
           if(error){
             return Result.error(error)
           }
@@ -401,39 +401,38 @@ export const parse = (tokens: Token[]) => {
         default:
           return Result.error({
             message: `invalid token "${keyword}"`,
-            location:{
-              line:tokens[current].line,
-              index:tokens[current].index,
-              start:0,
-              end:0
-            }
-          }
-          )
+            location: {
+              line: tokens[current].line,
+              index: tokens[current].index,
+              start: tokens[current].start,
+              end: tokens[current].end,
+            },
+          })
       }
     }
 
-    const {error:rightBError} = consume(TokenType.RightBracket)
-    if(rightBError){
-      return Result.error(rightBError)
+    const { error: rightBracketError } = consume(TokenType.RightBracket)
+    if(rightBracketError){
+      return Result.error(rightBracketError)
     }
     return Result.result(node)
   }
 
   const consumeContract = (): Result.Either<Diagnostic,AST.ContractNode> => {
-    const {error: keywordError} = consume(TokenType.Keyword, 'contract')
+    const { error: keywordError } = consume(TokenType.Keyword, 'contract')
     if(keywordError){
       return Result.error(keywordError)
     }
 
-    const {error, result} = consume(TokenType.Identifier)
+    const { error, result } = consume(TokenType.Identifier)
     if(error){
       return Result.error(error)
     }
     const name = result.value
-    
-    const {error: leftBError} = consume(TokenType.LeftBracket)
-    if(leftBError){
-      return Result.error(leftBError)
+
+    const { error: leftBracketError } = consume(TokenType.LeftBracket)
+    if(leftBracketError){
+      return Result.error(leftBracketError)
     }
 
     const node: AST.ContractNode = {
@@ -442,14 +441,14 @@ export const parse = (tokens: Token[]) => {
     }
 
     while( !match(TokenType.RightBracket) ) {
-      const {error, result} = consume(TokenType.Keyword)
+      const { error, result } = consume(TokenType.Keyword)
       if(error){
         return Result.error(error)
       }
       const keyword = result.value
       switch( keyword ) {
         case 'payload': {
-          const {error, result} = consumeMultiplePropertyTypes({
+          const { error, result } = consumeMultiplePropertyTypes({
             allowModifiers: true,
           })
           if(error){
@@ -459,7 +458,7 @@ export const parse = (tokens: Token[]) => {
           break
         }
         case 'query': {
-          const {error, result} = consumeMultiplePropertyTypes({
+          const { error, result } = consumeMultiplePropertyTypes({
             allowModifiers: true,
           })
           if(error){
@@ -469,7 +468,7 @@ export const parse = (tokens: Token[]) => {
           break
         }
         case 'response': {
-          const {error, result} = consumeMultiplePropertyTypes({
+          const { error, result } = consumeMultiplePropertyTypes({
             allowModifiers: true,
           })
           if(error){
@@ -481,34 +480,34 @@ export const parse = (tokens: Token[]) => {
       }
     }
 
-    const {error:rightBError} = consume(TokenType.RightBracket)
-    if(rightBError){
-      return Result.error(rightBError)
+    const { error: rightBracketError } = consume(TokenType.RightBracket)
+    if(rightBracketError){
+      return Result.error(rightBracketError)
     }
 
     return Result.result(node)
   }
 
   const consumeFunctionsBlock = (ast: AST.Node[]): Result.Either<Diagnostic,Record<string, AccessCondition>> => {
-    const {error:leftBError} = consume(TokenType.LeftBracket)
-    if(leftBError){
-      return Result.error(leftBError)
+    const { error: leftBracketError } = consume(TokenType.LeftBracket)
+    if(leftBracketError){
+      return Result.error(leftBracketError)
     }
 
     const functions: Record<string, AccessCondition> = {}
     while( !match(TokenType.RightBracket) ) {
       if( match(TokenType.AttributeName, 'include') ) {
-        const {error: attributeNameError} =consume(TokenType.AttributeName)   
+        const { error: attributeNameError } = consume(TokenType.AttributeName)
         if(attributeNameError){
           return Result.error(attributeNameError)
         }
 
-        const {error:LeftParensError} = consume(TokenType.LeftParens)
-        if(LeftParensError){
-          return Result.error(LeftParensError)
+        const { error: leftParensError } = consume(TokenType.LeftParens)
+        if(leftParensError){
+          return Result.error(leftParensError)
         }
 
-        const{error, result} = consume(TokenType.Identifier)
+        const{ error, result } = consume(TokenType.Identifier)
         if(error){
           return Result.error(error)
         }
@@ -523,18 +522,17 @@ export const parse = (tokens: Token[]) => {
         if( !functionset ) {
           return Result.error({
             message: `functionset "${functionSetName} not found"`,
-            location:{
-              line:tokens[current].line,
-              index:tokens[current].index,
-              start:0,
-              end:0
-            }
-          }
-          )
+            location: {
+              line: tokens[current].line,
+              index: tokens[current].index,
+              start: tokens[current].start,
+              end: tokens[current].end,
+            },
+          })
         }
 
         Object.assign(functions, functionset.functions)
-        const {error: rightParensError} = consume(TokenType.RightParens)
+        const { error: rightParensError } = consume(TokenType.RightParens)
         if(rightParensError){
           return Result.error(rightParensError)
         }
@@ -542,7 +540,7 @@ export const parse = (tokens: Token[]) => {
         continue
       }
 
-      const{error, result} = consume(TokenType.Identifier)
+      const{ error, result } = consume(TokenType.Identifier)
       if(error){
         return Result.error(error)
       }
@@ -551,7 +549,7 @@ export const parse = (tokens: Token[]) => {
       functions[functionName] = false
 
       while( match(TokenType.AttributeName, 'expose') ) {
-        const {error: attributeNameError} = consume(TokenType.AttributeName, 'expose')
+        const { error: attributeNameError } = consume(TokenType.AttributeName, 'expose')
         if(attributeNameError){
           return Result.error(attributeNameError)
         }
@@ -559,25 +557,25 @@ export const parse = (tokens: Token[]) => {
       }
     }
 
-    const {error: rightBError} = consume(TokenType.RightBracket)
-    if(rightBError){
-      return Result.error(rightBError)
+    const { error: rightBracketError } = consume(TokenType.RightBracket)
+    if(rightBracketError){
+      return Result.error(rightBracketError)
     }
     return Result.result(functions)
   }
 
   const consumeFunctionSet = (ast: AST.Node[]): Result.Either<Diagnostic,AST.FunctionSetNode> => {
-    const {error: keywordError} = consume(TokenType.Keyword, 'functionset')
+    const { error: keywordError } = consume(TokenType.Keyword, 'functionset')
     if(keywordError){
       return Result.error(keywordError)
     }
-    const {error, result} = consume(TokenType.Identifier)
+    const { error, result } = consume(TokenType.Identifier)
     if(error){
       return Result.error(error)
     }
     const name = result.value
 
-    const {error: functionBlockError, result:functionBlock } = consumeFunctionsBlock(ast)
+    const { error: functionBlockError, result: functionBlock } = consumeFunctionsBlock(ast)
     if(functionBlockError){
       return Result.error(functionBlockError)
     }
@@ -597,7 +595,7 @@ export const parse = (tokens: Token[]) => {
 
     switch( declType ) {
       case 'collection': {
-        const{error, result} = consumeCollection(ast)
+        const{ error, result } = consumeCollection(ast)
         if(error){
           return Result.error(error)
         }
@@ -605,7 +603,7 @@ export const parse = (tokens: Token[]) => {
         break
       }
       case 'contract': {
-        const{error, result} = consumeContract()
+        const{ error, result } = consumeContract()
         if(error){
           return Result.error(error)
         }
@@ -613,7 +611,7 @@ export const parse = (tokens: Token[]) => {
         break
       }
       case 'functionset': {
-        const{error, result} = consumeFunctionSet(ast)
+        const{ error, result } = consumeFunctionSet(ast)
         if(error){
           return Result.error(error)
         }
@@ -623,14 +621,13 @@ export const parse = (tokens: Token[]) => {
       default:
         return Result.error({
           message: `invalid declaration type: "${declType}"`,
-          location:{
-            line:tokens[current].line,
-            index:tokens[current].index,
-            start:0,
-            end:0
-          }
-        }
-        )
+          location: {
+            line: tokens[current].line,
+            index: tokens[current].index,
+            start: tokens[current].start,
+            end: tokens[current].end,
+          },
+        })
     }
   }
 

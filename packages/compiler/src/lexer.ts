@@ -1,5 +1,8 @@
+import { Result } from '@aeriajs/types'
+import { type Diagnostic } from './diagnostic'
+
 export enum TokenType {
-  LineBreak = "LINE_BREAK",
+  LineBreak = 'LINE_BREAK',
   Comment = 'COMMENT',
   LeftBracket = 'LEFT_BRACKET',
   RightBracket = 'RIGHT_BRACKET',
@@ -15,7 +18,7 @@ export enum TokenType {
   Keyword = 'KEYWORD',
   Identifier = 'IDENTIFIER',
   QuotedString = 'QUOTED_STRING',
-  AttributeName = 'ATTRIBUTE_NAME'  
+  AttributeName = 'ATTRIBUTE_NAME',
 }
 
 export type TokenConfig = {
@@ -32,7 +35,9 @@ export type TokenConfig = {
 export type Token = {
   type: TokenType
   index: number
-  line:number
+  line: number
+  start: number
+  end: number
   value: string
 }
 
@@ -43,7 +48,7 @@ const TOKENS: TokenConfig[] = [
   },
   {
     type: TokenType.LineBreak,
-    matcher:'\n'
+    matcher: '\n',
   },
   {
     type: TokenType.Comment,
@@ -127,12 +132,15 @@ const TOKENS: TokenConfig[] = [
   },
 ]
 
-export const tokenize = function *(input: string): Generator<Token> {
+export const tokenize = function (input: string): Result.Either<Diagnostic,Token[]> {
   let index = 0
+  let end = 0
+  let start = 0
   let line = 1
+  const tokens: Token[] = []
   while( index < input.length ) {
     let hasMatch = false
-    
+
     for( const { type, matcher, valueExtractor } of TOKENS ) {
       let value: string | undefined
 
@@ -155,11 +163,14 @@ export const tokenize = function *(input: string): Generator<Token> {
       }
       if( value ) {
         index += value.length
-
+        end += value.length
+        start = end - value.length
         switch( type ) {
           case null: break
-          case TokenType.LineBreak: 
-            line++ 
+          case TokenType.LineBreak:
+            line++
+            end = 0
+            start = 0
             break
           case TokenType.Comment: {
             while( input[index++] !== '\n' ) {}
@@ -167,21 +178,24 @@ export const tokenize = function *(input: string): Generator<Token> {
           }
           default: {
             if( valueExtractor ) {
-              yield {
+              tokens.push({
                 type,
                 index,
                 line,
+                start,
+                end,
                 value: valueExtractor(value),
-              }
+              })
               continue
             }
-
-            yield {
+            tokens.push({
               type,
               index,
               line,
+              start,
+              end,
               value,
-            }
+            })
           }
         }
 
@@ -190,8 +204,17 @@ export const tokenize = function *(input: string): Generator<Token> {
     }
 
     if( !hasMatch ) {
-      throw new Error(`unexpected token at index "${index}"`)
+      return Result.error({
+        message: 'unexpected token',
+        location: {
+          index: index,
+          line: line,
+          start: start,
+          end: end,
+        },
+      })
     }
   }
+  return Result.result(tokens)
 }
 
