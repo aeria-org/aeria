@@ -1,16 +1,19 @@
 import { tokenize } from './lexer'
 import { parse } from './parser'
 import { generateCode } from './codegen'
+import { Result } from '@aeriajs/types'
 
 export const compile = (input: string) => {
-  const tokens = tokenize(input)
+  const { error: tokenizeError, result: tokens } = tokenize(input)
+  if(tokenizeError){
+    return Result.error(tokenizeError)
+  }
 
   const ast = parse(Array.from(tokens))
   return generateCode(ast)
 }
 
-const inputCode = `
-functionset Readable {
+const inputCode = `functionset Readable {
   get
   getAll @expose
 }
