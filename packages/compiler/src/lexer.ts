@@ -32,12 +32,16 @@ export type TokenConfig = {
   valueExtractor?: (value: string) => string
 }
 
+export type Location = {
+  index:number
+  line:number
+  start:number
+  end:number
+}
+
 export type Token = {
   type: TokenType
-  index: number
-  line: number
-  start: number
-  end: number
+  location:Location
   value: string
 }
 
@@ -134,13 +138,12 @@ const TOKENS: TokenConfig[] = [
 
 export const tokenize = function (input: string): Result.Either<Diagnostic,Token[]> {
   let index = 0
-  let end = 0
-  let start = 0
   let line = 1
+  let start = 0
+  let end = 0
   const tokens: Token[] = []
   while( index < input.length ) {
     let hasMatch = false
-
     for( const { type, matcher, valueExtractor } of TOKENS ) {
       let value: string | undefined
 
@@ -162,9 +165,12 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
         }
       }
       if( value ) {
-        index += value.length
-        end += value.length
-        start = end - value.length
+        const location: Location = {
+          index: index += value.length,
+          line: line,
+          end: end += value.length,
+          start: start = end - value.length
+        }
         switch( type ) {
           case null: break
           case TokenType.LineBreak:
@@ -180,20 +186,14 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
             if( valueExtractor ) {
               tokens.push({
                 type,
-                index,
-                line,
-                start,
-                end,
+                location,
                 value: valueExtractor(value),
               })
               continue
             }
             tokens.push({
               type,
-              index,
-              line,
-              start,
-              end,
+              location,
               value,
             })
           }
@@ -207,10 +207,10 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
       return Result.error({
         message: 'unexpected token',
         location: {
-          index: index,
-          line: line,
-          start: start,
-          end: end,
+          index,
+          line,
+          start,
+          end,
         },
       })
     }
