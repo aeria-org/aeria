@@ -3,7 +3,7 @@ import { TokenType, type Token } from './lexer'
 
 import * as AST from './ast'
 import * as guards from './guards'
-import { makeLocation, type Diagnostic } from './diagnostic'
+import { type Diagnostic } from './diagnostic'
 
 export const parse = (tokens: Token[]) => {
   let current = 0
@@ -31,7 +31,7 @@ export const parse = (tokens: Token[]) => {
       message: `expected "${expected}"${value
         ? ` with value "${value}"`
         : ''} but found "${token.type}" instead`,
-      location: makeLocation(token),
+      location: token.location,
     })
   }
 
@@ -111,7 +111,7 @@ export const parse = (tokens: Token[]) => {
           default:
             return Result.error({
               message: `invalid keyword "${keyword}"`,
-              location: makeLocation(tokens[current]),
+              location: tokens[current].location,
             })
         }
       }
@@ -148,7 +148,7 @@ export const parse = (tokens: Token[]) => {
         if( !collection ) {
           return Result.error({
             message: `invalid reference "${identifier}"`,
-            location: makeLocation(token),
+            location: token.location,
           })
         }
 
@@ -204,7 +204,7 @@ export const parse = (tokens: Token[]) => {
       if( !guards.isValidPropertyModifier(modifier) ) {
         return Result.error({
           message: `invalid modifier: "${modifier}"` as never,
-          location: makeLocation(tokens[current]),
+          location: tokens[current].location,
         })
         //throw new Error(`invalid modifier: "${modifier}"`)
       }
@@ -381,7 +381,7 @@ export const parse = (tokens: Token[]) => {
         default:
           return Result.error({
             message: `invalid token "${keyword}"`,
-            location: makeLocation(tokens[current]),
+            location: tokens[current].location,
           })
       }
     }
@@ -497,7 +497,7 @@ export const parse = (tokens: Token[]) => {
         if( !functionset ) {
           return Result.error({
             message: `functionset "${functionSetName} not found"`,
-            location: makeLocation(tokens[current]),
+            location: tokens[current].location,
           })
         }
 
@@ -591,7 +591,7 @@ export const parse = (tokens: Token[]) => {
       default:
         return Result.error({
           message: `invalid declaration type: "${declType}"`,
-          location: makeLocation(tokens[current]),
+          location: tokens[current].location,
         })
     }
   }

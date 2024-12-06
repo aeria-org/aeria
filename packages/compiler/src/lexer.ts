@@ -167,7 +167,7 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
       if( value ) {
         const location: Location = {
           index: index += value.length,
-          line: line,
+          line,
           end: end += value.length,
           start: start = end - value.length
         }
