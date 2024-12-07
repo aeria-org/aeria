@@ -33,15 +33,15 @@ export type TokenConfig = {
 }
 
 export type Location = {
-  index:number
-  line:number
-  start:number
-  end:number
+  index: number
+  line: number
+  start: number
+  end: number
 }
 
 export type Token = {
   type: TokenType
-  location:Location
+  location: Location
   value: string
 }
 
@@ -169,7 +169,7 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
           index: index += value.length,
           line,
           end: end += value.length,
-          start: start = end - value.length
+          start: start = end - value.length,
         }
         switch( type ) {
           case null: break
