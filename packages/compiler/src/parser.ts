@@ -27,7 +27,7 @@ export const parse = (tokens: Token[]) => {
       current++
       return Result.result(token)
     }
-    console.log(token)
+
     return Result.error({
       message: `expected "${expected}"${value
         ? ` with value "${value}"`
@@ -517,22 +517,24 @@ export const parse = (tokens: Token[]) => {
         continue
       }
 
-      const{ error, result: token } = consume(TokenType.Identifier)
+      const{ error, result } = consume(TokenType.Identifier)
       if(error){
         return Result.error(error)
       }
 
-      functions[token.value] = {
+      const functionName = result.value
+
+      functions[functionName] = {
         accessCondition: false,
       }
 
       while( match(TokenType.AttributeName, 'expose') ) {
-        const { error: attributeNameError, result: token } = consume(TokenType.AttributeName, 'expose')
+        const { error: attributeNameError } = consume(TokenType.AttributeName, 'expose')
         if(attributeNameError){
           return Result.error(attributeNameError)
         }
 
-        functions[token.value] = {
+        functions[functionName] = {
           accessCondition: true,
         }
       }
