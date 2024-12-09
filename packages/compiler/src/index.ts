@@ -1,4 +1,4 @@
-import { tokenize } from './lexer'
+import { tokenize } from './lexer.js'
 import { parse } from './parser'
 import { generateCode } from './codegen'
 import { Result } from '@aeriajs/types'
