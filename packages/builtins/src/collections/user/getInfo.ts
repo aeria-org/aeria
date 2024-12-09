@@ -1,14 +1,13 @@
 import type { Context } from '@aeriajs/types'
 import type { description } from './description.js'
-import * as bcrypt from 'bcrypt'
 import { Result, HTTPStatus } from '@aeriajs/types'
-import { ObjectId } from '@aeriajs/core'
-import { getActivationToken } from './getActivationLink.js'
+import { decodeToken, ObjectId } from '@aeriajs/core'
 
 export enum ActivationError {
   UserNotFound = 'USER_NOT_FOUND',
   AlreadyActiveUser = 'ALREADY_ACTIVE_USER',
   InvalidLink = 'INVALID_LINK',
+  InvalidToken = 'INVALID_TOKEN'
 }
 
 export const getInfo = async (
@@ -43,13 +42,10 @@ export const getInfo = async (
       code: ActivationError.AlreadyActiveUser,
     })
   }
-
-  const activationToken = await getActivationToken(user._id.toString(), context)
-  const equal = await bcrypt.compare(activationToken, token)
-
-  if( !equal ) {
-    return context.error(HTTPStatus.NotFound, {
-      code: ActivationError.InvalidLink,
+  const decoded = await decodeToken(token, context.config.secret).catch(console.trace)
+  if(!decoded){
+    return context.error(HTTPStatus.Unauthorized, {
+      code: ActivationError.InvalidToken
     })
   }
 

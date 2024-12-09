@@ -15,6 +15,7 @@ type Props = {
 }
 
 export const authenticate = async (props: Props, context: Context<typeof description>) => {
+  
   if( 'revalidate' in props ) {
     const { token } = props
     if( !token && !context.token.authenticated ) {
