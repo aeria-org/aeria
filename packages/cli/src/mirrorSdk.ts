@@ -4,7 +4,7 @@ import { Result } from '@aeriajs/types'
 
 export const mirrorSdk = async (defaultConfig?: Partial<InstanceConfig>) => {
   try {
-    const { getConfig } = await import('aeria-sdk/utils')
+    const { getConfig } = await import('aeria-sdk/config')
     const { writeMirrorFiles } = await import('aeria-sdk/mirror')
 
     const response = await builtinFunctions.describe({

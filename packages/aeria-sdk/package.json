@@ -35,28 +35,10 @@
       "types": "./dist/index.d.ts"
     },
     "./next": "./dist/index.js",
-    "./types": {
-      "types": "./types.d.ts"
-    },
-    "./http": {
-      "import": "./dist/http.mjs",
-      "require": "./dist/http.js",
-      "types": "./dist/http.d.ts"
-    },
-    "./storage": {
-      "import": "./dist/storage.mjs",
-      "require": "./dist/storage.js",
-      "types": "./dist/storage.d.ts"
-    },
-    "./topLevel": {
-      "import": "./dist/topLevel.mjs",
-      "require": "./dist/topLevel.js",
-      "types": "./dist/topLevel.d.ts"
-    },
-    "./utils": {
-      "import": "./dist/utils.mjs",
-      "require": "./dist/utils.js",
-      "types": "./dist/utils.d.ts"
+    "./config": {
+      "import": "./dist/config.mjs",
+      "require": "./dist/config.js",
+      "types": "./dist/config.d.ts"
     },
     "./mirror": {
       "import": "./dist/mirror.mjs",
