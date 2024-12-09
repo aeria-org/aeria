@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.157
+
+### Patch Changes
+
+- 62f3730: Remove NodeJS code from bundle
+
 ## 0.0.156
 
 ### Patch Changes
