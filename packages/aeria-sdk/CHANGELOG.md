@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.158
+
+### Patch Changes
+
+- 8cd5493: Add missing specifiers
+
 ## 0.0.157
 
 ### Patch Changes
