@@ -40,6 +40,11 @@
       "require": "./dist/config.js",
       "types": "./dist/config.d.ts"
     },
+    "./http": {
+      "import": "./dist/http.mjs",
+      "require": "./dist/http.js",
+      "types": "./dist/http.d.ts"
+    },
     "./mirror": {
       "import": "./dist/mirror.mjs",
       "require": "./dist/mirror.js",
