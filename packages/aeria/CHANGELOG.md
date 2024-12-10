@@ -1,5 +1,12 @@
 # aeria
 
+## 0.0.231
+
+### Patch Changes
+
+- Updated dependencies [8cd5493]
+  - @aeriajs/cli@0.0.162
+
 ## 0.0.230
 
 ### Patch Changes

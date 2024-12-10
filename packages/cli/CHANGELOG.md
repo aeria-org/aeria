@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.162
+
+### Patch Changes
+
+- 8cd5493: Add missing specifiers
+
 ## 0.0.161
 
 ### Patch Changes

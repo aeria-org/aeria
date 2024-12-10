@@ -1,4 +1,4 @@
-import type { AccessCondition, Collection } from '@aeriajs/types'
+import type { AccessCondition, Collection, Context } from '@aeriajs/types'
 import { defineCollection, get, getAll, remove, upload, removeFile } from '@aeriajs/core'
 import { description } from './description.js'
 import { authenticate } from './authenticate.js'
@@ -41,7 +41,12 @@ const exposedFunctions: Record<keyof typeof functions, AccessCondition> = {
 
 export const user = defineCollection({
   description,
-  functions,
+  functions: functions as {
+    [P in keyof typeof functions]: (
+      payload: Parameters<typeof functions[P]>[0],
+      context: Omit<Context, 'token'>
+    ) => ReturnType<typeof functions[P]>
+  },
 })
 
 Object.assign(user, {
