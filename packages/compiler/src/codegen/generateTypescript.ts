@@ -70,7 +70,7 @@ const makeTSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>
   return Object.keys(functions).reduce<Record<string, string>>((acc, key) => {
     acc[key] = functions[key].fromFunctionSet
       ? `typeof ${key}`
-      : 'never'
+      : '() => never'
     return acc
   }, {})
 }

@@ -10,7 +10,11 @@ export const compile = (input: string) => {
   }
 
   const ast = parse(Array.from(tokens))
-  return generateCode(ast)
+  if (Array.isArray(ast)) {
+    return generateCode(ast)
+  }
+
+  return ast
 }
 
 const inputCode = `functionset Readable {

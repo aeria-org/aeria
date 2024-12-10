@@ -21,11 +21,11 @@ export const parse = (tokens: Token[]) => {
     return false
   }
 
-  const consume = (expected: TokenType, value?: string): Result.Either<Diagnostic, Token> => {
+  const consume = <TTokenType extends TokenType>(expected: TTokenType, value?: string): Result.Either<Diagnostic, Token<TTokenType>> => {
     const token = tokens[current]
     if( match(expected, value) ) {
       current++
-      return Result.result(token)
+      return Result.result(token as Token<TTokenType>)
     }
 
     return Result.error({
@@ -345,19 +345,19 @@ export const parse = (tokens: Token[]) => {
 
       switch( keyword ) {
         case 'owned': {
-          let value: string
+          let value: string | boolean
           if( match(TokenType.QuotedString, 'on-write') ) {
-            const{ error, result } = consume(TokenType.QuotedString)
+            const{ error, result: stringToken } = consume(TokenType.QuotedString)
             if(error){
               return Result.error(error)
             }
-            value = result.value
+            value = stringToken.value
           } else {
-            const{ error, result } = consume(TokenType.Boolean)
+            const{ error, result: booleanToken } = consume(TokenType.Boolean)
             if(error){
               return Result.error(error)
             }
-            value = result.value
+            value = booleanToken.value
           }
 
           node.owned = value === 'true'

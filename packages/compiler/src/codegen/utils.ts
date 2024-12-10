@@ -1,5 +1,5 @@
 import type * as AST from '../ast'
-import { functions as aeriaFunctions } from 'aeria'
+import { functions as aeriaFunctions, type Property } from 'aeria'
 
 export const aeriaPackageName = 'aeria'
 
@@ -39,15 +39,15 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
   }, initialImports ?? {})
 
   return {
-    code: Object.keys(toImport).map((key) => `import { ${[...toImport[key]].join(', ')} } from '${key}'`),
+    code: Object.keys(toImport).map((key) => `import { ${Array.from(toImport[key]).join(', ')} } from '${key}'`),
     modifiedSymbols,
   }
 }
 
 /** Transforms the AST properties to the format of aeria schema properties */
 export const getCollectionProperties = (properties: AST.CollectionNode['properties']) => {
-  return Object.entries(properties).reduce<Record<string, any>>((acc, [key, value]) => {
-    if (value.nestedProperties) {
+  return Object.entries(properties).reduce<Record<string, Property>>((acc, [key, value]) => {
+    if ( 'properties' in value.property && value.nestedProperties ) {
       acc[key] = {
         ...value.property,
         properties: getCollectionProperties(value.nestedProperties),
@@ -59,13 +59,17 @@ export const getCollectionProperties = (properties: AST.CollectionNode['properti
   }, {})
 }
 
+const isNotJSONSerializable = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && !Array.isArray(value)
+}
+
 /** Assure if specific fields needs to be between quotes or not */
-export const stringify = (node: Record<string, any>, parents: string[] = []) => {
-  if (typeof node !== 'object' || Array.isArray(node)) {
-    return JSON.stringify(node)
+export const stringify = (value: unknown, parents: string[] = []) => {
+  if ( !isNotJSONSerializable(value) ) {
+    return JSON.stringify(value)
   }
 
-  const objectString: string = Object.keys(node).map((key) => {
+  const objectString: string = Object.keys(value).map((key) => {
     const currentParents = [
       ...parents,
       key,
@@ -73,30 +77,16 @@ export const stringify = (node: Record<string, any>, parents: string[] = []) => 
 
     const prefix = '\t'.repeat(currentParents.length)
 
-    return !betweenQuotes(currentParents, String(node[key]))
-      ? `${prefix}${key}: ${stringify(node[key], currentParents).replaceAll('"', '')}`
-      : `${prefix}${key}: ${stringify(node[key], currentParents)}`
+    return !betweenQuotes(currentParents, String(value[key]))
+      ? `${prefix}${key}: ${stringify(value[key], currentParents).replaceAll('"', '')}`
+      : `${prefix}${key}: ${stringify(value[key], currentParents)}`
   }).join(',\n')
 
   return `{\n${objectString}\n${'\t'.repeat(parents.length)}}`
 }
 
-const booleanValues = [
-  'true',
-  'false',
-]
-
-const nonStringAttributes = [
-  'minimum',
-  'maximum',
-  'exclusiveMinimum',
-  'exclusiveMaximum',
-  'default',
-  'functions',
-]
-
 const betweenQuotes = (parents: string[], value: string) =>
-  !value.includes('typeof') && !booleanValues.includes(value) && !parents.some((parent) => nonStringAttributes.includes(parent))
+  !value.includes('typeof') && !parents.includes('functions')
 
 /** Used to make the id and the schema name of the collection */
 export const resizeFirstChar = (name: string, capitalize: boolean): string => name.charAt(0)[capitalize

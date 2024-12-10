@@ -53,10 +53,9 @@ export const animal = defineCollection({
 					}
 				}
 			}
-		},
-		owned: true
+		}
 	},
-	functions: {get, getAll, expose, insert, remove, removeAll, custom}
+	functions: { get, getAll, insert, remove, removeAll, custom: () => { throw new Error('Function not implemented') } }
 })
 export const extendAnimalCollection = (collection) => extendCollection(animal, collection)
 

@@ -7,28 +7,27 @@ type SymbolToExport = {
   extend: string
 }
 
-//FilePath: CodeGenerator
-const codeGenerators = {
-  // eslint-disable-next-line
-    '/out/collections/index.js': (symbols: SymbolToExport[]) =>
-    `export { ${symbols.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
+//[FilePath, CodeGenerator]
+const codeGenerators = new Map<string, (symbols: SymbolToExport[]) => string>([
+  [
+    '/out/collections/index.js',
+    (symbols: SymbolToExport[]) => `export { ${symbols.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
+  ],
 
-  // eslint-disable-next-line
-    '/out/collections/index.d.ts': (symbols: SymbolToExport[]) =>
-    `export { ${symbols.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
+  [
+    '/out/index.d.ts',
+    (symbols: SymbolToExport[]) =>
+      'export * as collections from \'./collections/index.js\'\n' +
+            `export { ${symbols.map((symbol) => `${symbol.extend}, ${symbol.schema}`).join(', ')} } from './collections/collections.js'`,
+  ],
 
-  // eslint-disable-next-line
-    '/out/index.d.ts': (symbols: SymbolToExport[]) => {
-    return 'export * as collections from \'./collections/index.js\'\n' +
-            `export { ${symbols.map((symbol) => `${symbol.extend}, ${symbol.schema}`).join(', ')} } from './collections/collections.js'`
-  },
-
-  // eslint-disable-next-line
-    '/out/index.js': (symbols: SymbolToExport[]) => {
-    return 'export * as collections from \'./collections/index.js\'\n' +
-            `export { ${symbols.map((symbol) => symbol.extend).join(', ')} } from './collections/collections.js'`
-  },
-}
+  [
+    '/out/index.js',
+    (symbols: SymbolToExport[]) =>
+      'export * as collections from \'./collections/index.js\'\n' +
+            `export { ${symbols.map((symbol) => symbol.extend).join(', ')} } from './collections/collections.js'`,
+  ],
+])
 
 export const generateExports = (ast: AST.Node[]) => {
   const symbolsToExport = ast.filter((node) => node.type === 'collection')
@@ -38,9 +37,9 @@ export const generateExports = (ast: AST.Node[]) => {
       extend: getExtendName(node.name),
     }))
 
-  return (Object.keys(codeGenerators) as Array<keyof typeof codeGenerators>)
+  return Object.keys(codeGenerators)
     .reduce((acc, current) => {
-      acc[current] = codeGenerators[current](symbolsToExport)
+      acc[current] = codeGenerators.get(current)!(symbolsToExport)
       return acc
     }, {} as any) as Record<keyof typeof codeGenerators, string>
 }

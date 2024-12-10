@@ -51,10 +51,12 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
     }),
   },
   ...(collectionNode.functions && {
-    functions: `{${makeJSFunctions(collectionNode.functions)}}`,
+    functions: `{ ${makeJSFunctions(collectionNode.functions)} }`,
   }),
 })
 
 const makeJSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
-  return Object.keys(functions).join(', ')
+  return Object.entries(functions).map(([key, value]) => value.fromFunctionSet
+    ? key
+    : `${key}: () => { throw new Error('Function not implemented') }`).join(', ')
 }
