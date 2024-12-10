@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.161
+
+### Patch Changes
+
+- fce1249: Update dynamic imports
+
 ## 0.0.160
 
 ### Patch Changes
