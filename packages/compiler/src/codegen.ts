@@ -15,7 +15,7 @@ export const generateCode = (ast: AST.Node[]) => {
   fs.writeFileSync('./.aeria-test/out/collections/collections.js', javascript)
 
   for (const path in exports) {
-    fs.writeFileSync('./.aeria-test/' + path, exports[path as keyof typeof exports])
+    fs.writeFileSync('./.aeria-test/' + path, exports[path])
   }
 
   return ast
