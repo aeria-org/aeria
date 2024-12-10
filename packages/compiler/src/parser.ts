@@ -36,6 +36,15 @@ export const parse = (tokens: Token[]) => {
     })
   }
 
+  const { result: num } = consume(TokenType.Number)
+  const { result: bool } = consume(TokenType.Boolean)
+  if( !num ) throw new Error
+  if( !bool ) throw new Error
+
+  num.value
+  bool.value
+  
+
   const consumeArray = (type: TokenType) => {
     const { error: leftBracketError } = consume(TokenType.LeftSquareBracket)
     if(leftBracketError){
