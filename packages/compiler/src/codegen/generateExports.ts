@@ -30,16 +30,16 @@ const codeGenerators = new Map<string, (symbols: SymbolToExport[]) => string>([
 ])
 
 export const generateExports = (ast: AST.Node[]) => {
-  const symbolsToExport = ast.filter((node) => node.type === 'collection')
-    .map<SymbolToExport>((node) => ({
-      id: resizeFirstChar(node.name, false),
-      schema: resizeFirstChar(node.name, true),
-      extend: getExtendName(node.name),
-    }))
+  const symbolsToExport = ast.filter((node) => node.type === 'collection').map<SymbolToExport>((node) => ({
+    id: resizeFirstChar(node.name, false),
+    schema: resizeFirstChar(node.name, true),
+    extend: getExtendName(node.name),
+  }))
 
-  return Object.keys(codeGenerators)
-    .reduce<Record<string, string>>((acc, current) => {
-      acc[current] = codeGenerators.get(current)!(symbolsToExport)
-      return acc
-    }, {})
+  const statements: Record<string, string> = {}
+  for( const [name, fn] of codeGenerators.entries() ) {
+    statements[name] = fn(symbolsToExport)
+  }
+
+  return statements
 }

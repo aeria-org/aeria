@@ -1,6 +1,6 @@
 import type * as AST from '../ast'
 import { makeASTImports, resizeFirstChar, getCollectionProperties, stringify, aeriaPackageName, getExtendName } from './utils'
-import type aeria from 'aeria'
+import aeria from 'aeria'
 
 const initialImportedFunctions = [
   'extendCollection',
