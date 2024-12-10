@@ -21,6 +21,11 @@ export enum TokenType {
   AttributeName = 'ATTRIBUTE_NAME',
 }
 
+export type TypeMap = {
+  [TokenType.Number]: number
+  [TokenType.Boolean]: boolean
+}
+
 export type TokenConfig = {
   type:
     | TokenType
@@ -30,6 +35,7 @@ export type TokenConfig = {
     | string
     | string[]
   valueExtractor?: (value: string) => string
+  construct?: (value: string) => Token['value']
 }
 
 export type Location = {
@@ -39,10 +45,12 @@ export type Location = {
   end: number
 }
 
-export type Token = {
-  type: TokenType
+export type Token<TTokenType extends TokenType = TokenType> = {
+  type: TTokenType
   location: Location
-  value: string
+  value: TTokenType extends keyof TypeMap
+    ? TypeMap[TTokenType]
+    : string
 }
 
 const TOKENS: TokenConfig[] = [
@@ -97,6 +105,7 @@ const TOKENS: TokenConfig[] = [
   {
     type: TokenType.Number,
     matcher: /[0-9]+(\.[0-9]+)?/,
+    construct: (value) => Number(value),
   },
   {
     type: TokenType.Boolean,
@@ -104,6 +113,7 @@ const TOKENS: TokenConfig[] = [
       'true',
       'false',
     ],
+    construct: (value) => Boolean(value),
   },
   {
     type: TokenType.Keyword,
@@ -144,7 +154,7 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
   const tokens: Token[] = []
   while( index < input.length ) {
     let hasMatch = false
-    for( const { type, matcher, valueExtractor } of TOKENS ) {
+    for( const { type, matcher, valueExtractor, construct } of TOKENS ) {
       let value: string | undefined
 
       if( typeof matcher === 'string' ) {
@@ -187,14 +197,18 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
               tokens.push({
                 type,
                 location,
-                value: valueExtractor(value),
+                value: construct
+                  ? construct(valueExtractor(value))
+                  : valueExtractor(value),
               })
               continue
             }
             tokens.push({
               type,
               location,
-              value,
+              value: construct
+                ? construct(value)
+                : value,
             })
           }
         }

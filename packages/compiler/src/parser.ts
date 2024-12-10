@@ -1,4 +1,5 @@
-import { type Property, type AccessCondition, Result } from '@aeriajs/types'
+import type { Property } from '@aeriajs/types'
+import { Result } from '@aeriajs/types'
 import { TokenType, type Token } from './lexer'
 
 import * as AST from './ast'
@@ -20,13 +21,13 @@ export const parse = (tokens: Token[]) => {
     return false
   }
 
-  const consume = (expected: TokenType, value?: string): Result.Either<Diagnostic, Token> => {
+  const consume = <TTokenType extends TokenType>(expected: TTokenType, value?: string): Result.Either<Diagnostic, Token<TTokenType>> => {
     const token = tokens[current]
     if( match(expected, value) ) {
       current++
-      return Result.result(token)
+      return Result.result(token as Token<TTokenType>)
     }
-    console.log(token)
+
     return Result.error({
       message: `expected "${expected}"${value
         ? ` with value "${value}"`
@@ -344,19 +345,19 @@ export const parse = (tokens: Token[]) => {
 
       switch( keyword ) {
         case 'owned': {
-          let value: string
+          let value: string | boolean
           if( match(TokenType.QuotedString, 'on-write') ) {
-            const{ error, result } = consume(TokenType.QuotedString)
+            const{ error, result: stringToken } = consume(TokenType.QuotedString)
             if(error){
               return Result.error(error)
             }
-            value = result.value
+            value = stringToken.value
           } else {
-            const{ error, result } = consume(TokenType.Boolean)
+            const{ error, result: booleanToken } = consume(TokenType.Boolean)
             if(error){
               return Result.error(error)
             }
-            value = result.value
+            value = booleanToken.value
           }
 
           node.owned = value === 'true'
@@ -463,13 +464,13 @@ export const parse = (tokens: Token[]) => {
     return Result.result(node)
   }
 
-  const consumeFunctionsBlock = (ast: AST.Node[]): Result.Either<Diagnostic,Record<string, AccessCondition>> => {
+  const consumeFunctionsBlock = (ast: AST.Node[]) => {
     const { error: leftBracketError } = consume(TokenType.LeftBracket)
     if(leftBracketError){
       return Result.error(leftBracketError)
     }
 
-    const functions: Record<string, AccessCondition> = {}
+    const functions: AST.CollectionNode['functions'] = {}
     while( !match(TokenType.RightBracket) ) {
       if( match(TokenType.AttributeName, 'include') ) {
         const { error: attributeNameError } = consume(TokenType.AttributeName)
@@ -501,7 +502,13 @@ export const parse = (tokens: Token[]) => {
           })
         }
 
-        Object.assign(functions, functionset.functions)
+        for (const key in functionset.functions) {
+          functions[key] = {
+            accessCondition: functionset.functions[key].accessCondition,
+            fromFunctionSet: true,
+          }
+        }
+
         const { error: rightParensError } = consume(TokenType.RightParens)
         if(rightParensError){
           return Result.error(rightParensError)
@@ -516,14 +523,20 @@ export const parse = (tokens: Token[]) => {
       }
 
       const functionName = result.value
-      functions[functionName] = false
+
+      functions[functionName] = {
+        accessCondition: false,
+      }
 
       while( match(TokenType.AttributeName, 'expose') ) {
         const { error: attributeNameError } = consume(TokenType.AttributeName, 'expose')
         if(attributeNameError){
           return Result.error(attributeNameError)
         }
-        functions[functionName] = true
+
+        functions[functionName] = {
+          accessCondition: true,
+        }
       }
     }
 
@@ -531,6 +544,7 @@ export const parse = (tokens: Token[]) => {
     if(rightBracketError){
       return Result.error(rightBracketError)
     }
+
     return Result.result(functions)
   }
 
