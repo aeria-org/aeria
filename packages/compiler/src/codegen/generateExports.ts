@@ -38,8 +38,8 @@ export const generateExports = (ast: AST.Node[]) => {
     }))
 
   return Object.keys(codeGenerators)
-    .reduce((acc, current) => {
+    .reduce<Record<string, string>>((acc, current) => {
       acc[current] = codeGenerators.get(current)!(symbolsToExport)
       return acc
-    }, {} as any) as Record<keyof typeof codeGenerators, string>
+    }, {})
 }
