@@ -35,7 +35,7 @@ export type TokenConfig = {
     | string
     | string[]
   valueExtractor?: (value: string) => string
-  construct?: (value: string) => any
+  construct?: (value: string) => Token['value']
 }
 
 export type Location = {
