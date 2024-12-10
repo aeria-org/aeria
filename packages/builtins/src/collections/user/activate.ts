@@ -12,25 +12,18 @@ export enum ActivationError {
 }
 
 export const activate = async (
-  payload: {
-    password: string
+  payload:{
+    password?: string
+    userId?:string
+    token?:string
   },
-  context: Context<typeof description> & {
-    request: {
-      query: {
-        u?: string
-        t?: string
-      }
-      payload: {
-        password?: string
-      }
-    }
-  },
+  context: Context<typeof description>
 ) => {
   const {
-    u: userId,
-    t: token,
-  } = context.request.query
+    userId,
+    token,
+    password
+  } = payload
 
   if( !context.config.secret ) {
     throw new Error('config.secret is not set')
@@ -68,7 +61,7 @@ export const activate = async (
   }
 
   if( !user.password ) {
-    if( !payload.password ) {
+    if( !password ) {
       if( context.request.method === 'GET' ) {
         return context.response.writeHead(302, {
           location: `/user/activation?step=password&u=${userId}&t=${token}`,
@@ -87,7 +80,7 @@ export const activate = async (
       {
         $set: {
           active: true,
-          password: await bcrypt.hash(payload.password, 10),
+          password: await bcrypt.hash(password, 10),
         },
       },
     )

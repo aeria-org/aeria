@@ -14,7 +14,7 @@ export const getActivationToken = async (strId: string, context: Context) => {
   const token = await signToken({data:strId}, context.config.secret, {
     expiresIn: context.config.security.tokenExpiration
   })
-  //return `${context.config.secret}:${strId}`
+  
   return token
 }
 
@@ -36,7 +36,6 @@ export const getActivationLink = async (payload: { userId: ObjectId | string }, 
   }
 
   const activationToken = await getActivationToken(payload.userId.toString(), context)
-  //const encryptedActivationToken = await bcrypt.hash(activationToken, 10)
 
   const url = `${context.config.publicUrl}/user/activate?u=${payload.userId.toString()}&t=${activationToken}`
 
