@@ -36,13 +36,13 @@ const exposedFunctions: Record<keyof typeof functions, AccessCondition> = {
   removeFile: true,
   insert: true,
   authenticate: 'unauthenticated',
-  activate: 'unauthenticated',
+  activate: ['unauthenticated', 'root'],
   createAccount: 'unauthenticated',
   getInfo: 'unauthenticated',
   getCurrentUser: true,
   getActivationLink: ['root'],
   getRedefinePasswordLink: ['root'],
-  redefinePassword:['unauthenticated']
+  redefinePassword:['unauthenticated', 'root']
 }
 
 export const user = defineCollection({

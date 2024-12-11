@@ -37,7 +37,7 @@ export const getActivationLink = async (payload: { userId: ObjectId | string }, 
 
   const activationToken = await getActivationToken(payload.userId.toString(), context)
 
-  const url = `${context.config.publicUrl}/user/activate?u=${payload.userId.toString()}&t=${activationToken}`
+  const url = `${context.config.publicUrl}/user/activation?step=password&u=${payload.userId.toString()}&t=${activationToken}`
 
   return Result.result({
     url,

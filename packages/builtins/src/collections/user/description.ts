@@ -112,6 +112,11 @@ export const description = defineDescription({
         fetchItem: true,
       },
     },
+    'getRedefinePasswordLink': {
+      label: 'copy_redefine_password_link',
+      icon: 'link',
+      translate: true,
+    },
     'copyActivationLink': {
       label: 'copy_activation_link',
       icon: 'link',

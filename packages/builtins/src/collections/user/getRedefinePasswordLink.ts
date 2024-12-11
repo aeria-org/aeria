@@ -23,7 +23,7 @@ export const getRedefinePasswordLink = async (payload: { userId: ObjectId | stri
   
     const redefineToken = await getActivationToken(payload.userId.toString(), context)
   
-    const url = `${context.config.publicUrl}/user/activate?u=${payload.userId.toString()}&t=${redefineToken}`
+    const url = `${context.config.publicUrl}/user/redefine-password?step=password&u=${payload.userId.toString()}&t=${redefineToken}`
   
     return Result.result({
       url,

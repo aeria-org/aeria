@@ -37,11 +37,6 @@ export const getInfo = async (
       code: ActivationError.UserNotFound,
     })
   }
-  if( user.active ) {
-    return context.error(HTTPStatus.Forbidden, {
-      code: ActivationError.AlreadyActiveUser,
-    })
-  }
   const decoded = await decodeToken(token, context.config.secret).catch(console.trace)
   if(!decoded){
     return context.error(HTTPStatus.Unauthorized, {
@@ -52,6 +47,7 @@ export const getInfo = async (
   return Result.result({
     name: user.name,
     email: user.email,
+    active: user.active
   })
 }
 
