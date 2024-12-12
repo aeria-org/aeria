@@ -40,6 +40,7 @@ export const redefinePassword = async (
     }, {
         projection: {
             password: 1,
+            active:1
         },
     })
 
@@ -48,6 +49,7 @@ export const redefinePassword = async (
             code: ActivationError.UserNotFound,
         })
     }
+
     if( !user.active ) {
         return context.error(HTTPStatus.Forbidden, {
             code: ActivationError.UserNotActive,

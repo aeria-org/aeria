@@ -40,6 +40,7 @@ export const activate = async (
   }, {
     projection: {
       password: 1,
+      active:1
     },
   })
 
