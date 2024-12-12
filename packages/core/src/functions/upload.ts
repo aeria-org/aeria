@@ -6,9 +6,7 @@ import { createHash } from 'crypto'
 
 const [FileMetadata, validateFileMetadata] = validator({
   type: 'object',
-  required: [
-    'name',
-  ],
+  required: ['name'],
   properties: {
     name: {
       type: 'string',
