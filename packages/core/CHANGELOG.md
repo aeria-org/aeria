@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.215
+
+### Patch Changes
+
+- 97e2027: Add base64 upload format
+  - @aeriajs/builtins@0.0.215
+  - @aeriajs/security@0.0.215
+
 ## 0.0.214
 
 ### Patch Changes
