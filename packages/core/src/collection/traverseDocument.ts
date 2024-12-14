@@ -1,5 +1,7 @@
 import type { WithId } from 'mongodb'
 import type { Description, Property, ValidationError, RouteContext, ValidationErrorMissingProperties } from '@aeriajs/types'
+import * as path from 'node:path'
+import * as fs from 'node:fs/promises'
 import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { throwIfError, pipe, isReference, getReferenceProperty, getValueFromPath, isError } from '@aeriajs/common'
 import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
@@ -10,8 +12,6 @@ import { createContext } from '../context.js'
 import { preloadDescription } from './preload.js'
 import { getReferences } from './reference.js'
 import { preferredRemove } from './cascadingRemove.js'
-import * as path from 'path'
-import * as fs from 'fs/promises'
 
 export type TraverseOptionsBase = {
   autoCast?: boolean

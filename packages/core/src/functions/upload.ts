@@ -1,8 +1,8 @@
 import { Result, ACError, HTTPStatus, type Context } from '@aeriajs/types'
 import { validate, validator } from '@aeriajs/validation'
-import * as path from 'path'
-import { createWriteStream } from 'fs'
-import { createHash } from 'crypto'
+import * as path from 'node:path'
+import { createWriteStream } from 'node:fs'
+import { createHash } from 'node:crypto'
 
 const [FileMetadata, validateFileMetadata] = validator({
   type: 'object',

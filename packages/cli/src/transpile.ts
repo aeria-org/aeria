@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild'
-import { glob } from 'fs/promises'
+import { glob } from 'node:fs/promises'
 
 export const init = async (options: esbuild.BuildOptions = {}) => {
   const fileList = await Array.fromAsync(glob('src/**/*.ts'))

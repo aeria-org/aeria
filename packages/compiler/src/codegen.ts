@@ -1,6 +1,6 @@
 import { generateExports, generateJavascript, generateTypescript } from './codegen/index.js'
 import type * as AST from './ast'
-import fs from 'fs'
+import * as fs from 'node:fs'
 
 export const generateCode = (ast: AST.Node[]) => {
   const typescript = generateTypescript(ast)

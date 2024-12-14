@@ -1,8 +1,8 @@
 #!/usr/bin/env -S node --import tsx/esm
 
-import path from 'path'
+import path from 'node:path'
 import { extractIcons, iconsEsmContent, iconsCjsContent, iconsDtsContent } from '../packages/cli/dist/index.js'
-import * as fs from 'fs/promises'
+import * as fs from 'node:fs/promises'
 import * as presets from '../packages/core/dist/presets/index.js'
 import * as collections from '../packages/builtins/dist/collections/index.js'
 
