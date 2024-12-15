@@ -2,8 +2,8 @@ import type { GenericRequest, GenericResponse } from '@aeriajs/types'
 import type { ServerOptions } from '@aeriajs/http'
 import { ERROR_SYMBOL_DESCRIPTION } from '@aeriajs/types'
 import { isEndpointError } from '@aeriajs/common'
-import * as http from 'http'
-import { parse as parseUrl } from 'url'
+import * as http from 'node:http'
+import { parse as parseUrl } from 'node:url'
 
 const getBody = async ($req: http.IncomingMessage) => {
   const bodyParts: Buffer[] = []

@@ -1,14 +1,21 @@
 import { Result, ACError, HTTPStatus, type Context } from '@aeriajs/types'
 import { validate, validator } from '@aeriajs/validation'
-import * as path from 'path'
-import { createWriteStream } from 'fs'
-import { createHash } from 'crypto'
+import * as path from 'node:path'
+import { createWriteStream } from 'node:fs'
+import { createHash } from 'node:crypto'
 
 const [FileMetadata, validateFileMetadata] = validator({
   type: 'object',
+  required: ['name'],
   properties: {
     name: {
       type: 'string',
+    },
+    format: {
+      enum: [
+        'raw',
+        'base64',
+      ],
     },
   },
 })
@@ -32,12 +39,24 @@ const streamToFs = (metadata: typeof FileMetadata, context: Context) => {
 
   const absolutePath = path.join(tmpPath, `${nameHash}.${extension}`)
 
-  return new Promise<string>((resolve, reject) => {
+  return new Promise<string>(async (resolve, reject) => {
     const stream = createWriteStream(absolutePath)
-
-    stream.on('open', () => context.request.pipe(stream))
     stream.on('close', () => resolve(absolutePath))
     stream.on('error', (error) => reject(error))
+
+    switch( metadata.format ) {
+      case undefined:
+      case 'raw': {
+        stream.on('open', () => context.request.pipe(stream))
+        break
+      }
+      case 'base64': {
+        stream.write(Buffer.from(Buffer.concat(await Array.fromAsync(context.request)).toString(), 'base64'))
+        stream.close()
+        break
+      }
+    }
+
   })
 }
 
@@ -45,6 +64,10 @@ export const upload = async <TContext extends Context>(_props: unknown, context:
   const { error: headersError } = validate(context.request.headers, {
     type: 'object',
     additionalProperties: true,
+    required: [
+      'x-stream-request',
+      'content-type',
+    ],
     properties: {
       'x-stream-request': {
         const: '1',

@@ -12,7 +12,7 @@ import type {
   Property,
 } from '@aeriajs/types'
 
-import { Stream } from 'stream'
+import { Stream } from 'node:stream'
 import { Result, ACError, HTTPStatus, REQUEST_METHODS, STREAMED_RESPONSE } from '@aeriajs/types'
 import { pipe, isGranted, deepMerge, endpointError } from '@aeriajs/common'
 import { validate, type ValidateOptions } from '@aeriajs/validation'

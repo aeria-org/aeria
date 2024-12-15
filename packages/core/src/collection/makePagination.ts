@@ -1,7 +1,7 @@
 import type { WithId } from 'mongodb'
 import type { Context, Description, Pagination, GetAllPayload, CountReturnType } from '@aeriajs/types'
-import { count } from '../functions/count.js'
 import { throwIfError } from '@aeriajs/common'
+import { count } from '../functions/count.js'
 
 export const makePagination = async (
   payload: GetAllPayload<WithId<unknown>>,

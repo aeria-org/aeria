@@ -2,7 +2,7 @@ import type { Context } from '@aeriajs/types'
 import type { description } from './description.js'
 import { HTTPStatus, ACError } from '@aeriajs/types'
 import { ObjectId } from '@aeriajs/core'
-import * as fs from 'fs'
+import * as fs from 'node:fs'
 
 export enum DownloadError {
   RangeNotSatisfiable = 'RANGE_NOT_SATISFIABLE',

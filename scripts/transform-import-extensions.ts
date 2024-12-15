@@ -1,7 +1,7 @@
 #!/usr/bin/env -S node --import tsx/esm
 
-import { Transform } from 'stream'
-import * as fs from 'fs'
+import { Transform } from 'node:stream'
+import * as fs from 'node:fs'
 
 const renameExtensions = () => new Transform({
   transform(chunk, _encoding, callback) {

@@ -1,5 +1,5 @@
 import type { Result } from '@aeriajs/types'
-import { parseArgs } from 'util'
+import { parseArgs } from 'node:util'
 import { log } from './log.js'
 import { compilationPhase } from './compile.js'
 import { watch } from './watch.js'

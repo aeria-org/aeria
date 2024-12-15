@@ -26,7 +26,8 @@ export type ApiConfig = {
     password: string
   }
   security: {
-    tokenExpiration?: number
+    tokenExpiration?: number | undefined
+    linkTokenExpiration?: number | undefined
     logSuccessfulAuthentications?: boolean
     authenticationRateLimiting?: RateLimitingParams | null
     allowSignup?: boolean

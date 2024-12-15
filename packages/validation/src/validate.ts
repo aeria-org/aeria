@@ -7,9 +7,8 @@ import type {
   ValidationError,
 } from '@aeriajs/types'
 
-import { Result } from '@aeriajs/types'
 import { getMissingProperties } from '@aeriajs/common'
-import { ValidationErrorCode, PropertyValidationErrorCode } from '@aeriajs/types'
+import { Result, ValidationErrorCode, PropertyValidationErrorCode } from '@aeriajs/types'
 import { getCollection } from '@aeriajs/entrypoint'
 
 export type ValidateOptions = {
@@ -220,7 +219,7 @@ export const validateProperty = <TWhat>(
       }
     }
   } else if( 'enum' in property ) {
-    if( !property.enum.includes(what) && property.enum.length === 0 ) {
+    if( !property.enum.includes(what) ) {
       return Result.error(makePropertyError(PropertyValidationErrorCode.ExtraneousElement, {
         expected: property.enum,
         got: what,

@@ -1,5 +1,5 @@
-import * as fs from 'fs/promises'
-import * as path from 'path'
+import * as fs from 'node:fs/promises'
+import * as path from 'node:path'
 import { getCollections } from '@aeriajs/entrypoint'
 import { Result } from '@aeriajs/types'
 import { extractIcons, iconsEsmContent, iconsCjsContent, iconsDtsContent } from './icons.js'

@@ -1,6 +1,6 @@
 import type { PackReferences } from '@aeriajs/types'
 import { getConfig } from '@aeriajs/entrypoint'
-import { inspect } from 'util'
+import { inspect } from 'node:util'
 import { MongoClient } from 'mongodb'
 export {
   ObjectId,
