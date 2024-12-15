@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.140
+
+### Patch Changes
+
+- 1110583: Fix enum validation
+
 ## 0.0.139
 
 ### Patch Changes
