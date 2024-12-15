@@ -219,7 +219,7 @@ export const validateProperty = <TWhat>(
       }
     }
   } else if( 'enum' in property ) {
-    if( !property.enum.includes(what) && property.enum.length === 0 ) {
+    if( !property.enum.includes(what) ) {
       return Result.error(makePropertyError(PropertyValidationErrorCode.ExtraneousElement, {
         expected: property.enum,
         got: what,
