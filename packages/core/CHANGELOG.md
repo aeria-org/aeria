@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.218
+
+### Patch Changes
+
+- e76fffa: Improve type safety of `upload()`
+  - @aeriajs/builtins@0.0.218
+  - @aeriajs/security@0.0.218
+
 ## 0.0.217
 
 ### Patch Changes

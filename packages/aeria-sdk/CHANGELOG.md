@@ -1,5 +1,12 @@
 # aeria-sdk
 
+## 0.0.160
+
+### Patch Changes
+
+- e76fffa: Improve type safety of `upload()`
+- 5fce1bf: Add missing method in `uploader()`
+
 ## 0.0.159
 
 ### Patch Changes
