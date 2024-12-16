@@ -1,5 +1,14 @@
 # aeria-sdk
 
+## 0.0.159
+
+### Patch Changes
+
+- 828e314: Add `upload()` function to SDK
+- Updated dependencies [828e314]
+  - @aeriajs/types@0.0.108
+  - @aeriajs/common@0.0.126
+
 ## 0.0.158
 
 ### Patch Changes
