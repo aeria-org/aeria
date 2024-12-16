@@ -6,6 +6,7 @@ export const DEFAULT_API_CONFIG = {
   defaultPaginationLimit: 10,
   security: {
     tokenExpiration: 36000,
+    linkTokenExpiration: 36000,
     paginationLimit: 100,
   },
 

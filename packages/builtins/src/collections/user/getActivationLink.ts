@@ -12,7 +12,7 @@ export const getActivationToken = async (strId: string, context: Context) => {
   } 
   
   const token = await signToken({data:strId}, context.config.secret, {
-    expiresIn: context.config.security.tokenExpiration
+    expiresIn: context.config.security.linkTokenExpiration
   })
   
   return token
