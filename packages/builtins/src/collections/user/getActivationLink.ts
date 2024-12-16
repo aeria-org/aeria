@@ -19,6 +19,11 @@ export const getActivationToken = async (strId: string, context: Context) => {
 }
 
 export const getActivationLink = async (payload: { userId: ObjectId | string }, context: Context) => {
+  if(!context.config.webPublicUrl){
+    return context.error(HTTPStatus.BadRequest, {
+      code: ActivationError.InvalidLink,
+    })
+  }
   const { error, result: user } = await context.collections.user.functions.get({
     filters: {
       _id: payload.userId,
@@ -37,7 +42,7 @@ export const getActivationLink = async (payload: { userId: ObjectId | string }, 
 
   const activationToken = await getActivationToken(payload.userId.toString(), context)
 
-  const url = `${context.config.publicUrl}/user/activation?step=password&u=${payload.userId.toString()}&t=${activationToken}`
+  const url = `${context.config.webPublicUrl}/user/activation?step=password&u=${payload.userId.toString()}&t=${activationToken}`
 
   return Result.result({
     url,
