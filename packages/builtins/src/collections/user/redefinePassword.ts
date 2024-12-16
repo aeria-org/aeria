@@ -8,82 +8,82 @@ export enum ActivationError {
   UserNotFound = 'USER_NOT_FOUND',
   UserNotActive = 'USER_NOT_ACTIVE',
   InvalidLink = 'INVALID_LINK',
-  InvalidToken = 'INVALID_TOKEN'
+  InvalidToken = 'INVALID_TOKEN',
 }
 
 export const redefinePassword = async (
-    payload:{
-        password?: string
-        userId?:string
-        token?:string
-    },
-    context: Context<typeof description> 
+  payload:{
+    password?: string
+    userId?: string
+    token?: string
+  },
+  context: Context<typeof description>,
 ) => {
-    const {
-        userId,
-        token,
-        password,
-    } = payload
+  const {
+    userId,
+    token,
+    password,
+  } = payload
 
-    if( !context.config.secret ) {
-        throw new Error('config.secret is not set')
-    }
+  if( !context.config.secret ) {
+    throw new Error('config.secret is not set')
+  }
 
-    if( !userId || !token ) {
-        return context.error(HTTPStatus.NotFound, {
-            code: ActivationError.InvalidLink,
-        })
-    }
-
-    const user = await context.collection.model.findOne({
-        _id: new ObjectId(userId),
-    }, {
-        projection: {
-            password: 1,
-            active:1
-        },
+  if( !userId || !token ) {
+    return context.error(HTTPStatus.NotFound, {
+      code: ActivationError.InvalidLink,
     })
+  }
 
-    if( !user ) {
-        return context.error(HTTPStatus.NotFound, {
-            code: ActivationError.UserNotFound,
-        })
-    }
+  const user = await context.collection.model.findOne({
+    _id: new ObjectId(userId),
+  }, {
+    projection: {
+      password: 1,
+      active: 1,
+    },
+  })
 
-    if( !user.active ) {
-        return context.error(HTTPStatus.Forbidden, {
-            code: ActivationError.UserNotActive,
-        })
-    }
-    const decoded = await decodeToken(token, context.config.secret)
-    if(!decoded){
-        return context.error(HTTPStatus.Unauthorized, {
-            code: ActivationError.InvalidToken
-        })
-    }
+  if( !user ) {
+    return context.error(HTTPStatus.NotFound, {
+      code: ActivationError.UserNotFound,
+    })
+  }
 
-    if( !password ) {
-        /* if( context.request.method === 'GET' ) {
+  if( !user.active ) {
+    return context.error(HTTPStatus.Forbidden, {
+      code: ActivationError.UserNotActive,
+    })
+  }
+  const decoded = await decodeToken(token, context.config.secret)
+  if(!decoded){
+    return context.error(HTTPStatus.Unauthorized, {
+      code: ActivationError.InvalidToken,
+    })
+  }
+
+  if( !password ) {
+    /* if( context.request.method === 'GET' ) {
             return context.response.writeHead(302, {
                 location: `/user/activation?step=password&u=${userId}&t=${token}`,
             }).end()
         } */
-        return context.error(HTTPStatus.UnprocessableContent, {
-            code: ACError.MalformedInput,
-        })
-    }
+    return context.error(HTTPStatus.UnprocessableContent, {
+      code: ACError.MalformedInput,
+    })
+  }
 
-    await context.collection.model.updateOne(
-        {
-            _id: user._id,
-        },
-        {
-            $set: {
-                active: true,
-                password: await bcrypt.hash(password, 10),
-            },
-        },
-    )
+  await context.collection.model.updateOne(
+    {
+      _id: user._id,
+    },
+    {
+      $set: {
+        active: true,
+        password: await bcrypt.hash(password, 10),
+      },
+    },
+  )
 
   return Result.result({
     userId: user._id,

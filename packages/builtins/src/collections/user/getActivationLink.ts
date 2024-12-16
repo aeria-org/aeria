@@ -1,5 +1,5 @@
 import type { Context } from '@aeriajs/types'
-import { ObjectId, signToken } from '@aeriajs/core'
+import { type ObjectId, signToken } from '@aeriajs/core'
 import { Result, HTTPStatus } from '@aeriajs/types'
 import { ActivationError } from './activate.js'
 
@@ -9,12 +9,14 @@ export const getActivationToken = async (strId: string, context: Context) => {
   }
   if( !context.config.secret ) {
     throw new Error('config.secret is not set')
-  } 
-  
-  const token = await signToken({data:strId}, context.config.secret, {
-    expiresIn: context.config.security.linkTokenExpiration
+  }
+
+  const token = await signToken({
+    data: strId,
+  }, context.config.secret, {
+    expiresIn: context.config.security.linkTokenExpiration,
   })
-  
+
   return token
 }
 

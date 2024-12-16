@@ -7,7 +7,7 @@ export enum ActivationError {
   UserNotFound = 'USER_NOT_FOUND',
   AlreadyActiveUser = 'ALREADY_ACTIVE_USER',
   InvalidLink = 'INVALID_LINK',
-  InvalidToken = 'INVALID_TOKEN'
+  InvalidToken = 'INVALID_TOKEN',
 }
 
 export const getInfo = async (
@@ -40,14 +40,14 @@ export const getInfo = async (
   const decoded = await decodeToken(token, context.config.secret).catch(console.trace)
   if(!decoded){
     return context.error(HTTPStatus.Unauthorized, {
-      code: ActivationError.InvalidToken
+      code: ActivationError.InvalidToken,
     })
   }
 
   return Result.result({
     name: user.name,
     email: user.email,
-    active: user.active
+    active: user.active,
   })
 }
 

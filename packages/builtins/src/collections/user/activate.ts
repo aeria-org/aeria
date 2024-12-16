@@ -8,21 +8,21 @@ export enum ActivationError {
   UserNotFound = 'USER_NOT_FOUND',
   AlreadyActiveUser = 'ALREADY_ACTIVE_USER',
   InvalidLink = 'INVALID_LINK',
-  InvalidToken = 'INVALID_TOKEN'
+  InvalidToken = 'INVALID_TOKEN',
 }
 
 export const activate = async (
   payload:{
     password?: string
-    userId?:string
-    token?:string
+    userId?: string
+    token?: string
   },
-  context: Context<typeof description>
+  context: Context<typeof description>,
 ) => {
   const {
     userId,
     token,
-    password
+    password,
   } = payload
 
   if( !context.config.secret ) {
@@ -40,7 +40,7 @@ export const activate = async (
   }, {
     projection: {
       password: 1,
-      active:1
+      active: 1,
     },
   })
 
@@ -57,7 +57,7 @@ export const activate = async (
   const decoded = await decodeToken(token, context.config.secret)
   if(!decoded){
     return context.error(HTTPStatus.Unauthorized, {
-      code: ActivationError.InvalidToken
+      code: ActivationError.InvalidToken,
     })
   }
 

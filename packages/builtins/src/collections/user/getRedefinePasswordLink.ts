@@ -1,16 +1,16 @@
 import type { Context } from '@aeriajs/types'
-import { ObjectId} from '@aeriajs/core'
+import { type ObjectId } from '@aeriajs/core'
 import { Result, HTTPStatus } from '@aeriajs/types'
 import { ActivationError } from './redefinePassword.js'
-import { getActivationToken } from './getActivationLink.js';
+import { getActivationToken } from './getActivationLink.js'
 
 export const getRedefinePasswordLink = async (payload: { userId: ObjectId | string }, context: Context) => {
   if(!context.config.webPublicUrl){
     return context.error(HTTPStatus.BadRequest, {
       code: ActivationError.InvalidLink,
     })
-  }  
-  
+  }
+
   const { error, result: user } = await context.collections.user.functions.get({
     filters: {
       _id: payload.userId,
