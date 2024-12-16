@@ -32,6 +32,7 @@ export const uploader = (config: InstanceConfig) => (bearerToken?: string) => as
 
   const requestConfig = {
     params: {
+      method: 'POST',
       headers,
     },
   } satisfies RequestConfig
