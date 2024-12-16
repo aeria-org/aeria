@@ -18,6 +18,10 @@ export type Pagination = {
   limit: number
 }
 
+export type TempId = {
+  tempId: string
+}
+
 type FilterProperty<T> = T extends ObjectId
   ? T | string
   : T

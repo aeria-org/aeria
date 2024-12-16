@@ -1,5 +1,5 @@
 import type { WithId } from 'mongodb'
-import type { Description, Property, ValidationError, RouteContext, ValidationErrorMissingProperties } from '@aeriajs/types'
+import type { Description, Property, ValidationError, RouteContext, ValidationErrorMissingProperties, TempId } from '@aeriajs/types'
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
 import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
@@ -48,9 +48,7 @@ export type ValidTempFile =
   | null
   | undefined
   | ObjectId
-  | {
-    tempId: string
-  }
+  | TempId
 
 type PhaseContext = {
   target: Record<string, unknown>

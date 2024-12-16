@@ -109,16 +109,19 @@ exports.config = config
 exports.url = '${publicUrl(config)}'
 exports.aeria = aeria
 exports.storage = require('./storage.js').getStorage(config)
+exports.upload = require('./upload.js').uploader(config)
 exports.default = aeria
 \n`
 
 export const runtimeEsm = (config: InstanceConfig) =>
   `import { topLevel } from './topLevel.mjs'
 import { getStorage } from './storage.mjs'
+import { uploader } from './upload.mjs'
 export const config = ${JSON.stringify(config)}
 export const url = '${publicUrl(config)}'
 export const aeria = topLevel(config)
 export const storage = getStorage(config)
+export const upload = uploader(config)
 export default aeria
 \n`
 
