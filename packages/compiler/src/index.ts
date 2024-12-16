@@ -9,12 +9,12 @@ export const compile = (input: string) => {
     return Result.error(tokenizeError)
   }
 
-  const ast = parse(Array.from(tokens))
-  if (Array.isArray(ast)) {
-    return generateCode(ast)
+  const { error, result: ast } = parse(Array.from(tokens))
+  if( error ) {
+    return Result.error(error)
   }
 
-  return ast
+  return generateCode(ast)
 }
 
 const inputCode = `functionset Readable {

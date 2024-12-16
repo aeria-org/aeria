@@ -6,9 +6,7 @@ import { getActivationToken } from './getActivationLink.js'
 
 export const getRedefinePasswordLink = async (payload: { userId: ObjectId | string }, context: Context) => {
   if(!context.config.webPublicUrl){
-    return context.error(HTTPStatus.BadRequest, {
-      code: ActivationError.InvalidLink,
-    })
+    throw new Error('config.webPublicUrl is not set')
   }
 
   const { error, result: user } = await context.collections.user.functions.get({

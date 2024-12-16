@@ -622,6 +622,6 @@ export const parse = (tokens: Token[]) => {
     }
   }
 
-  return ast
+  return Result.result(ast)
 }
 
