@@ -1,3 +1,4 @@
+export type { FileMetadata, UploadHeaders } from './functions/upload.js'
 export * from './accessControl.js'
 export * from './assets.js'
 export * from './collection/index.js'
