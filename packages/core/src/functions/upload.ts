@@ -1,10 +1,10 @@
 import { Result, ACError, HTTPStatus, type Context } from '@aeriajs/types'
-import { validate, validator } from '@aeriajs/validation'
+import { validator } from '@aeriajs/validation'
 import * as path from 'node:path'
 import { createWriteStream } from 'node:fs'
 import { createHash } from 'node:crypto'
 
-const [FileMetadata, validateFileMetadata] = validator({
+export const [FileMetadata, validateFileMetadata] = validator({
   type: 'object',
   required: ['name'],
   properties: {
@@ -16,6 +16,23 @@ const [FileMetadata, validateFileMetadata] = validator({
         'raw',
         'base64',
       ],
+    },
+  },
+})
+
+export const [UploadHeaders, validateUploadHeaders] = validator({
+  type: 'object',
+  additionalProperties: true,
+  required: [
+    'x-stream-request',
+    'content-type',
+  ],
+  properties: {
+    'x-stream-request': {
+      const: '1',
+    },
+    'content-type': {
+      type: 'string',
     },
   },
 })
@@ -61,22 +78,7 @@ const streamToFs = (metadata: typeof FileMetadata, context: Context) => {
 }
 
 export const upload = async <TContext extends Context>(_props: unknown, context: TContext) => {
-  const { error: headersError } = validate(context.request.headers, {
-    type: 'object',
-    additionalProperties: true,
-    required: [
-      'x-stream-request',
-      'content-type',
-    ],
-    properties: {
-      'x-stream-request': {
-        const: '1',
-      },
-      'content-type': {
-        type: 'string',
-      },
-    },
-  })
+  const { error: headersError } = validateUploadHeaders(context.request.headers)
 
   if( headersError ) {
     return context.error(HTTPStatus.BadRequest, {

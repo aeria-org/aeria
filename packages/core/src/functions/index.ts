@@ -5,4 +5,7 @@ export * from './insert.js'
 export * from './remove.js'
 export * from './removeAll.js'
 export * from './removeFile.js'
-export * from './upload.js'
+export {
+  upload,
+} from './upload.js'
+
