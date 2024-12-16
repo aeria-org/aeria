@@ -22,7 +22,7 @@ export const uploader = (config: InstanceConfig) => (bearerToken?: string) => as
         'x-stream-request': '1',
         'content-type': params.type,
       } as Record<string, string>,
-    }
+    },
   } satisfies RequestConfig
 
   if( bearerToken ) {
