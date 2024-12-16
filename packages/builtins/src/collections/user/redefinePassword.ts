@@ -6,12 +6,12 @@ import * as bcrypt from 'bcrypt'
 
 export enum ActivationError {
   UserNotFound = 'USER_NOT_FOUND',
-  AlreadyActiveUser = 'ALREADY_ACTIVE_USER',
+  UserNotActive = 'USER_NOT_ACTIVE',
   InvalidLink = 'INVALID_LINK',
   InvalidToken = 'INVALID_TOKEN',
 }
 
-export const activate = async (
+export const redefinePassword = async (
   payload:{
     password?: string
     userId?: string
@@ -49,9 +49,10 @@ export const activate = async (
       code: ActivationError.UserNotFound,
     })
   }
-  if( user.active ) {
+
+  if( !user.active ) {
     return context.error(HTTPStatus.Forbidden, {
-      code: ActivationError.AlreadyActiveUser,
+      code: ActivationError.UserNotActive,
     })
   }
   const decoded = await decodeToken(token, context.config.secret)
@@ -61,32 +62,15 @@ export const activate = async (
     })
   }
 
-  if( !user.password ) {
-    if( !password ) {
-      if( context.request.method === 'GET' ) {
-        return context.response.writeHead(302, {
-          location: `/user/activation?step=password&u=${userId}&t=${token}`,
-        }).end()
-      }
-
-      return context.error(HTTPStatus.UnprocessableContent, {
-        code: ACError.MalformedInput,
-      })
-    }
-
-    await context.collection.model.updateOne(
-      {
-        _id: user._id,
-      },
-      {
-        $set: {
-          active: true,
-          password: await bcrypt.hash(password, 10),
-        },
-      },
-    )
-
-    return
+  if( !password ) {
+    /* if( context.request.method === 'GET' ) {
+            return context.response.writeHead(302, {
+                location: `/user/activation?step=password&u=${userId}&t=${token}`,
+            }).end()
+        } */
+    return context.error(HTTPStatus.UnprocessableContent, {
+      code: ACError.MalformedInput,
+    })
   }
 
   await context.collection.model.updateOne(
@@ -96,15 +80,10 @@ export const activate = async (
     {
       $set: {
         active: true,
+        password: await bcrypt.hash(password, 10),
       },
     },
   )
-
-  if( context.request.method === 'GET' ) {
-    return context.response.writeHead(302, {
-      location: '/user/activation',
-    }).end()
-  }
 
   return Result.result({
     userId: user._id,

@@ -8,6 +8,8 @@ import { createAccount } from './createAccount.js'
 import { getInfo } from './getInfo.js'
 import { getCurrentUser } from './getCurrentUser.js'
 import { getActivationLink } from './getActivationLink.js'
+import { redefinePassword } from './redefinePassword.js'
+import { getRedefinePasswordLink } from './getRedefinePasswordLink.js'
 
 const functions = {
   get,
@@ -22,6 +24,8 @@ const functions = {
   getInfo,
   getCurrentUser,
   getActivationLink,
+  getRedefinePasswordLink,
+  redefinePassword,
 } as const
 
 const exposedFunctions: Record<keyof typeof functions, AccessCondition> = {
@@ -32,11 +36,19 @@ const exposedFunctions: Record<keyof typeof functions, AccessCondition> = {
   removeFile: true,
   insert: true,
   authenticate: 'unauthenticated',
-  activate: 'unauthenticated',
+  activate: [
+    'unauthenticated',
+    'root',
+  ],
   createAccount: 'unauthenticated',
   getInfo: 'unauthenticated',
   getCurrentUser: true,
   getActivationLink: ['root'],
+  getRedefinePasswordLink: ['root'],
+  redefinePassword: [
+    'unauthenticated',
+    'root',
+  ],
 }
 
 export const user = defineCollection({
