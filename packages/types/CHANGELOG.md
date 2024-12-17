@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.109
+
+### Patch Changes
+
+- 8ebce21: "feat: add redefine password feature and change tokens to jwt"
+
 ## 0.0.108
 
 ### Patch Changes
