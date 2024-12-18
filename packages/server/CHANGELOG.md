@@ -1,5 +1,20 @@
 # @aeriajs/server
 
+## 0.0.221
+
+### Patch Changes
+
+- 8ebce21: "feat: add redefine password feature and change tokens to jwt"
+- Updated dependencies [8ebce21]
+  - @aeriajs/builtins@0.0.219
+  - @aeriajs/server@0.0.221
+  - @aeriajs/types@0.0.109
+  - @aeriajs/core@0.0.219
+  - @aeriajs/common@0.0.127
+  - @aeriajs/entrypoint@0.0.130
+  - @aeriajs/http@0.0.153
+  - @aeriajs/node-http@0.0.153
+
 ## 0.0.220
 
 ### Patch Changes
