@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.162
+
+### Patch Changes
+
+- b30deb6: Remove node dependency
+
 ## 0.0.161
 
 ### Patch Changes
