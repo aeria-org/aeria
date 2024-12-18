@@ -17,7 +17,7 @@ type UploadParams = {
 export const uploader = (config: InstanceConfig) => (bearerToken?: string) => async (collectionName: keyof Collections, params: UploadParams) => {
   const qs = {
     name: params.name,
-    format: params.format || 'raw'
+    format: params.format || 'raw',
   } satisfies typeof FileMetadata
 
   const url = `${publicUrl(config)}/${collectionName}/upload?name=${qs.name}&format=${qs.format}`
