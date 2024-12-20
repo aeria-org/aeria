@@ -36,18 +36,6 @@ export const parse = (tokens: Token[]) => {
     })
   }
 
-  const { result: num } = consume(TokenType.Number)
-  const { result: bool } = consume(TokenType.Boolean)
-  if( !num ) {
-    throw new Error
-  }
-  if( !bool ) {
-    throw new Error
-  }
-
-  num.value
-  bool.value
-
   const consumeArray = (type: TokenType) => {
     const { error: leftBracketError } = consume(TokenType.LeftSquareBracket)
     if(leftBracketError){
@@ -84,6 +72,26 @@ export const parse = (tokens: Token[]) => {
     let property: Property
     let nestedProperties: Record<string, AST.PropertyNode> | undefined
     let modifier: string | undefined
+
+    if( match(TokenType.LeftSquareBracket) ) {
+      consume(TokenType.LeftSquareBracket)
+      consume(TokenType.RightSquareBracket)
+
+      const { error, result } = consumePropertyType(options)
+      if( error ) {
+        return Result.error(error)
+      }
+
+      property = {
+        type: 'array',
+        items: result.property,
+      }
+
+      return Result.result({
+        type: 'property',
+        property,
+      })
+    }
 
     if( options.allowModifiers ) {
       if( match(TokenType.Identifier) && tokens[current + 1].type === TokenType.LeftBracket ) {
@@ -144,6 +152,20 @@ export const parse = (tokens: Token[]) => {
           case 'enum': {
             property = {
               enum: [],
+            }
+            break
+          }
+          case 'date': {
+            property = {
+              type: 'string',
+              format: 'date',
+            }
+            break
+          }
+          case 'datetime': {
+            property = {
+              type: 'string',
+              format: 'date-time',
             }
             break
           }

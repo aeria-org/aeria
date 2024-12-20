@@ -1,5 +1,5 @@
+import type { Diagnostic } from './diagnostic'
 import { Result } from '@aeriajs/types'
-import { type Diagnostic } from './diagnostic'
 
 export enum TokenType {
   LineBreak = 'LINE_BREAK',

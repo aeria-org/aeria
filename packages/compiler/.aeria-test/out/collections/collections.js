@@ -50,6 +50,13 @@ export const animal = defineCollection({
 					age: {
 						type: "number",
 						minimum: 10
+					},
+					dates: {
+						type: "array",
+						items: {
+							type: "string",
+							format: "date"
+						}
 					}
 				}
 			}

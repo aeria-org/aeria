@@ -6,6 +6,8 @@ export const PropertyType = {
   num: 'number',
   bool: 'boolean',
   enum: 'enum',
+  date: 'string',
+  datetime: 'string',
 } as const
 
 export const PropertyModifiers: Record<string, ExportSymbol> = {

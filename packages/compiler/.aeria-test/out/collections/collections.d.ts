@@ -78,6 +78,13 @@ export declare type animalCollection = {
 					age: {
 						type: "number",
 						minimum: 10
+					},
+					dates: {
+						type: "array",
+						items: {
+							type: "string",
+							format: "date"
+						}
 					}
 				}
 			}

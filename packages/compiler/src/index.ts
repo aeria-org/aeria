@@ -40,6 +40,7 @@ collection Animal {
     details {
       properties {
         age num @minimum(10)
+        dates []date
       }
     }
   }
