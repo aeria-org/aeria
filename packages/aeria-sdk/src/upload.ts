@@ -15,12 +15,17 @@ type UploadParams = {
 }
 
 export const uploader = (config: InstanceConfig) => (bearerToken?: string) => async (collectionName: keyof Collections, params: UploadParams) => {
-  const qs = {
+  const urlParams = {
     name: params.name,
     format: params.format || 'raw',
   } satisfies typeof FileMetadata
 
-  const url = `${publicUrl(config)}/${collectionName}/upload?name=${qs.name}&format=${qs.format}`
+  const url = new URL(publicUrl(config))
+  url.pathname = `/${collectionName}`
+
+  for( const [paramName, paramValue] of Object.entries(urlParams) ) {
+    url.searchParams.set(paramName, paramValue)
+  }
 
   const headers: typeof UploadHeaders & {
     authorization?: `Bearer ${string}`
@@ -42,7 +47,7 @@ export const uploader = (config: InstanceConfig) => (bearerToken?: string) => as
 
   const response = await request<Result.Either<EndpointError, TempId>>(
     config,
-    url,
+    url.toString(),
     params.content,
     requestConfig,
   )
