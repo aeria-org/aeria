@@ -20,7 +20,7 @@ export const getActivationToken = async (strId: string, context: Context) => {
   return token
 }
 
-export const getActivationLink = async (payload: { userId: ObjectId | string }, context: Context) => {
+export const getActivationLink = async (payload: { userId: ObjectId | string, redirect?:string}, context: Context) => {
   if(!context.config.webPublicUrl){
     return context.error(HTTPStatus.BadRequest, {
       code: ActivationError.InvalidLink,
@@ -45,7 +45,11 @@ export const getActivationLink = async (payload: { userId: ObjectId | string }, 
   const activationToken = await getActivationToken(payload.userId.toString(), context)
 
   const url = `${context.config.webPublicUrl}/user/activation?step=password&u=${payload.userId.toString()}&t=${activationToken}`
-
+  
+  if(payload.redirect){
+    url+payload.redirect
+  }
+  
   return Result.result({
     url,
   })
