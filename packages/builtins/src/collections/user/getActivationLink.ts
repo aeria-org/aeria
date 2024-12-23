@@ -44,12 +44,15 @@ export const getActivationLink = async (payload: { userId: ObjectId | string, re
 
   const activationToken = await getActivationToken(payload.userId.toString(), context)
 
-  const url = `${context.config.webPublicUrl}/user/activation?step=password&u=${payload.userId.toString()}&t=${activationToken}`
-  
+  //const url = `${context.config.webPublicUrl}/user/activation?step=password&u=${payload.userId.toString()}&t=${activationToken}`
+  const url = new URL(`${context.config.webPublicUrl}/user/activation`)
+  url.searchParams.set("step", "password"),
+  url.searchParams.set("u", payload.userId.toString())
+  url.searchParams.set("t", activationToken)
   if(payload.redirect){
-    url+`&next=${payload.redirect}`
+    url.searchParams.set('next', payload.redirect)
   }
-
+  
   return Result.result({
     url,
   })
