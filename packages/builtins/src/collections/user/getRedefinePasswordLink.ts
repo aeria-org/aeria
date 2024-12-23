@@ -30,7 +30,7 @@ export const getRedefinePasswordLink = async (payload: { userId: ObjectId | stri
   const url = `${context.config.webPublicUrl}/user/redefine-password?step=password&u=${payload.userId.toString()}&t=${redefineToken}`
 
   if(payload.redirect){
-    url+payload.redirect
+    url+`&next=${payload.redirect}`
   }
 
   return Result.result({

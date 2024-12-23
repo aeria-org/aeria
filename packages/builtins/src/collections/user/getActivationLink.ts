@@ -47,9 +47,9 @@ export const getActivationLink = async (payload: { userId: ObjectId | string, re
   const url = `${context.config.webPublicUrl}/user/activation?step=password&u=${payload.userId.toString()}&t=${activationToken}`
   
   if(payload.redirect){
-    url+payload.redirect
+    url+`&next=${payload.redirect}`
   }
-  
+
   return Result.result({
     url,
   })
