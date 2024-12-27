@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.220
+
+### Patch Changes
+
+- 6ac91ed: feat: add optional parameter to getactivationlink and getredefinepasswordlink to redirect on success
+  - @aeriajs/core@0.0.220
+
 ## 0.0.219
 
 ### Patch Changes
