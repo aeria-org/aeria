@@ -1,5 +1,5 @@
 import type * as AST from '../ast'
-import { getCollectionProperties, stringify, makeASTImports, resizeFirstChar, aeriaPackageName } from './utils'
+import { getProperties, stringify, makeASTImports, resizeFirstChar, aeriaPackageName } from './utils'
 
 const initialImportedTypes = [
   'Collection',
@@ -8,7 +8,7 @@ const initialImportedTypes = [
   'Context',
 ]
 
-export const generateTypescript = (ast: AST.Node[]): string => {
+export const generateTSCollections = (ast: AST.Node[]): string => {
   let code = ''
   code += `import type { ${initialImportedTypes.join(', ')} } from '${aeriaPackageName}'\n` //Used types
   const importsResult = makeASTImports(ast)
@@ -55,7 +55,7 @@ const makeTSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
 const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => stringify({
   description: {
     $id: collectionId,
-    properties: getCollectionProperties(collectionNode.properties),
+    properties: getProperties(collectionNode.properties),
     ...(collectionNode.owned && {
       owned: collectionNode.owned ?? false,
     }),

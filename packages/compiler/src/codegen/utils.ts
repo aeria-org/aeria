@@ -45,12 +45,18 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
 }
 
 /** Transforms the AST properties to the format of aeria schema properties */
-export const getCollectionProperties = (properties: AST.CollectionNode['properties']) => {
-  return Object.entries(properties).reduce<Record<string, Property>>((acc, [key, value]) => {
-    if ( 'properties' in value.property && value.nestedProperties ) {
+export const getProperties = (properties: AST.CollectionNode['properties']) => {
+  return Object.entries(properties).reduce<Record<string, any>>((acc, [key, value]) => {
+    if (Array.isArray(value)) {
+      acc[key] = value.map(v => ({
+        ...v.property,
+        ...(v.nestedProperties && { properties: getProperties(v.nestedProperties) })
+      }))
+    }
+    else if ('properties' in value.property && value.nestedProperties) {
       acc[key] = {
         ...value.property,
-        properties: getCollectionProperties(value.nestedProperties),
+        properties: getProperties(value.nestedProperties),
       }
     } else {
       acc[key] = value.property
@@ -60,13 +66,28 @@ export const getCollectionProperties = (properties: AST.CollectionNode['properti
 }
 
 const isNotJSONSerializable = (value: unknown): value is Record<string, unknown> => {
-  return typeof value === 'object' && !Array.isArray(value)
+  return typeof value === 'object'
 }
 
 /** Assure if specific fields needs to be between quotes or not */
 export const stringify = (value: unknown, parents: string[] = []) => {
-  if ( !isNotJSONSerializable(value) ) {
-    return JSON.stringify(value)
+  if (Array.isArray(value)) {
+    const arrayString: string = value.map((v: any) => {
+      const currentParents = [
+        ...parents,
+        'array',
+      ]
+
+      return '\t'.repeat(currentParents.length) + (!betweenQuotes(currentParents, String(v))
+        ? stringify(v, currentParents).replaceAll('"', '')
+        : stringify(v, currentParents))
+    }).join(',\n')
+
+    return `[\n${arrayString}\n${'\t'.repeat(parents.length)}]`
+  }
+
+  if (!isNotJSONSerializable(value)) {
+    return JSON.stringify(value, null, '\t')
   }
 
   const objectString: string = Object.keys(value).map((key) => {

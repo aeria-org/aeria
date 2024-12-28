@@ -1,13 +1,14 @@
 import type * as AST from '../ast'
-import { makeASTImports, resizeFirstChar, getCollectionProperties, stringify, aeriaPackageName, getExtendName } from './utils'
+import { makeASTImports, resizeFirstChar, getProperties, stringify, aeriaPackageName, getExtendName } from './utils'
 import type aeria from 'aeria'
 
 const initialImportedFunctions = [
   'extendCollection',
   'defineCollection',
+  'defineContract'
 ] satisfies (keyof typeof aeria)[]
 
-export const generateJavascript = (ast: AST.Node[]) => {
+export const generateJSCollections = (ast: AST.Node[]) => {
   let javascriptCode = ''
   const importsResult = makeASTImports(ast, {
     [aeriaPackageName]: new Set(initialImportedFunctions),
@@ -45,7 +46,7 @@ const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
 const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => stringify({
   description: {
     $id: collectionId,
-    properties: getCollectionProperties(collectionNode.properties),
+    properties: getProperties(collectionNode.properties),
     ...(collectionNode.owned === true && {
       owned: collectionNode.owned,
     }),
