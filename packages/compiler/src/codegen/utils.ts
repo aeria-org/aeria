@@ -1,5 +1,5 @@
 import type * as AST from '../ast'
-import { functions as aeriaFunctions } from 'aeria'
+import { functions as aeriaFunctions, Property } from 'aeria'
 
 export const aeriaPackageName = 'aeria'
 
@@ -45,20 +45,20 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
 }
 
 /** Transforms the AST properties to the format of aeria schema properties */
-export const getProperties = (properties: AST.CollectionNode['properties']) => {
-  return Object.entries(properties).reduce<Record<string, any>>((acc, [key, value]) => {
+export const getProperties = (properties: Record<string, AST.PropertyNode | AST.PropertyNode[]>) => {
+  return Object.entries(properties).reduce<Record<string, Property | Property[]>>((acc, [key, value]) => {
     if (Array.isArray(value)) {
-      acc[key] = value.map((v) => ({
-        ...v.property,
-        ...(v.nestedProperties && {
-          properties: getProperties(v.nestedProperties),
+      acc[key] = value.map((schema) => ({
+        ...schema.property,
+        ...(schema.nestedProperties && {
+          properties: getProperties(schema.nestedProperties),
         }),
-      }))
+      })) as Property[]
     } else if ('properties' in value.property && value.nestedProperties) {
       acc[key] = {
         ...value.property,
         properties: getProperties(value.nestedProperties),
-      }
+      } as Property
     } else {
       acc[key] = value.property
     }
@@ -73,15 +73,16 @@ const isNotJSONSerializable = (value: unknown): value is Record<string, unknown>
 /** Assure if specific fields needs to be between quotes or not */
 export const stringify = (value: unknown, parents: string[] = []) => {
   if (Array.isArray(value)) {
-    const arrayString: string = value.map((v: any) => {
+    const arrayString: string = value.map((element: unknown) => {
       const currentParents = [
         ...parents,
         'array',
       ]
 
-      return '\t'.repeat(currentParents.length) + (!betweenQuotes(currentParents, String(v))
-        ? stringify(v, currentParents).replaceAll('"', '')
-        : stringify(v, currentParents))
+      return '\t'.repeat(currentParents.length) + 
+      (!betweenQuotes(currentParents, String(element))
+        ? stringify(element, currentParents).replaceAll('"', '')
+        : stringify(element, currentParents))
     }).join(',\n')
 
     return `[\n${arrayString}\n${'\t'.repeat(parents.length)}]`
