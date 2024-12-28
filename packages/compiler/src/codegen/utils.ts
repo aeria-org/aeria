@@ -1,5 +1,5 @@
 import type * as AST from '../ast'
-import { functions as aeriaFunctions, type Property } from 'aeria'
+import { functions as aeriaFunctions } from 'aeria'
 
 export const aeriaPackageName = 'aeria'
 
@@ -48,12 +48,13 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
 export const getProperties = (properties: AST.CollectionNode['properties']) => {
   return Object.entries(properties).reduce<Record<string, any>>((acc, [key, value]) => {
     if (Array.isArray(value)) {
-      acc[key] = value.map(v => ({
+      acc[key] = value.map((v) => ({
         ...v.property,
-        ...(v.nestedProperties && { properties: getProperties(v.nestedProperties) })
+        ...(v.nestedProperties && {
+          properties: getProperties(v.nestedProperties),
+        }),
       }))
-    }
-    else if ('properties' in value.property && value.nestedProperties) {
+    } else if ('properties' in value.property && value.nestedProperties) {
       acc[key] = {
         ...value.property,
         properties: getProperties(value.nestedProperties),

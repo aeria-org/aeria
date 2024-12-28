@@ -5,7 +5,7 @@ import type aeria from 'aeria'
 const initialImportedFunctions = [
   'extendCollection',
   'defineCollection',
-  'defineContract'
+  'defineContract',
 ] satisfies (keyof typeof aeria)[]
 
 export const generateJSCollections = (ast: AST.Node[]) => {

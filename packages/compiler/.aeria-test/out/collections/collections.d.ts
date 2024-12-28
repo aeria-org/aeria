@@ -70,7 +70,10 @@ export declare type animalCollection = {
 				type: "string"
 			},
 			specie: {
-				enum: ["dog","cat"]
+				enum: [
+					"dog",
+					"cat"
+				]
 			},
 			details: {
 				type: "object",

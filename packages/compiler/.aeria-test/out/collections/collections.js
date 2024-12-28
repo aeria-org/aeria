@@ -1,4 +1,4 @@
-import { extendCollection, defineCollection, file as originalFile, tempFile as originalTempFile, user as originalUser, get, getAll, insert, remove, removeAll } from 'aeria'
+import { extendCollection, defineCollection, defineContract, file as originalFile, tempFile as originalTempFile, user as originalUser, get, getAll, insert, remove, removeAll } from 'aeria'
 
 //File
 export const file = extendCollection({
@@ -42,7 +42,10 @@ export const animal = defineCollection({
 				type: "string"
 			},
 			specie: {
-				enum: ["dog","cat"]
+				enum: [
+					"dog",
+					"cat"
+				]
 			},
 			details: {
 				type: "object",
