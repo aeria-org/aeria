@@ -1,5 +1,5 @@
 import type * as AST from '../ast'
-import { functions as aeriaFunctions, Property } from 'aeria'
+import { functions as aeriaFunctions, type Property } from 'aeria'
 
 export const aeriaPackageName = 'aeria'
 
@@ -79,7 +79,7 @@ export const stringify = (value: unknown, parents: string[] = []) => {
         'array',
       ]
 
-      return '\t'.repeat(currentParents.length) + 
+      return '\t'.repeat(currentParents.length) +
       (!betweenQuotes(currentParents, String(element))
         ? stringify(element, currentParents).replaceAll('"', '')
         : stringify(element, currentParents))
