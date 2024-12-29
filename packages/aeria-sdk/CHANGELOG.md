@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.163
+
+### Patch Changes
+
+- 7139ec2: Fix payload inference
+
 ## 0.0.162
 
 ### Patch Changes
