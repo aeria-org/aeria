@@ -76,9 +76,6 @@ export const description = defineDescription({
         }
       },
     },
-    group: {
-      type: 'string',
-    },
     self_registered: {
       type: 'boolean',
       readOnly: true,

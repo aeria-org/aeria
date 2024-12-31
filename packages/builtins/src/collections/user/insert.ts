@@ -9,8 +9,12 @@ export const insert = async <
   payload: NoInfer<TInsertPayload>,
   context: Context<TDescription>,
 ) => {
-  if(!context.token.sub){ 
+  const mutableProperties = context.config.security.mutableUserProperties
+  if(!context.token.authenticated){ 
     return context.error(HTTPStatus.Unauthorized, {code:ACError.AuthenticationError})
+  }
+  if(!mutableProperties){
+    return context.error(HTTPStatus.InternalServerError, {code:ACError.InsecureOperator})
   }
   if( 'password' in payload.what && typeof payload.what.password === 'string' ) {
     payload.what.password = await bcrypt.hash(payload.what.password, 10)
@@ -31,15 +35,22 @@ export const insert = async <
       if(noUser){
         return context.error(HTTPStatus.Forbidden, {code:ACError.ResourceNotFound})
       }
-      if(existing.email !== user.email){
-        return context.error(HTTPStatus.Forbidden, {code:ACError.OwnershipError})
+      if(existing.email !== user.email && !context.token.roles.includes('root')){
+        return context.error(HTTPStatus.Forbidden, {code:ACError.MalformedInput})
       }
     }
   }
+
   if(!context.token.roles.includes('root')){
+    const whatPropKeyArray = Object.keys(payload.what).filter(prop => prop !== "_id")
+    if(whatPropKeyArray.some((prop:any) => !(mutableProperties.includes(prop)))){
+      return context.error(HTTPStatus.BadRequest, {code:ACError.MalformedInput})
+    }
     if('_id' in payload.what){
+      if(!context.token.sub){ 
+        return context.error(HTTPStatus.Unauthorized, {code:ACError.AuthenticationError})
+      }
       if(payload.what._id !== context.token.sub.toString()){
-        console.log('different ID')
         return context.error(HTTPStatus.Unauthorized, {code:ACError.AuthorizationError})
       }
       if('roles' in payload.what){
@@ -48,7 +59,6 @@ export const insert = async <
       
       return originalInsert(payload, context)
     }
-    console.log('not root')
     return context.error(HTTPStatus.Unauthorized, {code:ACError.AuthorizationError})
   }
   return originalInsert(payload, context)
