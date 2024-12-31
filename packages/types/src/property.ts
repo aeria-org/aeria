@@ -23,6 +23,7 @@ export type PropertyInputElement =
 export type PropertyFormat =
   | 'date'
   | 'date-time'
+  | 'objectid'
 
 export type PropertiesWithId<TSchema extends JsonSchema> =
   Extract<keyof TSchema['properties'], string> | '_id'

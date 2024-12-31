@@ -12,6 +12,7 @@ export enum PropertyValidationErrorCode {
   MoreItemsExpected = 'MORE_ITEMS_EXPECTED',
   LessItemsExpected = 'LESS_ITEMS_EXPECTED',
   NumericConstraint = 'NUMERIC_CONSTRAINT',
+  StringConstraint = 'STRING_CONSTRAINT',
 }
 
 export enum TraverseError {

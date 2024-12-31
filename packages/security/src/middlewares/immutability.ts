@@ -3,11 +3,7 @@ import type { ReadMiddlewareReturn, WriteMiddlewareReturn } from '../types.js'
 import { ObjectId } from 'mongodb'
 import { Result, ACError } from '@aeriajs/types'
 
-const checkImmutability = async <TPayload>(
-  docId: What<unknown>['_id'],
-  props: CollectionProps<TPayload>,
-  context: Context,
-) => {
+const checkImmutability = async <TPayload>(docId: What<unknown>['_id'], props: CollectionProps<TPayload>, context: Context) => {
   if( !context.description.immutable ) {
     return Result.result(props.payload)
   }

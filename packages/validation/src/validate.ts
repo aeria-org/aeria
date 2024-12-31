@@ -18,6 +18,10 @@ export type ValidateOptions = {
   parentProperty?: Property | Description
 }
 
+const isValidObjectId = (what: string) => {
+  return /^[0-9a-f]{24}$/.test(what)
+}
+
 const getPropertyType = (property: Property) => {
   if( 'type' in property ) {
     if( 'format' in property && property.format ) {
@@ -106,7 +110,7 @@ export const validateProperty = <TWhat>(
     if( '$ref' in property ) {
       switch( typeof what ) {
         case 'string': {
-          if( /^[0-9a-f]{24}$/.test(what) ) {
+          if( isValidObjectId(what) ) {
             return Result.result(what)
           }
           return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
@@ -143,6 +147,26 @@ export const validateProperty = <TWhat>(
 
   if( 'type' in property ) {
     switch( property.type ) {
+      case 'string': {
+        if( typeof what !== 'string' ) {
+          return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+            expected: expectedType,
+            got: actualType,
+          }))
+        }
+
+        if(
+          (property.format === 'objectid' && !isValidObjectId(what))
+          || (typeof property.minLength === 'number' && property.minLength > what.length)
+          || (typeof property.maxLength === 'number' && property.maxLength < what.length)
+        ) {
+          return Result.error(makePropertyError(PropertyValidationErrorCode.StringConstraint, {
+            expected: 'string',
+            got: 'invalid_string',
+          }))
+        }
+        break
+      }
       case 'integer': {
         if( !Number.isInteger(what) ) {
           return Result.error(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
