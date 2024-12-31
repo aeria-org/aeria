@@ -1,5 +1,16 @@
 # aeria-sdk
 
+## 0.0.164
+
+### Patch Changes
+
+- d0e99ac: Add `objectid` format for strings
+- 45861ce: Stringify ObjectIds sent over HTTP
+- Updated dependencies [d0e99ac]
+- Updated dependencies [45861ce]
+  - @aeriajs/types@0.0.110
+  - @aeriajs/common@0.0.128
+
 ## 0.0.163
 
 ### Patch Changes
