@@ -152,14 +152,6 @@ type PackReferencesAux<T> = T extends (...args: unknown[])=> unknown
           ? PackReferencesAux<T[number]>[]
           : T
 
-export type StringifyObjectIds<T> = T extends ObjectId
-  ? string
-  : T extends Record<string, unknown>
-    ? {
-      [P in keyof T]: StringifyObjectIds<T[P]>
-    }
-    : T
-
 type CombineProperties<TSchema> = TSchema extends { properties: infer Properties }
   ? FilterReadonlyProperties<Properties> extends infer ReadonlyProperties
     ? Readonly<ReadonlyProperties> & {

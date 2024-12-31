@@ -6,7 +6,6 @@ import type {
   RouteUri,
   InferProperties,
   PackReferences,
-  StringifyObjectIds,
   ContractWithRoles,
   ApiConfig,
   RoleFromAccessCondition,
@@ -37,7 +36,7 @@ export type RouteGroupOptions = {
 type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<RouteContext<RoleFromAccessCondition<TContractWithRoles['roles']>>, 'request'> & {
   request: Omit<RouteContext['request'], 'payload' | 'query'> & {
     payload: TContractWithRoles extends { payload: infer Payload }
-      ? StringifyObjectIds<PackReferences<InferProperties<Payload>>>
+      ? PackReferences<InferProperties<Payload>>
       : Record<string, unknown>
     query: TContractWithRoles extends { query: infer Query }
       ? InferProperties<Query>
