@@ -1,5 +1,12 @@
 # @aeriajs/types
 
+## 0.0.110
+
+### Patch Changes
+
+- d0e99ac: Add `objectid` format for strings
+- 45861ce: Stringify ObjectIds sent over HTTP
+
 ## 0.0.109
 
 ### Patch Changes
