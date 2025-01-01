@@ -1,5 +1,11 @@
 # @aeriajs/http
 
+## 0.0.155
+
+### Patch Changes
+
+- 1121397: Coerce query parameters types
+
 ## 0.0.154
 
 ### Patch Changes
