@@ -23,37 +23,39 @@ export const insert = async <
   if( 'password' in payload.what && typeof payload.what.password === 'string' ) {
     payload.what.password = await bcrypt.hash(payload.what.password, 10)
   }
-  if(('email' in payload.what)){
-    if(!(typeof payload.what.email === 'string')){
-      return context.error(HTTPStatus.UnprocessableContent, {
+  if('email' in payload.what && !context.token.roles.includes('root')){
+    if(typeof payload.what.email !== 'string'){
+      return context.error(HTTPStatus.UnprocessableContent, {     
         code: ACError.MalformedInput,
       })
     }
-    const existing = await context.collections.user.model.findOne({
+    if(!context.token.sub){
+      return context.error(HTTPStatus.Unauthorized, {
+        code: ACError.AuthenticationError,
+      })
+    }
+    const existingUserEmailPayload = await context.collections.user.model.findOne({
       email: payload.what.email,
     })
-    if(existing && existing.email !== context.token.userinfo.email){
-      const { error: noUser, result: user } = await context.collections.user.functions.get({
-        filters: {
-          _id: context.token.sub,
-        },
+    const user = await context.collections.user.model.findOne({
+      _id: context.token.sub,
+    })
+    if(!user){
+      return context.error(HTTPStatus.Forbidden, {
+        code: ACError.ResourceNotFound,
       })
-      if(noUser){
-        return context.error(HTTPStatus.Forbidden, {
-          code: ACError.ResourceNotFound,
-        })
-      }
-      if(existing.email !== user.email && !context.token.roles.includes('root')){
-        return context.error(HTTPStatus.Forbidden, {
-          code: ACError.MalformedInput,
-        })
-      }
+    }
+    
+    if(existingUserEmailPayload && existingUserEmailPayload.email !== user.email){
+      return context.error(HTTPStatus.Forbidden, {
+        code: ACError.MalformedInput,
+      })
     }
   }
 
   if(!context.token.roles.includes('root')){
     const whatPropKeyArray = Object.keys(payload.what).filter((prop) => prop !== '_id')
-    if(whatPropKeyArray.some((prop:any) => !(mutableProperties.includes(prop)))){
+    if(whatPropKeyArray.some((prop) => !(mutableProperties.includes(prop as typeof mutableProperties[number])))){
       return context.error(HTTPStatus.BadRequest, {
         code: ACError.MalformedInput,
       })
