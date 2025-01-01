@@ -25,7 +25,7 @@ export const insert = async <
   }
   if('email' in payload.what && !context.token.roles.includes('root')){
     if(typeof payload.what.email !== 'string'){
-      return context.error(HTTPStatus.UnprocessableContent, {     
+      return context.error(HTTPStatus.UnprocessableContent, {
         code: ACError.MalformedInput,
       })
     }
@@ -45,7 +45,7 @@ export const insert = async <
         code: ACError.ResourceNotFound,
       })
     }
-    
+
     if(userWithExistingEmail && userWithExistingEmail.email !== user.email){
       return context.error(HTTPStatus.Forbidden, {
         code: ACError.MalformedInput,
