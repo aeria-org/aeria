@@ -34,7 +34,7 @@ export const insert = async <
         code: ACError.AuthenticationError,
       })
     }
-    const existingUserEmailPayload = await context.collections.user.model.findOne({
+    const userWithExistingEmail = await context.collections.user.model.findOne({
       email: payload.what.email,
     })
     const user = await context.collections.user.model.findOne({
@@ -46,7 +46,7 @@ export const insert = async <
       })
     }
     
-    if(existingUserEmailPayload && existingUserEmailPayload.email !== user.email){
+    if(userWithExistingEmail && userWithExistingEmail.email !== user.email){
       return context.error(HTTPStatus.Forbidden, {
         code: ACError.MalformedInput,
       })
