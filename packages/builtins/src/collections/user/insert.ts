@@ -55,7 +55,8 @@ export const insert = async <
 
   if(!context.token.roles.includes('root')){
     const whatPropKeyArray = Object.keys(payload.what).filter((prop) => prop !== '_id')
-    if(whatPropKeyArray.some((prop) => !(mutableProperties.includes(prop as typeof mutableProperties[number])))){
+    const hasImmutableProps = whatPropKeyArray.some((prop) => !(mutableProperties.includes(prop as typeof mutableProperties[number])))
+    if(hasImmutableProps){
       return context.error(HTTPStatus.BadRequest, {
         code: ACError.MalformedInput,
       })
