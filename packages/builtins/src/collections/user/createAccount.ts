@@ -3,7 +3,7 @@ import type { description } from './description.js'
 import { HTTPStatus, ACError } from '@aeriajs/types'
 import { validate } from '@aeriajs/validation'
 import * as bcrypt from 'bcrypt'
-import { insert as originalInsert } from '@aeriajs/core';
+import { insert as originalInsert } from '@aeriajs/core'
 
 export enum CreateAccountError {
   SignupDisallowed = 'SIGNUP_DISALLOWED',
@@ -15,7 +15,7 @@ export const createAccount = async (
 ) => {
   const userCandidate = Object.assign({}, payload)
   const signupRequired = context.config.security.signupRequired
-  
+
   if( !context.config.security.allowSignup ) {
     return context.error(HTTPStatus.Forbidden, {
       code: CreateAccountError.SignupDisallowed,
@@ -47,7 +47,7 @@ export const createAccount = async (
       details: error,
     })
   }
-  
+
   let roles: string[] = [], defaults = {}
   if( context.config.security.signupDefaults ) {
     ({ roles = [], ...defaults } = context.config.security.signupDefaults)
