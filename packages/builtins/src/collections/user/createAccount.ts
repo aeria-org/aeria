@@ -14,7 +14,6 @@ export const createAccount = async (
   context: Context<typeof description>,
 ) => {
   const userCandidate = Object.assign({}, payload)
-  const signupRequired = context.config.security.signupRequired
 
   if( !context.config.security.allowSignup ) {
     return context.error(HTTPStatus.Forbidden, {
@@ -24,7 +23,10 @@ export const createAccount = async (
 
   const { error, result: user } = validate(userCandidate, {
     type: 'object',
-    required: signupRequired,
+    required: [
+      "name",
+      "email"
+    ],
     properties: {
       name: {
         type: 'string',

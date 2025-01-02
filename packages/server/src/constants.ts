@@ -8,10 +8,6 @@ export const DEFAULT_API_CONFIG = {
     tokenExpiration: 36000,
     linkTokenExpiration: 36000,
     paginationLimit: 100,
-    signupRequired: [
-      'name',
-      'email',
-    ],
     mutableUserProperties: [
       'email',
       'name',

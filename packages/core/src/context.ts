@@ -80,7 +80,6 @@ export const createContext = async <TContextOptions extends ContextOptions>(_opt
     config = {
       security: {
         mutableUserProperties: [],
-        signupRequired: [],
       },
     }
   }
