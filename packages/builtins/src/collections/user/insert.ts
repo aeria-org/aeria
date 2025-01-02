@@ -65,10 +65,6 @@ export const insert = async <
         })
       }
 
-      if('roles' in payload.what){
-        payload.what.roles = context.token.roles
-      }
-
       return originalInsert(payload, context)
     }
 
@@ -76,7 +72,7 @@ export const insert = async <
       code: ACError.AuthorizationError,
     })
   }
-  
+
   return originalInsert(payload, context)
 }
 
