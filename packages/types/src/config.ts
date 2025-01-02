@@ -32,7 +32,8 @@ export type ApiConfig = {
     logSuccessfulAuthentications?: boolean
     authenticationRateLimiting?: RateLimitingParams | null
     allowSignup?: boolean
-    mutableUserProperties?: (keyof CollectionItem<'user'>)[]
+    mutableUserProperties: (keyof CollectionItem<'user'>)[]
+    signupRequired: (keyof CollectionItem<'user'>)[]
     signupDefaults?: {
       roles?: string[]
       active?: boolean

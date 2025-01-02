@@ -8,7 +8,13 @@ import { DEFAULT_API_CONFIG } from './constants.js'
 import { warmup } from './warmup.js'
 import { registerRoutes } from './routes.js'
 
-export type InitApiConfig = Omit<ApiConfig, keyof typeof DEFAULT_API_CONFIG> & Partial<Pick<
+type DeepPartial<T> = T extends object
+  ? {
+    [P in keyof T]?: DeepPartial<T[P]>
+  }
+  : T
+
+export type InitApiConfig = Omit<ApiConfig, keyof typeof DEFAULT_API_CONFIG> & DeepPartial<Pick<
   ApiConfig,
   keyof typeof DEFAULT_API_CONFIG
 >>
