@@ -3,6 +3,7 @@ import type { description } from './description.js'
 import { HTTPStatus, ACError } from '@aeriajs/types'
 import { validate } from '@aeriajs/validation'
 import * as bcrypt from 'bcrypt'
+import { insert as originalInsert } from '@aeriajs/core'
 
 export enum CreateAccountError {
   SignupDisallowed = 'SIGNUP_DISALLOWED',
@@ -20,16 +21,11 @@ export const createAccount = async (
     })
   }
 
-  delete userCandidate._id
-  delete userCandidate.roles
-  delete userCandidate.active
-
   const { error, result: user } = validate(userCandidate, {
     type: 'object',
     required: [
-      'name',
-      'email',
-      'phone_number',
+      "name",
+      "email"
     ],
     properties: {
       name: {
@@ -63,18 +59,27 @@ export const createAccount = async (
     user.password = await bcrypt.hash(user.password, 10)
   }
 
+  const userWithExistingEmail = await context.collections.user.model.findOne({
+    email: user.email,
+  })
+  if(userWithExistingEmail){
+    return context.error(HTTPStatus.Forbidden, {
+      code: ACError.OwnershipError,
+    })
+  }
+
   if( !context.token.authenticated ) {
     Object.assign(user, {
       self_registered: true,
     })
   }
 
-  return context.collections.user.functions.insert({
+  return originalInsert({
     what: {
       ...user,
       ...defaults,
       roles,
     },
-  })
+  }, context)
 }
 
