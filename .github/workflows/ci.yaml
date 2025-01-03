@@ -1,6 +1,7 @@
 name: Continuos Integration
 
 on:
+  pull_request: true
   push:
     branches:
       - master
