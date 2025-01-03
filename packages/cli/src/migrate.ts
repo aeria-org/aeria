@@ -62,8 +62,16 @@ export const migrate = async () => {
 
     await createCollection(collectionName)
 
+    const model = getDatabaseCollection(collectionName)
+    const collIndexes = await model.indexes()
+
     const { description } = collection
     const refMap = await getReferences(description.properties)
+
+    const newIndexes = {
+      unique: new Map<string, boolean>(),
+      temporary: new Map<string, number>(),
+    }
 
     indexMap = recurseReferences(refMap, indexMap)
 
@@ -77,25 +85,51 @@ export const migrate = async () => {
       description.indexes.forEach((index) => set.add(String(index)))
     }
 
-    if( description.temporary ) {
-      const model = getDatabaseCollection(collectionName)
-      const collIndexes = await model.indexes()
-
-      const { index: temporaryIndex, expireAfterSeconds } = description.temporary
-
-      const hasIndex = collIndexes.some((index) => {
-        return temporaryIndex in index.key && 'expireAfterSeconds' in index
-      })
-
-      if( !hasIndex ) {
-        await model.createIndex({
-          [temporaryIndex]: 1,
-        }, {
-          expireAfterSeconds,
-        })
-
-        log('info', `temporary index created for ${collectionName}`)
+    if( description.unique ) {
+      for( const propertyName of description.unique ) {
+        newIndexes.unique.set(propertyName, true)
       }
+    }
+
+    if( description.temporary ) {
+      const { index: temporaryIndex, expireAfterSeconds } = description.temporary
+      newIndexes.temporary.set(temporaryIndex, expireAfterSeconds)
+    }
+
+    for( const propertyName of [
+      ...newIndexes.temporary.keys(),
+      ...newIndexes.unique.keys(),
+    ] ) {
+      console.log({
+        propertyName,
+        collectionName,
+      })
+      const uniqueIndex = newIndexes.unique.get(propertyName)
+      const temporaryIndex = newIndexes.temporary.get(propertyName)
+
+      const existingIndex = collIndexes.find((index) => propertyName in index.key)
+
+      if( existingIndex?.name ) {
+        if( (uniqueIndex === undefined || existingIndex.unique) && (temporaryIndex === undefined || existingIndex.expireAfterSeconds === temporaryIndex) ) {
+          continue
+        }
+
+        await model.dropIndex(existingIndex.name)
+      }
+
+      const indexOptions: Parameters<typeof model.createIndex>[1] = {}
+      if( uniqueIndex ) {
+        indexOptions.unique = true
+      }
+      if( typeof temporaryIndex === 'number' ) {
+        indexOptions.expireAfterSeconds = temporaryIndex
+      }
+
+      await model.createIndex({
+        [propertyName]: 1,
+      }, indexOptions)
+
+      log('info', `new index created for ${collectionName}.${propertyName}`)
     }
   }
 

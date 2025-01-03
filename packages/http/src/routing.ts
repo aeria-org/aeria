@@ -83,7 +83,7 @@ const checkUnprocessable = (
     result = validate(what, schema, validateOptions)
   }
 
-  const { error } = result!
+  const { error, result: validated } = result!
   if( error ) {
     if( 'code' in error ) {
       return context.error(HTTPStatus.UnprocessableContent, {
@@ -99,7 +99,7 @@ const checkUnprocessable = (
     })
   }
 
-  return Result.result({})
+  return Result.result(validated)
 }
 
 export const matches = <TRequest extends GenericRequest>(
@@ -199,12 +199,13 @@ export const registerRoute = async <TRouteContext extends RouteContext>(
       }
 
       if( 'query' in contract && contract.query ) {
-        const { error } = checkUnprocessable(context.request.query, contract.query, context, {
+        const { error, result: validated } = checkUnprocessable(context.request.query, contract.query, context, {
           coerce: true,
         })
         if( error ) {
           return Result.error(error)
         }
+        context.request.query = validated
       }
     }
 

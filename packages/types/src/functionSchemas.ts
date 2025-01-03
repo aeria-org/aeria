@@ -9,6 +9,7 @@ export const insertError = () => endpointErrorSchema({
     HTTPStatus.NotFound,
     HTTPStatus.UnprocessableContent,
     HTTPStatus.BadRequest,
+    HTTPStatus.InternalServerError,
   ],
   code: [
     ACError.InsecureOperator,
@@ -16,6 +17,7 @@ export const insertError = () => endpointErrorSchema({
     ACError.ResourceNotFound,
     ACError.TargetImmutable,
     ACError.MalformedInput,
+    ACError.UniquenessViolated,
     ValidationErrorCode.EmptyTarget,
     ValidationErrorCode.InvalidProperties,
     ValidationErrorCode.MissingProperties,

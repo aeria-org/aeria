@@ -22,6 +22,7 @@ export const description = defineDescription({
     'picture_file',
   ],
   indexes: ['name'],
+  unique: ['email'],
   properties: {
     name: {
       type: 'string',
@@ -54,7 +55,6 @@ export const description = defineDescription({
     email: {
       type: 'string',
       inputType: 'email',
-      unique: true,
     },
     password: {
       type: 'string',
