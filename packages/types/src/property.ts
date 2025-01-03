@@ -25,12 +25,12 @@ export type PropertyFormat =
   | 'date-time'
   | 'objectid'
 
-export type PropertiesWithId<TSchema extends JsonSchema> =
-  Extract<keyof TSchema['properties'], string> | '_id'
+export type PropertiesWithId<TJsonSchema extends JsonSchema> =
+  Extract<keyof TJsonSchema['properties'], string> | '_id'
 
-export type RequiredProperties<TSchema extends JsonSchema> = readonly PropertiesWithId<TSchema>[] | Partial<Record<
-  PropertiesWithId<TSchema>,
-  Condition<TSchema> | boolean
+export type RequiredProperties<TJsonSchema extends JsonSchema> = readonly PropertiesWithId<TJsonSchema>[] | Partial<Record<
+  PropertiesWithId<TJsonSchema>,
+  Condition<TJsonSchema> | boolean
 >>
 
 export type JsonSchema<TJsonSchema extends JsonSchema = any> = {
@@ -176,7 +176,6 @@ export type PropertyBase = {
   noForm?: boolean
   noLabel?: boolean
   hidden?: boolean
-  unique?: boolean
 
   isTimestamp?: boolean
 }

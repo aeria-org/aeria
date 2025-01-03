@@ -31,6 +31,7 @@ export enum ACError {
   ResourceNotFound = 'RESOURCE_NOT_FOUND',
   InsecureOperator = 'INSECURE_OPERATOR',
   MalformedInput = 'MALFORMED_INPUT',
+  UniquenessViolated = 'UNIQUENESS_VIOLATED',
   UnknownError = 'UNKNOWN_ERROR',
 }
 

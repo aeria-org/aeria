@@ -156,8 +156,9 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
 
   // modifiers
   owned?: OwnershipMode
+  unique?: readonly Extract<keyof TDescription['properties'], string>[]
   temporary?: {
-    index: keyof TDescription['properties']
+    index: Extract<keyof TDescription['properties'], string>
     expireAfterSeconds: number
   }
   timestamps?: false
