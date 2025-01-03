@@ -40,24 +40,6 @@ export const insert = async <
       })
     }
 
-    if('email' in payload.what){
-      if(typeof payload.what.email !== 'string'){
-        return context.error(HTTPStatus.UnprocessableContent, {
-          code: ACError.MalformedInput,
-        })
-      }
-
-      const userWithExistingEmail = await context.collections.user.model.findOne({
-        email: payload.what.email,
-      })
-
-      if(userWithExistingEmail && userWithExistingEmail.email !== user.email){
-        return context.error(HTTPStatus.Forbidden, {
-          code: ACError.OwnershipError,
-        })
-      }
-    }
-
     if('_id' in payload.what){
       if(payload.what._id !== context.token.sub.toString()){
         return context.error(HTTPStatus.Unauthorized, {

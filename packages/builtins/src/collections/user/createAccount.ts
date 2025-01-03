@@ -59,15 +59,6 @@ export const createAccount = async (
     user.password = await bcrypt.hash(user.password, 10)
   }
 
-  const userWithExistingEmail = await context.collections.user.model.findOne({
-    email: user.email,
-  })
-  if(userWithExistingEmail){
-    return context.error(HTTPStatus.Forbidden, {
-      code: ACError.OwnershipError,
-    })
-  }
-
   if( !context.token.authenticated ) {
     Object.assign(user, {
       self_registered: true,
