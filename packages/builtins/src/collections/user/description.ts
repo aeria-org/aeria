@@ -22,9 +22,7 @@ export const description = defineDescription({
     'picture_file',
   ],
   indexes: ['name'],
-  unique: [
-    'email',
-  ],
+  unique: ['email'],
   properties: {
     name: {
       type: 'string',
