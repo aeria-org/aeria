@@ -24,8 +24,8 @@ export const createAccount = async (
   const { error, result: user } = validate(userCandidate, {
     type: 'object',
     required: [
-      "name",
-      "email"
+      'name',
+      'email',
     ],
     properties: {
       name: {
