@@ -1,4 +1,4 @@
-import { type Context, type SchemaWithId, HTTPStatus, ACError, type PackReferences } from '@aeriajs/types'
+import { HTTPStatus, ACError, type Context, type SchemaWithId, type PackReferences } from '@aeriajs/types'
 import { insert as originalInsert } from '@aeriajs/core'
 import * as bcrypt from 'bcrypt'
 import { type description } from './description.js'
@@ -9,7 +9,7 @@ export const editProfile = async (
 ) => {
   const mutableProperties = context.config.security.mutableUserProperties
   if(!context.token.authenticated || !context.token.sub){
-    throw new Error('function not avaliable for unauthenticated users')
+    throw new Error
   }
 
   if(!payload._id ){
@@ -29,7 +29,7 @@ export const editProfile = async (
   })
 
   if(!user){
-    throw new Error('INVALID_TOKEN_USER_ID')
+    throw new Error
   }
 
   if( payload.password && typeof payload.password === 'string' ) {
