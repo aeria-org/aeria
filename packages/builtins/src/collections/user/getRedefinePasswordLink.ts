@@ -4,7 +4,8 @@ import { Result, HTTPStatus } from '@aeriajs/types'
 import { ActivationError } from './redefinePassword.js'
 import { getActivationToken } from './getActivationLink.js'
 
-export const getRedefinePasswordLink = async (payload: { userId: ObjectId | string, redirect?: string }, context: Context) => {
+export const getRedefinePasswordLink = async (payload: { userId: ObjectId | string,
+  redirect?: string }, context: Context) => {
   if(!context.config.webPublicUrl){
     throw new Error('config.webPublicUrl is not set')
   }

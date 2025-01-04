@@ -20,7 +20,8 @@ export const getActivationToken = async (strId: string, context: Context) => {
   return token
 }
 
-export const getActivationLink = async (payload: { userId: ObjectId | string, redirect?: string }, context: Context) => {
+export const getActivationLink = async (payload: { userId: ObjectId | string,
+  redirect?: string }, context: Context) => {
   if(!context.config.webPublicUrl){
     return context.error(HTTPStatus.BadRequest, {
       code: ActivationError.InvalidLink,
