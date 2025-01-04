@@ -12,6 +12,9 @@ export const generateCode = (ast: AST.Node[]) => {
   fs.mkdirSync('./.aeria-test/out/collections/', {
     recursive: true,
   })
+  fs.mkdirSync('./.aeria-test/out/contracts/', {
+    recursive: true,
+  })
   fs.writeFileSync('./.aeria-test/out/collections/collections.d.ts', typescript)
   fs.writeFileSync('./.aeria-test/out/collections/collections.js', javascript)
 

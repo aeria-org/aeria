@@ -5,8 +5,8 @@ import type aeria from 'aeria'
 
 export const generateContracts = (ast: AST.Node[]) => {
   return {
-    ['out/collections/contracts.js']: makeJSContractsCode(ast),
-    ['out/collections/contracts.d.ts']: makeTSContractsCode(ast),
+    ['out/contracts/contracts.js']: makeJSContractsCode(ast),
+    ['out/contracts/contracts.d.ts']: makeTSContractsCode(ast),
   }
 }
 

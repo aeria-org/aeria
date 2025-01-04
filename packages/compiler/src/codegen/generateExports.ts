@@ -14,14 +14,28 @@ const codeGenerators = new Map<string, (symbols: SymbolToExport[]) => string>([
     (symbols) => `export { ${symbols.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
   ],
   [
+    '/out/collections/index.d.ts',
+    (symbols) => `export { ${symbols.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
+  ],
+  [
+    '/out/contracts/index.js',
+    (_symbols) => `export * from './contracts.js'`,
+  ],
+  [
+    '/out/contracts/index.d.ts',
+    (_symbols) => `export * from './contracts.js'`,
+  ],
+  [
     '/out/index.d.ts',
     (symbols) =>
+      'export * as contracts from \'./contracts/index.js\'\n' +
       'export * as collections from \'./collections/index.js\'\n' +
             `export { ${symbols.map((symbol) => `${symbol.extend}, ${symbol.schema}`).join(', ')} } from './collections/collections.js'`,
   ],
   [
     '/out/index.js',
     (symbols) =>
+      'export * as contracts from \'./contracts/index.js\'\n' +
       'export * as collections from \'./collections/index.js\'\n' +
             `export { ${symbols.map((symbol) => symbol.extend).join(', ')} } from './collections/collections.js'`,
   ],
