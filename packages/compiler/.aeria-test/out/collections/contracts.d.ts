@@ -14,19 +14,41 @@ export declare const GetPersonContract: {
 		{
 			type: "object",
 			properties: {
-				name: {
-					type: "string"
+				_tag: {
+					const: "Error"
+				},
+				error: {
+					type: "object",
+					properties: {
+						name: {
+							type: "string"
+						}
+					}
+				},
+				result: {
+					const: undefined
 				}
 			}
 		},
 		{
 			type: "object",
 			properties: {
-				name: {
-					type: "string"
+				_tag: {
+					const: "Result"
 				},
-				age: {
-					type: "number"
+				error: {
+					const: undefined
+				},
+				result: {
+					type: "object",
+					properties: {
+						name: {
+							type: "string"
+						},
+						age: {
+							type: "number"
+						}
+					}
 				}
 			}
 		},

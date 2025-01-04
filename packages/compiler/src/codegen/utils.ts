@@ -92,7 +92,7 @@ export const stringify = (value: StringifyProperty<string | unknown[] | object>,
   }
 
   if (typeof value !== 'object') {
-    return typeof value === 'number'
+    return typeof value === 'number' || typeof value === 'boolean' || !value
       ? value
       : `"${String(value)}"`
   }
