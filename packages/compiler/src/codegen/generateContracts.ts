@@ -1,4 +1,4 @@
-import { errorSchema, Property, resultSchema } from 'aeria'
+import { errorSchema, type Property, resultSchema } from 'aeria'
 import type * as AST from '../ast'
 import { getProperties, propertyToSchema, stringify, type StringifyProperty } from './utils'
 
@@ -60,14 +60,14 @@ const makeJSContractsCode = (ast: AST.Node[]) => {
 }
 
 const getResponseSchema = (response: AST.PropertyNode) => {
-  const responseSchema = propertyToSchema(response)  
+  const responseSchema = propertyToSchema(response)
   if (!response.modifier) {
     return responseSchema
   }
-  
-  return response.modifier === "Result" ? 
-  resultSchema(responseSchema) : 
-  errorSchema(responseSchema)
+
+  return response.modifier === 'Result' ?
+    resultSchema(responseSchema) :
+    errorSchema(responseSchema)
 }
 
 const makeTSContractsCode = (ast: AST.Node[]) => {
@@ -87,7 +87,7 @@ const makeTSContractsCode = (ast: AST.Node[]) => {
       return `export declare const ${contractNode.name}Contract: ${
         stringify({
           ...getProperties(contractSchema),
-          response: responseSchema
+          response: responseSchema,
         })
       }`
     }).join('\n\n')
