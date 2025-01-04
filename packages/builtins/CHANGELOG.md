@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.224
+
+### Patch Changes
+
+- ee542ad: Return URLs as strings
+  - @aeriajs/core@0.0.224
+
 ## 0.0.223
 
 ### Patch Changes
