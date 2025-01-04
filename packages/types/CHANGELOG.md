@@ -1,5 +1,12 @@
 # @aeriajs/types
 
+## 0.0.111
+
+### Patch Changes
+
+- 93d0d8c: add rules to strengthen security of user insert
+- e822290: Remove `phone_number` from required fields of account creation
+
 ## 0.0.110
 
 ### Patch Changes

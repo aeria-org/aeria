@@ -1,5 +1,21 @@
 # @aeriajs/server
 
+## 0.0.225
+
+### Patch Changes
+
+- 93d0d8c: add rules to strengthen security of user insert
+- Updated dependencies [93d0d8c]
+- Updated dependencies [e822290]
+  - @aeriajs/builtins@0.0.223
+  - @aeriajs/server@0.0.225
+  - @aeriajs/types@0.0.111
+  - @aeriajs/core@0.0.223
+  - @aeriajs/common@0.0.129
+  - @aeriajs/entrypoint@0.0.132
+  - @aeriajs/http@0.0.156
+  - @aeriajs/node-http@0.0.156
+
 ## 0.0.224
 
 ### Patch Changes

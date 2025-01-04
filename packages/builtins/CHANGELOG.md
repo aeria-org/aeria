@@ -1,5 +1,19 @@
 # @aeriajs/builtins
 
+## 0.0.223
+
+### Patch Changes
+
+- 93d0d8c: add rules to strengthen security of user insert
+- e822290: Remove `phone_number` from required fields of account creation
+- Updated dependencies [93d0d8c]
+- Updated dependencies [e822290]
+  - @aeriajs/types@0.0.111
+  - @aeriajs/core@0.0.223
+  - @aeriajs/common@0.0.129
+  - @aeriajs/entrypoint@0.0.132
+  - @aeriajs/validation@0.0.144
+
 ## 0.0.222
 
 ### Patch Changes
