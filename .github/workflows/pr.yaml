@@ -1,0 +1,28 @@
+name: Pull Request
+
+on:
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install
+      - name: Build packages
+        run: pnpm build
+      - name: Run tests
+        run: pnpm -r test
+      - name: Lint
+        run: pnpm -r lint
+      - name: Build playground
+        run: pnpm --filter=playground build

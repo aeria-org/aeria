@@ -23,6 +23,7 @@ const mirrorDts = (mirrorObj: MirrorObject, config: InstanceConfig) => {
   InferProperty,
   InferProperties,
   SchemaWithId,
+  PackReferences,
   MakeEndpoint,
   RequestMethod,
   CollectionFunctionsSDK
@@ -63,7 +64,7 @@ declare module 'aeria-sdk' {
             Method,
             InferProperties<RouteResponse>,
             RoutePayload extends {}
-              ? InferProperty<RoutePayload>
+              ? PackReferences<InferProperty<RoutePayload>>
               : undefined
           >
           : MakeEndpoint<Route, Method>

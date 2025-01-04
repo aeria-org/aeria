@@ -1,5 +1,5 @@
 import type { Context } from '@aeriajs/types'
-import { type ObjectId, signToken } from '@aeriajs/core'
+import { signToken, type ObjectId } from '@aeriajs/core'
 import { Result, HTTPStatus } from '@aeriajs/types'
 import { ActivationError } from './activate.js'
 
@@ -20,7 +20,8 @@ export const getActivationToken = async (strId: string, context: Context) => {
   return token
 }
 
-export const getActivationLink = async (payload: { userId: ObjectId | string, redirect?:string}, context: Context) => {
+export const getActivationLink = async (payload: { userId: ObjectId | string,
+  redirect?: string }, context: Context) => {
   if(!context.config.webPublicUrl){
     return context.error(HTTPStatus.BadRequest, {
       code: ActivationError.InvalidLink,
@@ -46,14 +47,14 @@ export const getActivationLink = async (payload: { userId: ObjectId | string, re
 
   //const url = `${context.config.webPublicUrl}/user/activation?step=password&u=${payload.userId.toString()}&t=${activationToken}`
   const url = new URL(`${context.config.webPublicUrl}/user/activation`)
-  url.searchParams.set("step", "password"),
-  url.searchParams.set("u", payload.userId.toString())
-  url.searchParams.set("t", activationToken)
+  url.searchParams.set('step', 'password'),
+  url.searchParams.set('u', payload.userId.toString())
+  url.searchParams.set('t', activationToken)
   if(payload.redirect){
     url.searchParams.set('next', payload.redirect)
   }
-  
+
   return Result.result({
-    url,
+    url: url.toString(),
   })
 }

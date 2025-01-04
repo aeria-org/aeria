@@ -10,6 +10,7 @@ import { getCurrentUser } from './getCurrentUser.js'
 import { getActivationLink } from './getActivationLink.js'
 import { redefinePassword } from './redefinePassword.js'
 import { getRedefinePasswordLink } from './getRedefinePasswordLink.js'
+import { editProfile } from './editProfile.js'
 
 const functions = {
   get,
@@ -18,6 +19,7 @@ const functions = {
   upload,
   removeFile,
   insert,
+  editProfile,
   authenticate,
   activate,
   createAccount,
@@ -34,7 +36,8 @@ const exposedFunctions: Record<keyof typeof functions, AccessCondition> = {
   remove: ['root'],
   upload: true,
   removeFile: true,
-  insert: true,
+  insert: ['root'],
+  editProfile: true,
   authenticate: 'unauthenticated',
   activate: [
     'unauthenticated',

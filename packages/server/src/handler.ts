@@ -38,11 +38,13 @@ export const safeHandle = (
     if( context.request.headers['sec-fetch-mode'] === 'cors' ) {
       return Result.error({
         code: ACError.UnknownError,
+        message: String(error),
       })
     }
 
     return context.error(HTTPStatus.InternalServerError, {
       code: ACError.UnknownError,
+      message: String(error),
     })
   }
 }

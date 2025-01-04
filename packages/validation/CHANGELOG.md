@@ -1,5 +1,27 @@
 # @aeriajs/validation
 
+## 0.0.144
+
+### Patch Changes
+
+- Updated dependencies [93d0d8c]
+- Updated dependencies [e822290]
+  - @aeriajs/types@0.0.111
+  - @aeriajs/common@0.0.129
+  - @aeriajs/entrypoint@0.0.132
+
+## 0.0.143
+
+### Patch Changes
+
+- 45861ce: Validate string constraints
+- d0e99ac: Add `objectid` format for strings
+- Updated dependencies [d0e99ac]
+- Updated dependencies [45861ce]
+  - @aeriajs/types@0.0.110
+  - @aeriajs/common@0.0.128
+  - @aeriajs/entrypoint@0.0.131
+
 ## 0.0.142
 
 ### Patch Changes

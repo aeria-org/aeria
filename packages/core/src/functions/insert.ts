@@ -1,6 +1,6 @@
 import type { Context, Description, SchemaWithId, InsertPayload, InsertReturnType } from '@aeriajs/types'
-import { ObjectId } from 'mongodb'
-import { Result, HTTPStatus } from '@aeriajs/types'
+import { ObjectId, MongoServerError } from 'mongodb'
+import { Result, HTTPStatus, ACError } from '@aeriajs/types'
 import { useSecurity, applyWriteMiddlewares } from '@aeriajs/security'
 import { traverseDocument } from '../collection/index.js'
 import { get } from './get.js'
@@ -59,25 +59,38 @@ const internalInsert = async <TContext extends Context>(
 
   let newId = docId
 
-  if( !newId ) {
-    const content = prepareCreate(what, context.description)
-    const now = new Date()
-    Object.assign(content, {
-      created_at: now,
-      updated_at: now,
-    })
+  try {
+    if( !newId ) {
+      const content = prepareCreate(what, context.description)
+      const now = new Date()
+      Object.assign(content, {
+        created_at: now,
+        updated_at: now,
+      })
 
-    newId = (await context.collection.model.insertOne(content)).insertedId
+      newId = (await context.collection.model.insertOne(content)).insertedId
 
-  } else {
-    await context.collection.model.updateOne({
-      _id: newId,
-    }, {
-      $set: {
-        ...what,
-        updated_at: new Date(),
-      },
-    })
+    } else {
+      await context.collection.model.updateOne({
+        _id: newId,
+      }, {
+        $set: {
+          ...what,
+          updated_at: new Date(),
+        },
+      })
+    }
+  } catch( err ) {
+    if( err instanceof MongoServerError ) {
+      switch( err.code ) {
+        case 11000: return context.error(HTTPStatus.InternalServerError, {
+          code: ACError.UniquenessViolated,
+        })
+        default: throw err
+      }
+    }
+
+    throw err
   }
 
   const inheritedContext: Context = {

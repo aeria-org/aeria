@@ -1,5 +1,36 @@
 # @aeriajs/http
 
+## 0.0.156
+
+### Patch Changes
+
+- Updated dependencies [93d0d8c]
+- Updated dependencies [e822290]
+  - @aeriajs/types@0.0.111
+  - @aeriajs/common@0.0.129
+  - @aeriajs/entrypoint@0.0.132
+  - @aeriajs/validation@0.0.144
+
+## 0.0.155
+
+### Patch Changes
+
+- 1121397: Coerce query parameters types
+
+## 0.0.154
+
+### Patch Changes
+
+- d0e99ac: Add `objectid` format for strings
+- 45861ce: Stringify ObjectIds sent over HTTP
+- Updated dependencies [45861ce]
+- Updated dependencies [d0e99ac]
+- Updated dependencies [45861ce]
+  - @aeriajs/validation@0.0.143
+  - @aeriajs/types@0.0.110
+  - @aeriajs/common@0.0.128
+  - @aeriajs/entrypoint@0.0.131
+
 ## 0.0.153
 
 ### Patch Changes
