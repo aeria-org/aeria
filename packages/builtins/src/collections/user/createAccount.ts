@@ -34,9 +34,6 @@ export const createAccount = async (
       email: {
         type: 'string',
       },
-      phone_number: {
-        type: 'string',
-      },
       password: {
         type: 'string',
       },
