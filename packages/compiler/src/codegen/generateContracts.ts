@@ -1,6 +1,7 @@
 import { errorSchema, type Property, resultSchema } from 'aeria'
 import type * as AST from '../ast'
 import { getProperties, propertyToSchema, stringify, type StringifyProperty } from './utils'
+import aeria from 'aeria'
 
 export const generateContracts = (ast: AST.Node[]) => {
   return {
@@ -10,7 +11,7 @@ export const generateContracts = (ast: AST.Node[]) => {
 }
 
 const makeJSContractsCode = (ast: AST.Node[]) => {
-  const imports = ['defineContract']
+  const imports = new Set<keyof typeof aeria>(['defineContract'])
 
   const getCodeForResponse = (responseProperty: AST.PropertyNode) => {
     const { type, modifier, ...propertyNode } = responseProperty
@@ -20,8 +21,8 @@ const makeJSContractsCode = (ast: AST.Node[]) => {
     const modifierSymbol = responseProperty.modifier === 'Result'
       ? 'resultSchema'
       : 'errorSchema'
-    if (!imports.includes(modifierSymbol)) {
-      imports.push(modifierSymbol)
+    if (!imports.has(modifierSymbol)) {
+      imports.add(modifierSymbol)
     }
 
     return `${modifierSymbol}(${stringify(propertyToSchema(propertyNode as AST.PropertyNode))})`
@@ -56,7 +57,7 @@ const makeJSContractsCode = (ast: AST.Node[]) => {
         stringify(contractSchema)
       })`
     }).join('\n\n')
-  return `import { ${imports.join(', ')} } from \'aeria\'\n\n` + declarations
+  return `import { ${[...imports].join(', ')} } from \'aeria\'\n\n` + declarations
 }
 
 const getResponseSchema = (response: AST.PropertyNode) => {
