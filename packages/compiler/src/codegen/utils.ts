@@ -44,52 +44,57 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
   }
 }
 
+export const propertyToSchema = (propertyNode: AST.PropertyNode) => {
+  if ('$ref' in propertyNode.property) {
+    propertyNode.property.$ref = getCollectionId(propertyNode.property.$ref)
+  }
+  return {
+    ...propertyNode.property,
+    ...(propertyNode.nestedProperties && {
+      properties: getProperties(propertyNode.nestedProperties),
+    }),
+  } as Property
+}
+
 /** Transforms the AST properties to the format of aeria schema properties */
 export const getProperties = (properties: Record<string, AST.PropertyNode | AST.PropertyNode[]>) => {
   return Object.entries(properties).reduce<Record<string, Property | Property[]>>((acc, [key, value]) => {
     if (Array.isArray(value)) {
-      acc[key] = value.map((schema) => ({
-        ...schema.property,
-        ...(schema.nestedProperties && {
-          properties: getProperties(schema.nestedProperties),
-        }),
-      })) as Property[]
-    } else if ('properties' in value.property && value.nestedProperties) {
-      acc[key] = {
-        ...value.property,
-        properties: getProperties(value.nestedProperties),
-      } as Property
+      acc[key] = value.map((propertyNode) => propertyToSchema(propertyNode))
     } else {
-      acc[key] = value.property
+      acc[key] = propertyToSchema(value)
     }
     return acc
   }, {})
 }
 
-const isNotJSONSerializable = (value: unknown): value is Record<string, unknown> => {
-  return typeof value === 'object'
-}
+/** Serves to know if the value must be unquoted on strinfigy function */
+export type StringifyProperty<T> = T extends object ? Record<string, any> & {
+  ['@unquoted']?: string,
+} : T
 
 /** Assure if specific fields needs to be between quotes or not */
-export const stringify = (value: unknown, parents: string[] = []) => {
+export const stringify = (value: StringifyProperty<string | unknown[] | object>, parents: string[] = []) => {
   if (Array.isArray(value)) {
-    const arrayString: string = value.map((element: unknown) => {
+    let arrayString = '[\n'
+
+    value.map((element: StringifyProperty<string | object>) => {
       const currentParents = [
         ...parents,
-        'array',
+        '@array',
       ]
 
-      return '\t'.repeat(currentParents.length) +
-      (!betweenQuotes(currentParents, String(element))
-        ? stringify(element, currentParents).replaceAll('"', '')
-        : stringify(element, currentParents))
-    }).join(',\n')
+      arrayString += '\t'.repeat(currentParents.length) +
+        checkQuotes(currentParents, element) + ',\n'
+    })
 
-    return `[\n${arrayString}\n${'\t'.repeat(parents.length)}]`
+    return arrayString + `${'\t'.repeat(parents.length)}]`
   }
 
-  if (!isNotJSONSerializable(value)) {
-    return JSON.stringify(value, null, '\t')
+  if (typeof value !== 'object') {
+    return typeof value === 'number'
+      ? value
+      : `"${String(value)}"`
   }
 
   const objectString: string = Object.keys(value).map((key) => {
@@ -100,20 +105,25 @@ export const stringify = (value: unknown, parents: string[] = []) => {
 
     const prefix = '\t'.repeat(currentParents.length)
 
-    return !betweenQuotes(currentParents, String(value[key]))
-      ? `${prefix}${key}: ${stringify(value[key], currentParents).replaceAll('"', '')}`
-      : `${prefix}${key}: ${stringify(value[key], currentParents)}`
+    return `${prefix}${key}: ${checkQuotes(currentParents, value[key])}`
   }).join(',\n')
 
   return `{\n${objectString}\n${'\t'.repeat(parents.length)}}`
 }
 
-const betweenQuotes = (parents: string[], value: string) =>
-  !value.includes('typeof') && !parents.includes('functions')
+const checkQuotes = (parents: string[], value: StringifyProperty<string | object>): string => {
+  if (typeof value === 'object' && value['@unquoted']) {
+    return value['@unquoted']
+  }
+
+  return stringify(value, parents)
+}
 
 /** Used to make the id and the schema name of the collection */
-export const resizeFirstChar = (name: string, capitalize: boolean): string => name.charAt(0)[capitalize
+export const resizeFirstChar = (text: string, capitalize: boolean): string => text.charAt(0)[capitalize
   ? 'toUpperCase'
-  : 'toLowerCase']() + name.slice(1)
+  : 'toLowerCase']() + text.slice(1)
+
+export const getCollectionId = (name: string) => resizeFirstChar(name, false)
 
 export const getExtendName = (name: string) => `extend${resizeFirstChar(name, true)}Collection`

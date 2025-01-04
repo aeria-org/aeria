@@ -1,5 +1,5 @@
 import type * as AST from '../ast'
-import { resizeFirstChar, getExtendName } from './utils'
+import { resizeFirstChar, getExtendName, getCollectionId } from './utils'
 
 type SymbolToExport = {
   id: string
@@ -29,7 +29,7 @@ const codeGenerators = new Map<string, (symbols: SymbolToExport[]) => string>([
 
 export const generateExports = (ast: AST.Node[]) => {
   const symbolsToExport = ast.filter((node) => node.type === 'collection').map<SymbolToExport>((node) => ({
-    id: resizeFirstChar(node.name, false),
+    id: getCollectionId(node.name),
     schema: resizeFirstChar(node.name, true),
     extend: getExtendName(node.name),
   }))

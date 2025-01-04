@@ -44,7 +44,7 @@ export const animal = defineCollection({
 			specie: {
 				enum: [
 					"dog",
-					"cat"
+					"cat",
 				]
 			},
 			details: {

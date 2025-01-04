@@ -1,5 +1,5 @@
 import type * as AST from '../ast'
-import { makeASTImports, resizeFirstChar, getProperties, stringify, aeriaPackageName, getExtendName } from './utils'
+import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, type StringifyProperty } from './utils'
 import type aeria from 'aeria'
 
 const initialImportedFunctions = [
@@ -22,7 +22,7 @@ export const generateJSCollections = (ast: AST.Node[]) => {
 const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, string>) => {
   return ast.filter((node) => node.type === 'collection')
     .map((collectionNode) => {
-      const id = resizeFirstChar(collectionNode.name, false) //CollectionName -> collectionName
+      const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
       const extendCollectionName = getExtendName(collectionNode.name)
 
       const collectionDefinition =
@@ -52,7 +52,9 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
     }),
   },
   ...(collectionNode.functions && {
-    functions: `{ ${makeJSFunctions(collectionNode.functions)} }`,
+    functions: {
+      '@unquoted': `{ ${makeJSFunctions(collectionNode.functions)} }`,
+    } satisfies StringifyProperty<object>,
   }),
 })
 

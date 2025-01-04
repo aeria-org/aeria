@@ -1,5 +1,5 @@
 import type * as AST from '../ast'
-import { getProperties, stringify, makeASTImports, resizeFirstChar, aeriaPackageName } from './utils'
+import { getProperties, stringify, makeASTImports, resizeFirstChar, aeriaPackageName, getCollectionId, type StringifyProperty } from './utils'
 
 const initialImportedTypes = [
   'Collection',
@@ -21,7 +21,7 @@ export const generateTSCollections = (ast: AST.Node[]): string => {
 const makeTSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, string>) => {
   return ast.filter((node): node is AST.CollectionNode => node.type === 'collection')
     .map((collectionNode) => {
-      const id = resizeFirstChar(collectionNode.name, false) //CollectionName -> collectionName
+      const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
       const schemaName = resizeFirstChar(collectionNode.name, true) //collectionName -> CollectionName
       const typeName = id + 'Collection' //Pet -> petCollection
 
@@ -67,10 +67,12 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
 
 /** Turns each function to 'typeof functioName' if it's from aeria or  */
 const makeTSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
-  return Object.keys(functions).reduce<Record<string, string>>((acc, key) => {
-    acc[key] = functions[key].fromFunctionSet
-      ? `typeof ${key}`
-      : '() => never'
+  return Object.keys(functions).reduce<Record<string, StringifyProperty<object>>>((acc, key) => {
+    acc[key] = {
+      '@unquoted': functions[key].fromFunctionSet
+        ? `typeof ${key}`
+        : '() => never',
+    }
     return acc
   }, {})
 }

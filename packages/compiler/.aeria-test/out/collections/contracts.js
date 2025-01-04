@@ -1,4 +1,4 @@
-import { defineContract } from 'aeria'
+import { defineContract, errorSchema, resultSchema } from 'aeria'
 
 export const GetPersonContract = defineContract({
 	payload: {
@@ -8,32 +8,32 @@ export const GetPersonContract = defineContract({
 				type: "string"
 			},
 			pet: {
-				$ref: "Pet"
+				$ref: "pet"
 			}
 		}
 	},
 	response: [
-		{
-			type: "object",
-			properties: {
-				name: {
-					type: "string"
-				}
-			}
-		},
-		{
-			type: "object",
-			properties: {
-				name: {
-					type: "string"
-				},
-				age: {
-					type: "number"
-				}
-			}
-		},
-		{
+	errorSchema({
+	type: "object",
+	properties: {
+		name: {
 			type: "string"
 		}
-	]
+	}
+}),
+	resultSchema({
+	type: "object",
+	properties: {
+		name: {
+			type: "string"
+		},
+		age: {
+			type: "number"
+		}
+	}
+}),
+	{
+	type: "string"
+},
+]
 })

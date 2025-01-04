@@ -6,7 +6,7 @@ export declare const GetPersonContract: {
 				type: "string"
 			},
 			pet: {
-				$ref: "Pet"
+				$ref: "pet"
 			}
 		}
 	},
@@ -32,6 +32,6 @@ export declare const GetPersonContract: {
 		},
 		{
 			type: "string"
-		}
+		},
 	]
 }

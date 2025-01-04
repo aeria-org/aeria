@@ -72,7 +72,7 @@ export declare type animalCollection = {
 			specie: {
 				enum: [
 					"dog",
-					"cat"
+					"cat",
 				]
 			},
 			details: {
