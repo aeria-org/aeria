@@ -19,11 +19,11 @@ const codeGenerators = new Map<string, (symbols: SymbolToExport[]) => string>([
   ],
   [
     '/out/contracts/index.js',
-    (_symbols) => `export * from './contracts.js'`,
+    (_symbols) => 'export * from \'./contracts.js\'',
   ],
   [
     '/out/contracts/index.d.ts',
-    (_symbols) => `export * from './contracts.js'`,
+    (_symbols) => 'export * from \'./contracts.js\'',
   ],
   [
     '/out/index.d.ts',
