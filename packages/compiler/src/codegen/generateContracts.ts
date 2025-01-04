@@ -1,7 +1,7 @@
 import { errorSchema, type Property, resultSchema } from 'aeria'
 import type * as AST from '../ast'
 import { getProperties, propertyToSchema, stringify, type StringifyProperty } from './utils'
-import aeria from 'aeria'
+import type aeria from 'aeria'
 
 export const generateContracts = (ast: AST.Node[]) => {
   return {
