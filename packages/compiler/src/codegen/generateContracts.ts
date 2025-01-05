@@ -35,7 +35,7 @@ const makeJSContractsCode = (ast: AST.Node[]) => {
       let responseString = ''
       if (response) {
         if (Array.isArray(response)) {
-          const responseArray: StringifyProperty<object>[] = []
+          const responseArray: StringifyProperty[] = []
           for (const responseElement of response) {
             responseArray.push({
               '@unquoted': getCodeForResponse(responseElement),
@@ -48,7 +48,7 @@ const makeJSContractsCode = (ast: AST.Node[]) => {
         }
       }
 
-      const contractSchema: Record<string, any> = getProperties(contractProperty)
+      const contractSchema: Record<string, unknown> = getProperties(contractProperty)
       contractSchema.response = {
         ['@unquoted']: responseString,
       }

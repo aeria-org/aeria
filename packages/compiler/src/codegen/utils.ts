@@ -69,16 +69,18 @@ export const getProperties = (properties: Record<string, AST.PropertyNode | AST.
 }
 
 /** Serves to know if the value must be unquoted on strinfigy function */
-export type StringifyProperty<T> = T extends object ? Record<string, any> & {
+export type StringifyProperty = unknown | {
   ['@unquoted']?: string,
-} : T
+}
+
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object"
 
 /** Assure if specific fields needs to be between quotes or not */
-export const stringify = (value: StringifyProperty<string | unknown[] | object>, parents: string[] = []) => {
+export const stringify = (value: StringifyProperty, parents: string[] = []): string => {
   if (Array.isArray(value)) {
     let arrayString = '[\n'
 
-    value.map((element: StringifyProperty<string | object>) => {
+    value.map((element: StringifyProperty) => {
       const currentParents = [
         ...parents,
         '@array',
@@ -91,9 +93,9 @@ export const stringify = (value: StringifyProperty<string | unknown[] | object>,
     return arrayString + `${'\t'.repeat(parents.length)}]`
   }
 
-  if (typeof value !== 'object') {
+  if (!isRecord(value)) {
     return typeof value === 'number' || typeof value === 'boolean' || !value
-      ? value
+      ? String(value)
       : `"${String(value)}"`
   }
 
@@ -111,8 +113,8 @@ export const stringify = (value: StringifyProperty<string | unknown[] | object>,
   return `{\n${objectString}\n${'\t'.repeat(parents.length)}}`
 }
 
-const checkQuotes = (parents: string[], value: StringifyProperty<string | object>): string => {
-  if (typeof value === 'object' && value['@unquoted']) {
+const checkQuotes = (parents: string[], value: StringifyProperty) => {
+  if (value && typeof value === 'object' && '@unquoted' in value) {
     return value['@unquoted']
   }
 
