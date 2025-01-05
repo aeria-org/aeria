@@ -73,7 +73,7 @@ export type StringifyProperty = unknown | {
   ['@unquoted']?: string,
 }
 
-const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object"
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object'
 
 /** Assure if specific fields needs to be between quotes or not */
 export const stringify = (value: StringifyProperty, parents: string[] = []): string => {
