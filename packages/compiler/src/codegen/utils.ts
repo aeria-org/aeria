@@ -68,22 +68,24 @@ export const getProperties = (properties: Record<string, AST.PropertyNode | AST.
   }, {})
 }
 
+export const UnquotedSymbol = Symbol('unquoted')
 /** Serves to know if the value must be unquoted on strinfigy function */
 export type StringifyProperty = unknown | {
-  ['@unquoted']?: string,
+  [UnquotedSymbol]: string,
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object'
 
+
 /** Assure if specific fields needs to be between quotes or not */
-export const stringify = (value: StringifyProperty, parents: string[] = []): string => {
+export const stringify = (value: StringifyProperty, parents: (symbol | string)[] = []): string => {
   if (Array.isArray(value)) {
     let arrayString = '[\n'
 
     value.map((element: StringifyProperty) => {
       const currentParents = [
         ...parents,
-        '@array',
+        Symbol('array'),
       ]
 
       arrayString += '\t'.repeat(currentParents.length) +
@@ -113,18 +115,22 @@ export const stringify = (value: StringifyProperty, parents: string[] = []): str
   return `{\n${objectString}\n${'\t'.repeat(parents.length)}}`
 }
 
-const checkQuotes = (parents: string[], value: StringifyProperty) => {
-  if (value && typeof value === 'object' && '@unquoted' in value) {
-    return value['@unquoted']
+const checkQuotes = (parents: (symbol | string)[], value: StringifyProperty) => {
+  if (value && typeof value === 'object' && UnquotedSymbol in value) {
+    return value[UnquotedSymbol]
   }
 
   return stringify(value, parents)
 }
 
 /** Used to make the id and the schema name of the collection */
-export const resizeFirstChar = (text: string, capitalize: boolean): string => text.charAt(0)[capitalize
-  ? 'toUpperCase'
-  : 'toLowerCase']() + text.slice(1)
+export const resizeFirstChar = (text: string, capitalize: boolean): string => {
+  if (capitalize === true) {
+    return text.charAt(0).toUpperCase() + text.slice(1)
+  }
+
+  return text.charAt(0).toLowerCase() + text.slice(1)
+}
 
 export const getCollectionId = (name: string) => resizeFirstChar(name, false)
 

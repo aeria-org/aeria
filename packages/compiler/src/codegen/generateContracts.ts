@@ -1,6 +1,6 @@
 import { errorSchema, type Property, resultSchema } from 'aeria'
 import type * as AST from '../ast'
-import { getProperties, propertyToSchema, stringify, type StringifyProperty } from './utils'
+import { getProperties, propertyToSchema, stringify, UnquotedSymbol, type StringifyProperty } from './utils'
 import type aeria from 'aeria'
 
 export const generateContracts = (ast: AST.Node[]) => {
@@ -38,7 +38,7 @@ const makeJSContractsCode = (ast: AST.Node[]) => {
           const responseArray: StringifyProperty[] = []
           for (const responseElement of response) {
             responseArray.push({
-              '@unquoted': getCodeForResponse(responseElement),
+              [UnquotedSymbol]: getCodeForResponse(responseElement),
             })
           }
 
@@ -50,7 +50,7 @@ const makeJSContractsCode = (ast: AST.Node[]) => {
 
       const contractSchema: Record<string, unknown> = getProperties(contractProperty)
       contractSchema.response = {
-        ['@unquoted']: responseString,
+        [UnquotedSymbol]: responseString,
       }
 
       return `export const ${name}Contract = defineContract(${

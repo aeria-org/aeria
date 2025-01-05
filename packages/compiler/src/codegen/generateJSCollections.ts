@@ -1,6 +1,6 @@
 import { type Collection, type Property } from 'aeria'
 import type * as AST from '../ast'
-import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, type StringifyProperty } from './utils'
+import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, type StringifyProperty, UnquotedSymbol } from './utils'
 import type aeria from 'aeria'
 
 const initialImportedFunctions = [
@@ -52,7 +52,7 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
     },
     ...(collectionNode.functions && {
       functions: {
-        '@unquoted': `{ ${makeJSFunctions(collectionNode.functions)} }`,
+        [UnquotedSymbol]: `{ ${makeJSFunctions(collectionNode.functions)} }`,
       } satisfies StringifyProperty,
     }),
   }
