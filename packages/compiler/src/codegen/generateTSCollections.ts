@@ -1,4 +1,4 @@
-import { Collection, Property } from 'aeria'
+import { type Collection, type Property } from 'aeria'
 import type * as AST from '../ast'
 import { getProperties, stringify, makeASTImports, resizeFirstChar, aeriaPackageName, getCollectionId, type StringifyProperty } from './utils'
 
@@ -67,7 +67,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
   if (collectionNode.owned === true) {
     collectionSchema.description.owned = true
   }
-  
+
   return stringify(collectionSchema)
 }
 

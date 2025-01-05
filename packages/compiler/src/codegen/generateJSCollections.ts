@@ -1,4 +1,4 @@
-import { Collection, Property } from 'aeria'
+import { type Collection, type Property } from 'aeria'
 import type * as AST from '../ast'
 import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, type StringifyProperty } from './utils'
 import type aeria from 'aeria'
