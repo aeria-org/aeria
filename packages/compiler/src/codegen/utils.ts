@@ -76,7 +76,6 @@ export type StringifyProperty = unknown | {
 
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object'
 
-
 /** Assure if specific fields needs to be between quotes or not */
 export const stringify = (value: StringifyProperty, parents: (symbol | string)[] = []): string => {
   if (Array.isArray(value)) {
