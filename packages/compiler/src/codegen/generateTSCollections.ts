@@ -67,7 +67,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
 
 /** Turns each function to 'typeof functioName' if it's from aeria or  */
 const makeTSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
-  return Object.keys(functions).reduce<Record<string, StringifyProperty<object>>>((acc, key) => {
+  return Object.keys(functions).reduce<Record<string, StringifyProperty>>((acc, key) => {
     acc[key] = {
       '@unquoted': functions[key].fromFunctionSet
         ? `typeof ${key}`

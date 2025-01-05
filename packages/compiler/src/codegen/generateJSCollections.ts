@@ -54,7 +54,7 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
   ...(collectionNode.functions && {
     functions: {
       '@unquoted': `{ ${makeJSFunctions(collectionNode.functions)} }`,
-    } satisfies StringifyProperty<object>,
+    } satisfies StringifyProperty,
   }),
 })
 
