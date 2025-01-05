@@ -1,3 +1,4 @@
+import { Collection, Property } from 'aeria'
 import type * as AST from '../ast'
 import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, type StringifyProperty } from './utils'
 import type aeria from 'aeria'
@@ -43,20 +44,25 @@ const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
     }).join('\n\n')
 }
 
-const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => stringify({
-  description: {
-    $id: collectionId,
-    properties: getProperties(collectionNode.properties),
-    ...(collectionNode.owned === true && {
-      owned: collectionNode.owned,
+const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
+  const collectionSchema: Omit<Collection, 'item' | 'functions'> = {
+    description: {
+      $id: collectionId,
+      properties: getProperties(collectionNode.properties) as Record<string, Property>,
+    },
+    ...(collectionNode.functions && {
+      functions: {
+        '@unquoted': `{ ${makeJSFunctions(collectionNode.functions)} }`,
+      } satisfies StringifyProperty,
     }),
-  },
-  ...(collectionNode.functions && {
-    functions: {
-      '@unquoted': `{ ${makeJSFunctions(collectionNode.functions)} }`,
-    } satisfies StringifyProperty,
-  }),
-})
+  }
+
+  if (collectionNode.owned === true) {
+    collectionSchema.description.owned = true
+  }
+
+  return stringify(collectionSchema)
+}
 
 const makeJSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
   return Object.entries(functions).map(([key, value]) => value.fromFunctionSet
