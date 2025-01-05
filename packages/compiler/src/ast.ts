@@ -10,7 +10,7 @@ export const PropertyType = {
   datetime: 'string',
 } as const
 
-export const PropertyModifiers: Record<string, ExportSymbol> = {
+export const PropertyModifiers: Record<'Error' | 'Result', ExportSymbol> = {
   Error: {
     packageName: 'aeria',
     symbolName: 'errorSchema',

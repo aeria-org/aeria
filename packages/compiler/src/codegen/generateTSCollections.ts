@@ -1,5 +1,6 @@
+import { type Collection, type Property } from 'aeria'
 import type * as AST from '../ast'
-import { getCollectionProperties, stringify, makeASTImports, resizeFirstChar, aeriaPackageName } from './utils'
+import { getProperties, stringify, makeASTImports, resizeFirstChar, aeriaPackageName, getCollectionId, type StringifyProperty, UnquotedSymbol } from './utils'
 
 const initialImportedTypes = [
   'Collection',
@@ -8,7 +9,7 @@ const initialImportedTypes = [
   'Context',
 ]
 
-export const generateTypescript = (ast: AST.Node[]): string => {
+export const generateTSCollections = (ast: AST.Node[]): string => {
   let code = ''
   code += `import type { ${initialImportedTypes.join(', ')} } from '${aeriaPackageName}'\n` //Used types
   const importsResult = makeASTImports(ast)
@@ -21,7 +22,7 @@ export const generateTypescript = (ast: AST.Node[]): string => {
 const makeTSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, string>) => {
   return ast.filter((node): node is AST.CollectionNode => node.type === 'collection')
     .map((collectionNode) => {
-      const id = resizeFirstChar(collectionNode.name, false) //CollectionName -> collectionName
+      const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
       const schemaName = resizeFirstChar(collectionNode.name, true) //collectionName -> CollectionName
       const typeName = id + 'Collection' //Pet -> petCollection
 
@@ -52,25 +53,32 @@ const makeTSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
     }).join('\n\n')
 }
 
-const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => stringify({
-  description: {
-    $id: collectionId,
-    properties: getCollectionProperties(collectionNode.properties),
-    ...(collectionNode.owned && {
-      owned: collectionNode.owned ?? false,
+const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
+  const collectionSchema: Omit<Collection, 'item' | 'functions'> = {
+    description: {
+      $id: collectionId,
+      properties: getProperties(collectionNode.properties) as Record<string, Property>,
+    },
+    ...(collectionNode.functions && {
+      functions: makeTSFunctions(collectionNode.functions),
     }),
-  },
-  ...(collectionNode.functions && {
-    functions: makeTSFunctions(collectionNode.functions),
-  }),
-})
+  }
+
+  if (collectionNode.owned === true) {
+    collectionSchema.description.owned = true
+  }
+
+  return stringify(collectionSchema)
+}
 
 /** Turns each function to 'typeof functioName' if it's from aeria or  */
 const makeTSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
-  return Object.keys(functions).reduce<Record<string, string>>((acc, key) => {
-    acc[key] = functions[key].fromFunctionSet
-      ? `typeof ${key}`
-      : '() => never'
+  return Object.keys(functions).reduce<Record<string, StringifyProperty>>((acc, key) => {
+    acc[key] = {
+      [UnquotedSymbol]: functions[key].fromFunctionSet
+        ? `typeof ${key}`
+        : '() => never',
+    }
     return acc
   }, {})
 }

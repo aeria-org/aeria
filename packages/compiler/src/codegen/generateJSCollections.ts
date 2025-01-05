@@ -1,13 +1,15 @@
+import { type Collection, type Property } from 'aeria'
 import type * as AST from '../ast'
-import { makeASTImports, resizeFirstChar, getCollectionProperties, stringify, aeriaPackageName, getExtendName } from './utils'
+import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, type StringifyProperty, UnquotedSymbol } from './utils'
 import type aeria from 'aeria'
 
 const initialImportedFunctions = [
   'extendCollection',
   'defineCollection',
+  'defineContract',
 ] satisfies (keyof typeof aeria)[]
 
-export const generateJavascript = (ast: AST.Node[]) => {
+export const generateJSCollections = (ast: AST.Node[]) => {
   let javascriptCode = ''
   const importsResult = makeASTImports(ast, {
     [aeriaPackageName]: new Set(initialImportedFunctions),
@@ -21,7 +23,7 @@ export const generateJavascript = (ast: AST.Node[]) => {
 const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, string>) => {
   return ast.filter((node) => node.type === 'collection')
     .map((collectionNode) => {
-      const id = resizeFirstChar(collectionNode.name, false) //CollectionName -> collectionName
+      const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
       const extendCollectionName = getExtendName(collectionNode.name)
 
       const collectionDefinition =
@@ -42,18 +44,25 @@ const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
     }).join('\n\n')
 }
 
-const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => stringify({
-  description: {
-    $id: collectionId,
-    properties: getCollectionProperties(collectionNode.properties),
-    ...(collectionNode.owned === true && {
-      owned: collectionNode.owned,
+const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
+  const collectionSchema: Omit<Collection, 'item' | 'functions'> = {
+    description: {
+      $id: collectionId,
+      properties: getProperties(collectionNode.properties) as Record<string, Property>,
+    },
+    ...(collectionNode.functions && {
+      functions: {
+        [UnquotedSymbol]: `{ ${makeJSFunctions(collectionNode.functions)} }`,
+      } satisfies StringifyProperty,
     }),
-  },
-  ...(collectionNode.functions && {
-    functions: `{ ${makeJSFunctions(collectionNode.functions)} }`,
-  }),
-})
+  }
+
+  if (collectionNode.owned === true) {
+    collectionSchema.description.owned = true
+  }
+
+  return stringify(collectionSchema)
+}
 
 const makeJSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
   return Object.entries(functions).map(([key, value]) => value.fromFunctionSet
