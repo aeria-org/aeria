@@ -5,6 +5,7 @@ import type { JsonSchema, PropertiesWithId } from './property.js'
 import type { OwnershipMode } from './security.js'
 
 export type DescriptionPreset =
+  | 'add'
   | 'crud'
   | 'duplicate'
   | 'remove'

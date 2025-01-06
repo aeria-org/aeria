@@ -1,7 +1,7 @@
 import type { Description, Property } from '@aeriajs/types'
 import { getReferenceProperty, deepMerge, serialize } from '@aeriajs/common'
 import { getCollectionAsset } from '../assets.js'
-import * as presets from '../presets/index.js'
+import { presets } from '../presets/index.js'
 
 export type PreloadOptions = {
   serialize?: boolean
