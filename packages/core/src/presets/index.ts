@@ -1,3 +1,4 @@
+export * from './add.js'
 export * from './crud.js'
 export * from './removeAll.js'
 export * from './duplicate.js'

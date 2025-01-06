@@ -1,13 +1,17 @@
-import type { Description } from '@aeriajs/types'
+import type { Description, Property, InferProperty } from '@aeriajs/types'
 
-const freshProperties = (properties: Description['properties']): Record<string, unknown> => Object.entries(properties).reduce((a, [key, property]) => {
+export const freshProperty = <const TProperty extends Property>(property: TProperty) => {
   const value = (() => {
     if( '$ref' in property && property.inline ) {
       return {}
     }
 
     if( 'properties' in property ) {
-      return freshProperties(property.properties)
+      const obj: Record<string, unknown> = {}
+      for( const propName in property.properties ) {
+        obj[propName] = freshProperty(property.properties[propName])
+      }
+      return obj
     }
 
     if( 'type' in property ) {
@@ -21,18 +25,14 @@ const freshProperties = (properties: Description['properties']): Record<string, 
     return null
   })()
 
-  if( value === null ) {
-    return a
-  }
-
-  return {
-    ...a,
-    [key]: value,
-  }
-}, {})
+  return value as InferProperty<TProperty>
+}
 
 export const freshItem = (description: Pick<Description, 'properties' | 'freshItem'>) => {
-  const item = freshProperties(description.properties)
+  const item: Record<string, unknown> = {}
+  for( const propName in description.properties ) {
+    item[propName] = freshProperty(description.properties[propName])
+  }
 
   if( description.freshItem ) {
     Object.assign(item, description.freshItem)

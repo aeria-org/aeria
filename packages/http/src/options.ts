@@ -3,7 +3,7 @@ export type ServerOptions = {
   port?: number
 }
 
-export const defineServerOptions = <TServerOptions extends ServerOptions>(options: TServerOptions): TServerOptions => {
+export const defineServerOptions = <TServerOptions extends ServerOptions>(options: TServerOptions) => {
   return options
 }
 
