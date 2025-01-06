@@ -31,7 +31,10 @@ export const freshProperty = <const TProperty extends Property>(property: TPrope
 export const freshItem = (description: Pick<Description, 'properties' | 'freshItem'>) => {
   const item: Record<string, unknown> = {}
   for( const propName in description.properties ) {
-    item[propName] = freshProperty(description.properties[propName])
+    const value = freshProperty(description.properties[propName])
+    if( value !== null ) {
+      item[propName] = value
+    }
   }
 
   if( description.freshItem ) {
