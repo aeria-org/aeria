@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.225
+
+### Patch Changes
+
+- a9d725d: Add `add` preset
+  - @aeriajs/builtins@0.0.225
+  - @aeriajs/security@0.0.225
+
 ## 0.0.224
 
 ### Patch Changes
