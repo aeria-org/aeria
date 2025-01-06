@@ -3,6 +3,8 @@ import { functions as aeriaFunctions, type Property } from 'aeria'
 
 export const aeriaPackageName = 'aeria'
 
+export const ArraySymbol = Symbol('array')
+
 /**
  * Obs: It will save and return any modified symbols to avoid name duplication later
 */
@@ -84,7 +86,7 @@ export const stringify = (value: StringifyProperty, parents: (symbol | string)[]
     value.map((element: StringifyProperty) => {
       const currentParents = [
         ...parents,
-        Symbol('array'),
+        ArraySymbol,
       ]
 
       arrayString += '\t'.repeat(currentParents.length) +
@@ -134,3 +136,4 @@ export const resizeFirstChar = (text: string, capitalize: boolean): string => {
 export const getCollectionId = (name: string) => resizeFirstChar(name, false)
 
 export const getExtendName = (name: string) => `extend${resizeFirstChar(name, true)}Collection`
+

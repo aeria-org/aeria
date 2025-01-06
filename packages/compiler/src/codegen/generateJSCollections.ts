@@ -45,20 +45,21 @@ const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
 }
 
 const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
-  const collectionSchema: Omit<Collection, 'item' | 'functions'> = {
+  const collectionSchema: Omit<Collection, 'item' | 'functions'> & { functions?: StringifyProperty } = {
     description: {
       $id: collectionId,
       properties: getProperties(collectionNode.properties) as Record<string, Property>,
     },
-    ...(collectionNode.functions && {
-      functions: {
-        [UnquotedSymbol]: `{ ${makeJSFunctions(collectionNode.functions)} }`,
-      } satisfies StringifyProperty,
-    }),
   }
 
   if (collectionNode.owned === true) {
     collectionSchema.description.owned = true
+  }
+
+  if( collectionNode.functions ) {
+    collectionSchema.functions = {
+      [UnquotedSymbol]: `{ ${makeJSFunctions(collectionNode.functions)} }`,
+    }
   }
 
   return stringify(collectionSchema)
