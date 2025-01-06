@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.226
+
+### Patch Changes
+
+- f2aa539: Increase presets type-safety
+- Updated dependencies [f2aa539]
+  - @aeriajs/types@0.0.112
+  - @aeriajs/builtins@0.0.226
+  - @aeriajs/common@0.0.130
+  - @aeriajs/entrypoint@0.0.133
+  - @aeriajs/http@0.0.157
+  - @aeriajs/security@0.0.226
+  - @aeriajs/validation@0.0.145
+
 ## 0.0.225
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.112
+
+### Patch Changes
+
+- f2aa539: Increase presets type-safety
+
 ## 0.0.111
 
 ### Patch Changes
