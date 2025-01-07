@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.228
+
+### Patch Changes
+
+- c2a4243: Fix user edit bugs
+  - @aeriajs/core@0.0.228
+
 ## 0.0.227
 
 ### Patch Changes
