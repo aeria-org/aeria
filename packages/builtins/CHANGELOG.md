@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.227
+
+### Patch Changes
+
+- ab459c3: Sign out inactive users on token revalidation
+  - @aeriajs/core@0.0.227
+
 ## 0.0.226
 
 ### Patch Changes
