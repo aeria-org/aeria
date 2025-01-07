@@ -63,43 +63,29 @@ export const activate = async (
 
   if( !user.password ) {
     if( !password ) {
-      // if( context.request.method === 'GET' ) {
-      //   return context.response.writeHead(302, {
-      //     location: `/user/activation?step=password&u=${userId}&t=${token}`,
-      //   }).end()
-      // }
-      //
       return context.error(HTTPStatus.UnprocessableContent, {
         code: ACError.MalformedInput,
       })
     }
 
-    await context.collection.model.updateOne(
-      {
-        _id: user._id,
-      },
-      {
-        $set: {
-          active: true,
-          password: await bcrypt.hash(password, 10),
-        },
-      },
-    )
-
-    return
-  }
-
-  await context.collection.model.updateOne(
-    {
+    await context.collection.model.updateOne({
       _id: user._id,
-    },
-    {
+    }, {
+      $set: {
+        active: true,
+        password: await bcrypt.hash(password, 10),
+      },
+    })
+  } else {
+    await context.collection.model.updateOne({
+      _id: user._id,
+    }, {
       $set: {
         active: true,
       },
-    },
-  )
+    })
 
+  }
   // if( context.request.method === 'GET' ) {
   //   return context.response.writeHead(302, {
   //     location: '/user/activation',
