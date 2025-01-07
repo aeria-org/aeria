@@ -63,12 +63,12 @@ export const activate = async (
 
   if( !user.password ) {
     if( !password ) {
-      if( context.request.method === 'GET' ) {
-        return context.response.writeHead(302, {
-          location: `/user/activation?step=password&u=${userId}&t=${token}`,
-        }).end()
-      }
-
+      // if( context.request.method === 'GET' ) {
+      //   return context.response.writeHead(302, {
+      //     location: `/user/activation?step=password&u=${userId}&t=${token}`,
+      //   }).end()
+      // }
+      //
       return context.error(HTTPStatus.UnprocessableContent, {
         code: ACError.MalformedInput,
       })
@@ -100,12 +100,12 @@ export const activate = async (
     },
   )
 
-  if( context.request.method === 'GET' ) {
-    return context.response.writeHead(302, {
-      location: '/user/activation',
-    }).end()
-  }
-
+  // if( context.request.method === 'GET' ) {
+  //   return context.response.writeHead(302, {
+  //     location: '/user/activation',
+  //   }).end()
+  // }
+  //
   return Result.result({
     userId: user._id,
   })

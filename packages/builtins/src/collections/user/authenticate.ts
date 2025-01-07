@@ -15,7 +15,6 @@ type Props = {
 }
 
 export const authenticate = async (props: Props, context: Context<typeof description>) => {
-
   if( 'revalidate' in props ) {
     const { token } = props
     if( !token && !context.token.authenticated ) {
@@ -35,6 +34,7 @@ export const authenticate = async (props: Props, context: Context<typeof descrip
     const { error, result: user } = await context.collections.user.functions.get({
       filters: {
         _id: decodedToken.sub,
+        active: true,
       },
       populate: ['picture_file'],
     })
