@@ -1,5 +1,17 @@
 # @aeriajs/builtins
 
+## 0.0.229
+
+### Patch Changes
+
+- 6829254: Add role hierarchy system
+- Updated dependencies [6829254]
+  - @aeriajs/types@0.0.113
+  - @aeriajs/core@0.0.229
+  - @aeriajs/common@0.0.131
+  - @aeriajs/entrypoint@0.0.134
+  - @aeriajs/validation@0.0.146
+
 ## 0.0.228
 
 ### Patch Changes
