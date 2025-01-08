@@ -1,11 +1,11 @@
-import type { Context, SchemaWithId, InsertPayload, Description, Token, UserRole, AuthenticatedToken } from '@aeriajs/types'
+import type { Context, SchemaWithId, InsertPayload, Description, UserRole } from '@aeriajs/types'
 import { HTTPStatus, ACError } from '@aeriajs/types'
 import { arraysIntersect } from '@aeriajs/common'
 import { insert as originalInsert } from '@aeriajs/core'
 import * as bcrypt from 'bcrypt'
 
 const isRoleAllowed = (targetRole: UserRole, context: Context) => {
-  if( !context.config.security.rolesHierarchy || !context.token.authenticated  ) {
+  if( !context.config.security.rolesHierarchy || !context.token.authenticated ) {
     throw new Error
   }
 

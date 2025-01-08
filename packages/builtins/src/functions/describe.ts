@@ -43,7 +43,7 @@ export const describe = async (contextOrPayload: RouteContext | typeof Payload) 
     router?: unknown
     rolesHierarchy?: RolesHierarchy
   } = {
-    descriptions: {}
+    descriptions: {},
   }
 
   let props: typeof Payload

@@ -39,9 +39,15 @@ export const analyze = async (ast: AST.Node[], errors: unknown[] = []) => {
               throw new Error
             }
 
-            if( property.indexes ) checkForeignProperties(foreignCollection, property.indexes)
-            if( property.populate ) checkForeignProperties(foreignCollection, property.populate)
-            if( property.form ) checkForeignProperties(foreignCollection, property.form)
+            if( property.indexes ) {
+              checkForeignProperties(foreignCollection, property.indexes)
+            }
+            if( property.populate ) {
+              checkForeignProperties(foreignCollection, property.populate)
+            }
+            if( property.form ) {
+              checkForeignProperties(foreignCollection, property.form)
+            }
           }
         }
         break
