@@ -94,12 +94,14 @@ export declare type animalCollection = {
 		}
 	},
 	functions: {
-		get: typeof get,
-		getAll: typeof getAll,
-		insert: typeof insert,
-		remove: typeof remove,
-		removeAll: typeof removeAll,
-		custom: () => never
+		functions: {
+			get: typeof get,
+			getAll: typeof getAll,
+			insert: typeof insert,
+			remove: typeof remove,
+			removeAll: typeof removeAll,
+			custom: () => never
+		}
 	}
 }
 export declare const animal: animalCollection & { item: SchemaWithId<animalCollection["description"]> }

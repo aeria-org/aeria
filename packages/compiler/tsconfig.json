@@ -4,6 +4,9 @@
     "outDir": "dist",
     "esModuleInterop": true,
     "paths": {
+      "@aeriajs/common": [
+        "../common/dist"
+      ],
       "@aeriajs/types": [
         "../types/dist"
       ]

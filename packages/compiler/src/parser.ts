@@ -66,6 +66,23 @@ export const parse = (tokens: Token[]) => {
     return Result.result(array)
   }
 
+  const consumeAttributeValue = (attributeName: string, property: Property) => {
+    if( '$ref' in property ) {
+      switch( attributeName ) {
+        case 'indexes': {
+          return consumeArray(TokenType.Identifier)
+        }
+      }
+    }
+
+    // Object.assign(property, {
+    //   [attributeName]: attributeValue,
+    // })
+    const attributeValue = tokens[current++].value
+    return Result.result(attributeValue)
+
+  }
+
   const consumePropertyType = (options = {
     allowModifiers: false,
   }): Result.Either<Diagnostic, AST.PropertyNode> => {
@@ -202,7 +219,7 @@ export const parse = (tokens: Token[]) => {
       let insideParens = false
       if( match(TokenType.LeftParens) ) {
         const { error: leftParensError } = consume(TokenType.LeftParens)
-        if(leftParensError){
+        if( leftParensError ) {
           return Result.error(leftParensError)
         }
         insideParens = true
@@ -214,8 +231,13 @@ export const parse = (tokens: Token[]) => {
           return Result.error(error)
         }
         property.enum = result
+
       } else {
-        const attributeValue = tokens[current++].value
+        const { error, result: attributeValue } = consumeAttributeValue(attributeName, property)
+        if( error ) {
+          return Result.error(error)
+        }
+
         Object.assign(property, {
           [attributeName]: attributeValue,
         })

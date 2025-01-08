@@ -1,9 +1,10 @@
+import { Result } from '@aeriajs/types'
 import { tokenize } from './lexer.js'
 import { parse } from './parser'
-import { generateCode } from './codegen'
-import { Result } from '@aeriajs/types'
+// import { generateCode } from './codegen'
+import { analyze } from './semantic.js'
 
-export const compile = (input: string) => {
+export const compile = async (input: string) => {
   const { error: tokenizeError, result: tokens } = tokenize(input)
   if(tokenizeError){
     return Result.error(tokenizeError)
@@ -14,7 +15,10 @@ export const compile = (input: string) => {
     return Result.error(error)
   }
 
-  return generateCode(ast)
+  const r = await analyze(ast)
+  console.log(r)
+
+  // return generateCode(ast)
 }
 
 const inputCode = `functionset Readable {

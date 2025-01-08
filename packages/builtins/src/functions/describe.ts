@@ -1,9 +1,9 @@
 import type { Description, Context, RouteContext, StringProperty, EnumProperty } from '@aeriajs/types'
 import type { description as userDescription } from '../collections/user/description.js'
-import { createContext, preloadDescription, getEndpoints, isValidCollection } from '@aeriajs/core'
+import { createContext, preloadDescription, getEndpoints } from '@aeriajs/core'
 import { getCollections, getAvailableRoles } from '@aeriajs/entrypoint'
 import { Result, ACError, HTTPStatus } from '@aeriajs/types'
-import { serialize, endpointError } from '@aeriajs/common'
+import { serialize, endpointError, isValidCollection } from '@aeriajs/common'
 import { validator } from '@aeriajs/validation'
 import { authenticate } from '../collections/user/authenticate.js'
 

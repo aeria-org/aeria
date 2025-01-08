@@ -31,9 +31,11 @@
     "dist"
   ],
   "peerDependencies": {
+    "@aeriajs/common": "^0.0.130",
     "@aeriajs/types": "^0.0.112"
   },
   "devDependencies": {
+    "@aeriajs/common": "link:../common",
     "@aeriajs/types": "link:../types",
     "@phosphor-icons/core": "^2.1.1"
   }
