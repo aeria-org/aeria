@@ -1,5 +1,15 @@
 # @aeriajs/http
 
+## 0.0.158
+
+### Patch Changes
+
+- Updated dependencies [6829254]
+  - @aeriajs/types@0.0.113
+  - @aeriajs/common@0.0.131
+  - @aeriajs/entrypoint@0.0.134
+  - @aeriajs/validation@0.0.146
+
 ## 0.0.157
 
 ### Patch Changes
