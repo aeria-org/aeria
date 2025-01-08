@@ -1,4 +1,4 @@
-import type { Description, Context, RouteContext, StringProperty, EnumProperty } from '@aeriajs/types'
+import type { Description, Context, RouteContext, StringProperty, EnumProperty, RolesHierarchy, UserRole } from '@aeriajs/types'
 import type { description as userDescription } from '../collections/user/description.js'
 import { createContext, preloadDescription, getEndpoints } from '@aeriajs/core'
 import { getCollections, getAvailableRoles } from '@aeriajs/entrypoint'
@@ -34,13 +34,16 @@ const [Payload, validatePayload] = validator({
 })
 
 export const describe = async (contextOrPayload: RouteContext | typeof Payload) => {
-  const result = {} as {
+  const result: {
     descriptions: typeof descriptions
-    roles?: string[]
+    roles?: UserRole[]
     auth?: Awaited<ReturnType<typeof authenticate>> extends Result.Either<unknown, infer Right>
       ? Partial<Right>
       : never
     router?: unknown
+    rolesHierarchy?: RolesHierarchy
+  } = {
+    descriptions: {}
   }
 
   let props: typeof Payload
@@ -112,7 +115,10 @@ export const describe = async (contextOrPayload: RouteContext | typeof Payload) 
       ? userRolesProperty.items.enum as string[]
       : []
 
-    result.roles = Array.from(new Set(userRoles.concat(await getAvailableRoles())))
+    result.roles = Array.from(new Set(userRoles.concat(await getAvailableRoles()))) as UserRole[]
+    if( 'config' in contextOrPayload ) {
+      result.rolesHierarchy = contextOrPayload.config.security.rolesHierarchy
+    }
   }
 
   if( props.router ) {

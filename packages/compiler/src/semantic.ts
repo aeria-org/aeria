@@ -2,6 +2,27 @@ import { Result } from '@aeriajs/types'
 import { isValidCollection } from '@aeriajs/common'
 import * as AST from './ast.js'
 
+const checkForeignProperties = async (foreignCollection: AST.CollectionNode, propNames: readonly string[], errors: unknown[] = []) => {
+  for( const foreignPropName of propNames ) {
+    if( !(foreignPropName in foreignCollection.properties) ) {
+      if( foreignCollection.extends ) {
+        const { packageName, symbolName } = foreignCollection.extends
+        const { [symbolName]: importedCollection } = await import(packageName)
+
+        if( !isValidCollection(importedCollection) ) {
+          throw new Error
+        }
+
+        if( !(foreignPropName in importedCollection.description.properties) ) {
+          errors.push({
+            message: `collection "${foreignCollection.name}" hasn't such property "${foreignPropName}"`,
+          })
+        }
+      }
+    }
+  }
+}
+
 export const analyze = async (ast: AST.Node[], errors: unknown[] = []) => {
   for( const node of ast ) {
     switch( node.type ) {
@@ -9,37 +30,18 @@ export const analyze = async (ast: AST.Node[], errors: unknown[] = []) => {
         for( const propName in node.properties ) {
           const { property } = node.properties[propName]
           if( '$ref' in property ) {
-            const foreignCollectionName = property.$ref
             const foreignCollection = AST.findNode(ast, {
               type: 'collection',
-              name: foreignCollectionName,
+              name: property.$ref,
             })
 
             if( !foreignCollection ) {
               throw new Error
             }
 
-            if( property.indexes ) {
-              for( const foreignPropName of property.indexes ) {
-                if( !(foreignPropName in foreignCollection.properties) ) {
-                  if( foreignCollection.extends ) {
-                    const { packageName, symbolName } = foreignCollection.extends
-                    const { [symbolName]: importedCollection } = await import(packageName)
-
-                    if( !isValidCollection(importedCollection) ) {
-                      throw new Error
-                    }
-
-                    if( !(foreignPropName in importedCollection.description.properties) ) {
-                      errors.push({
-                        message: `collection "${foreignCollectionName}" hasn't such property "${foreignPropName}"`,
-                      })
-                    }
-                  }
-
-                }
-              }
-            }
+            if( property.indexes ) checkForeignProperties(foreignCollection, property.indexes)
+            if( property.populate ) checkForeignProperties(foreignCollection, property.populate)
+            if( property.form ) checkForeignProperties(foreignCollection, property.form)
           }
         }
         break

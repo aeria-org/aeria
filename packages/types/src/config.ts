@@ -2,6 +2,12 @@ import type { RouteContext } from './context.js'
 import type { RouteUri } from './http.js'
 import type { RateLimitingParams } from './security.js'
 import type { CollectionItem } from './collection.js'
+import type { UserRole } from './token.js'
+
+export type RolesHierarchy = Record<
+  UserRole,
+  readonly UserRole[] | boolean
+>
 
 export type ApiConfig = {
   name?: string
@@ -41,6 +47,7 @@ export type ApiConfig = {
     exposeFunctionsByDefault?:
       | boolean
       | 'unauthenticated'
+    rolesHierarchy?: RolesHierarchy
   }
   tokenUserProperties?: (keyof CollectionItem<'user'>)[]
   errorHandler?: <TError>(
