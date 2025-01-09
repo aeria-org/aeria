@@ -32,7 +32,9 @@ beforeAll(async () => {
 
   context = await createContext({
     config: {
-      security: {},
+      security: {
+        mutableUserProperties: [],
+      },
       storage: {
         fs: persistentFs,
         tempFs,
@@ -86,10 +88,10 @@ test('returns a validation error on deep invalid property', async () => {
 
   assert(typeof error === 'object')
   assert(error.code === ValidationErrorCode.InvalidProperties)
-  assert('code' in error.errors.deep)
-  assert(error.errors.deep.code === ValidationErrorCode.InvalidProperties)
-  assert('type' in error.errors.deep.errors.prop)
-  expect(error.errors.deep.errors.prop.type).toBe(PropertyValidationErrorCode.Unmatching)
+  assert('code' in error.details.deep)
+  assert(error.details.deep.code === ValidationErrorCode.InvalidProperties)
+  assert('type' in error.details.deep.details.prop)
+  expect(error.details.deep.details.prop.type).toBe(PropertyValidationErrorCode.Unmatching)
 })
 
 test('returns a validation error on incomplete nested object', async () => {
@@ -111,7 +113,7 @@ test('returns a validation error on incomplete nested object', async () => {
 
   assert(typeof error === 'object')
   assert(error.code === ValidationErrorCode.MissingProperties)
-  expect(error.errors.prop.type).toBe('missing')
+  expect(error.details.prop.type).toBe('missing')
 })
 
 test('returns a validation error on invalid array element', async () => {
@@ -135,9 +137,9 @@ test('returns a validation error on invalid array element', async () => {
 
   assert(typeof error === 'object')
   assert(error.code === ValidationErrorCode.InvalidProperties)
-  assert('type' in error.errors.array)
-  assert(error.errors.array.type === PropertyValidationErrorCode.Unmatching)
-  expect(error.errors.array.index).toBe(2)
+  assert('type' in error.details.array)
+  assert(error.details.array.type === PropertyValidationErrorCode.Unmatching)
+  expect(error.details.array.index).toBe(2)
 })
 
 test('returns a validation error on invalid array element inside deep property', async () => {
@@ -168,11 +170,11 @@ test('returns a validation error on invalid array element inside deep property',
 
   assert(typeof error === 'object')
   assert(error.code === ValidationErrorCode.InvalidProperties)
-  assert('code' in error.errors.deep)
-  assert(error.errors.deep.code === ValidationErrorCode.InvalidProperties)
-  assert('type' in error.errors.deep.errors.array)
-  expect(error.errors.deep.errors.array.type === PropertyValidationErrorCode.Unmatching)
-  expect(error.errors.deep.errors.array.index).toBe(2)
+  assert('code' in error.details.deep)
+  assert(error.details.deep.code === ValidationErrorCode.InvalidProperties)
+  assert('type' in error.details.deep.details.array)
+  expect(error.details.deep.details.array.type === PropertyValidationErrorCode.Unmatching)
+  expect(error.details.deep.details.array.index).toBe(2)
 })
 
 test('autocast deep MongoDB operators', async () => {

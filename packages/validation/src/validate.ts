@@ -230,7 +230,7 @@ export const validateProperty = <TWhat>(
         for( const elem of what ) {
           const { error } = validateProperty(elem, property.items, options)
           if( error ) {
-            if( 'details' in error ) {
+            if( 'code' in error ) {
               continue
             }
 
