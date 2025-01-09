@@ -32,9 +32,7 @@ beforeAll(async () => {
 
   context = await createContext({
     config: {
-      security: {
-        mutableUserProperties: [],
-      },
+      security: { mutableUserProperties: [] },
       storage: {
         fs: persistentFs,
         tempFs,
