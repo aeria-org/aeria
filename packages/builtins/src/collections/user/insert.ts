@@ -54,26 +54,26 @@ export const insert = async <
           })
         }
       }
+    }
+  }
 
-      if( '_id' in payload.what && typeof payload.what._id === 'string' ) {
-        const user = await context.collections.user.model.findOne({
-          _id: new ObjectId(payload.what._id),
-        })
+  if( '_id' in payload.what && typeof payload.what._id === 'string' ) {
+    const user = await context.collections.user.model.findOne({
+      _id: new ObjectId(payload.what._id),
+    })
 
-        if( !user ) {
-          return context.error(HTTPStatus.NotFound, {
-            code: ACError.ResourceNotFound,
-          })
-        }
+    if( !user ) {
+      return context.error(HTTPStatus.NotFound, {
+        code: ACError.ResourceNotFound,
+      })
+    }
 
-        const allowed = user.roles.every((role) => isRoleAllowed(role as UserRole, context))
-        if( !allowed ) {
-          return context.error(HTTPStatus.Forbidden, {
-            code: ACError.AuthorizationError,
-            message: 'tried to edit an user with a role higher in the hierarchy',
-          })
-        }
-      }
+    const allowed = user.roles.every((role) => isRoleAllowed(role as UserRole, context))
+    if( !allowed ) {
+      return context.error(HTTPStatus.Forbidden, {
+        code: ACError.AuthorizationError,
+        message: 'tried to edit an user with a role higher in the hierarchy',
+      })
     }
   }
 
