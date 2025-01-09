@@ -26,6 +26,7 @@ export const description = defineDescription({
   properties: {
     name: {
       type: 'string',
+      minLength: 1,
     },
     given_name: {
       getter: (doc: object) => {
@@ -55,6 +56,7 @@ export const description = defineDescription({
     email: {
       type: 'string',
       inputType: 'email',
+      minLength: 3,
     },
     password: {
       type: 'string',

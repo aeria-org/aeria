@@ -1,7 +1,7 @@
 import type { Context, SchemaWithId, InsertPayload, Description, UserRole } from '@aeriajs/types'
 import { HTTPStatus, ACError } from '@aeriajs/types'
 import { arraysIntersect } from '@aeriajs/common'
-import { insert as originalInsert } from '@aeriajs/core'
+import { ObjectId, insert as originalInsert } from '@aeriajs/core'
 import * as bcrypt from 'bcrypt'
 
 const isRoleAllowed = (targetRole: UserRole, context: Context) => {
@@ -51,6 +51,27 @@ export const insert = async <
           return context.error(HTTPStatus.Forbidden, {
             code: ACError.AuthorizationError,
             message: 'tried to set unallowed roles',
+          })
+        }
+      }
+
+      if( '_id' in payload.what && typeof payload.what._id === 'string' ) {
+        context.collection.description.$id === 'oi'
+        const user = await context.collections.user.model.findOne({
+          _id: new ObjectId(payload.what._id),
+        })
+
+        if( !user ) {
+          return context.error(HTTPStatus.NotFound, {
+            code: ACError.ResourceNotFound,
+          })
+        }
+
+        const allowed = user.roles.every((role) => isRoleAllowed(role as UserRole, context))
+        if( !allowed ) {
+          return context.error(HTTPStatus.Forbidden, {
+            code: ACError.AuthorizationError,
+            message: 'tried to edit an user with a roler higher in the hierarchy',
           })
         }
       }
