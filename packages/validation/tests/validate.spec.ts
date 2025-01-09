@@ -1,5 +1,5 @@
 import { expect, test, assert } from 'vitest'
-import { ValidationErrorCode, PropertyValidationErrorCode,  type Property, type Description } from '@aeriajs/types'
+import { ValidationErrorCode, PropertyValidationErrorCode, type Property, type Description } from '@aeriajs/types'
 import { validate, validateWithRefs } from '../src/index.js'
 import {
   plainCandidate,
