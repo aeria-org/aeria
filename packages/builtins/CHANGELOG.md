@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.230
+
+### Patch Changes
+
+- 16e570e: More role constraints
+  - @aeriajs/core@0.0.230
+
 ## 0.0.229
 
 ### Patch Changes
