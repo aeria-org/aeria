@@ -88,7 +88,7 @@ const checkUnprocessable = (
     if( 'code' in error ) {
       return context.error(HTTPStatus.UnprocessableContent, {
         code: error.code,
-        details: error.errors,
+        details: error.details,
       })
     }
 

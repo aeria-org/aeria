@@ -49,7 +49,7 @@ const internalInsert = async <TContext extends Context>(
 
     return context.error(HTTPStatus.UnprocessableContent, {
       code: error.code,
-      details: error.errors,
+      details: error.details,
     })
   }
 

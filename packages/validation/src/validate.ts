@@ -230,7 +230,7 @@ export const validateProperty = <TWhat>(
         for( const elem of what ) {
           const { error } = validateProperty(elem, property.items, options)
           if( error ) {
-            if( 'errors' in error ) {
+            if( 'details' in error ) {
               continue
             }
 
@@ -300,18 +300,18 @@ export const validateRefs = async <TWhat>(
         }
       }
     } else if( 'properties' in property ) {
-      const errors: Record<string, PropertyValidationError | ValidationError> = {}
+      const details: Record<string, PropertyValidationError | ValidationError> = {}
       for( const propName in what ) {
         const { error } = await validateRefs(what[propName], property.properties[propName], options, descriptions)
         if( error ) {
-          errors[propName] = error
+          details[propName] = error
         }
       }
 
-      if( Object.keys(errors).length > 0 ) {
+      if( Object.keys(details).length > 0 ) {
         return Result.error(makeValidationError({
           code: ValidationErrorCode.InvalidProperties,
-          errors,
+          details,
         }))
       }
     }
@@ -330,7 +330,7 @@ export const validateWholeness = (what: Record<string, unknown>, schema: Omit<Js
   if( missingProps.length > 0 ) {
     return makeValidationError({
       code: ValidationErrorCode.MissingProperties,
-      errors: Object.fromEntries(missingProps.map((error) => [
+      details: Object.fromEntries(missingProps.map((error) => [
         error,
         {
           type: 'missing',
@@ -348,7 +348,7 @@ export const validate = <TWhat, const TJsonSchema extends Property | Description
   if( what === undefined ) {
     return Result.error(makeValidationError({
       code: ValidationErrorCode.EmptyTarget,
-      errors: {},
+      details: {},
     }))
   }
 
@@ -369,7 +369,7 @@ export const validate = <TWhat, const TJsonSchema extends Property | Description
     return Result.error(wholenessError)
   }
 
-  const errors: Record<string, PropertyValidationError | ValidationError> = {}
+  const details: Record<string, PropertyValidationError | ValidationError> = {}
   const resultCopy: Record<string, unknown> = {}
 
   for( const propName in what ) {
@@ -382,7 +382,7 @@ export const validate = <TWhat, const TJsonSchema extends Property | Description
       if( options.throwOnError ) {
         throw new TypeError(ValidationErrorCode.InvalidProperties)
       }
-      errors[propName] = error
+      details[propName] = error
       continue
     }
 
@@ -391,10 +391,10 @@ export const validate = <TWhat, const TJsonSchema extends Property | Description
     }
   }
 
-  if( Object.keys(errors).length > 0 ) {
+  if( Object.keys(details).length > 0 ) {
     return Result.error(makeValidationError({
       code: ValidationErrorCode.InvalidProperties,
-      errors,
+      details,
     }))
   }
 

@@ -31,17 +31,17 @@ export type PropertyValidationError = {
 
 export type ValidationErrorInvalidProperties = {
   code: ValidationErrorCode.InvalidProperties
-  errors: Record<string, PropertyValidationError | ValidationError>
+  details: Record<string, PropertyValidationError | ValidationError>
 }
 
 export type ValidationErrorMissingProperties = {
   code: ValidationErrorCode.MissingProperties
-  errors: Record<string, { type: 'missing' }>
+  details: Record<string, { type: 'missing' }>
 }
 
 export type ValidationErrorEmptyTarget = {
   code: ValidationErrorCode.EmptyTarget
-  errors: {}
+  details: {}
 }
 
 export type ValidationError =

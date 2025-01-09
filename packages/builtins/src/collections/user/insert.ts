@@ -56,7 +56,6 @@ export const insert = async <
       }
 
       if( '_id' in payload.what && typeof payload.what._id === 'string' ) {
-        context.collection.description.$id === 'oi'
         const user = await context.collections.user.model.findOne({
           _id: new ObjectId(payload.what._id),
         })
@@ -71,7 +70,7 @@ export const insert = async <
         if( !allowed ) {
           return context.error(HTTPStatus.Forbidden, {
             code: ACError.AuthorizationError,
-            message: 'tried to edit an user with a roler higher in the hierarchy',
+            message: 'tried to edit an user with a role higher in the hierarchy',
           })
         }
       }

@@ -633,7 +633,7 @@ export const traverseDocument = async <TWhat>(
 
     return Result.error(makeValidationError({
       code: ValidationErrorCode.InvalidProperties,
-      errors: validationError,
+      details: validationError,
     }))
   }
 
