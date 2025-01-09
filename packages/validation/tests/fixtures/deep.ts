@@ -15,6 +15,7 @@ export const deepCandidate = {
 }
 
 export const deepDescription = {
+  $id: '',
   properties: {
     status: {
       type: 'array',
@@ -46,5 +47,5 @@ export const deepDescription = {
       },
     },
   },
-} satisfies Omit<Description, '$id'>
+} satisfies Description
 

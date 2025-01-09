@@ -1,5 +1,5 @@
 import { expect, test, assert } from 'vitest'
-import { ValidationErrorCode, PropertyValidationErrorCode, type JsonSchema, type Property, Description } from '@aeriajs/types'
+import { ValidationErrorCode, PropertyValidationErrorCode,  type Property, type Description } from '@aeriajs/types'
 import { validate, validateWithRefs } from '../src/index.js'
 import {
   plainCandidate,
@@ -104,7 +104,8 @@ test('coercion during validation', () => {
 })
 
 test('validates array length', () => {
-  const arrayDescription: Omit<JsonSchema, '$id'> = {
+  const arrayDescription: Description = {
+    $id: '',
     properties: {
       jobs: {
         type: 'array',
@@ -126,13 +127,13 @@ test('validates array length', () => {
 
   assert(minItemsEither.error)
   assert('code' in minItemsEither.error && minItemsEither.error.code === ValidationErrorCode.InvalidProperties)
-  assert('type' in minItemsEither.error.errors.jobs)
-  expect(minItemsEither.error.errors.jobs.type).toBe(PropertyValidationErrorCode.MoreItemsExpected)
+  assert('type' in minItemsEither.error.details.jobs)
+  expect(minItemsEither.error.details.jobs.type).toBe(PropertyValidationErrorCode.MoreItemsExpected)
 
   assert(maxItemsEither.error)
   assert('code' in maxItemsEither.error && maxItemsEither.error.code === ValidationErrorCode.InvalidProperties)
-  assert('type' in maxItemsEither.error.errors.jobs)
-  expect(maxItemsEither.error.errors.jobs.type).toBe(PropertyValidationErrorCode.LessItemsExpected)
+  assert('type' in maxItemsEither.error.details.jobs)
+  expect(maxItemsEither.error.details.jobs.type).toBe(PropertyValidationErrorCode.LessItemsExpected)
 })
 
 test('validates unstructured object', () => {

@@ -1,6 +1,7 @@
 import type { Description } from '@aeriajs/types'
 
 export const conditionalDescription = {
+  $id: '',
   required: {
     id: true,
     name: {
@@ -22,5 +23,5 @@ export const conditionalDescription = {
     id: { type: 'number' },
     name: { type: 'string' },
   },
-} satisfies Omit<Description, '$id'>
+} satisfies Description
 

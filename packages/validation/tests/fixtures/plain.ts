@@ -7,10 +7,11 @@ export const plainCandidate = {
 }
 
 export const plainDescription = {
+  $id: '',
   properties: {
     name: { type: 'string' },
     age: { type: 'number' },
     job: { const: 'programmer' },
   },
-} satisfies Omit<Description, '$id'>
+} satisfies Description
 
