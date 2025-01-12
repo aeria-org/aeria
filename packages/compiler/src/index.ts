@@ -11,8 +11,8 @@ export const compile = async (input: string) => {
   }
 
   const ast = parse(Array.from(tokens))
-
   console.log(JSON.stringify(ast, null, 2))
+
   // if( error ) {
   //   return Result.error(error)
   // }
@@ -23,7 +23,8 @@ export const compile = async (input: string) => {
   // return generateCode(ast)
 }
 
-const inputCode = `functionset Readable {
+const inputCode = `
+functionset Readable {
   get
   getAll @expose
 }
@@ -50,7 +51,7 @@ collection Animal {
       }
     }
   }
-  functions {
+  functionxs {
     @include(Readable)
     @include(Writable)
     custom @expose
@@ -59,20 +60,23 @@ collection Animal {
 }
 
 collection Pet {
+  properties {
+    name str
+  }
 }
 
-contract GetPerson {
-  payload {
-    properties {
-      name str
-      pet Pet
-    }
-  }
-  response
-    | Error { properties { name str } }
-    | Result { properties { name str, age num } }
-    | str
-}
+// contract GetPerson {
+//   payload {
+//     properties {
+//       name str
+//       pet Pet
+//     }
+//   }
+//   response
+//     | Error { properties { name str } }
+//     | Result { properties { name str, age num } }
+//     | str
+// }
 `
 
 const output = compile(inputCode)

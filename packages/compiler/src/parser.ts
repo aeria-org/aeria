@@ -2,6 +2,7 @@ import { Result, type Property } from '@aeriajs/types'
 import * as AST from './ast.js'
 import { TokenType, type Token, type Location } from './token.js'
 import * as guards from './guards.js'
+import * as lexer from './lexer.js'
 
 export class ParserError extends Error {
   constructor(public message: string, public location: Location) {
@@ -17,6 +18,8 @@ type StrictToken<TTokenType extends TokenType, TValue> = undefined extends TValu
 
 export const parse = (tokens: Token[]) => {
   let current = 0
+  const ast: AST.Node[] = []
+  const errors: ParserError[] = []
 
   const match = (expected: TokenType, value?: unknown) => {
     const token = tokens[current]
@@ -50,11 +53,20 @@ export const parse = (tokens: Token[]) => {
       expectedValue
         ? `expected ${expected} with value ${expectedValue} but found ${token.type} with value "${token.value}" instead`
         : `expected ${expected} but found ${token.type} instead`,
-      token.location
+      token.location,
     )
   }
 
-  const consumeArray = (type: TokenType) => {
+  const recover = (keywords: readonly lexer.Keyword[]) => {
+    let token: Token | undefined
+    while ( token = tokens[++current] ) {
+      if( token.type === TokenType.Keyword && keywords.includes(token.value as lexer.Keyword) ) {
+        break
+      }
+    }
+  }
+
+  const parseArray = (type: TokenType) => {
     consume(TokenType.LeftSquareBracket)
 
     const array: unknown[] = []
@@ -71,7 +83,7 @@ export const parse = (tokens: Token[]) => {
     return array
   }
 
-  const consumePropertyType = (options = {
+  const parsePropertyType = (options = {
     allowModifiers: false,
   }): AST.PropertyNode => {
     let property: Property
@@ -82,7 +94,7 @@ export const parse = (tokens: Token[]) => {
       consume(TokenType.LeftSquareBracket)
       consume(TokenType.RightSquareBracket)
 
-      const value = consumePropertyType(options)
+      const value = parsePropertyType(options)
       property = {
         type: 'array',
         items: value.property,
@@ -113,7 +125,7 @@ export const parse = (tokens: Token[]) => {
         switch( keyword ) {
           case 'properties': {
             consume(TokenType.Keyword, 'properties')
-            nestedProperties = consumePropertiesBlock(options)
+            nestedProperties = parsePropertiesBlock(options)
             break
           }
           default:
@@ -177,7 +189,7 @@ export const parse = (tokens: Token[]) => {
       }
 
       if( 'enum' in property && attributeName === 'values' ) {
-        property.enum = consumeArray(TokenType.QuotedString)
+        property.enum = parseArray(TokenType.QuotedString)
       } else {
         const attributeValue = tokens[current++].value
         Object.assign(property, {
@@ -206,7 +218,7 @@ export const parse = (tokens: Token[]) => {
     return node
   }
 
-  const consumePropertiesBlock = (options = {
+  const parsePropertiesBlock = (options = {
     allowModifiers: false,
   }) => {
     consume(TokenType.LeftBracket)
@@ -214,7 +226,7 @@ export const parse = (tokens: Token[]) => {
     const properties: Record<string, AST.PropertyNode> = {}
     while( !match(TokenType.RightBracket) ) {
       const { value: propName } = consume(TokenType.Identifier)
-      properties[propName] = consumePropertyType(options)
+      properties[propName] = parsePropertyType(options)
 
       if( match(TokenType.Comma) ) {
         consume(TokenType.Comma)
@@ -225,7 +237,7 @@ export const parse = (tokens: Token[]) => {
     return properties
   }
 
-  const consumeMultiplePropertyTypes = (options = {
+  const parseMultiplePropertyTypes = (options = {
     allowModifiers: false,
   }) => {
     if( match(TokenType.Pipe) ) {
@@ -233,7 +245,7 @@ export const parse = (tokens: Token[]) => {
 
       const properties = []
       while( current < tokens.length ) {
-        properties.push(consumePropertyType(options))
+        properties.push(parsePropertyType(options))
 
         if( match(TokenType.Pipe) ) {
           consume(TokenType.Pipe)
@@ -245,10 +257,10 @@ export const parse = (tokens: Token[]) => {
       return properties
     }
 
-    return consumePropertyType(options)
+    return parsePropertyType(options)
   }
 
-  const consumeCollection = (ast: AST.Node[]): AST.CollectionNode => {
+  const parseCollection = (ast: AST.Node[]): AST.CollectionNode => {
     consume(TokenType.Keyword, 'collection')
     const { value: name } = consume(TokenType.Identifier)
 
@@ -273,7 +285,7 @@ export const parse = (tokens: Token[]) => {
     consume(TokenType.LeftBracket)
 
     while( !match(TokenType.RightBracket) ) {
-      const { value: keyword } = consume(TokenType.Keyword, ['owned', 'properties', 'functions', 'actions'])
+      const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_KEYWORDS)
       switch( keyword ) {
         case 'owned': {
           let value: string | boolean
@@ -287,15 +299,15 @@ export const parse = (tokens: Token[]) => {
           break
         }
         case 'properties': {
-          node.properties = consumePropertiesBlock()
+          node.properties = parsePropertiesBlock()
           break
         }
         case 'functions': {
-          node.functions = consumeFunctionsBlock(ast)
+          node.functions = parseFunctionsBlock(ast)
           break
         }
         case 'actions': {
-          consumeActionsBlock()
+          parseActionsBlock()
           break
         }
       }
@@ -305,7 +317,7 @@ export const parse = (tokens: Token[]) => {
     return node
   }
 
-  const consumeContract = (): AST.ContractNode => {
+  const parseContract = (): AST.ContractNode => {
     consume(TokenType.Keyword, 'contract')
     const { value: name } = consume(TokenType.Identifier)
     consume(TokenType.LeftBracket)
@@ -316,22 +328,22 @@ export const parse = (tokens: Token[]) => {
     }
 
     while( !match(TokenType.RightBracket) ) {
-      const { value: keyword } = consume(TokenType.Keyword, ['payload', 'query', 'response'])
+      const { value: keyword } = consume(TokenType.Keyword, lexer.CONTRACT_KEYWORDS)
       switch( keyword ) {
         case 'payload': {
-          node.payload = consumeMultiplePropertyTypes({
+          node.payload = parseMultiplePropertyTypes({
             allowModifiers: true,
           })
           break
         }
         case 'query': {
-          node.query = consumeMultiplePropertyTypes({
+          node.query = parseMultiplePropertyTypes({
             allowModifiers: true,
           })
           break
         }
         case 'response': {
-          node.response = consumeMultiplePropertyTypes({
+          node.response = parseMultiplePropertyTypes({
             allowModifiers: true,
           })
           break
@@ -343,7 +355,7 @@ export const parse = (tokens: Token[]) => {
     return node
   }
 
-  const consumeFunctionsBlock = (ast: AST.Node[]) => {
+  const parseFunctionsBlock = (ast: AST.Node[]) => {
     consume(TokenType.LeftBracket)
 
     const functions: AST.CollectionNode['functions'] = {}
@@ -386,19 +398,19 @@ export const parse = (tokens: Token[]) => {
     return functions
   }
 
-  const consumeFunctionSet = (ast: AST.Node[]): AST.FunctionSetNode => {
+  const parseFunctionSet = (ast: AST.Node[]): AST.FunctionSetNode => {
     consume(TokenType.Keyword, 'functionset')
     const { value: name } = consume(TokenType.Identifier)
     const node: AST.FunctionSetNode = {
       type: 'functionset',
       name,
-      functions: consumeFunctionsBlock(ast),
+      functions: parseFunctionsBlock(ast),
     }
 
     return node
   }
 
-  const consumeActionsBlock = () => {
+  const parseActionsBlock = () => {
     consume(TokenType.LeftBracket)
     while( !match(TokenType.RightBracket) ) {
       const { value: actionName } = consume(TokenType.Identifier)
@@ -418,40 +430,41 @@ export const parse = (tokens: Token[]) => {
     consume(TokenType.RightBracket)
   }
 
-  const ast: AST.Node[] = []
-  try {
-    while( current < tokens.length ) {
-      const { value: declType, location } = tokens[current]
+  while( current < tokens.length ) {
+    const { value: declType, location } = tokens[current]
 
+    try {
       switch( declType ) {
         case 'collection': {
-          ast.push(consumeCollection(ast))
+          ast.push(parseCollection(ast))
           break
         }
         case 'contract': {
-          ast.push(consumeContract())
+          ast.push(parseContract())
           break
         }
         case 'functionset': {
-          ast.push(consumeFunctionSet(ast))
+          ast.push(parseFunctionSet(ast))
           break
         }
         default:
           throw new ParserError(`invalid declaration type: "${declType}"`, location)
       }
+    } catch( err ) {
+      if( err instanceof ParserError ) {
+        errors.push(err)
+        recover(lexer.TOPLEVEL_KEYWORDS)
+        continue
+      }
+
+      throw err
     }
+  }
 
-    return Result.result(ast)
-
-  } catch( err ) {
-    if( err instanceof ParserError ) {
-      console.log('erro!')
-      console.log(err.location)
-
-      return Result.error(err)
-    }
-
-    throw err
+  return <const>{
+    success: !errors.length,
+    ast,
+    errors,
   }
 }
 

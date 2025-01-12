@@ -9,7 +9,7 @@ type TokenConfig = {
   matcher:
     | RegExp
     | string
-    | string[]
+    | readonly string[]
   valueExtractor?: (value: string) => string
   construct?: (value: string) => Token['value']
   condition?: (state: LexerState) => boolean
@@ -18,6 +18,41 @@ type TokenConfig = {
 type LexerState = {
   lastToken: Token | null
   inProperties: boolean
+}
+
+export type Keyword =
+  | typeof COLLECTION_KEYWORDS[number]
+  | typeof CONTRACT_KEYWORDS[number]
+  | typeof TOPLEVEL_KEYWORDS[number]
+  | typeof MISC_KEYWORDS[number]
+
+
+export const COLLECTION_KEYWORDS = <const>[
+  'actions',
+  'functions',
+  'owned',
+  'properties',
+]
+
+export const CONTRACT_KEYWORDS = <const>[
+  'payload',
+  'query',
+  'response',
+]
+
+export const TOPLEVEL_KEYWORDS = <const>[
+  'collection',
+  'contract',
+  'functionset',
+]
+
+export const MISC_KEYWORDS = <const>[
+  'extends',
+]
+
+const keywordsSet = new Set<string>()
+for( const keyword of ([] as string[]).concat(COLLECTION_KEYWORDS, CONTRACT_KEYWORDS, TOPLEVEL_KEYWORDS, MISC_KEYWORDS) ) {
+  keywordsSet.add(keyword)
 }
 
 const TOKENS: TokenConfig[] = [
@@ -84,21 +119,7 @@ const TOKENS: TokenConfig[] = [
   },
   {
     type: TokenType.Keyword,
-    matcher: [
-      'actions',
-      'collection',
-      'contract',
-      'extends',
-      'functions',
-      'functionset',
-      'individualActions',
-      'owned',
-      'payload',
-      'properties',
-      'query',
-      'response',
-      'name',
-    ],
+    matcher: Array.from(keywordsSet),
     condition: (state) => !state.inProperties,
   },
   {
@@ -199,19 +220,23 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
 
             switch( type ) {
               case TokenType.LeftBracket: {
-                if( state.lastToken ) switch( state.lastToken.value ) {
-                  case 'properties': {
-                    state.inProperties = true
-                    break
-                  }
-                  default: {
-                    state.inProperties = false
+                if( state.lastToken ) {
+                  switch( state.lastToken.value ) {
+                    case 'properties': {
+                      state.inProperties = true
+                      break
+                    }
+                    default: {
+                      state.inProperties = false
+                    }
                   }
                 }
                 break
               }
               case TokenType.RightBracket: {
-                state.inProperties = false
+                if( state.inProperties ) {
+                  state.inProperties = false
+                }
                 break
               }
             }

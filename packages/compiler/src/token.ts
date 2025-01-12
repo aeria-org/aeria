@@ -34,7 +34,7 @@ export type Token<
   TTokenType extends TokenType = TokenType,
   TValue = TTokenType extends keyof TypeMap
     ? TypeMap[TTokenType]
-    : string
+    : string,
 > = {
   type: TTokenType
   location: Location
