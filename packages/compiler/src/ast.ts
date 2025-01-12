@@ -1,4 +1,4 @@
-import type { Property, AccessCondition, CollectionActions, Description } from '@aeriajs/types'
+import type { Property, AccessCondition, CollectionActions } from '@aeriajs/types'
 
 export const PropertyType = {
   str: 'string',

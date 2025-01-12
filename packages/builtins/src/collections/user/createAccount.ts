@@ -47,7 +47,7 @@ export const createAccount = async (
     })
   }
 
-  let roles: string[] = [], defaults = {}
+  let roles: readonly string[] = [], defaults = {}
   if( context.config.security.signupDefaults ) {
     ({ roles = [], ...defaults } = context.config.security.signupDefaults)
   }
@@ -75,7 +75,7 @@ export const createAccount = async (
     what: {
       ...user,
       ...defaults,
-      roles,
+      roles: Array.from(roles),
     },
   }, context)
 }

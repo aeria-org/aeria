@@ -16,42 +16,68 @@ type TokenConfig = {
 }
 
 type LexerState = {
-  lastToken: Token | null
   inProperties: boolean
 }
 
 export type Keyword =
   | typeof COLLECTION_KEYWORDS[number]
+  | typeof COLLECTION_ACTIONS_KEYWORDS[number]
   | typeof CONTRACT_KEYWORDS[number]
   | typeof TOPLEVEL_KEYWORDS[number]
   | typeof MISC_KEYWORDS[number]
 
-
-export const COLLECTION_KEYWORDS = <const>[
-  'actions',
-  'functions',
+export const COLLECTION_KEYWORDS = [
   'owned',
   'properties',
-]
+  'functions',
+  'actions',
+  'individualActions',
+] as const
 
-export const CONTRACT_KEYWORDS = <const>[
+export const COLLECTION_ACTIONS_KEYWORDS = [
+  'ask',
+  'button',
+  'clearItem',
+  'effect',
+  'event',
+  'fetchItem',
+  'function',
+  'icon',
+  'label',
+  'params',
+  'query',
+  'requires',
+  'roles',
+  'route',
+  'selection',
+  'setItem',
+  'translate',
+] as const
+
+export const CONTRACT_KEYWORDS = [
   'payload',
   'query',
   'response',
-]
+] as const
 
-export const TOPLEVEL_KEYWORDS = <const>[
+export const TOPLEVEL_KEYWORDS = [
   'collection',
   'contract',
   'functionset',
-]
+] as const
 
-export const MISC_KEYWORDS = <const>[
-  'extends',
-]
+export const MISC_KEYWORDS = ['extends'] as const
+
+export const KEYWORDS = ([] as Keyword[]).concat(
+  COLLECTION_KEYWORDS,
+  COLLECTION_ACTIONS_KEYWORDS,
+  CONTRACT_KEYWORDS,
+  TOPLEVEL_KEYWORDS,
+  MISC_KEYWORDS,
+)
 
 const keywordsSet = new Set<string>()
-for( const keyword of ([] as string[]).concat(COLLECTION_KEYWORDS, CONTRACT_KEYWORDS, TOPLEVEL_KEYWORDS, MISC_KEYWORDS) ) {
+for( const keyword of KEYWORDS ) {
   keywordsSet.add(keyword)
 }
 
@@ -124,7 +150,7 @@ const TOKENS: TokenConfig[] = [
   },
   {
     type: TokenType.Identifier,
-    matcher: /[a-zA-Z0-9]+/,
+    matcher: /([a-zA-Z0-9]|_)+/,
   },
   {
     type: TokenType.QuotedString,
@@ -147,7 +173,6 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
 
   const tokens: Token[] = []
   const state: LexerState = {
-    lastToken: null,
     inProperties: false,
   }
 
@@ -218,10 +243,15 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
               value: tokenValue,
             }
 
+            console.log({
+              state,
+              token,
+            })
             switch( type ) {
               case TokenType.LeftBracket: {
-                if( state.lastToken ) {
-                  switch( state.lastToken.value ) {
+                const lastToken = tokens.at(-1)
+                if( lastToken ) {
+                  switch( lastToken.value ) {
                     case 'properties': {
                       state.inProperties = true
                       break
@@ -241,7 +271,7 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
               }
             }
 
-            tokens.push(state.lastToken = token)
+            tokens.push(token)
           }
         }
 

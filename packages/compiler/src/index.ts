@@ -2,23 +2,28 @@ import { Result } from '@aeriajs/types'
 import { tokenize } from './lexer.js'
 import { parse } from './parser.js'
 // import { generateCode } from './codegen.js'
-import { analyze } from './semantic.js'
+// import { analyze } from './semantic.js'
 
 export const compile = async (input: string) => {
   const { error: tokenizeError, result: tokens } = tokenize(input)
   if(tokenizeError){
+    console.log(tokenizeError)
     return Result.error(tokenizeError)
   }
 
-  const ast = parse(Array.from(tokens))
-  console.log(JSON.stringify(ast, null, 2))
+  // console.log(JSON.stringify(tokens, null, 2))
+
+  const result = parse(Array.from(tokens))
+  console.log(JSON.stringify(result, null, 2))
 
   // if( error ) {
   //   return Result.error(error)
   // }
   //
-  // const r = await analyze(ast)
+  // const r = await analyze(result.ast)
+  // console.log('---')
   // console.log(r)
+  // console.log('--- end')
 
   // return generateCode(ast)
 }
@@ -40,30 +45,53 @@ collection TempFile extends aeria.tempFile {}
 collection User extends aeria.user {}
 
 collection Animal {
-  owned true
-  properties {
-    name str
-    specie enum @values(["dog", "cat"])
-    details {
-      properties {
-        age num @minimum(10)
-        dates []date
-      }
+  // owned true
+  // properties {
+  //   name str
+  //   specie enum @values(["dog", "cat"])
+  //   user User @indexes([])
+  //   details {
+  //     properties {
+  //       age num @minimum(10)
+  //       dates []date
+  //     }
+  //   }
+  // }
+  // functions {
+  //   @include(Readable)
+  //   @include(Writable)
+  //   custom @expose
+  // }
+  actions {
+    add {
+      label "add"
+      route "test"
+      clearItem true
+      button true
     }
   }
-  functionxs {
-    @include(Readable)
-    @include(Writable)
-    custom @expose
-  }
-  actions {}
 }
 
-collection Pet {
-  properties {
-    name str
-  }
-}
+// collection Pet {
+//   properties {
+//     name str
+//   }
+// }
+//
+// contract Test {
+//   payload {
+//     properties {
+//       user_id str
+//     }
+//   }
+//   response
+//     | Result User @indexes([xa])
+//     | Result {
+//       properties {
+//         name str
+//       }
+//     }
+// }
 
 // contract GetPerson {
 //   payload {

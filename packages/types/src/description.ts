@@ -37,16 +37,17 @@ export type CollectionActionEvent = {
   event?: string
 }
 
-export type CollectionActionBase<TDescription extends Description> = {
+export type CollectionActionBase<TDescription extends Description = Description> = {
   label?: string
   icon?: Icon
   ask?: boolean
   translate?: boolean
+  button?: boolean
   roles?: readonly string[]
   requires?: readonly PropertiesWithId<TDescription>[]
 }
 
-export type CollectionAction<TDescription extends Description> = CollectionActionBase<TDescription> & (
+export type CollectionAction<TDescription extends Description = Description> = CollectionActionBase<TDescription> & (
   | CollectionActionRoute
   | CollectionActionFunction
   | CollectionActionEvent
@@ -59,9 +60,6 @@ export type CollectionActions<TDescription extends Description = Description> = 
   }
   | null
 >
-
-export type CollectionIndividualActions<TDescription extends Description> =
-  Record<string, CollectionAction<TDescription> | null>
 
 export type FormLayout<TDescription extends Description> = {
   fields?: Partial<Record<PropertiesWithId<TDescription>, FormLayoutField<TDescription>>>
@@ -192,7 +190,7 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
 
   // actions
   actions?: CollectionActions<TDescription>
-  individualActions?: CollectionIndividualActions<TDescription>
+  individualActions?: CollectionActions<TDescription>
 
   search?: SearchOptions<TDescription>
 }

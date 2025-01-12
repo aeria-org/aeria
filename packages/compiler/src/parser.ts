@@ -1,6 +1,6 @@
-import { Result, type Property } from '@aeriajs/types'
-import * as AST from './ast.js'
+import type { CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, Icon, Property } from '@aeriajs/types'
 import { TokenType, type Token, type Location } from './token.js'
+import * as AST from './ast.js'
 import * as guards from './guards.js'
 import * as lexer from './lexer.js'
 
@@ -59,14 +59,14 @@ export const parse = (tokens: Token[]) => {
 
   const recover = (keywords: readonly lexer.Keyword[]) => {
     let token: Token | undefined
-    while ( token = tokens[++current] ) {
+    while ( token = tokens[++current] as Token | undefined ) {
       if( token.type === TokenType.Keyword && keywords.includes(token.value as lexer.Keyword) ) {
         break
       }
     }
   }
 
-  const parseArray = (type: TokenType) => {
+  const parseArray = <TTokenType extends TokenType>(type: TTokenType) => {
     consume(TokenType.LeftSquareBracket)
 
     const array: unknown[] = []
@@ -80,7 +80,26 @@ export const parse = (tokens: Token[]) => {
     }
 
     consume(TokenType.RightSquareBracket)
-    return array
+    return array as Token<TTokenType>['value'][]
+  }
+
+  const parseAttributeValue = (attributeName: string, property: Property) => {
+    if( '$ref' in property ) {
+      switch( attributeName ) {
+        case 'form':
+        case 'populate':
+        case 'indexes': {
+          return parseArray(TokenType.Identifier)
+        }
+      }
+    }
+
+    // Object.assign(property, {
+    //   [attributeName]: attributeValue,
+    // })
+    const attributeValue = tokens[current++].value
+    return attributeValue
+
   }
 
   const parsePropertyType = (options = {
@@ -107,7 +126,8 @@ export const parse = (tokens: Token[]) => {
     }
 
     if( options.allowModifiers ) {
-      if( match(TokenType.Identifier) && tokens[current + 1].type === TokenType.LeftBracket ) {
+      const nextToken = tokens[current + 1]
+      if( match(TokenType.Identifier) && (nextToken.type === TokenType.LeftBracket || nextToken.type === TokenType.Identifier) ) {
         modifierToken = consume(TokenType.Identifier)
       }
     }
@@ -191,7 +211,7 @@ export const parse = (tokens: Token[]) => {
       if( 'enum' in property && attributeName === 'values' ) {
         property.enum = parseArray(TokenType.QuotedString)
       } else {
-        const attributeValue = tokens[current++].value
+        const attributeValue = parseAttributeValue(attributeName, property)
         Object.assign(property, {
           [attributeName]: attributeValue,
         })
@@ -278,7 +298,7 @@ export const parse = (tokens: Token[]) => {
       const { value: symbolName } = consume(TokenType.Identifier)
       node.extends = {
         packageName,
-        symbolName,
+        symbolName: symbolName[0].toLowerCase() + symbolName.slice(1),
       }
     }
 
@@ -307,7 +327,11 @@ export const parse = (tokens: Token[]) => {
           break
         }
         case 'actions': {
-          parseActionsBlock()
+          node.actions = parseActionsBlock()
+          break
+        }
+        case 'individualActions': {
+          node.individualActions = parseActionsBlock()
           break
         }
       }
@@ -411,23 +435,113 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseActionsBlock = () => {
+    const actions: CollectionActions = {}
+
     consume(TokenType.LeftBracket)
     while( !match(TokenType.RightBracket) ) {
       const { value: actionName } = consume(TokenType.Identifier)
       consume(TokenType.LeftBracket)
+
+      const baseSlots: CollectionAction = {}
+
+      const slots: {
+        route: CollectionActionRoute
+        function: CollectionActionFunction
+        event: CollectionActionEvent
+      } = {
+        route: {
+          route: {
+            name: '',
+          },
+        },
+        function: {},
+        event: {},
+      }
+
+      let actionType:
+        | 'route'
+        | 'function'
+        | 'event'
+        | undefined
+
       while( !match(TokenType.RightBracket) ) {
-        const { value: keyword } = consume(TokenType.Keyword, ['name'])
+        const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_ACTIONS_KEYWORDS)
         switch( keyword ) {
-          case 'name':
-            //
+          case 'icon': {
+            const { value } = consume(TokenType.QuotedString)
+            baseSlots[keyword] = value as Icon
             break
+          }
+          case 'label': {
+            const { value } = consume(TokenType.QuotedString)
+            baseSlots[keyword] = value
+            break
+          }
+          case 'ask':
+          case 'button':
+          case 'translate': {
+            const { value } = consume(TokenType.Boolean)
+            baseSlots[keyword] = value
+            break
+          }
+          case 'roles':
+          case 'requires': {
+            const value = parseArray(TokenType.Identifier)
+            baseSlots[keyword] = value
+            break
+          }
+          case 'route': {
+            const { value } = consume(TokenType.QuotedString)
+            actionType = 'route'
+            slots.route.route.name = value
+            break
+          }
+          case 'setItem':
+          case 'fetchItem':
+          case 'clearItem': {
+            const { value } = consume(TokenType.Boolean)
+            slots.route.route[keyword] = value
+            break
+          }
+          case 'function': {
+            const { value } = consume(TokenType.QuotedString)
+            actionType = 'function'
+            slots.function.function = value
+            break
+          }
+          case 'effect': {
+            const { value } = consume(TokenType.QuotedString)
+            slots.function.effect = value
+            break
+          }
+          case 'selection': {
+            const { value } = consume(TokenType.Boolean)
+            slots.function.selection = value
+            break
+          }
+          case 'event': {
+            const { value } = consume(TokenType.QuotedString)
+            actionType = 'event'
+            slots.event.event = value
+            break
+          }
         }
+      }
+
+      if( actionType ) {
+        actions[actionName] = {
+          ...baseSlots,
+          ...slots[actionType],
+        }
+      } else {
+        actions[actionName] = baseSlots
       }
 
       consume(TokenType.RightBracket)
     }
 
     consume(TokenType.RightBracket)
+    return actions
   }
 
   while( current < tokens.length ) {
@@ -461,7 +575,7 @@ export const parse = (tokens: Token[]) => {
     }
   }
 
-  return <const>{
+  return {
     success: !errors.length,
     ast,
     errors,
