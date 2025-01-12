@@ -1,19 +1,30 @@
-import type { Property } from '@aeriajs/types'
-import { Result } from '@aeriajs/types'
-import { TokenType, type Token } from './lexer'
+import { Result, type Property } from '@aeriajs/types'
+import * as AST from './ast.js'
+import { TokenType, type Token, type Location } from './token.js'
+import * as guards from './guards.js'
 
-import * as AST from './ast'
-import * as guards from './guards'
-import { type Diagnostic } from './diagnostic'
+export class ParserError extends Error {
+  constructor(public message: string, public location: Location) {
+    super()
+  }
+}
+
+type StrictToken<TTokenType extends TokenType, TValue> = undefined extends TValue
+  ? Token<TTokenType>
+  : TValue extends readonly (infer E)[]
+    ? Token<TTokenType, E>
+    : Token<TTokenType, TValue>
 
 export const parse = (tokens: Token[]) => {
   let current = 0
 
-  const match = (expected: TokenType, value?: string) => {
+  const match = (expected: TokenType, value?: unknown) => {
     const token = tokens[current]
     if( token.type === expected ) {
       if( value !== undefined ) {
-        return token.value === value
+        return Array.isArray(value)
+          ? value.includes(token.value)
+          : token.value === value
       }
       return true
     }
@@ -21,149 +32,99 @@ export const parse = (tokens: Token[]) => {
     return false
   }
 
-  const consume = <TTokenType extends TokenType>(expected: TTokenType, value?: string): Result.Either<Diagnostic, Token<TTokenType>> => {
+  const consume = <TTokenType extends TokenType, const TValue>(expected: TTokenType, value?: TValue): StrictToken<TTokenType, TValue> => {
     const token = tokens[current]
     if( match(expected, value) ) {
       current++
-      return Result.result(token as Token<TTokenType>)
+      return token as StrictToken<TTokenType, TValue>
     }
 
-    return Result.error({
-      message: `expected "${expected}"${value
-        ? ` with value "${value}"`
-        : ''} but found "${token.type}" instead`,
-      location: token.location,
-    })
+    let expectedValue: string | undefined
+    if( value ) {
+      expectedValue = Array.isArray(value)
+        ? value.map((elem) => `"${elem}"`).join(' | ')
+        : `"${value}"`
+    }
+
+    throw new ParserError(
+      expectedValue
+        ? `expected ${expected} with value ${expectedValue} but found ${token.type} with value "${token.value}" instead`
+        : `expected ${expected} but found ${token.type} instead`,
+      token.location
+    )
   }
 
   const consumeArray = (type: TokenType) => {
-    const { error: leftBracketError } = consume(TokenType.LeftSquareBracket)
-    if(leftBracketError){
-      return Result.error(leftBracketError)
-    }
+    consume(TokenType.LeftSquareBracket)
 
     const array: unknown[] = []
     while( !match(TokenType.RightSquareBracket) ) {
-      const { error, result: token } = consume(type)
-      if(error){
-        return Result.error(error)
-      }
-      array.push(token.value)
+      const { value } = consume(type)
+      array.push(value)
 
       if( match(TokenType.Comma) ) {
-        const{ error } = consume(TokenType.Comma)
-        if(error){
-          return Result.error(error)
-        }
+        consume(TokenType.Comma)
       }
     }
 
-    const { error: rightBracketError } = consume(TokenType.RightSquareBracket)
-    if(rightBracketError){
-      return Result.error(rightBracketError)
-    }
-
-    return Result.result(array)
-  }
-
-  const consumeAttributeValue = (attributeName: string, property: Property) => {
-    if( '$ref' in property ) {
-      switch( attributeName ) {
-        case 'indexes': {
-          return consumeArray(TokenType.Identifier)
-        }
-      }
-    }
-
-    // Object.assign(property, {
-    //   [attributeName]: attributeValue,
-    // })
-    const attributeValue = tokens[current++].value
-    return Result.result(attributeValue)
-
+    consume(TokenType.RightSquareBracket)
+    return array
   }
 
   const consumePropertyType = (options = {
     allowModifiers: false,
-  }): Result.Either<Diagnostic, AST.PropertyNode> => {
+  }): AST.PropertyNode => {
     let property: Property
     let nestedProperties: Record<string, AST.PropertyNode> | undefined
-    let modifier: string | undefined
+    let modifierToken: Token<TokenType.Identifier> | undefined
 
     if( match(TokenType.LeftSquareBracket) ) {
       consume(TokenType.LeftSquareBracket)
       consume(TokenType.RightSquareBracket)
 
-      const { error, result } = consumePropertyType(options)
-      if( error ) {
-        return Result.error(error)
-      }
-
+      const value = consumePropertyType(options)
       property = {
         type: 'array',
-        items: result.property,
+        items: value.property,
       }
 
-      return Result.result({
+      return {
         type: 'property',
         property,
-      })
+      }
     }
 
     if( options.allowModifiers ) {
       if( match(TokenType.Identifier) && tokens[current + 1].type === TokenType.LeftBracket ) {
-
-        const { error, result: token } = consume(TokenType.Identifier)
-        if(error){
-          return Result.error(error)
-        }
-        modifier = token.value
+        modifierToken = consume(TokenType.Identifier)
       }
     }
 
     if( match(TokenType.LeftBracket) ) {
-      const { error: leftBracketError } = consume(TokenType.LeftBracket)
-      if(leftBracketError){
-        return Result.error(leftBracketError)
-      }
+      consume(TokenType.LeftBracket)
+
       property = {
         type: 'object',
         properties: {},
       }
 
       while( !match(TokenType.RightBracket) ) {
-        const keyword = tokens[current].value
+        const { value: keyword, location } = tokens[current]
         switch( keyword ) {
           case 'properties': {
-            const { error: keywordError } = consume(TokenType.Keyword, 'properties')
-            if(keywordError){
-              return Result.error(keywordError)
-            }
-            const { error: propBlockError, result: propBlock } = consumePropertiesBlock(options)
-            if(propBlockError){
-              return Result.error(propBlockError)
-            }
-            nestedProperties = propBlock
+            consume(TokenType.Keyword, 'properties')
+            nestedProperties = consumePropertiesBlock(options)
             break
           }
           default:
-            return Result.error({
-              message: `invalid keyword "${keyword}"`,
-              location: tokens[current].location,
-            })
+            throw new ParserError(`invalid keyword "${keyword}"`, location)
         }
       }
 
-      const { error: rightBracketError } = consume(TokenType.RightBracket)
-      if(rightBracketError){
-        return Result.error(rightBracketError)
-      }
+      consume(TokenType.RightBracket)
+
     } else {
-      const { error, result: token } = consume(TokenType.Identifier)
-      if(error){
-        return Result.error(error)
-      }
-      const identifier = token.value
+      const { value: identifier, location } = consume(TokenType.Identifier)
       if( guards.isNativePropertyType(identifier) ) {
         switch( identifier ) {
           case 'enum': {
@@ -198,10 +159,7 @@ export const parse = (tokens: Token[]) => {
         })
 
         if( !collection ) {
-          return Result.error({
-            message: `invalid reference "${identifier}"`,
-            location: token.location,
-          })
+          throw new ParserError(`invalid reference "${identifier}"`, location)
         }
 
         property = {
@@ -211,43 +169,24 @@ export const parse = (tokens: Token[]) => {
     }
 
     while( match(TokenType.AttributeName) ) {
-      const { error, result: token } = consume(TokenType.AttributeName)
-      if(error){
-        return Result.error(error)
-      }
-      const attributeName = token.value
+      const { value: attributeName } = consume(TokenType.AttributeName)
       let insideParens = false
       if( match(TokenType.LeftParens) ) {
-        const { error: leftParensError } = consume(TokenType.LeftParens)
-        if( leftParensError ) {
-          return Result.error(leftParensError)
-        }
+        consume(TokenType.LeftParens)
         insideParens = true
       }
 
       if( 'enum' in property && attributeName === 'values' ) {
-        const{ error, result } = consumeArray(TokenType.QuotedString)
-        if(error){
-          return Result.error(error)
-        }
-        property.enum = result
-
+        property.enum = consumeArray(TokenType.QuotedString)
       } else {
-        const { error, result: attributeValue } = consumeAttributeValue(attributeName, property)
-        if( error ) {
-          return Result.error(error)
-        }
-
+        const attributeValue = tokens[current++].value
         Object.assign(property, {
           [attributeName]: attributeValue,
         })
       }
 
       if( insideParens ) {
-        const { error: rightParensError } = consume(TokenType.RightParens)
-        if(rightParensError){
-          return Result.error(rightParensError)
-        }
+        consume(TokenType.RightParens)
       }
     }
 
@@ -257,101 +196,61 @@ export const parse = (tokens: Token[]) => {
       nestedProperties,
     }
 
-    if( modifier ) {
-      if( !guards.isValidPropertyModifier(modifier) ) {
-        return Result.error({
-          message: `invalid modifier: "${modifier}"` as never,
-          location: tokens[current].location,
-        })
-        //throw new Error(`invalid modifier: "${modifier}"`)
+    if( modifierToken ) {
+      if( !guards.isValidPropertyModifier(modifierToken.value) ) {
+        throw new ParserError(`invalid modifier: "${modifierToken.value}"`, modifierToken.location)
       }
-      node.modifier = modifier
+      node.modifier = modifierToken.value
     }
 
-    return Result.result(node)
+    return node
   }
 
   const consumePropertiesBlock = (options = {
     allowModifiers: false,
-  }): Result.Either<Diagnostic, Record<string, AST.PropertyNode>> => {
-    const { error: leftBracketError } = consume(TokenType.LeftBracket)
-    if(leftBracketError){
-      return Result.error(leftBracketError)
-    }
+  }) => {
+    consume(TokenType.LeftBracket)
+
     const properties: Record<string, AST.PropertyNode> = {}
     while( !match(TokenType.RightBracket) ) {
-      //const { value: propName } = consume(TokenType.Identifier)
-      const { error, result: token } = consume(TokenType.Identifier)
-      if(error){
-        return Result.error(error)
-      }
-      const propName = token.value
-      const { error: consumePropertyTypeError, result: prop } = consumePropertyType(options)
-      if(consumePropertyTypeError){
-        return Result.error(consumePropertyTypeError)
-      }
-      properties[propName] = prop
+      const { value: propName } = consume(TokenType.Identifier)
+      properties[propName] = consumePropertyType(options)
+
       if( match(TokenType.Comma) ) {
-        const { error: commaError } = consume(TokenType.Comma)
-        if(commaError){
-          return Result.error(commaError)
-        }
         consume(TokenType.Comma)
       }
     }
 
-    const { error: rightBracketError } = consume(TokenType.RightBracket)
-    if(rightBracketError){
-      return Result.error(rightBracketError)
-    }
-
-    return Result.result(properties)
+    consume(TokenType.RightBracket)
+    return properties
   }
 
   const consumeMultiplePropertyTypes = (options = {
     allowModifiers: false,
-  }): Result.Either<Diagnostic, AST.PropertyNode[] | AST.PropertyNode> => {
+  }) => {
     if( match(TokenType.Pipe) ) {
-      const { error: pipeError } = consume(TokenType.Pipe)
-      if(pipeError){
-        return Result.error(pipeError)
-      }
+      consume(TokenType.Pipe)
 
       const properties = []
       while( current < tokens.length ) {
-        const { error,result } = consumePropertyType(options)
-        if(error){
-          return Result.error(error)
-        }
-        properties.push(result)
+        properties.push(consumePropertyType(options))
 
         if( match(TokenType.Pipe) ) {
-          const { error: pipeError } = consume(TokenType.Pipe)
-          if(pipeError){
-            return Result.error(pipeError)
-          }
+          consume(TokenType.Pipe)
         } else {
           break
         }
       }
 
-      return Result.result(properties)
+      return properties
     }
 
     return consumePropertyType(options)
   }
 
-  const consumeCollection = (ast: AST.Node[]): Result.Either<Diagnostic,AST.CollectionNode> => {
-    const { error: keywordError } = consume(TokenType.Keyword, 'collection')
-    if(keywordError){
-      return Result.error(keywordError)
-    }
-
-    const { error, result } = consume(TokenType.Identifier)
-    if(error){
-      return Result.error(error)
-    }
-    const name = result.value
+  const consumeCollection = (ast: AST.Node[]): AST.CollectionNode => {
+    consume(TokenType.Keyword, 'collection')
+    const { value: name } = consume(TokenType.Identifier)
 
     const node: AST.CollectionNode = {
       type: 'collection',
@@ -360,112 +259,56 @@ export const parse = (tokens: Token[]) => {
     }
 
     if( match(TokenType.Keyword, 'extends') ) {
-      const { error: keywordError } = consume(TokenType.Keyword)
-      if(keywordError){
-        return Result.error(keywordError)
-      }
+      consume(TokenType.Keyword)
+      const { value: packageName } = consume(TokenType.Identifier)
+      consume(TokenType.Dot)
 
-      const { error: packageNameIdentifierError, result: packageNameIdentifier } = consume(TokenType.Identifier)
-      if(packageNameIdentifierError){
-        return Result.error(packageNameIdentifierError)
-      }
-      const packageName = packageNameIdentifier.value
-
-      const { error: dotError } = consume(TokenType.Dot)
-      if(dotError){
-        return Result.error(dotError)
-      }
-
-      const { error: symbolIdentifierError, result: symbolIdentifier } = consume(TokenType.Identifier)
-      if(symbolIdentifierError){
-        return Result.error(symbolIdentifierError)
-      }
-      const symbolName = symbolIdentifier.value
+      const { value: symbolName } = consume(TokenType.Identifier)
       node.extends = {
         packageName,
         symbolName,
       }
     }
 
-    const { error: leftBracketError } = consume(TokenType.LeftBracket)
-    if(leftBracketError){
-      return Result.error(leftBracketError)
-    }
+    consume(TokenType.LeftBracket)
 
     while( !match(TokenType.RightBracket) ) {
-      const{ error, result } = consume(TokenType.Keyword)
-      if(error){
-        return Result.error(error)
-      }
-      const keyword = result.value
-
+      const { value: keyword } = consume(TokenType.Keyword, ['owned', 'properties', 'functions', 'actions'])
       switch( keyword ) {
         case 'owned': {
           let value: string | boolean
           if( match(TokenType.QuotedString, 'on-write') ) {
-            const{ error, result: stringToken } = consume(TokenType.QuotedString)
-            if(error){
-              return Result.error(error)
-            }
-            value = stringToken.value
+            value = consume(TokenType.QuotedString).value
           } else {
-            const{ error, result: booleanToken } = consume(TokenType.Boolean)
-            if(error){
-              return Result.error(error)
-            }
-            value = booleanToken.value
+            value = consume(TokenType.Boolean).value
           }
 
           node.owned = value === 'true'
           break
         }
         case 'properties': {
-          const{ error, result } = consumePropertiesBlock()
-          if(error){
-            return Result.error(error)
-          }
-          node.properties = result
+          node.properties = consumePropertiesBlock()
           break
         }
         case 'functions': {
-          const{ error, result } = consumeFunctionsBlock(ast)
-          if(error){
-            return Result.error(error)
-          }
-          node.functions = result
+          node.functions = consumeFunctionsBlock(ast)
           break
         }
-        default:
-          return Result.error({
-            message: `invalid token "${keyword}"`,
-            location: tokens[current].location,
-          })
+        case 'actions': {
+          consumeActionsBlock()
+          break
+        }
       }
     }
 
-    const { error: rightBracketError } = consume(TokenType.RightBracket)
-    if(rightBracketError){
-      return Result.error(rightBracketError)
-    }
-    return Result.result(node)
+    consume(TokenType.RightBracket)
+    return node
   }
 
-  const consumeContract = (): Result.Either<Diagnostic,AST.ContractNode> => {
-    const { error: keywordError } = consume(TokenType.Keyword, 'contract')
-    if(keywordError){
-      return Result.error(keywordError)
-    }
-
-    const { error, result } = consume(TokenType.Identifier)
-    if(error){
-      return Result.error(error)
-    }
-    const name = result.value
-
-    const { error: leftBracketError } = consume(TokenType.LeftBracket)
-    if(leftBracketError){
-      return Result.error(leftBracketError)
-    }
+  const consumeContract = (): AST.ContractNode => {
+    consume(TokenType.Keyword, 'contract')
+    const { value: name } = consume(TokenType.Identifier)
+    consume(TokenType.LeftBracket)
 
     const node: AST.ContractNode = {
       type: 'contract',
@@ -473,78 +316,43 @@ export const parse = (tokens: Token[]) => {
     }
 
     while( !match(TokenType.RightBracket) ) {
-      const { error, result } = consume(TokenType.Keyword)
-      if(error){
-        return Result.error(error)
-      }
-      const keyword = result.value
+      const { value: keyword } = consume(TokenType.Keyword, ['payload', 'query', 'response'])
       switch( keyword ) {
         case 'payload': {
-          const { error, result } = consumeMultiplePropertyTypes({
+          node.payload = consumeMultiplePropertyTypes({
             allowModifiers: true,
           })
-          if(error){
-            return Result.error(error)
-          }
-          node.payload = result
           break
         }
         case 'query': {
-          const { error, result } = consumeMultiplePropertyTypes({
+          node.query = consumeMultiplePropertyTypes({
             allowModifiers: true,
           })
-          if(error){
-            return Result.error(error)
-          }
-          node.query = result
           break
         }
         case 'response': {
-          const { error, result } = consumeMultiplePropertyTypes({
+          node.response = consumeMultiplePropertyTypes({
             allowModifiers: true,
           })
-          if(error){
-            return Result.error(error)
-          }
-          node.response = result
           break
         }
       }
     }
 
-    const { error: rightBracketError } = consume(TokenType.RightBracket)
-    if(rightBracketError){
-      return Result.error(rightBracketError)
-    }
-
-    return Result.result(node)
+    consume(TokenType.RightBracket)
+    return node
   }
 
   const consumeFunctionsBlock = (ast: AST.Node[]) => {
-    const { error: leftBracketError } = consume(TokenType.LeftBracket)
-    if(leftBracketError){
-      return Result.error(leftBracketError)
-    }
+    consume(TokenType.LeftBracket)
 
     const functions: AST.CollectionNode['functions'] = {}
     while( !match(TokenType.RightBracket) ) {
       if( match(TokenType.AttributeName, 'include') ) {
-        const { error: attributeNameError } = consume(TokenType.AttributeName)
-        if(attributeNameError){
-          return Result.error(attributeNameError)
-        }
+        consume(TokenType.AttributeName)
+        consume(TokenType.LeftParens)
 
-        const { error: leftParensError } = consume(TokenType.LeftParens)
-        if(leftParensError){
-          return Result.error(leftParensError)
-        }
-
-        const{ error, result } = consume(TokenType.Identifier)
-        if(error){
-          return Result.error(error)
-        }
-
-        const functionSetName = result.value
+        const { value: functionSetName, location } = consume(TokenType.Identifier)
 
         const functionset = AST.findNode(ast, {
           type: 'functionset',
@@ -552,120 +360,98 @@ export const parse = (tokens: Token[]) => {
         })
 
         if( !functionset ) {
-          return Result.error({
-            message: `functionset "${functionSetName} not found"`,
-            location: tokens[current].location,
-          })
+          throw new ParserError(`functionset "${functionSetName} not found"`, location)
         }
 
-        for (const key in functionset.functions) {
-          functions[key] = {
-            accessCondition: functionset.functions[key].accessCondition,
-            fromFunctionSet: true,
-          }
-        }
-
-        const { error: rightParensError } = consume(TokenType.RightParens)
-        if(rightParensError){
-          return Result.error(rightParensError)
-        }
+        Object.assign(functions, functionset.functions)
+        consume(TokenType.RightParens)
 
         continue
       }
 
-      const{ error, result } = consume(TokenType.Identifier)
-      if(error){
-        return Result.error(error)
-      }
-
-      const functionName = result.value
-
+      const { value: functionName } = consume(TokenType.Identifier)
       functions[functionName] = {
         accessCondition: false,
       }
 
       while( match(TokenType.AttributeName, 'expose') ) {
-        const { error: attributeNameError } = consume(TokenType.AttributeName, 'expose')
-        if(attributeNameError){
-          return Result.error(attributeNameError)
-        }
-
+        consume(TokenType.AttributeName, 'expose')
         functions[functionName] = {
           accessCondition: true,
         }
       }
     }
 
-    const { error: rightBracketError } = consume(TokenType.RightBracket)
-    if(rightBracketError){
-      return Result.error(rightBracketError)
-    }
-
-    return Result.result(functions)
+    consume(TokenType.RightBracket)
+    return functions
   }
 
-  const consumeFunctionSet = (ast: AST.Node[]): Result.Either<Diagnostic,AST.FunctionSetNode> => {
-    const { error: keywordError } = consume(TokenType.Keyword, 'functionset')
-    if(keywordError){
-      return Result.error(keywordError)
-    }
-    const { error, result } = consume(TokenType.Identifier)
-    if(error){
-      return Result.error(error)
-    }
-    const name = result.value
-
-    const { error: functionBlockError, result: functionBlock } = consumeFunctionsBlock(ast)
-    if(functionBlockError){
-      return Result.error(functionBlockError)
-    }
-
+  const consumeFunctionSet = (ast: AST.Node[]): AST.FunctionSetNode => {
+    consume(TokenType.Keyword, 'functionset')
+    const { value: name } = consume(TokenType.Identifier)
     const node: AST.FunctionSetNode = {
       type: 'functionset',
       name,
-      functions: functionBlock,
+      functions: consumeFunctionsBlock(ast),
     }
 
-    return Result.result(node)
+    return node
+  }
+
+  const consumeActionsBlock = () => {
+    consume(TokenType.LeftBracket)
+    while( !match(TokenType.RightBracket) ) {
+      const { value: actionName } = consume(TokenType.Identifier)
+      consume(TokenType.LeftBracket)
+      while( !match(TokenType.RightBracket) ) {
+        const { value: keyword } = consume(TokenType.Keyword, ['name'])
+        switch( keyword ) {
+          case 'name':
+            //
+            break
+        }
+      }
+
+      consume(TokenType.RightBracket)
+    }
+
+    consume(TokenType.RightBracket)
   }
 
   const ast: AST.Node[] = []
-  while( current < tokens.length ) {
-    const declType = tokens[current].value
+  try {
+    while( current < tokens.length ) {
+      const { value: declType, location } = tokens[current]
 
-    switch( declType ) {
-      case 'collection': {
-        const{ error, result } = consumeCollection(ast)
-        if(error){
-          return Result.error(error)
+      switch( declType ) {
+        case 'collection': {
+          ast.push(consumeCollection(ast))
+          break
         }
-        ast.push(result)
-        break
-      }
-      case 'contract': {
-        const{ error, result } = consumeContract()
-        if(error){
-          return Result.error(error)
+        case 'contract': {
+          ast.push(consumeContract())
+          break
         }
-        ast.push(result)
-        break
-      }
-      case 'functionset': {
-        const{ error, result } = consumeFunctionSet(ast)
-        if(error){
-          return Result.error(error)
+        case 'functionset': {
+          ast.push(consumeFunctionSet(ast))
+          break
         }
-        ast.push(result)
-        break
+        default:
+          throw new ParserError(`invalid declaration type: "${declType}"`, location)
       }
-      default:
-        return Result.error({
-          message: `invalid declaration type: "${declType}"`,
-          location: tokens[current].location,
-        })
     }
-  }
 
-  return Result.result(ast)
+    return Result.result(ast)
+
+  } catch( err ) {
+    if( err instanceof ParserError ) {
+      console.log('erro!')
+      console.log(err.location)
+
+      return Result.error(err)
+    }
+
+    throw err
+  }
 }
 

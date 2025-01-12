@@ -1,7 +1,7 @@
 import { Result } from '@aeriajs/types'
 import { tokenize } from './lexer.js'
-import { parse } from './parser'
-// import { generateCode } from './codegen'
+import { parse } from './parser.js'
+// import { generateCode } from './codegen.js'
 import { analyze } from './semantic.js'
 
 export const compile = async (input: string) => {
@@ -10,13 +10,15 @@ export const compile = async (input: string) => {
     return Result.error(tokenizeError)
   }
 
-  const { error, result: ast } = parse(Array.from(tokens))
-  if( error ) {
-    return Result.error(error)
-  }
+  const ast = parse(Array.from(tokens))
 
-  const r = await analyze(ast)
-  console.log(r)
+  console.log(JSON.stringify(ast, null, 2))
+  // if( error ) {
+  //   return Result.error(error)
+  // }
+  //
+  // const r = await analyze(ast)
+  // console.log(r)
 
   // return generateCode(ast)
 }
@@ -53,6 +55,7 @@ collection Animal {
     @include(Writable)
     custom @expose
   }
+  actions {}
 }
 
 collection Pet {

@@ -52,7 +52,7 @@ export type CollectionAction<TDescription extends Description> = CollectionActio
   | CollectionActionEvent
 )
 
-export type CollectionActions<TDescription extends Description> = Record<
+export type CollectionActions<TDescription extends Description = Description> = Record<
   string,
   | CollectionAction<TDescription> & {
     button?: boolean

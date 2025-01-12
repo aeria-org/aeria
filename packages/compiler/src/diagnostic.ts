@@ -1,4 +1,4 @@
-import type { Location } from './lexer'
+import type { Location } from './token.js'
 
 export type Diagnostic = {
   message: string

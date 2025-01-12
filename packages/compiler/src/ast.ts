@@ -1,4 +1,4 @@
-import type { Property, AccessCondition } from '@aeriajs/types'
+import type { Property, AccessCondition, CollectionActions, Description } from '@aeriajs/types'
 
 export const PropertyType = {
   str: 'string',
@@ -38,6 +38,8 @@ export type CollectionNode = {
   name: string
   extends?: ExportSymbol
   owned?: boolean
+  actions?: CollectionActions
+  individualActions?: CollectionActions
   properties: Record<string, PropertyNode>
   functions?: Record<string, {
     accessCondition: AccessCondition,

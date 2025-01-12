@@ -1,32 +1,8 @@
 import type { Diagnostic } from './diagnostic'
 import { Result } from '@aeriajs/types'
+import { TokenType, type Token, type Location } from './token.js'
 
-export enum TokenType {
-  LineBreak = 'LINE_BREAK',
-  Comment = 'COMMENT',
-  LeftBracket = 'LEFT_BRACKET',
-  RightBracket = 'RIGHT_BRACKET',
-  LeftParens = 'LEFT_PARENS',
-  RightParens = 'RIGHT_PARENS',
-  LeftSquareBracket = 'LEFT_SQUARE_BRACKET',
-  RightSquareBracket = 'RIGHT_SQUARE_BRACKET',
-  Pipe = 'PIPE',
-  Comma = 'COMMA',
-  Dot = 'DOT',
-  Number = 'NUMBER',
-  Boolean = 'BOOLEAN',
-  Keyword = 'KEYWORD',
-  Identifier = 'IDENTIFIER',
-  QuotedString = 'QUOTED_STRING',
-  AttributeName = 'ATTRIBUTE_NAME',
-}
-
-export type TypeMap = {
-  [TokenType.Number]: number
-  [TokenType.Boolean]: boolean
-}
-
-export type TokenConfig = {
+type TokenConfig = {
   type:
     | TokenType
     | null
@@ -36,21 +12,12 @@ export type TokenConfig = {
     | string[]
   valueExtractor?: (value: string) => string
   construct?: (value: string) => Token['value']
+  condition?: (state: LexerState) => boolean
 }
 
-export type Location = {
-  index: number
-  line: number
-  start: number
-  end: number
-}
-
-export type Token<TTokenType extends TokenType = TokenType> = {
-  type: TTokenType
-  location: Location
-  value: TTokenType extends keyof TypeMap
-    ? TypeMap[TTokenType]
-    : string
+type LexerState = {
+  lastToken: Token | null
+  inProperties: boolean
 }
 
 const TOKENS: TokenConfig[] = [
@@ -118,17 +85,21 @@ const TOKENS: TokenConfig[] = [
   {
     type: TokenType.Keyword,
     matcher: [
+      'actions',
       'collection',
       'contract',
       'extends',
       'functions',
       'functionset',
+      'individualActions',
       'owned',
       'payload',
       'properties',
       'query',
       'response',
+      'name',
     ],
+    condition: (state) => !state.inProperties,
   },
   {
     type: TokenType.Identifier,
@@ -147,15 +118,29 @@ const TOKENS: TokenConfig[] = [
 ]
 
 export const tokenize = function (input: string): Result.Either<Diagnostic,Token[]> {
-  let index = 0
-  let line = 1
-  let start = 0
-  let end = 0
+  let
+    index = 0,
+    line = 1,
+    start = 0,
+    end = 0
+
   const tokens: Token[] = []
+  const state: LexerState = {
+    lastToken: null,
+    inProperties: false,
+  }
+
   while( index < input.length ) {
     let hasMatch = false
-    for( const { type, matcher, valueExtractor, construct } of TOKENS ) {
+    for( const { type, matcher, valueExtractor, construct, condition } of TOKENS ) {
       let value: string | undefined
+      let token: Token
+
+      if( condition ) {
+        if( !condition(state) ) {
+          continue
+        }
+      }
 
       if( typeof matcher === 'string' ) {
         if( input.slice(index).startsWith(matcher) ) {
@@ -164,6 +149,7 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
       } else if( matcher instanceof RegExp ) {
         const currentMatcher = new RegExp(matcher.source, 'y')
         currentMatcher.lastIndex = index
+
         const matched = currentMatcher.exec(input)
         if( matched ) {
           [value] = matched
@@ -175,12 +161,14 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
         }
       }
       if( value ) {
+        let tokenValue: Token['value'] | undefined
         const location: Location = {
           index: index += value.length,
           line,
           end: end += value.length,
           start: start = end - value.length,
         }
+
         switch( type ) {
           case null: break
           case TokenType.LineBreak:
@@ -194,22 +182,41 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
           }
           default: {
             if( valueExtractor ) {
-              tokens.push({
-                type,
-                location,
-                value: construct
-                  ? construct(valueExtractor(value))
-                  : valueExtractor(value),
-              })
-              continue
+              tokenValue = construct
+                ? construct(valueExtractor(value))
+                : valueExtractor(value)
+            } else {
+              tokenValue = construct
+                ? construct(value)
+                : value
             }
-            tokens.push({
+
+            token = {
               type,
               location,
-              value: construct
-                ? construct(value)
-                : value,
-            })
+              value: tokenValue,
+            }
+
+            switch( type ) {
+              case TokenType.LeftBracket: {
+                if( state.lastToken ) switch( state.lastToken.value ) {
+                  case 'properties': {
+                    state.inProperties = true
+                    break
+                  }
+                  default: {
+                    state.inProperties = false
+                  }
+                }
+                break
+              }
+              case TokenType.RightBracket: {
+                state.inProperties = false
+                break
+              }
+            }
+
+            tokens.push(state.lastToken = token)
           }
         }
 

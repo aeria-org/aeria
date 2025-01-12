@@ -40,7 +40,7 @@ export type ApiConfig = {
     allowSignup?: boolean
     mutableUserProperties: (keyof CollectionItem<'user'>)[]
     signupDefaults?: {
-      roles?: string[]
+      roles?: readonly UserRole[]
       active?: boolean
     }
     paginationLimit?: number
