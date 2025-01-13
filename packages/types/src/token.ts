@@ -63,9 +63,9 @@ export type Token<
 ) extends true
   ? AuthenticatedToken<TAccessCondition>
   :
-    'unauthenticated-only' extends TAccessCondition
-      ? UnauthenticatedToken
-      : 
+  'unauthenticated-only' extends TAccessCondition
+    ? UnauthenticatedToken
+    :
         | AuthenticatedToken<true, TUserRole, TUserInfo>
         | UnauthenticatedToken
 
