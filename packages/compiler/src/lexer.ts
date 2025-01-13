@@ -32,13 +32,15 @@ export const COLLECTION_KEYWORDS = [
   'filters',
   'form',
   'functions',
+  'icon',
+  'indexes',
   'individualActions',
   'owned',
+  'presets',
   'properties',
   'required',
-  'table',
-  'presets',
   'search',
+  'table',
 ] as const
 
 export const COLLECTION_ACTIONS_KEYWORDS = [

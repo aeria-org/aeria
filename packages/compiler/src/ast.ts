@@ -44,6 +44,7 @@ export type CollectionNode = NodeBase<'collection'> & {
   name: string
   extends?: ExportSymbol
   owned?: boolean
+  icon?: string
   actions?: CollectionActions
   individualActions?: CollectionActions
   properties: Record<string, PropertyNode>
@@ -52,10 +53,11 @@ export type CollectionNode = NodeBase<'collection'> & {
     fromFunctionSet?: true
   }>
   required?: Record<string, unknown> | string[]
-  filters?: string[]
+  indexes?: string[]
+  presets?: string[]
   form?: string[]
   table?: string[]
-  presets?: string[]
+  filters?: string[]
   search?: SearchOptions
 }
 

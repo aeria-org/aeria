@@ -1,4 +1,4 @@
-import type { CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, Icon, Property, SearchOptions, UserRole } from '@aeriajs/types'
+import type { CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Icon, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
 import { TokenType, type Token, type Location } from './token.js'
 import * as AST from './ast.js'
 import * as guards from './guards.js'
@@ -17,6 +17,10 @@ type StrictToken<TTokenType extends TokenType, TValue> = undefined extends TValu
     : Token<TTokenType, TValue>
 
 export const locationMap = new WeakMap<symbol, Location>()
+
+const isFileProperty = (property: RefProperty | FileProperty): property is FileProperty => {
+  return property.$ref === 'File'
+}
 
 export const parse = (tokens: Token[]) => {
   let current = 0
@@ -139,36 +143,101 @@ export const parse = (tokens: Token[]) => {
       : Object.keys(identifiers)
   }
 
-  const parseAttributeValue = (attributeName: string, property: Property) => {
-    if( '$ref' in property ) {
-      switch( attributeName ) {
-        case 'form':
-        case 'populate':
-        case 'indexes': {
-          return parseArray(TokenType.Identifier)
-        }
-        case 'accept': {
-          return parseArray(TokenType.QuotedString)
-        }
+  const parsePropertyAttributeValue = (attributeName: string, property: Property, location: Location) => {
+    const consumeBoolean = () => {
+      if( match(TokenType.Boolean) ) {
+        const { value } = consume(TokenType.Boolean)
+        return value
       }
+      return true
     }
 
-    if( 'type' in property ) {
-      switch( property.type ) {
-        case 'string': {
+    if( 'enum' in property && attributeName === 'values' ) {
+      property.enum = parseArray(TokenType.QuotedString)
+    } else {
+      switch( attributeName ) {
+        case 'icon': {
+          const { value } = consume(TokenType.QuotedString)
+          property[attributeName] = value as Icon
+          return
+        }
+        case 'hint':
+        case 'description': {
+          const { value } = consume(TokenType.QuotedString)
+          property[attributeName] = value
+          return
+        }
+      }
+
+      if( '$ref' in property ) {
+        switch( attributeName ) {
+          case 'inline': {
+            property[attributeName] = consumeBoolean()
+            return
+          }
+          case 'form':
+          case 'populate':
+          case 'indexes': {
+            property[attributeName] = parseArray(TokenType.Identifier)
+            return
+          }
+        }
+
+        if( isFileProperty(property) ) {
           switch( attributeName ) {
-            case 'mask': {
-              return parseArray(TokenType.QuotedString)
+            case 'accept': {
+              property[attributeName] = parseArray(TokenType.QuotedString)
+              return
             }
           }
-          break
         }
       }
+
+      if( 'type' in property ) {
+        switch( property.type ) {
+          case 'string': {
+            switch( attributeName ) {
+              case 'format': {
+                const { value } = consume(TokenType.QuotedString, ['date', 'date-time', 'objectid'] satisfies typeof property.format[])
+                property[attributeName] = value
+                return
+              }
+              case 'mask': {
+                if( match(TokenType.LeftSquareBracket) ) {
+                  property[attributeName] = parseArray(TokenType.QuotedString)
+                  return
+                } else {
+                  const { value } = consume(TokenType.QuotedString)
+                  property[attributeName] = value
+                  return
+                }
+              }
+              case 'minLength':
+                case 'maxLength': {
+                const { value } = consume(TokenType.Number)
+                property[attributeName] = value
+                return
+              }
+            }
+            return
+          }
+          case 'number': {
+            switch( attributeName ) {
+              case 'exclusiveMinimum':
+                case 'exclusiveMaximum':
+                case 'minimum':
+                case 'maximum': {
+                const { value } = consume(TokenType.Number)
+                property[attributeName] = value
+                return
+              }
+            }
+          }
+        }
+      }
+
+      throw new ParserError(`invalid attribute name "${attributeName}"`, location)
     }
-
-    const attributeValue = tokens[current++].value
-    return attributeValue
-
   }
 
   const parsePropertyType = (options = {
@@ -266,30 +335,20 @@ export const parse = (tokens: Token[]) => {
     }
 
     while( match(TokenType.AttributeName) ) {
-      const { value: attributeName } = consume(TokenType.AttributeName)
-      let insideParens = false
+      const { value: attributeName, location } = consume(TokenType.AttributeName)
       if( match(TokenType.LeftParens) ) {
         consume(TokenType.LeftParens)
-        insideParens = true
-      }
-
-      if( 'enum' in property && attributeName === 'values' ) {
-        property.enum = parseArray(TokenType.QuotedString)
-      } else {
         const attributeSymbol = Symbol()
         locationMap.set(attributeSymbol, next().location)
 
-        const attributeValue = parseAttributeValue(attributeName, property)
         property[AST.LOCATION_SYMBOL] ??= {}
         property[AST.LOCATION_SYMBOL][attributeName] = attributeSymbol
 
-        Object.assign(property, {
-          [attributeName]: attributeValue,
-        })
-      }
-
-      if( insideParens ) {
+        parsePropertyAttributeValue(attributeName, property, location)
         consume(TokenType.RightParens)
+
+      } else {
+        parsePropertyAttributeValue(attributeName, property, location)
       }
     }
 
@@ -386,6 +445,11 @@ export const parse = (tokens: Token[]) => {
           }
           break
         }
+        case 'icon': {
+          const { value } = consume(TokenType.QuotedString)
+          node.icon = value
+          break
+        }
         case 'properties': {
           node.properties = parsePropertiesBlock()
           break
@@ -394,21 +458,19 @@ export const parse = (tokens: Token[]) => {
           node.functions = parseFunctionsBlock(ast)
           break
         }
+        case 'individualActions':
         case 'actions': {
-          node.actions = parseActionsBlock()
-          break
-        }
-        case 'individualActions': {
-          node.individualActions = parseActionsBlock()
+          node[keyword] = parseActionsBlock()
           break
         }
         case 'required': {
           node.required = parseArrayBlockWithAttributes()
           break
         }
-        case 'table':
+        case 'indexes':
         case 'presets':
         case 'form':
+        case 'table':
         case 'filters': {
           node[keyword] = parseArrayBlock()
           break
