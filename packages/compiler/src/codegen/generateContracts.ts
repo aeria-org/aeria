@@ -14,7 +14,7 @@ const makeJSContractsCode = (ast: AST.Node[]) => {
   const imports = new Set<keyof typeof aeria>(['defineContract'])
 
   const getCodeForResponse = (responseProperty: AST.PropertyNode) => {
-    const { type, modifier, ...propertyNode } = responseProperty
+    const { kind, modifier, ...propertyNode } = responseProperty
     if (!modifier) {
       return stringify(propertyToSchema(propertyNode as AST.PropertyNode))
     }
@@ -28,9 +28,9 @@ const makeJSContractsCode = (ast: AST.Node[]) => {
     return `${modifierSymbol}(${stringify(propertyToSchema(propertyNode as AST.PropertyNode))})`
   }
 
-  const declarations = ast.filter((node) => node.type === 'contract')
+  const declarations = ast.filter((node) => node.kind === 'contract')
     .map((contractNode) => {
-      const { name, type, roles, response, ...contractProperty } = contractNode
+      const { name, kind, roles, response, ...contractProperty } = contractNode
 
       let responseString = ''
       if (response) {
@@ -72,9 +72,9 @@ const getResponseSchema = (response: AST.PropertyNode) => {
 }
 
 const makeTSContractsCode = (ast: AST.Node[]) => {
-  return ast.filter((node) => node.type === 'contract')
+  return ast.filter((node) => node.kind === 'contract')
     .map((contractNode) => {
-      const { name, type, roles, ...contractSchema } = contractNode
+      const { name, kind, roles, ...contractSchema } = contractNode
 
       let responseSchema: Property | Property[] | null = null
       if (contractSchema.response) {

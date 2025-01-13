@@ -12,7 +12,7 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
   const modifiedSymbols: Record<string, string> = {}
 
   const toImport = ast.reduce((imports, node) => {
-    if (node.type === 'collection') {
+    if (node.kind === 'collection') {
       if (node.extends?.packageName) {
         if (!(node.extends.packageName in imports)) {
           imports[node.extends.packageName] = new Set()

@@ -22,7 +22,7 @@ export const compile = async (input: string) => {
   //
   const r = await analyze(result.ast)
   console.log('---')
-  console.log(r)
+  console.log(JSON.stringify(r, null, 2))
   console.log('--- end')
 
   // return generateCode(ast)

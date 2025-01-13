@@ -1,5 +1,7 @@
 import type { Property, AccessCondition, CollectionActions, SearchOptions } from '@aeriajs/types'
 
+export const LOCATION_SYMBOL = Symbol()
+
 export const PropertyType = {
   str: 'string',
   int: 'integer',
@@ -27,12 +29,14 @@ export type ExportSymbol = {
 }
 
 export type NodeBase<TType> = {
-  type: TType
+  kind: TType
 }
 
 export type PropertyNode = NodeBase<'property'> & {
   modifier?: keyof typeof PropertyModifiers
-  property: Property
+  property: Property & {
+    [LOCATION_SYMBOL]?: Record<string, symbol>
+  }
   nestedProperties?: Record<string, PropertyNode>
 }
 
@@ -73,22 +77,16 @@ export type FunctionSetNode = NodeBase<'functionset'> & {
   }>
 }
 
+export type ProgramNode = NodeBase<'program'> & {
+  collections: CollectionNode[]
+  contracts: ContractNode[]
+  functionsets: FunctionSetNode[]
+}
+
 export type Node =
   | CollectionNode
   | ContractNode
   | FunctionSetNode
 
-export type NodeType = Node['type']
-
-export const findNode = <TNodeType extends NodeType>(
-  nodes: Node[],
-  { type, name }: {
-    type: TNodeType,
-    name: string
-  },
-) => {
-  return nodes.find((node) => {
-    return node.type === type && node.name === name
-  }) as Extract<Node, { type: TNodeType }> | undefined
-}
+export type NoteKind = Node['kind']
 

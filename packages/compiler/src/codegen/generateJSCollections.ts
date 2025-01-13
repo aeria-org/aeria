@@ -21,7 +21,7 @@ export const generateJSCollections = (ast: AST.Node[]) => {
 }
 
 const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, string>) => {
-  return ast.filter((node) => node.type === 'collection')
+  return ast.filter((node) => node.kind === 'collection')
     .map((collectionNode) => {
       const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
       const extendCollectionName = getExtendName(collectionNode.name)

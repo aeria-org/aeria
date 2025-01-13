@@ -16,10 +16,21 @@ type StrictToken<TTokenType extends TokenType, TValue> = undefined extends TValu
     ? Token<TTokenType, E>
     : Token<TTokenType, TValue>
 
+export const locationMap = new WeakMap<symbol, Location>()
+
 export const parse = (tokens: Token[]) => {
   let current = 0
-  const ast: AST.Node[] = []
+  const ast: AST.ProgramNode = {
+    kind: 'program',
+    collections: [],
+    contracts: [],
+    functionsets: [],
+  }
+
   const errors: ParserError[] = []
+
+  const next = () => tokens[current + 1]
+  const previous = () => tokens[current - 1]
 
   const match = (expected: TokenType, value?: unknown) => {
     const token = tokens[current]
@@ -165,7 +176,7 @@ export const parse = (tokens: Token[]) => {
   const parsePropertyType = (options = {
     allowModifiers: false,
   }): AST.PropertyNode => {
-    let property: Property
+    let property: AST.PropertyNode['property']
     let nestedProperties: Record<string, AST.PropertyNode> | undefined
     let modifierToken: Token<TokenType.Identifier> | undefined
 
@@ -180,7 +191,7 @@ export const parse = (tokens: Token[]) => {
       }
 
       return {
-        type: 'property',
+        kind: 'property',
         property,
       }
     }
@@ -245,11 +256,7 @@ export const parse = (tokens: Token[]) => {
             }
         }
       } else {
-        const collection = AST.findNode(ast, {
-          type: 'collection',
-          name: identifier,
-        })
-
+        const collection = ast.collections.find((node) => node.name === identifier)
         if( !collection ) {
           throw new ParserError(`invalid reference "${identifier}"`, location)
         }
@@ -271,7 +278,13 @@ export const parse = (tokens: Token[]) => {
       if( 'enum' in property && attributeName === 'values' ) {
         property.enum = parseArray(TokenType.QuotedString)
       } else {
+        const attributeSymbol = Symbol()
+        locationMap.set(attributeSymbol, next().location)
+
         const attributeValue = parseAttributeValue(attributeName, property)
+        property[AST.LOCATION_SYMBOL] ??= {}
+        property[AST.LOCATION_SYMBOL][attributeName] = attributeSymbol
+
         Object.assign(property, {
           [attributeName]: attributeValue,
         })
@@ -283,7 +296,7 @@ export const parse = (tokens: Token[]) => {
     }
 
     const node: AST.PropertyNode = {
-      type: 'property',
+      kind: 'property',
       property,
       nestedProperties,
     }
@@ -340,12 +353,12 @@ export const parse = (tokens: Token[]) => {
     return parsePropertyType(options)
   }
 
-  const parseCollection = (ast: AST.Node[]): AST.CollectionNode => {
+  const parseCollection = (ast: AST.ProgramNode): AST.CollectionNode => {
     consume(TokenType.Keyword, 'collection')
     const { value: name } = consume(TokenType.Identifier)
 
     const node: AST.CollectionNode = {
-      type: 'collection',
+      kind: 'collection',
       name,
       properties: {},
     }
@@ -419,7 +432,7 @@ export const parse = (tokens: Token[]) => {
     consume(TokenType.LeftBracket)
 
     const node: AST.ContractNode = {
-      type: 'contract',
+      kind: 'contract',
       name,
     }
 
@@ -451,7 +464,7 @@ export const parse = (tokens: Token[]) => {
     return node
   }
 
-  const parseFunctionsBlock = (ast: AST.Node[]) => {
+  const parseFunctionsBlock = (ast: AST.ProgramNode) => {
     consume(TokenType.LeftBracket)
 
     const functions: AST.CollectionNode['functions'] = {}
@@ -461,11 +474,7 @@ export const parse = (tokens: Token[]) => {
         consume(TokenType.LeftParens)
 
         const { value: functionSetName, location } = consume(TokenType.Identifier)
-
-        const functionset = AST.findNode(ast, {
-          type: 'functionset',
-          name: functionSetName,
-        })
+        const functionset = ast.functionsets.find((node) => node.name === functionSetName)
 
         if( !functionset ) {
           throw new ParserError(`functionset "${functionSetName} not found"`, location)
@@ -523,11 +532,11 @@ export const parse = (tokens: Token[]) => {
     return functions
   }
 
-  const parseFunctionSet = (ast: AST.Node[]): AST.FunctionSetNode => {
+  const parseFunctionSet = (ast: AST.ProgramNode): AST.FunctionSetNode => {
     consume(TokenType.Keyword, 'functionset')
     const { value: name } = consume(TokenType.Identifier)
     const node: AST.FunctionSetNode = {
-      type: 'functionset',
+      kind: 'functionset',
       name,
       functions: parseFunctionsBlock(ast),
     }
@@ -688,15 +697,15 @@ export const parse = (tokens: Token[]) => {
     try {
       switch( declType ) {
         case 'collection': {
-          ast.push(parseCollection(ast))
+          ast.collections.push(parseCollection(ast))
           break
         }
         case 'contract': {
-          ast.push(parseContract())
+          ast.contracts.push(parseContract())
           break
         }
         case 'functionset': {
-          ast.push(parseFunctionSet(ast))
+          ast.functionsets.push(parseFunctionSet(ast))
           break
         }
         default:

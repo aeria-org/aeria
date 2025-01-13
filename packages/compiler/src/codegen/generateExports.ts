@@ -42,7 +42,7 @@ const codeGenerators = new Map<string, (symbols: SymbolToExport[]) => string>([
 ])
 
 export const generateExports = (ast: AST.Node[]) => {
-  const symbolsToExport = ast.filter((node) => node.type === 'collection').map<SymbolToExport>((node) => ({
+  const symbolsToExport = ast.filter((node) => node.kind === 'collection').map<SymbolToExport>((node) => ({
     id: getCollectionId(node.name),
     schema: resizeFirstChar(node.name, true),
     extend: getExtendName(node.name),
