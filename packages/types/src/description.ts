@@ -192,7 +192,6 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
   actions?: CollectionActions<TDescription>
   individualActions?: CollectionActions<TDescription>
 
-
   search?: SearchOptions<TDescription>
 }
 

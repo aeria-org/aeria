@@ -491,8 +491,14 @@ export const parse = (tokens: Token[]) => {
             functions[functionName] = {
               accessCondition: value,
             }
-          } else if( match(TokenType.QuotedString, ['unauthenticated', 'unauthenticated-only']) ) {
-            const { value } = consume(TokenType.QuotedString, ['unauthenticated', 'unauthenticated-only'])
+          } else if( match(TokenType.QuotedString, [
+            'unauthenticated',
+            'unauthenticated-only',
+          ]) ) {
+            const { value } = consume(TokenType.QuotedString, [
+              'unauthenticated',
+              'unauthenticated-only',
+            ])
             functions[functionName] = {
               accessCondition: value,
             }

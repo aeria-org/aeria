@@ -1,4 +1,4 @@
-import { Property, Result } from '@aeriajs/types'
+import { Result } from '@aeriajs/types'
 import { isValidCollection } from '@aeriajs/common'
 import * as AST from './ast.js'
 
