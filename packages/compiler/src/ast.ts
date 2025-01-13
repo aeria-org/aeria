@@ -1,4 +1,4 @@
-import type { Property, AccessCondition, CollectionActions } from '@aeriajs/types'
+import type { Property, AccessCondition, CollectionActions, SearchOptions } from '@aeriajs/types'
 
 export const PropertyType = {
   str: 'string',
@@ -26,15 +26,17 @@ export type ExportSymbol = {
   symbolName: string
 }
 
-export type PropertyNode = {
-  type: 'property'
+export type NodeBase<TType> = {
+  type: TType
+}
+
+export type PropertyNode = NodeBase<'property'> & {
   modifier?: keyof typeof PropertyModifiers
   property: Property
   nestedProperties?: Record<string, PropertyNode>
 }
 
-export type CollectionNode = {
-  type: 'collection'
+export type CollectionNode = NodeBase<'collection'> & {
   name: string
   extends?: ExportSymbol
   owned?: boolean
@@ -45,25 +47,25 @@ export type CollectionNode = {
     accessCondition: AccessCondition,
     fromFunctionSet?: true
   }>
+  required?: Record<string, unknown> | string[]
+  filters?: string[]
+  form?: string[]
+  table?: string[]
+  presets?: string[]
+  search?: SearchOptions
 }
 
-export type ContractNode = {
-  type: 'contract'
+export type ContractNode = NodeBase<'contract'> & {
   name: string
   roles?: AccessCondition
-  query?:
-    | PropertyNode
-    | PropertyNode[]
-  payload?:
-    | PropertyNode
-    | PropertyNode[]
+  query?: PropertyNode
+  payload?: PropertyNode
   response?:
     | PropertyNode
     | PropertyNode[]
 }
 
-export type FunctionSetNode = {
-  type: 'functionset'
+export type FunctionSetNode = NodeBase<'functionset'> & {
   name: string
   functions: Record<string, {
     accessCondition: AccessCondition,

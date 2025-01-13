@@ -121,7 +121,7 @@ export type Layout<TDescription extends Description = Description> = {
   options?: LayoutOptions<TDescription>
 }
 
-export type SearchOptions<TDescription extends Description> = {
+export type SearchOptions<TDescription extends Description = Description> = {
   indexes: readonly (keyof TDescription['properties'])[]
   placeholder?: string
   exactMatches?: boolean
@@ -191,6 +191,7 @@ export type Description<TDescription extends Description = any> = JsonSchema<TDe
   // actions
   actions?: CollectionActions<TDescription>
   individualActions?: CollectionActions<TDescription>
+
 
   search?: SearchOptions<TDescription>
 }

@@ -1,4 +1,4 @@
-import type { CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, Icon, Property } from '@aeriajs/types'
+import type { CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, Icon, Property, SearchOptions, UserRole } from '@aeriajs/types'
 import { TokenType, type Token, type Location } from './token.js'
 import * as AST from './ast.js'
 import * as guards from './guards.js'
@@ -83,6 +83,53 @@ export const parse = (tokens: Token[]) => {
     return array as Token<TTokenType>['value'][]
   }
 
+  const parseArrayBlock = () => {
+    const identifiers: string[] = []
+    consume(TokenType.LeftBracket)
+
+    while( !match(TokenType.RightBracket) ) {
+      const { value: identifier } = consume(TokenType.Identifier)
+      identifiers.push(identifier)
+    }
+
+    consume(TokenType.RightBracket)
+    return identifiers
+  }
+
+  const parseArrayBlockWithAttributes = () => {
+    const identifiers: Record<string, Record<string, unknown> | null> = {}
+    let hasAttributes = false
+
+    consume(TokenType.LeftBracket)
+
+    while( !match(TokenType.RightBracket) ) {
+      const { value: identifier } = consume(TokenType.Identifier)
+      identifiers[identifier] = {}
+
+      while( match(TokenType.AttributeName) ) {
+        hasAttributes = true
+
+        const { value: attributeName } = consume(TokenType.AttributeName)
+        let insideParens = false
+        if( match(TokenType.LeftParens) ) {
+          consume(TokenType.LeftParens)
+          insideParens = true
+        }
+
+        if( insideParens ) {
+          consume(TokenType.RightParens)
+        } else {
+          identifiers[identifier][attributeName] = true
+        }
+      }
+    }
+
+    consume(TokenType.RightBracket)
+    return hasAttributes
+      ? identifiers
+      : Object.keys(identifiers)
+  }
+
   const parseAttributeValue = (attributeName: string, property: Property) => {
     if( '$ref' in property ) {
       switch( attributeName ) {
@@ -91,12 +138,25 @@ export const parse = (tokens: Token[]) => {
         case 'indexes': {
           return parseArray(TokenType.Identifier)
         }
+        case 'accept': {
+          return parseArray(TokenType.QuotedString)
+        }
       }
     }
 
-    // Object.assign(property, {
-    //   [attributeName]: attributeValue,
-    // })
+    if( 'type' in property ) {
+      switch( property.type ) {
+        case 'string': {
+          switch( attributeName ) {
+            case 'mask': {
+              return parseArray(TokenType.QuotedString)
+            }
+          }
+          break
+        }
+      }
+    }
+
     const attributeValue = tokens[current++].value
     return attributeValue
 
@@ -308,14 +368,11 @@ export const parse = (tokens: Token[]) => {
       const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_KEYWORDS)
       switch( keyword ) {
         case 'owned': {
-          let value: string | boolean
           if( match(TokenType.QuotedString, 'on-write') ) {
-            value = consume(TokenType.QuotedString).value
+            node.owned = consume(TokenType.QuotedString).value === 'true'
           } else {
-            value = consume(TokenType.Boolean).value
+            node.owned = consume(TokenType.Boolean).value
           }
-
-          node.owned = value === 'true'
           break
         }
         case 'properties': {
@@ -332,6 +389,21 @@ export const parse = (tokens: Token[]) => {
         }
         case 'individualActions': {
           node.individualActions = parseActionsBlock()
+          break
+        }
+        case 'required': {
+          node.required = parseArrayBlockWithAttributes()
+          break
+        }
+        case 'table':
+        case 'presets':
+        case 'form':
+        case 'filters': {
+          node[keyword] = parseArrayBlock()
+          break
+        }
+        case 'search': {
+          node[keyword] = parseSearchBlock()
           break
         }
       }
@@ -355,13 +427,13 @@ export const parse = (tokens: Token[]) => {
       const { value: keyword } = consume(TokenType.Keyword, lexer.CONTRACT_KEYWORDS)
       switch( keyword ) {
         case 'payload': {
-          node.payload = parseMultiplePropertyTypes({
+          node.payload = parsePropertyType({
             allowModifiers: true,
           })
           break
         }
         case 'query': {
-          node.query = parseMultiplePropertyTypes({
+          node.query = parsePropertyType({
             allowModifiers: true,
           })
           break
@@ -412,8 +484,31 @@ export const parse = (tokens: Token[]) => {
 
       while( match(TokenType.AttributeName, 'expose') ) {
         consume(TokenType.AttributeName, 'expose')
-        functions[functionName] = {
-          accessCondition: true,
+        if( match(TokenType.LeftParens) ) {
+          consume(TokenType.LeftParens)
+          if( match(TokenType.Boolean) ) {
+            const { value } = consume(TokenType.Boolean)
+            functions[functionName] = {
+              accessCondition: value,
+            }
+          } else if( match(TokenType.QuotedString, ['unauthenticated', 'unauthenticated-only']) ) {
+            const { value } = consume(TokenType.QuotedString, ['unauthenticated', 'unauthenticated-only'])
+            functions[functionName] = {
+              accessCondition: value,
+            }
+          } else {
+            const value = parseArray(TokenType.QuotedString)
+            functions[functionName] = {
+              accessCondition: value as readonly UserRole[],
+            }
+          }
+
+          consume(TokenType.RightParens)
+
+        } else {
+          functions[functionName] = {
+            accessCondition: true,
+          }
         }
       }
     }
@@ -544,6 +639,43 @@ export const parse = (tokens: Token[]) => {
     return actions
   }
 
+  const parseSearchBlock = (): SearchOptions => {
+    const searchSlots: Partial<SearchOptions> = {}
+    const { location } = consume(TokenType.LeftBracket)
+    while( !match(TokenType.RightBracket) ) {
+      const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_SEARCH_KEYWORDS)
+      switch( keyword ) {
+        case 'placeholder': {
+          const { value } = consume(TokenType.QuotedString)
+          searchSlots[keyword] = value
+          break
+        }
+        case 'exactMatches': {
+          const { value } = consume(TokenType.Boolean)
+          searchSlots[keyword] = value
+          break
+        }
+        case 'indexes': {
+          const value = parseArrayBlock()
+          searchSlots[keyword] = value
+          break
+        }
+      }
+    }
+
+    const { indexes } = searchSlots
+    if( !indexes ) {
+      throw new ParserError('"indexes" option is required', location)
+    }
+
+    consume(TokenType.RightBracket)
+
+    return {
+      ...searchSlots,
+      indexes,
+    }
+  }
+
   while( current < tokens.length ) {
     const { value: declType, location } = tokens[current]
 
@@ -579,6 +711,7 @@ export const parse = (tokens: Token[]) => {
     success: !errors.length,
     ast,
     errors,
+    errorCount: errors.length,
   }
 }
 

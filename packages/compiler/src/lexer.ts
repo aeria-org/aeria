@@ -22,16 +22,23 @@ type LexerState = {
 export type Keyword =
   | typeof COLLECTION_KEYWORDS[number]
   | typeof COLLECTION_ACTIONS_KEYWORDS[number]
+  | typeof COLLECTION_SEARCH_KEYWORDS[number]
   | typeof CONTRACT_KEYWORDS[number]
   | typeof TOPLEVEL_KEYWORDS[number]
   | typeof MISC_KEYWORDS[number]
 
 export const COLLECTION_KEYWORDS = [
+  'actions',
+  'filters',
+  'form',
+  'functions',
+  'individualActions',
   'owned',
   'properties',
-  'functions',
-  'actions',
-  'individualActions',
+  'required',
+  'table',
+  'presets',
+  'search',
 ] as const
 
 export const COLLECTION_ACTIONS_KEYWORDS = [
@@ -54,6 +61,12 @@ export const COLLECTION_ACTIONS_KEYWORDS = [
   'translate',
 ] as const
 
+export const COLLECTION_SEARCH_KEYWORDS = [
+  'indexes',
+  'placeholder',
+  'exactMatches',
+] as const
+
 export const CONTRACT_KEYWORDS = [
   'payload',
   'query',
@@ -71,6 +84,7 @@ export const MISC_KEYWORDS = ['extends'] as const
 export const KEYWORDS = ([] as Keyword[]).concat(
   COLLECTION_KEYWORDS,
   COLLECTION_ACTIONS_KEYWORDS,
+  COLLECTION_SEARCH_KEYWORDS,
   CONTRACT_KEYWORDS,
   TOPLEVEL_KEYWORDS,
   MISC_KEYWORDS,
@@ -154,7 +168,7 @@ const TOKENS: TokenConfig[] = [
   },
   {
     type: TokenType.QuotedString,
-    matcher: /"[a-zA-Z0-9]+"/,
+    matcher: /"([^"]+)"/,
     valueExtractor: (value) => value.slice(1, -1),
   },
   {
@@ -201,7 +215,7 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
           [value] = matched
         }
       } else {
-        const segment = input.slice(index, index + input.slice(index).search(/[ \t\n]+/))
+        const segment = input.slice(index, index + input.slice(index).search(/[ \t\n\{\}\(\)\[\]]/))
         if( segment && matcher.includes(segment) ) {
           value = segment
         }
@@ -224,6 +238,7 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
             break
           case TokenType.Comment: {
             while( input[index++] !== '\n' ) {}
+            line++
             break
           }
           default: {
@@ -243,10 +258,6 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
               value: tokenValue,
             }
 
-            console.log({
-              state,
-              token,
-            })
             switch( type ) {
               case TokenType.LeftBracket: {
                 const lastToken = tokens.at(-1)

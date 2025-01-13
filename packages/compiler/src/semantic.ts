@@ -1,4 +1,4 @@
-import { Result } from '@aeriajs/types'
+import { Property, Result } from '@aeriajs/types'
 import { isValidCollection } from '@aeriajs/common'
 import * as AST from './ast.js'
 
@@ -27,36 +27,59 @@ export const analyze = async (ast: AST.Node[], errors: unknown[] = []) => {
     }
   }
 
+  const recurseProperty = async (node: AST.PropertyNode) => {
+    if( node.nestedProperties && 'nestedProperties' in node ) {
+      for( const propName in node.nestedProperties ) {
+        const subProperty = node.nestedProperties[propName]
+        await recurseProperty(subProperty)
+      }
+    } else if( '$ref' in node.property ) {
+      const foreignCollection = AST.findNode(ast, {
+        type: 'collection',
+        name: node.property.$ref,
+      })
+
+      if( !foreignCollection ) {
+        throw new Error
+      }
+
+      if( node.property.indexes ) {
+        await checkForeignProperties(foreignCollection, node.property.indexes)
+      }
+      if( node.property.populate ) {
+        await checkForeignProperties(foreignCollection, node.property.populate)
+      }
+      if( node.property.form ) {
+        await checkForeignProperties(foreignCollection, node.property.form)
+      }
+    }
+  }
+
   for( const node of ast ) {
     switch( node.type ) {
       case 'collection': {
         for( const propName in node.properties ) {
-          const { property } = node.properties[propName]
-
-          if( '$ref' in property ) {
-            const foreignCollection = AST.findNode(ast, {
-              type: 'collection',
-              name: property.$ref,
-            })
-
-            if( !foreignCollection ) {
-              throw new Error
-            }
-
-            if( property.indexes ) {
-              await checkForeignProperties(foreignCollection, property.indexes)
-            }
-            if( property.populate ) {
-              await checkForeignProperties(foreignCollection, property.populate)
-            }
-            if( property.form ) {
-              await checkForeignProperties(foreignCollection, property.form)
-            }
-          }
+          const subNode = node.properties[propName]
+          await recurseProperty(subNode)
         }
         break
       }
       case 'contract': {
+        if( node.payload ) {
+          await recurseProperty(node.payload)
+        }
+        if( node.query ) {
+          await recurseProperty(node.query)
+        }
+        if( node.response ) {
+          if( Array.isArray(node.response) ) {
+            for( const subNode of node.response ) {
+              await recurseProperty(subNode)
+            }
+          } else {
+            await recurseProperty(node.response)
+          }
+        }
         break
       }
     }
