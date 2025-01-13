@@ -28,9 +28,7 @@ export const parse = (tokens: Token[]) => {
   }
 
   const errors: ParserError[] = []
-
   const next = () => tokens[current + 1]
-  const previous = () => tokens[current - 1]
 
   const match = (expected: TokenType, value?: unknown) => {
     const token = tokens[current]

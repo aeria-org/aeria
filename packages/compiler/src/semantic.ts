@@ -10,11 +10,11 @@ export const analyze = async (ast: AST.ProgramNode, errors: unknown[] = []) => {
     property: TProperty,
     attributeName: keyof {
       [
-        P in keyof TProperty as NonNullable<TProperty[P]> extends readonly string[]
-          ? P
-          : never
+      P in keyof TProperty as NonNullable<TProperty[P]> extends readonly string[]
+        ? P
+        : never
       ]: null
-    }
+    },
   ) => {
     for( const foreignPropName of property[attributeName] as string[] ) {
       let hasProperty = foreignPropName in foreignCollection.properties
