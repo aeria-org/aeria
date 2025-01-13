@@ -1,8 +1,9 @@
 import type { UserRole } from './token.js'
 
 export type AccessCondition =
-  | readonly UserRole[]
+  | undefined
   | boolean
+  | readonly UserRole[]
   | 'unauthenticated'
   | 'unauthenticated-only'
 

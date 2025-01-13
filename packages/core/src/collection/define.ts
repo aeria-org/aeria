@@ -7,7 +7,6 @@ import type {
   Description,
   CollectionSecurityPolicy,
   AccessCondition,
-  RoleFromAccessCondition,
 } from '@aeriajs/types'
 
 import { deepMerge, freshItem } from '@aeriajs/common'
@@ -48,7 +47,7 @@ export const defineCollection = <
         : any,
       StrictContext<
         P extends keyof TExposedFunctions
-          ? RoleFromAccessCondition<TExposedFunctions[P]>
+          ? TExposedFunctions[P]
           : never,
         TDescription
       >

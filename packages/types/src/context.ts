@@ -1,5 +1,4 @@
 import type { Collection as MongoCollection } from 'mongodb'
-import type { AcceptedRole } from './token.js'
 import type { Collection } from './collection.js'
 import type { ApiConfig } from './config.js'
 import type { CollectionFunctions } from './functions.js'
@@ -11,6 +10,7 @@ import type { PackReferences, SchemaWithId } from './schema.js'
 import type { JsonSchema } from './property.js'
 import type { RateLimitingParams, RateLimitingError } from './security.js'
 import type { Token } from './token.js'
+import type { AccessCondition } from './accessControl.js'
 
 export type CollectionModel<TDescription extends Description> =
   MongoCollection<Omit<PackReferences<SchemaWithId<TDescription>>, '_id'>>
@@ -75,9 +75,9 @@ export type ContextOptions = {
   calledFunction?: string
 }
 
-export type RouteContext<TAcceptedRole extends AcceptedRole = null> = {
+export type RouteContext<TAccessCondition extends AccessCondition = false> = {
   collections: IndepthCollections
-  token: Token<TAcceptedRole>
+  token: Token<TAccessCondition>
   request: GenericRequest
   response: GenericResponse
   log: (message: string, details?: unknown)=> Promise<unknown>
@@ -131,8 +131,8 @@ export type Context<
 > = RouteContext & CollectionContext<TDescription, TFunctions>
 
 export type StrictContext<
-  TAcceptedRole extends AcceptedRole = null,
+  TAccessCondition extends AccessCondition = false,
   TDescription extends Description = any,
   TFunctions = Collection['functions'],
-> = RouteContext<TAcceptedRole> & CollectionContext<TDescription, TFunctions>
+> = RouteContext<TAccessCondition> & CollectionContext<TDescription, TFunctions>
 

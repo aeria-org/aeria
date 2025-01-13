@@ -8,7 +8,6 @@ import type {
   PackReferences,
   ContractWithRoles,
   ApiConfig,
-  RoleFromAccessCondition,
   Property,
 } from '@aeriajs/types'
 
@@ -33,7 +32,7 @@ export type RouteGroupOptions = {
   base?: RouteUri
 }
 
-type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<RouteContext<RoleFromAccessCondition<TContractWithRoles['roles']>>, 'request'> & {
+type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<RouteContext<TContractWithRoles['roles']>, 'request'> & {
   request: Omit<RouteContext['request'], 'payload' | 'query'> & {
     payload: TContractWithRoles extends { payload: infer Payload }
       ? PackReferences<InferProperties<Payload>>
