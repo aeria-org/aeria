@@ -198,7 +198,11 @@ export const parse = (tokens: Token[]) => {
           case 'string': {
             switch( attributeName ) {
               case 'format': {
-                const { value } = consume(TokenType.QuotedString, ['date', 'date-time', 'objectid'] satisfies typeof property.format[])
+                const { value } = consume(TokenType.QuotedString, [
+                  'date',
+                  'date-time',
+                  'objectid',
+                ] satisfies typeof property.format[])
                 property[attributeName] = value
                 return
               }
@@ -213,7 +217,7 @@ export const parse = (tokens: Token[]) => {
                 }
               }
               case 'minLength':
-                case 'maxLength': {
+              case 'maxLength': {
                 const { value } = consume(TokenType.Number)
                 property[attributeName] = value
                 return
@@ -224,9 +228,9 @@ export const parse = (tokens: Token[]) => {
           case 'number': {
             switch( attributeName ) {
               case 'exclusiveMinimum':
-                case 'exclusiveMaximum':
-                case 'minimum':
-                case 'maximum': {
+              case 'exclusiveMaximum':
+              case 'minimum':
+              case 'maximum': {
                 const { value } = consume(TokenType.Number)
                 property[attributeName] = value
                 return
