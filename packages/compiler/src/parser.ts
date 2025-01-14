@@ -132,13 +132,8 @@ export const parse = (tokens: Token[]) => {
         hasAttributes = true
 
         const { value: attributeName } = consume(TokenType.AttributeName)
-        let insideParens = false
         if( match(TokenType.LeftParens) ) {
           consume(TokenType.LeftParens)
-          insideParens = true
-        }
-
-        if( insideParens ) {
           consume(TokenType.RightParens)
         } else {
           identifiers[identifier][attributeName] = true
