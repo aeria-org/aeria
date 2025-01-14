@@ -1,4 +1,5 @@
 import type { CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Icon, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
+import { PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { TokenType, type Token, type Location } from './token.js'
 import * as AST from './ast.js'
 import * as guards from './guards.js'
@@ -171,20 +172,28 @@ export const parse = (tokens: Token[]) => {
 
       if( '$ref' in property ) {
         switch( attributeName ) {
+          case 'purge': 
           case 'inline': {
             property[attributeName] = consumeBoolean()
             return
           }
+          case 'select':
           case 'form':
           case 'populate':
           case 'indexes': {
             property[attributeName] = parseArray(TokenType.Identifier)
             return
           }
+          case 'populateDepth': {
+            const { value } = consume(TokenType.Number)
+            property[attributeName] = value
+            return
+          }
         }
 
         if( isFileProperty(property) ) {
           switch( attributeName ) {
+            case 'extensions':
             case 'accept': {
               property[attributeName] = parseArray(TokenType.QuotedString)
               return
@@ -198,11 +207,7 @@ export const parse = (tokens: Token[]) => {
           case 'string': {
             switch( attributeName ) {
               case 'format': {
-                const { value } = consume(TokenType.QuotedString, [
-                  'date',
-                  'date-time',
-                  'objectid',
-                ] satisfies typeof property.format[])
+                const { value } = consume(TokenType.QuotedString, PROPERTY_FORMATS)
                 property[attributeName] = value
                 return
               }
@@ -216,15 +221,36 @@ export const parse = (tokens: Token[]) => {
                   return
                 }
               }
+              case 'maskedValue': {
+                const { value } = consume(TokenType.Boolean)
+                property[attributeName] = value
+                return
+              }
               case 'minLength':
               case 'maxLength': {
                 const { value } = consume(TokenType.Number)
                 property[attributeName] = value
                 return
               }
+              case 'inputType': {
+                const { value } = consume(TokenType.QuotedString, PROPERTY_INPUT_TYPES)
+                property[attributeName] = value
+                return
+              }
+              case 'element': {
+                const { value } = consume(TokenType.QuotedString, PROPERTY_INPUT_ELEMENTS)
+                property[attributeName] = value
+                return
+              }
+              case 'placeholder': {
+                const { value } = consume(TokenType.QuotedString)
+                property[attributeName] = value
+                return
+              }
             }
             return
           }
+          case 'integer':
           case 'number': {
             switch( attributeName ) {
               case 'exclusiveMinimum':
@@ -232,6 +258,11 @@ export const parse = (tokens: Token[]) => {
               case 'minimum':
               case 'maximum': {
                 const { value } = consume(TokenType.Number)
+                property[attributeName] = value
+                return
+              }
+              case 'placeholder': {
+                const { value } = consume(TokenType.QuotedString)
                 property[attributeName] = value
                 return
               }

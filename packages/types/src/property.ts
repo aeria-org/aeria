@@ -3,27 +3,36 @@ import type { ObjectId } from 'mongodb'
 import type { Condition } from './condition.js'
 import type { RouteContext } from './context.js'
 
-export type PropertyArrayElement =
-  | 'checkbox'
-  | 'radio'
-  | 'select'
+export const PROPERTY_ARRAY_ELEMENTS = <const>[
+  'checkbox',
+  'radio',
+  'select',
+]
 
-export type PropertyInputType =
-  | 'text'
-  | 'email'
-  | 'password'
-  | 'search'
-  | 'time'
-  | 'month'
+export const PROPERTY_INPUT_TYPES = <const>[
+  'text',
+  'email',
+  'password',
+  'search',
+  'time',
+  'month',
+]
 
-export type PropertyInputElement =
-  | 'input'
-  | 'textarea'
+export const PROPERTY_INPUT_ELEMENTS = <const>[
+  'input',
+  'textarea',
+]
 
-export type PropertyFormat =
-  | 'date'
-  | 'date-time'
-  | 'objectid'
+export const PROPERTY_FORMATS = <const>[
+  'date',
+  'date-time',
+  'objectid',
+]
+
+export type PropertyArrayElement = typeof PROPERTY_ARRAY_ELEMENTS[number]
+export type PropertyInputType = typeof PROPERTY_INPUT_TYPES[number]
+export type PropertyInputElement = typeof PROPERTY_INPUT_ELEMENTS[number]
+export type PropertyFormat = typeof PROPERTY_FORMATS[number]
 
 export type PropertiesWithId<TJsonSchema extends JsonSchema> =
   Extract<keyof TJsonSchema['properties'], string> | '_id'
@@ -48,10 +57,10 @@ export type RefProperty = {
   $ref: Exclude<keyof Collections, 'file'> & string
   indexes?: readonly string[]
   select?: readonly string[]
-  inline?: boolean
-  form?: readonly string[]
-  purge?: boolean
   populate?: readonly string[]
+  form?: readonly string[]
+  inline?: boolean
+  purge?: boolean
   populateDepth?: number
   constraints?: Condition
 }
@@ -108,8 +117,8 @@ export type StringProperty = {
   mask?: string | readonly string[]
   maskedValue?: boolean
   placeholder?: string
-  element?: PropertyInputElement
   inputType?: PropertyInputType
+  element?: PropertyInputElement
 }
 
 export type NumberProperty = {
