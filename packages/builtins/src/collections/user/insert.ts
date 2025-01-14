@@ -5,7 +5,11 @@ import { ObjectId, insert as originalInsert } from '@aeriajs/core'
 import * as bcrypt from 'bcrypt'
 
 const isRoleAllowed = (targetRole: UserRole, context: Context) => {
-  if( !context.config.security.rolesHierarchy || !context.token.authenticated ) {
+  if( !context.config.security.rolesHierarchy  ) {
+    return true
+  }
+
+  if( !context.token.authenticated ) {
     throw new Error
   }
 

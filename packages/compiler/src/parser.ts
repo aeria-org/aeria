@@ -1,9 +1,13 @@
-import type { CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Icon, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
+import type { CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
 import { PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
+import { icons } from '@phosphor-icons/core'
 import { TokenType, type Token, type Location } from './token.js'
 import * as AST from './ast.js'
 import * as guards from './guards.js'
 import * as lexer from './lexer.js'
+
+const MAX_ERROR_MESSAGE_ITEMS = 20
+const ICON_NAMES = icons.map((icon) => icon.name)
 
 export class ParserError extends Error {
   constructor(public message: string, public location: Location) {
@@ -59,8 +63,12 @@ export const parse = (tokens: Token[]) => {
     let expectedValue: string | undefined
     if( value ) {
       expectedValue = Array.isArray(value)
-        ? value.map((elem) => `"${elem}"`).join(' | ')
+        ? value.slice(0, MAX_ERROR_MESSAGE_ITEMS).map((elem) => `"${elem}"`).join(' | ')
         : `"${value}"`
+    }
+
+    if( Array.isArray(value) && value.length > MAX_ERROR_MESSAGE_ITEMS ) {
+      expectedValue += ' | ...'
     }
 
     throw new ParserError(
@@ -158,8 +166,8 @@ export const parse = (tokens: Token[]) => {
     } else {
       switch( attributeName ) {
         case 'icon': {
-          const { value } = consume(TokenType.QuotedString)
-          property[attributeName] = value as Icon
+          const { value } = consume(TokenType.QuotedString, ICON_NAMES)
+          property[attributeName] = value
           return
         }
         case 'hint':
@@ -481,7 +489,7 @@ export const parse = (tokens: Token[]) => {
           break
         }
         case 'icon': {
-          const { value } = consume(TokenType.QuotedString)
+          const { value } = consume(TokenType.QuotedString, ICON_NAMES)
           node.icon = value
           break
         }
@@ -673,8 +681,8 @@ export const parse = (tokens: Token[]) => {
         const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_ACTIONS_KEYWORDS)
         switch( keyword ) {
           case 'icon': {
-            const { value } = consume(TokenType.QuotedString)
-            baseSlots[keyword] = value as Icon
+            const { value } = consume(TokenType.QuotedString, ICON_NAMES)
+            baseSlots[keyword] = value
             break
           }
           case 'label': {
