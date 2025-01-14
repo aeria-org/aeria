@@ -172,7 +172,7 @@ export const parse = (tokens: Token[]) => {
 
       if( '$ref' in property ) {
         switch( attributeName ) {
-          case 'purge': 
+          case 'purge':
           case 'inline': {
             property[attributeName] = consumeBoolean()
             return

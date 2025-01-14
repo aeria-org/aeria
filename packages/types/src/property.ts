@@ -3,31 +3,31 @@ import type { ObjectId } from 'mongodb'
 import type { Condition } from './condition.js'
 import type { RouteContext } from './context.js'
 
-export const PROPERTY_ARRAY_ELEMENTS = <const>[
+export const PROPERTY_ARRAY_ELEMENTS = [
   'checkbox',
   'radio',
   'select',
-]
+] as const
 
-export const PROPERTY_INPUT_TYPES = <const>[
+export const PROPERTY_INPUT_TYPES = [
   'text',
   'email',
   'password',
   'search',
   'time',
   'month',
-]
+] as const
 
-export const PROPERTY_INPUT_ELEMENTS = <const>[
+export const PROPERTY_INPUT_ELEMENTS = [
   'input',
   'textarea',
-]
+] as const
 
-export const PROPERTY_FORMATS = <const>[
+export const PROPERTY_FORMATS = [
   'date',
   'date-time',
   'objectid',
-]
+] as const
 
 export type PropertyArrayElement = typeof PROPERTY_ARRAY_ELEMENTS[number]
 export type PropertyInputType = typeof PROPERTY_INPUT_TYPES[number]
