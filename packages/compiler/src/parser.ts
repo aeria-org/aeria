@@ -1,6 +1,7 @@
 import type { CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
 import { PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { icons } from '@phosphor-icons/core'
+import { Diagnostic } from './diagnostic.js'
 import { TokenType, type Token, type Location } from './token.js'
 import * as AST from './ast.js'
 import * as guards from './guards.js'
@@ -9,11 +10,7 @@ import * as lexer from './lexer.js'
 const MAX_ERROR_MESSAGE_ITEMS = 20
 const ICON_NAMES = icons.map((icon) => icon.name)
 
-export class ParserError extends Error {
-  constructor(public message: string, public location: Location) {
-    super()
-  }
-}
+export const locationMap = new WeakMap<symbol, Location>()
 
 type StrictToken<TTokenType extends TokenType, TValue> = undefined extends TValue
   ? Token<TTokenType>
@@ -21,7 +18,6 @@ type StrictToken<TTokenType extends TokenType, TValue> = undefined extends TValu
     ? Token<TTokenType, E>
     : Token<TTokenType, TValue>
 
-export const locationMap = new WeakMap<symbol, Location>()
 
 const isFileProperty = (property: RefProperty | FileProperty): property is FileProperty => {
   return property.$ref === 'File'
@@ -36,7 +32,7 @@ export const parse = (tokens: Token[]) => {
     functionsets: [],
   }
 
-  const errors: ParserError[] = []
+  const errors: Diagnostic[] = []
   const next = () => tokens[current + 1]
 
   const match = (expected: TokenType, value?: unknown) => {
@@ -71,7 +67,7 @@ export const parse = (tokens: Token[]) => {
       expectedValue += ' | ...'
     }
 
-    throw new ParserError(
+    throw new Diagnostic(
       expectedValue
         ? `expected ${expected} with value ${expectedValue} but found ${token.type} with value "${token.value}" instead`
         : `expected ${expected} but found ${token.type} instead`,
@@ -106,27 +102,36 @@ export const parse = (tokens: Token[]) => {
   }
 
   const parseArrayBlock = () => {
-    const identifiers: string[] = []
+    const array: string[] = []
+    const symbols: symbol[] = []
+
     consume(TokenType.LeftBracket)
 
     while( !match(TokenType.RightBracket) ) {
-      const { value: identifier } = consume(TokenType.Identifier)
-      identifiers.push(identifier)
+      const { value: identifier, location } = consume(TokenType.Identifier)
+      const elemSymbol = Symbol()
+
+      array.push(identifier)
+      symbols.push(elemSymbol)
+      locationMap.set(elemSymbol, location)
     }
 
     consume(TokenType.RightBracket)
-    return identifiers
+    return {
+      value: array,
+      symbols,
+    }
   }
 
   const parseArrayBlockWithAttributes = () => {
-    const identifiers: Record<string, Record<string, unknown> | null> = {}
+    const array: Record<string, Record<string, unknown> | null> = {}
     let hasAttributes = false
 
     consume(TokenType.LeftBracket)
 
     while( !match(TokenType.RightBracket) ) {
       const { value: identifier } = consume(TokenType.Identifier)
-      identifiers[identifier] = {}
+      array[identifier] = {}
 
       while( match(TokenType.AttributeName) ) {
         hasAttributes = true
@@ -136,15 +141,15 @@ export const parse = (tokens: Token[]) => {
           consume(TokenType.LeftParens)
           consume(TokenType.RightParens)
         } else {
-          identifiers[identifier][attributeName] = true
+          array[identifier][attributeName] = true
         }
       }
     }
 
     consume(TokenType.RightBracket)
     return hasAttributes
-      ? identifiers
-      : Object.keys(identifiers)
+      ? array
+      : Object.keys(array)
   }
 
   const parsePropertyAttributeValue = (attributeName: string, property: Property, location: Location) => {
@@ -158,124 +163,125 @@ export const parse = (tokens: Token[]) => {
 
     if( 'enum' in property && attributeName === 'values' ) {
       property.enum = parseArray(TokenType.QuotedString)
-    } else {
+      return
+    }
+
+    switch( attributeName ) {
+      case 'icon': {
+        const { value } = consume(TokenType.QuotedString, ICON_NAMES)
+        property[attributeName] = value
+        return
+      }
+      case 'hint':
+      case 'description': {
+        const { value } = consume(TokenType.QuotedString)
+        property[attributeName] = value
+        return
+      }
+    }
+
+    if( '$ref' in property ) {
       switch( attributeName ) {
-        case 'icon': {
-          const { value } = consume(TokenType.QuotedString, ICON_NAMES)
-          property[attributeName] = value
+        case 'purge':
+        case 'inline': {
+          property[attributeName] = consumeBoolean()
           return
         }
-        case 'hint':
-        case 'description': {
-          const { value } = consume(TokenType.QuotedString)
+        case 'select':
+        case 'form':
+        case 'populate':
+        case 'indexes': {
+          property[attributeName] = parseArray(TokenType.Identifier)
+          return
+        }
+        case 'populateDepth': {
+          const { value } = consume(TokenType.Number)
           property[attributeName] = value
           return
         }
       }
 
-      if( '$ref' in property ) {
+      if( isFileProperty(property) ) {
         switch( attributeName ) {
-          case 'purge':
-          case 'inline': {
-            property[attributeName] = consumeBoolean()
-            return
-          }
-          case 'select':
-          case 'form':
-          case 'populate':
-          case 'indexes': {
-            property[attributeName] = parseArray(TokenType.Identifier)
-            return
-          }
-          case 'populateDepth': {
-            const { value } = consume(TokenType.Number)
-            property[attributeName] = value
+          case 'extensions':
+          case 'accept': {
+            property[attributeName] = parseArray(TokenType.QuotedString)
             return
           }
         }
+      }
+    }
 
-        if( isFileProperty(property) ) {
+    if( 'type' in property ) {
+      switch( property.type ) {
+        case 'string': {
           switch( attributeName ) {
-            case 'extensions':
-            case 'accept': {
-              property[attributeName] = parseArray(TokenType.QuotedString)
+            case 'format': {
+              const { value } = consume(TokenType.QuotedString, PROPERTY_FORMATS)
+              property[attributeName] = value
+              return
+            }
+            case 'mask': {
+              if( match(TokenType.LeftSquareBracket) ) {
+                property[attributeName] = parseArray(TokenType.QuotedString)
+                return
+              } else {
+                const { value } = consume(TokenType.QuotedString)
+                property[attributeName] = value
+                return
+              }
+            }
+            case 'maskedValue': {
+              const { value } = consume(TokenType.Boolean)
+              property[attributeName] = value
+              return
+            }
+            case 'minLength':
+            case 'maxLength': {
+              const { value } = consume(TokenType.Number)
+              property[attributeName] = value
+              return
+            }
+            case 'inputType': {
+              const { value } = consume(TokenType.QuotedString, PROPERTY_INPUT_TYPES)
+              property[attributeName] = value
+              return
+            }
+            case 'element': {
+              const { value } = consume(TokenType.QuotedString, PROPERTY_INPUT_ELEMENTS)
+              property[attributeName] = value
+              return
+            }
+            case 'placeholder': {
+              const { value } = consume(TokenType.QuotedString)
+              property[attributeName] = value
+              return
+            }
+          }
+          break
+        }
+        case 'integer':
+        case 'number': {
+          switch( attributeName ) {
+            case 'exclusiveMinimum':
+            case 'exclusiveMaximum':
+            case 'minimum':
+            case 'maximum': {
+              const { value } = consume(TokenType.Number)
+              property[attributeName] = value
+              return
+            }
+            case 'placeholder': {
+              const { value } = consume(TokenType.QuotedString)
+              property[attributeName] = value
               return
             }
           }
         }
       }
-
-      if( 'type' in property ) {
-        switch( property.type ) {
-          case 'string': {
-            switch( attributeName ) {
-              case 'format': {
-                const { value } = consume(TokenType.QuotedString, PROPERTY_FORMATS)
-                property[attributeName] = value
-                return
-              }
-              case 'mask': {
-                if( match(TokenType.LeftSquareBracket) ) {
-                  property[attributeName] = parseArray(TokenType.QuotedString)
-                  return
-                } else {
-                  const { value } = consume(TokenType.QuotedString)
-                  property[attributeName] = value
-                  return
-                }
-              }
-              case 'maskedValue': {
-                const { value } = consume(TokenType.Boolean)
-                property[attributeName] = value
-                return
-              }
-              case 'minLength':
-              case 'maxLength': {
-                const { value } = consume(TokenType.Number)
-                property[attributeName] = value
-                return
-              }
-              case 'inputType': {
-                const { value } = consume(TokenType.QuotedString, PROPERTY_INPUT_TYPES)
-                property[attributeName] = value
-                return
-              }
-              case 'element': {
-                const { value } = consume(TokenType.QuotedString, PROPERTY_INPUT_ELEMENTS)
-                property[attributeName] = value
-                return
-              }
-              case 'placeholder': {
-                const { value } = consume(TokenType.QuotedString)
-                property[attributeName] = value
-                return
-              }
-            }
-            return
-          }
-          case 'integer':
-          case 'number': {
-            switch( attributeName ) {
-              case 'exclusiveMinimum':
-              case 'exclusiveMaximum':
-              case 'minimum':
-              case 'maximum': {
-                const { value } = consume(TokenType.Number)
-                property[attributeName] = value
-                return
-              }
-              case 'placeholder': {
-                const { value } = consume(TokenType.QuotedString)
-                property[attributeName] = value
-                return
-              }
-            }
-          }
-        }
-      }
-
-      throw new ParserError(`invalid attribute name "${attributeName}"`, location)
     }
+
+    throw new Diagnostic(`invalid attribute name "${attributeName}"`, location)
   }
 
   const parsePropertyType = (options = {
@@ -314,18 +320,30 @@ export const parse = (tokens: Token[]) => {
       property = {
         type: 'object',
         properties: {},
+        [AST.LOCATION_SYMBOL]: {
+          attributes: {},
+          arrays: {},
+        },
       }
 
       while( !match(TokenType.RightBracket) ) {
         const { value: keyword, location } = tokens[current]
         switch( keyword ) {
+          case 'writable':
+          case 'required': {
+            consume(TokenType.Keyword)
+            const { value, symbols } = parseArrayBlock()
+            property[keyword] = value
+            property[AST.LOCATION_SYMBOL]!.arrays[keyword] = symbols
+            break
+          }
           case 'properties': {
-            consume(TokenType.Keyword, 'properties')
+            consume(TokenType.Keyword)
             nestedProperties = parsePropertiesBlock(options)
             break
           }
           default:
-            throw new ParserError(`invalid keyword "${keyword}"`, location)
+            throw new Diagnostic(`invalid keyword "${keyword}"`, location)
         }
       }
 
@@ -363,7 +381,7 @@ export const parse = (tokens: Token[]) => {
       } else {
         const collection = ast.collections.find((node) => node.name === identifier)
         if( !collection ) {
-          throw new ParserError(`invalid reference "${identifier}"`, location)
+          throw new Diagnostic(`invalid reference "${identifier}"`, location)
         }
 
         property = {
@@ -379,8 +397,12 @@ export const parse = (tokens: Token[]) => {
         const attributeSymbol = Symbol()
         locationMap.set(attributeSymbol, next().location)
 
-        property[AST.LOCATION_SYMBOL] ??= {}
-        property[AST.LOCATION_SYMBOL][attributeName] = attributeSymbol
+        property[AST.LOCATION_SYMBOL] ??= {
+          attributes: {},
+          arrays: {},
+        }
+
+        property[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
 
         parsePropertyAttributeValue(attributeName, property, location)
         consume(TokenType.RightParens)
@@ -398,7 +420,7 @@ export const parse = (tokens: Token[]) => {
 
     if( modifierToken ) {
       if( !guards.isValidPropertyModifier(modifierToken.value) ) {
-        throw new ParserError(`invalid modifier: "${modifierToken.value}"`, modifierToken.location)
+        throw new Diagnostic(`invalid modifier: "${modifierToken.value}"`, modifierToken.location)
       }
       node.modifier = modifierToken.value
     }
@@ -456,6 +478,9 @@ export const parse = (tokens: Token[]) => {
       kind: 'collection',
       name,
       properties: {},
+      [AST.LOCATION_SYMBOL]: {
+        arrays: {},
+      },
     }
 
     if( match(TokenType.Keyword, 'extends') ) {
@@ -473,7 +498,7 @@ export const parse = (tokens: Token[]) => {
     consume(TokenType.LeftBracket)
 
     while( !match(TokenType.RightBracket) ) {
-      const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_KEYWORDS)
+      const { value: keyword, location } = consume(TokenType.Keyword, lexer.COLLECTION_KEYWORDS)
       switch( keyword ) {
         case 'owned': {
           if( match(TokenType.QuotedString, 'on-write') ) {
@@ -510,7 +535,9 @@ export const parse = (tokens: Token[]) => {
         case 'form':
         case 'table':
         case 'filters': {
-          node[keyword] = parseArrayBlock()
+          const { value, symbols } = parseArrayBlock()
+          node[keyword] = value
+          node[AST.LOCATION_SYMBOL].arrays[keyword] = symbols
           break
         }
         case 'search': {
@@ -575,7 +602,7 @@ export const parse = (tokens: Token[]) => {
         const functionset = ast.functionsets.find((node) => node.name === functionSetName)
 
         if( !functionset ) {
-          throw new ParserError(`functionset "${functionSetName} not found"`, location)
+          throw new Diagnostic(`functionset "${functionSetName} not found"`, location)
         }
 
         Object.assign(functions, functionset.functions)
@@ -769,7 +796,7 @@ export const parse = (tokens: Token[]) => {
           break
         }
         case 'indexes': {
-          const value = parseArrayBlock()
+          const { value } = parseArrayBlock()
           searchSlots[keyword] = value
           break
         }
@@ -778,7 +805,7 @@ export const parse = (tokens: Token[]) => {
 
     const { indexes } = searchSlots
     if( !indexes ) {
-      throw new ParserError('"indexes" option is required', location)
+      throw new Diagnostic('"indexes" option is required', location)
     }
 
     consume(TokenType.RightBracket)
@@ -807,10 +834,10 @@ export const parse = (tokens: Token[]) => {
           break
         }
         default:
-          throw new ParserError(`invalid declaration type: "${declType}"`, location)
+          throw new Diagnostic(`invalid declaration type: "${declType}"`, location)
       }
     } catch( err ) {
-      if( err instanceof ParserError ) {
+      if( err instanceof Diagnostic ) {
         errors.push(err)
         recover(lexer.TOPLEVEL_KEYWORDS)
         continue

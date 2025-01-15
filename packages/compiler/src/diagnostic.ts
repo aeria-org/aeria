@@ -1,6 +1,8 @@
 import type { Location } from './token.js'
 
-export type Diagnostic = {
-  message: string
-  location: Location
+export class Diagnostic extends Error {
+  constructor(public message: string, public location?: Location) {
+    super()
+  }
 }
+

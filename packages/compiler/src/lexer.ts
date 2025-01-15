@@ -1,6 +1,6 @@
-import type { Diagnostic } from './diagnostic'
 import { Result } from '@aeriajs/types'
 import { TokenType, type Token, type Location } from './token.js'
+import { Diagnostic } from './diagnostic.js'
 
 type TokenConfig = {
   type:
@@ -293,15 +293,12 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
     }
 
     if( !hasMatch ) {
-      return Result.error({
-        message: 'unexpected token',
-        location: {
-          index,
-          line,
-          start,
-          end,
-        },
-      })
+      return Result.error(new Diagnostic('unexpected token', {
+        index,
+        line,
+        start,
+        end,
+      }))
     }
   }
   return Result.result(tokens)

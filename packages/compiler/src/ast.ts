@@ -1,4 +1,5 @@
 import type { Property, AccessCondition, CollectionActions, SearchOptions } from '@aeriajs/types'
+import type { ArrayProperties } from './utils.js'
 
 export const LOCATION_SYMBOL = Symbol()
 
@@ -35,7 +36,12 @@ export type NodeBase<TType> = {
 export type PropertyNode = NodeBase<'property'> & {
   modifier?: keyof typeof PropertyModifiers
   property: Property & {
-    [LOCATION_SYMBOL]?: Record<string, symbol>
+    [LOCATION_SYMBOL]?: {
+      attributes: Record<string, symbol>
+      arrays: {
+        [P in ArrayProperties<Extract<Property, { properties: unknown }>>]?: symbol[]
+      }
+    }
   }
   nestedProperties?: Record<string, PropertyNode>
 }
@@ -59,6 +65,15 @@ export type CollectionNode = NodeBase<'collection'> & {
   table?: string[]
   filters?: string[]
   search?: SearchOptions
+  [LOCATION_SYMBOL]: {
+    arrays: {
+      [
+        P in Extract<keyof CollectionNode, string> as NonNullable<CollectionNode[P]> extends string[]
+          ? P
+          : never
+      ]?: symbol[]
+    }
+  }
 }
 
 export type ContractNode = NodeBase<'contract'> & {

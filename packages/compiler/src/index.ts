@@ -33,7 +33,7 @@ collection File extends aeria.file {}
 collection TempFile extends aeria.tempFile {}
 
 collection Business {
-  required {
+  indexes {
     name
   }
   icon "suitcase"
@@ -83,7 +83,6 @@ collection User extends aeria.user {
     business
   }
   properties {
-    name str
     roles []enum @values([
       "root",
       "supervisor",
@@ -477,7 +476,7 @@ collection Assignment {
   properties{
     name str
     status enum @values(["pending", "complete"])
-    users []User @populate([name, _id, picture_file, email])
+    users []User @populate([name, _id, picture_file, emailx])
     business Business
   }
   functions {
@@ -646,17 +645,17 @@ collection PurchaseRequest {
 collection Transaction {
   icon "receipt"
   indexes {
-    type
+    // type
   }
   required {
-    type
+    // type
     amount
     description
   }
   properties {
     person User
     construction Construction
-    type enum @values(["credit", "debit", "to_pay", "to_recieve"])
+    // type enum @values(["credit", "debit", "to_pay", "to_recieve"])
     amount num
     description str
     business Business
@@ -740,6 +739,17 @@ collection ServiceOrder {
   }
 }
 
+contract Test {
+  payload {
+    required {
+      ddaa
+      xx
+    }
+    properties {
+      name str
+    }
+  }
+}
 
 `
 
