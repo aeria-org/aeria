@@ -1,4 +1,4 @@
-import type { Property, AccessCondition, CollectionActions, SearchOptions } from '@aeriajs/types'
+import type { Property, AccessCondition, CollectionActions, SearchOptions, DescriptionPreset } from '@aeriajs/types'
 import type { ArrayProperties } from './utils.js'
 
 export const LOCATION_SYMBOL = Symbol()
@@ -60,18 +60,14 @@ export type CollectionNode = NodeBase<'collection'> & {
   }>
   required?: Record<string, unknown> | string[]
   indexes?: string[]
-  presets?: string[]
+  presets?: DescriptionPreset[]
   form?: string[]
   table?: string[]
   filters?: string[]
   search?: SearchOptions
   [LOCATION_SYMBOL]: {
     arrays: {
-      [
-        P in Extract<keyof CollectionNode, string> as NonNullable<CollectionNode[P]> extends string[]
-          ? P
-          : never
-      ]?: symbol[]
+      [P in ArrayProperties<CollectionNode>]?: symbol[]
     }
   }
 }

@@ -1,4 +1,3 @@
-import { Result } from '@aeriajs/types'
 import { TokenType, type Token, type Location } from './token.js'
 import { Diagnostic } from './diagnostic.js'
 
@@ -180,7 +179,7 @@ const TOKENS: TokenConfig[] = [
   },
 ]
 
-export const tokenize = function (input: string): Result.Either<Diagnostic,Token[]> {
+export const tokenize = function (input: string) {
   let
     index = 0,
     line = 1,
@@ -188,6 +187,8 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
     end = 0
 
   const tokens: Token[] = []
+  const errors: Diagnostic[] = []
+
   const state: LexerState = {
     inProperties: false,
   }
@@ -293,7 +294,8 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
     }
 
     if( !hasMatch ) {
-      return Result.error(new Diagnostic('unexpected token', {
+      index += input.slice(index).search(/[ \t\n\{\}\(\)\[\]]/)
+      errors.push(new Diagnostic('unexpected token', {
         index,
         line,
         start,
@@ -301,6 +303,9 @@ export const tokenize = function (input: string): Result.Either<Diagnostic,Token
       }))
     }
   }
-  return Result.result(tokens)
+  return {
+    tokens,
+    errors,
+  }
 }
 

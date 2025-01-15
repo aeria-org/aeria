@@ -4,15 +4,25 @@ import type { Condition } from './condition.js'
 import type { JsonSchema, PropertiesWithId } from './property.js'
 import type { OwnershipMode } from './security.js'
 
-export type DescriptionPreset =
-  | 'add'
-  | 'crud'
-  | 'duplicate'
-  | 'remove'
-  | 'removeAll'
-  | 'owned'
-  | 'timestamped'
-  | 'view'
+export const DESCRIPTION_PRESETS = <const>[
+  'add',
+  'crud',
+  'duplicate',
+  'remove',
+  'removeAll',
+  'owned',
+  'timestamped',
+  'view',
+]
+
+export const LAYOUT_NAMES = <const>[
+  'tabular',
+  'grid',
+  'list',
+]
+
+export type DescriptionPreset = typeof DESCRIPTION_PRESETS[number]
+export type LayoutName = typeof LAYOUT_NAMES[number]
 
 export type Icon = PhosphorIcon['name']
 
@@ -101,11 +111,6 @@ export type FiltersPreset<TDescription extends Description> = {
   badgeFunction?: string
   default?: boolean
 }
-
-export type LayoutName =
-  | 'tabular'
-  | 'grid'
-  | 'list'
 
 export type LayoutOptions<TDescription extends Description = Description> = {
   title?: PropertiesWithId<TDescription>

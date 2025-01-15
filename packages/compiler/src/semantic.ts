@@ -1,6 +1,5 @@
 import type { Location } from './token.js'
 import type { ArrayProperties } from './utils.js'
-import { Result } from '@aeriajs/types'
 import { isValidCollection } from '@aeriajs/common'
 import { locationMap } from './parser.js'
 import { Diagnostic } from './diagnostic.js'
@@ -20,7 +19,7 @@ const collectionHasProperty = async (collection: AST.CollectionNode, propName: s
       hasProperty = propName in importedCollection.description.properties
     }
   }
-  
+
   return hasProperty
 }
 
@@ -55,7 +54,7 @@ export const analyze = async (ast: AST.ProgramNode, errors: Diagnostic[] = []) =
       const propName = node[attributeName][index]
       const symbol = node[AST.LOCATION_SYMBOL].arrays[attributeName]![index]
       if( !await collectionHasProperty(node, propName) ) {
-        let location = locationMap.get(symbol)
+        const location = locationMap.get(symbol)
 
         errors.push(new Diagnostic(`collection "${node.name}" hasn't such property "${propName}"`, location))
       }
@@ -71,7 +70,7 @@ export const analyze = async (ast: AST.ProgramNode, errors: Diagnostic[] = []) =
       const propName = node.property[attributeName][index]
       const symbol = node.property[AST.LOCATION_SYMBOL]!.arrays[attributeName]![index]
       if( !(propName in node.property.properties) ) {
-        let location = locationMap.get(symbol)
+        const location = locationMap.get(symbol)
 
         errors.push(new Diagnostic(`object "xxx" hasn't such property "${propName}"`, location))
       }
@@ -132,10 +131,8 @@ export const analyze = async (ast: AST.ProgramNode, errors: Diagnostic[] = []) =
     }
   }
 
-  if( errors.length ) {
-    return Result.error(errors)
+  return {
+    errors,
   }
-
-  return Result.result({})
 }
 

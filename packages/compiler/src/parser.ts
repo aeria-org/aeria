@@ -1,5 +1,5 @@
 import type { CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
-import { PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
+import { DESCRIPTION_PRESETS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { icons } from '@phosphor-icons/core'
 import { Diagnostic } from './diagnostic.js'
 import { TokenType, type Token, type Location } from './token.js'
@@ -18,7 +18,6 @@ type StrictToken<TTokenType extends TokenType, TValue> = undefined extends TValu
     ? Token<TTokenType, E>
     : Token<TTokenType, TValue>
 
-
 const isFileProperty = (property: RefProperty | FileProperty): property is FileProperty => {
   return property.$ref === 'File'
 }
@@ -35,8 +34,23 @@ export const parse = (tokens: Token[]) => {
   const errors: Diagnostic[] = []
   const next = () => tokens[current + 1]
 
+  const foldBrackets = () => {
+    if( match(TokenType.LeftBracket) ) {
+      current++
+      while( !match(TokenType.RightBracket) ) {
+        foldBrackets()
+        current++
+      }
+    }
+  }
+
+
   const match = (expected: TokenType, value?: unknown) => {
     const token = tokens[current]
+    if( !token ) {
+      throw new Diagnostic('unexpected EOF', tokens[current - 1].location)
+    }
+
     if( token.type === expected ) {
       if( value !== undefined ) {
         return Array.isArray(value)
@@ -101,14 +115,14 @@ export const parse = (tokens: Token[]) => {
     return array as Token<TTokenType>['value'][]
   }
 
-  const parseArrayBlock = () => {
-    const array: string[] = []
+  const parseArrayBlock = <TValue>(value?: TValue) => {
+    const array: unknown[] = []
     const symbols: symbol[] = []
 
     consume(TokenType.LeftBracket)
 
     while( !match(TokenType.RightBracket) ) {
-      const { value: identifier, location } = consume(TokenType.Identifier)
+      const { value: identifier, location } = consume(TokenType.Identifier, value)
       const elemSymbol = Symbol()
 
       array.push(identifier)
@@ -118,7 +132,7 @@ export const parse = (tokens: Token[]) => {
 
     consume(TokenType.RightBracket)
     return {
-      value: array,
+      value: array as TValue extends readonly (infer E)[] ? E[] : string[],
       symbols,
     }
   }
@@ -435,11 +449,42 @@ export const parse = (tokens: Token[]) => {
 
     const properties: Record<string, AST.PropertyNode> = {}
     while( !match(TokenType.RightBracket) ) {
-      const { value: propName } = consume(TokenType.Identifier)
-      properties[propName] = parsePropertyType(options)
+      try {
+        const { value: propName } = consume(TokenType.Identifier)
+        properties[propName] = parsePropertyType(options)
 
-      if( match(TokenType.Comma) ) {
-        consume(TokenType.Comma)
+        if( match(TokenType.Comma) ) {
+          consume(TokenType.Comma)
+        }
+      } catch( err ) {
+        if( err instanceof Diagnostic ) {
+          errors.push(err)
+          recoverLoop: while( true ) {
+            switch( tokens[current].type ) {
+              case TokenType.RightBracket: {
+                current++
+              }
+              case TokenType.Identifier: {
+                break recoverLoop
+              }
+            }
+
+            current++
+            foldBrackets()
+
+            while( match(TokenType.AttributeName) ) {
+              current++
+              if( match(TokenType.LeftParens) ) {
+                current++
+                while( !match(TokenType.RightParens) ) {
+                  current++
+                }
+              }
+            }
+
+          }
+          continue
+        }
       }
     }
 
@@ -530,8 +575,13 @@ export const parse = (tokens: Token[]) => {
           node.required = parseArrayBlockWithAttributes()
           break
         }
+        case 'presets': {
+          const { value, symbols } = parseArrayBlock(DESCRIPTION_PRESETS)
+          node[keyword] = value
+          node[AST.LOCATION_SYMBOL].arrays[keyword] = symbols
+          break
+        }
         case 'indexes':
-        case 'presets':
         case 'form':
         case 'table':
         case 'filters': {
@@ -838,6 +888,7 @@ export const parse = (tokens: Token[]) => {
       }
     } catch( err ) {
       if( err instanceof Diagnostic ) {
+        console.log(JSON.stringify(err, null, 2))
         errors.push(err)
         recover(lexer.TOPLEVEL_KEYWORDS)
         continue
@@ -848,10 +899,8 @@ export const parse = (tokens: Token[]) => {
   }
 
   return {
-    success: !errors.length,
     ast,
     errors,
-    errorCount: errors.length,
   }
 }
 
