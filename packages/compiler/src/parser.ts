@@ -22,8 +22,8 @@ const isFileProperty = (property: RefProperty | FileProperty): property is FileP
   return property.$ref === 'File'
 }
 
-export const parse = (tokens: Token[]) => {
-  let current = 0
+export const parse = (tokens: (Token | undefined)[]) => {
+  let index = 0
   const ast: AST.ProgramNode = {
     kind: 'program',
     collections: [],
@@ -32,24 +32,43 @@ export const parse = (tokens: Token[]) => {
   }
 
   const errors: Diagnostic[] = []
-  const next = () => tokens[current + 1]
+
+  const next = () => {
+    const token = tokens[index + 1]
+    if( !token ) {
+      throw new Diagnostic('unexpected EOF', current().location)
+    }
+    return token
+  }
+
+  const previous = () => {
+    const token = tokens[index - 1]
+    if( !token ) {
+      throw new Diagnostic('invalid position')
+    }
+    return token
+  }
+
+  const current = () => {
+    const token = tokens[index]
+    if( !token ) {
+      throw new Diagnostic('unexpected EOF', previous().location)
+    }
+    return token
+  }
 
   const foldBrackets = () => {
     if( match(TokenType.LeftBracket) ) {
-      current++
+      index++
       while( !match(TokenType.RightBracket) ) {
         foldBrackets()
-        current++
+        index++
       }
     }
   }
 
-
   const match = (expected: TokenType, value?: unknown) => {
-    const token = tokens[current]
-    if( !token ) {
-      throw new Diagnostic('unexpected EOF', tokens[current - 1].location)
-    }
+    const token = current()
 
     if( token.type === expected ) {
       if( value !== undefined ) {
@@ -64,9 +83,9 @@ export const parse = (tokens: Token[]) => {
   }
 
   const consume = <TTokenType extends TokenType, const TValue>(expected: TTokenType, value?: TValue): StrictToken<TTokenType, TValue> => {
-    const token = tokens[current]
+    const token = current()
     if( match(expected, value) ) {
-      current++
+      index++
       return token as StrictToken<TTokenType, TValue>
     }
 
@@ -91,7 +110,7 @@ export const parse = (tokens: Token[]) => {
 
   const recover = (keywords: readonly lexer.Keyword[]) => {
     let token: Token | undefined
-    while ( token = tokens[++current] as Token | undefined ) {
+    while ( token = tokens[++index] as Token | undefined ) {
       if( token.type === TokenType.Keyword && keywords.includes(token.value as lexer.Keyword) ) {
         break
       }
@@ -309,20 +328,21 @@ export const parse = (tokens: Token[]) => {
       consume(TokenType.LeftSquareBracket)
       consume(TokenType.RightSquareBracket)
 
-      const value = parsePropertyType(options)
+      const { property: items, nestedProperties } = parsePropertyType(options)
       property = {
         type: 'array',
-        items: value.property,
+        items,
       }
 
       return {
         kind: 'property',
         property,
+        nestedProperties,
       }
     }
 
     if( options.allowModifiers ) {
-      const nextToken = tokens[current + 1]
+      const nextToken = next()
       if( match(TokenType.Identifier) && (nextToken.type === TokenType.LeftBracket || nextToken.type === TokenType.Identifier) ) {
         modifierToken = consume(TokenType.Identifier)
       }
@@ -341,7 +361,7 @@ export const parse = (tokens: Token[]) => {
       }
 
       while( !match(TokenType.RightBracket) ) {
-        const { value: keyword, location } = tokens[current]
+        const { value: keyword, location } = current()
         switch( keyword ) {
           case 'writable':
           case 'required': {
@@ -460,28 +480,25 @@ export const parse = (tokens: Token[]) => {
         if( err instanceof Diagnostic ) {
           errors.push(err)
           recoverLoop: while( true ) {
-            switch( tokens[current].type ) {
-              case TokenType.RightBracket: {
-                current++
-              }
+            switch( current().type ) {
+              case TokenType.RightBracket:
               case TokenType.Identifier: {
                 break recoverLoop
               }
             }
 
-            current++
-            foldBrackets()
-
             while( match(TokenType.AttributeName) ) {
-              current++
+              index++
               if( match(TokenType.LeftParens) ) {
-                current++
+                index++
                 while( !match(TokenType.RightParens) ) {
-                  current++
+                  index++
                 }
               }
             }
 
+            index++
+            foldBrackets()
           }
           continue
         }
@@ -499,7 +516,7 @@ export const parse = (tokens: Token[]) => {
       consume(TokenType.Pipe)
 
       const properties = []
-      while( current < tokens.length ) {
+      while( index < tokens.length ) {
         properties.push(parsePropertyType(options))
 
         if( match(TokenType.Pipe) ) {
@@ -544,55 +561,63 @@ export const parse = (tokens: Token[]) => {
 
     while( !match(TokenType.RightBracket) ) {
       const { value: keyword, location } = consume(TokenType.Keyword, lexer.COLLECTION_KEYWORDS)
-      switch( keyword ) {
-        case 'owned': {
-          if( match(TokenType.QuotedString, 'on-write') ) {
-            node.owned = consume(TokenType.QuotedString).value === 'true'
-          } else {
-            node.owned = consume(TokenType.Boolean).value
+      try {
+        switch( keyword ) {
+          case 'owned': {
+            if( match(TokenType.QuotedString, 'on-write') ) {
+              node.owned = consume(TokenType.QuotedString).value === 'true'
+            } else {
+              node.owned = consume(TokenType.Boolean).value
+            }
+            break
           }
-          break
+          case 'icon': {
+            const { value } = consume(TokenType.QuotedString, ICON_NAMES)
+            node.icon = value
+            break
+          }
+          case 'properties': {
+            node.properties = parsePropertiesBlock()
+            break
+          }
+          case 'functions': {
+            node.functions = parseFunctionsBlock(ast)
+            break
+          }
+          case 'individualActions':
+          case 'actions': {
+            node[keyword] = parseActionsBlock()
+            break
+          }
+          case 'required': {
+            node.required = parseArrayBlockWithAttributes()
+            break
+          }
+          case 'presets': {
+            const { value, symbols } = parseArrayBlock(DESCRIPTION_PRESETS)
+            node[keyword] = value
+            node[AST.LOCATION_SYMBOL].arrays[keyword] = symbols
+            break
+          }
+          case 'indexes':
+          case 'form':
+          case 'table':
+          case 'filters': {
+            const { value, symbols } = parseArrayBlock()
+            node[keyword] = value
+            node[AST.LOCATION_SYMBOL].arrays[keyword] = symbols
+            break
+          }
+          case 'search': {
+            node[keyword] = parseSearchBlock()
+            break
+          }
         }
-        case 'icon': {
-          const { value } = consume(TokenType.QuotedString, ICON_NAMES)
-          node.icon = value
-          break
-        }
-        case 'properties': {
-          node.properties = parsePropertiesBlock()
-          break
-        }
-        case 'functions': {
-          node.functions = parseFunctionsBlock(ast)
-          break
-        }
-        case 'individualActions':
-        case 'actions': {
-          node[keyword] = parseActionsBlock()
-          break
-        }
-        case 'required': {
-          node.required = parseArrayBlockWithAttributes()
-          break
-        }
-        case 'presets': {
-          const { value, symbols } = parseArrayBlock(DESCRIPTION_PRESETS)
-          node[keyword] = value
-          node[AST.LOCATION_SYMBOL].arrays[keyword] = symbols
-          break
-        }
-        case 'indexes':
-        case 'form':
-        case 'table':
-        case 'filters': {
-          const { value, symbols } = parseArrayBlock()
-          node[keyword] = value
-          node[AST.LOCATION_SYMBOL].arrays[keyword] = symbols
-          break
-        }
-        case 'search': {
-          node[keyword] = parseSearchBlock()
-          break
+      } catch( err ) {
+        if( err instanceof Diagnostic ) {
+          errors.push(err)
+          recover(lexer.COLLECTION_KEYWORDS)
+          continue
         }
       }
     }
@@ -644,19 +669,23 @@ export const parse = (tokens: Token[]) => {
 
     const functions: AST.CollectionNode['functions'] = {}
     while( !match(TokenType.RightBracket) ) {
-      if( match(TokenType.AttributeName, 'include') ) {
-        consume(TokenType.AttributeName)
-        consume(TokenType.LeftParens)
+      if( match(TokenType.MacroName) ) {
+        const { value: macroName } = consume(TokenType.MacroName, ['include'])
 
-        const { value: functionSetName, location } = consume(TokenType.Identifier)
-        const functionset = ast.functionsets.find((node) => node.name === functionSetName)
+        switch( macroName ) {
+          case 'include': {
+            const { value: functionSetName, location } = consume(TokenType.Identifier)
+            const functionset = ast.functionsets.find((node) => node.name === functionSetName)
 
-        if( !functionset ) {
-          throw new Diagnostic(`functionset "${functionSetName} not found"`, location)
+            if( !functionset ) {
+              throw new Diagnostic(`functionset "${functionSetName}" not found`, location)
+            }
+
+            Object.assign(functions, functionset.functions)
+            consume(TokenType.RightParens)
+          }
+
         }
-
-        Object.assign(functions, functionset.functions)
-        consume(TokenType.RightParens)
 
         continue
       }
@@ -866,8 +895,8 @@ export const parse = (tokens: Token[]) => {
     }
   }
 
-  while( current < tokens.length ) {
-    const { value: declType, location } = tokens[current]
+  while( index < tokens.length ) {
+    const { value: declType, location } = current()
 
     try {
       switch( declType ) {
@@ -888,7 +917,6 @@ export const parse = (tokens: Token[]) => {
       }
     } catch( err ) {
       if( err instanceof Diagnostic ) {
-        console.log(JSON.stringify(err, null, 2))
         errors.push(err)
         recover(lexer.TOPLEVEL_KEYWORDS)
         continue

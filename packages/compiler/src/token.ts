@@ -16,6 +16,7 @@ export enum TokenType {
   Identifier = 'IDENTIFIER',
   QuotedString = 'QUOTED_STRING',
   AttributeName = 'ATTRIBUTE_NAME',
+  MacroName = 'MACRO_NAME',
 }
 
 export type TypeMap = {

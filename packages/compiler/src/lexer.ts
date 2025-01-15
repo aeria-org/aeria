@@ -148,7 +148,7 @@ const TOKENS: TokenConfig[] = [
   {
     type: TokenType.Number,
     matcher: /[0-9]+(\.[0-9]+)?/,
-    construct: (value) => Number(value),
+    construct: Number,
   },
   {
     type: TokenType.Boolean,
@@ -156,12 +156,17 @@ const TOKENS: TokenConfig[] = [
       'true',
       'false',
     ],
-    construct: (value) => Boolean(value),
+    construct: Boolean,
   },
   {
     type: TokenType.Keyword,
     matcher: Array.from(keywordsSet),
     condition: (state) => !state.inProperties,
+  },
+  {
+    type: TokenType.MacroName,
+    matcher: /[a-zA-Z]([a-zA-Z0-9]|_)+\(/,
+    valueExtractor: (value) => value.slice(0, -1),
   },
   {
     type: TokenType.Identifier,
