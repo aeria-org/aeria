@@ -110,7 +110,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
   const recover = (keywords: readonly lexer.Keyword[]) => {
     let token: Token | undefined
-    while ( token = tokens[++index] as Token | undefined ) {
+    while ( token = tokens[++index] ) {
       if( token.type === TokenType.Keyword && keywords.includes(token.value as lexer.Keyword) ) {
         break
       }
@@ -479,7 +479,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
       } catch( err ) {
         if( err instanceof Diagnostic ) {
           errors.push(err)
-          recoverLoop: while( true ) {
+          recoverLoop: for( ;; ) {
             switch( current().type ) {
               case TokenType.RightBracket:
               case TokenType.Identifier: {
@@ -560,7 +560,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
     consume(TokenType.LeftBracket)
 
     while( !match(TokenType.RightBracket) ) {
-      const { value: keyword, location } = consume(TokenType.Keyword, lexer.COLLECTION_KEYWORDS)
+      const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_KEYWORDS)
       try {
         switch( keyword ) {
           case 'owned': {
