@@ -1,5 +1,21 @@
 # @aeriajs/builtins
 
+## 0.0.231
+
+### Patch Changes
+
+- aef831a: Fix validation error type inconsistencies
+- 6abb0de: Fix privesc bug
+- ce2675a: Fix user creation not possible when `config.security.rolesHierachy` is not set
+- Updated dependencies [1cf4c60]
+- Updated dependencies [aef831a]
+- Updated dependencies [ce2675a]
+  - @aeriajs/types@0.0.114
+  - @aeriajs/validation@0.0.147
+  - @aeriajs/core@0.0.231
+  - @aeriajs/common@0.0.132
+  - @aeriajs/entrypoint@0.0.135
+
 ## 0.0.230
 
 ### Patch Changes

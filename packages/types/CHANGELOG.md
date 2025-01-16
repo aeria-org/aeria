@@ -1,5 +1,13 @@
 # @aeriajs/types
 
+## 0.0.114
+
+### Patch Changes
+
+- 1cf4c60: Fix `description.preferred` type
+- aef831a: Fix validation error type inconsistencies
+- ce2675a: Fix user creation not possible when `config.security.rolesHierachy` is not set
+
 ## 0.0.113
 
 ### Patch Changes
