@@ -1,6 +1,6 @@
 {
   "name": "aeria-sdk",
-  "version": "0.0.167",
+  "version": "0.0.168",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -56,7 +56,7 @@
     "@aeriajs/types": "link:../types"
   },
   "peerDependencies": {
-    "@aeriajs/common": "^0.0.131",
-    "@aeriajs/types": "^0.0.113"
+    "@aeriajs/common": "^0.0.132",
+    "@aeriajs/types": "^0.0.114"
   }
 }

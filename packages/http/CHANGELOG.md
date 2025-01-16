@@ -1,5 +1,18 @@
 # @aeriajs/http
 
+## 0.0.159
+
+### Patch Changes
+
+- aef831a: Fix validation error type inconsistencies
+- Updated dependencies [1cf4c60]
+- Updated dependencies [aef831a]
+- Updated dependencies [ce2675a]
+  - @aeriajs/types@0.0.114
+  - @aeriajs/validation@0.0.147
+  - @aeriajs/common@0.0.132
+  - @aeriajs/entrypoint@0.0.135
+
 ## 0.0.158
 
 ### Patch Changes
