@@ -4,7 +4,7 @@ import type { Condition } from './condition.js'
 import type { JsonSchema, PropertiesWithId } from './property.js'
 import type { OwnershipMode } from './security.js'
 
-export const DESCRIPTION_PRESETS = <const>[
+export const DESCRIPTION_PRESETS = [
   'add',
   'crud',
   'duplicate',
@@ -13,13 +13,13 @@ export const DESCRIPTION_PRESETS = <const>[
   'owned',
   'timestamped',
   'view',
-]
+] as const
 
-export const LAYOUT_NAMES = <const>[
+export const LAYOUT_NAMES = [
   'tabular',
   'grid',
   'list',
-]
+] as const
 
 export type DescriptionPreset = typeof DESCRIPTION_PRESETS[number]
 export type LayoutName = typeof LAYOUT_NAMES[number]
@@ -132,7 +132,7 @@ export type SearchOptions<TDescription extends Description = Description> = {
   exactMatches?: boolean
 }
 
-export type RuntimeDescription<TDescription extends Description = Description> = Pick<
+export type RuntimeDescription<TDescription extends Description = Description> = Partial<Pick<
   TDescription,
   | 'actions'
   | 'individualActions'
@@ -144,7 +144,7 @@ export type RuntimeDescription<TDescription extends Description = Description> =
   | 'form'
   | 'tableLayout'
   | 'formLayout'
->
+>>
 
 export type Description<TDescription extends Description = any> = JsonSchema<TDescription> & {
   // unused
