@@ -111,7 +111,10 @@ export const getAvailableRoles = async () => {
     }
   }
 
-  availableRolesMemo = Array.from(new Set(availableRoles))
+  const rolesSet = new Set(availableRoles)
+  rolesSet.delete('unauthenticated')
+
+  availableRolesMemo = Array.from(rolesSet)
   return availableRolesMemo
 }
 
