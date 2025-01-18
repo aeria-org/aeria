@@ -33,6 +33,8 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
   const errors: Diagnostic[] = []
 
+  const advance = () => index++
+
   const next = () => {
     const token = tokens[index + 1]
     if( !token ) {
@@ -59,10 +61,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
   const foldBrackets = () => {
     if( match(TokenType.LeftBracket) ) {
-      index++
+      advance()
       while( !match(TokenType.RightBracket) ) {
         foldBrackets()
-        index++
+        advance()
       }
     }
   }
@@ -85,7 +87,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
   const consume = <TTokenType extends TokenType, const TValue>(expected: TTokenType, value?: TValue): StrictToken<TTokenType, TValue> => {
     const token = current()
     if( match(expected, value) ) {
-      index++
+      advance()
       return token as StrictToken<TTokenType, TValue>
     }
 
@@ -488,16 +490,16 @@ export const parse = (tokens: (Token | undefined)[]) => {
             }
 
             while( match(TokenType.AttributeName) ) {
-              index++
+              advance()
               if( match(TokenType.LeftParens) ) {
-                index++
+                advance()
                 while( !match(TokenType.RightParens) ) {
-                  index++
+                  advance()
                 }
               }
             }
 
-            index++
+            advance()
             foldBrackets()
           }
           continue
