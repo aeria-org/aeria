@@ -1,5 +1,5 @@
-import type * as AST from '../ast'
-import { resizeFirstChar, getExtendName, getCollectionId } from './utils'
+import type * as AST from '../ast.js'
+import { resizeFirstChar, getExtendName, getCollectionId } from './utils.js'
 
 type SymbolToExport = {
   id: string
