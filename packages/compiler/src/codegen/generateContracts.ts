@@ -57,7 +57,8 @@ const makeJSContractsCode = (ast: AST.Node[]) => {
         stringify(contractSchema)
       })`
     }).join('\n\n')
-  return `import { ${[...imports].join(', ')} } from \'aeria\'\n\n` + declarations
+
+  return `import { ${Array.from(imports).join(', ')} } from \'aeria\'\n\n` + declarations
 }
 
 const getResponseSchema = (response: AST.PropertyNode) => {
@@ -93,3 +94,4 @@ const makeTSContractsCode = (ast: AST.Node[]) => {
       }`
     }).join('\n\n')
 }
+
