@@ -9,6 +9,7 @@ export const buildAeriaLang = async () => {
   try {
     return await build(['schemas/*.aeria'], {
       outDir: '.aeria/out',
+      // deprecated: new compiler only outputs esnext
       module: tsConfig.compilerOptions.module === ts.ModuleKind.CommonJS
         ? 'commonjs'
         : 'esnext',
