@@ -3,12 +3,12 @@ import type { description } from './description.js'
 import { Result, HTTPStatus } from '@aeriajs/types'
 import { decodeToken, ObjectId } from '@aeriajs/core'
 
-export enum ActivationError {
-  UserNotFound = 'USER_NOT_FOUND',
-  AlreadyActiveUser = 'ALREADY_ACTIVE_USER',
-  InvalidLink = 'INVALID_LINK',
-  InvalidToken = 'INVALID_TOKEN',
-}
+export const ActivationError = {
+  UserNotFound: 'USER_NOT_FOUND',
+  AlreadyActiveUser: 'ALREADY_ACTIVE_USER',
+  InvalidLink: 'INVALID_LINK',
+  InvalidToken: 'INVALID_TOKEN',
+} as const
 
 export const getInfo = async (
   payload: {

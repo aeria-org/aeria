@@ -8,10 +8,10 @@ export type OwnershipMode =
   | 'always'
   | 'on-write'
 
-export enum RateLimitingError {
-  Unauthenticated = 'UNAUTHENTICATED',
-  LimitReached = 'LIMIT_REACHED',
-}
+export const RateLimitingError = {
+  Unauthenticated: 'UNAUTHENTICATED',
+  LimitReached: 'LIMIT_REACHED',
+} as const
 
 export type DiscriminationStrategy =
   | 'tenant'

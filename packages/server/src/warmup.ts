@@ -4,15 +4,15 @@ import { getConfig, getAvailableRoles } from '@aeriajs/entrypoint'
 
 type EscapeCode = `[${string}m`
 
-enum AnsiColor {
-  Green = '[32m',
-  Yellow = '[33m',
-  Blue = '[36m',
-  Red = '[31m',
-  White = '[37m',
-}
+const AnsiColor = {
+  Green: '[32m',
+  Yellow: '[33m',
+  Blue: '[36m',
+  Red: '[31m',
+  White: '[37m',
+} as const
 
-const METHOD_COLORS: Record<string, AnsiColor> = {
+const METHOD_COLORS: Record<string, typeof AnsiColor[keyof typeof AnsiColor]> = {
   GET: AnsiColor.Green,
   PUT: AnsiColor.Blue,
   POST: AnsiColor.White,

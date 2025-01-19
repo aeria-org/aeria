@@ -5,9 +5,9 @@ import { validate } from '@aeriajs/validation'
 import * as bcrypt from 'bcrypt'
 import { insert as originalInsert } from '@aeriajs/core'
 
-export enum CreateAccountError {
-  SignupDisallowed = 'SIGNUP_DISALLOWED',
-}
+export const CreateAccountError = {
+  SignupDisallowed: 'SIGNUP_DISALLOWED',
+} as const
 
 export const createAccount = async (
   payload: Partial<PackReferences<SchemaWithId<typeof description>>> & Record<string, unknown>,

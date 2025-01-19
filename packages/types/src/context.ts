@@ -82,7 +82,7 @@ export type RouteContext<TAccessCondition extends AccessCondition = false> = {
   response: GenericResponse
   log: (message: string, details?: unknown)=> Promise<unknown>
   error: <
-    const THTTPStatus extends HTTPStatus,
+    const THTTPStatus extends typeof HTTPStatus[keyof typeof HTTPStatus],
     const TEndpointError extends Omit<EndpointError, 'httpStatus'>,
   >(
     httpStatus: THTTPStatus,
@@ -94,8 +94,8 @@ export type RouteContext<TAccessCondition extends AccessCondition = false> = {
   limitRate: (params: RateLimitingParams)=> Promise<
     Result.Either<
       EndpointError<
-        RateLimitingError,
-        HTTPStatus.TooManyRequests
+        typeof RateLimitingError[keyof typeof RateLimitingError],
+        typeof HTTPStatus.TooManyRequests
       >,
       {
         hits: number

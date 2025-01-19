@@ -1,27 +1,27 @@
-export enum ValidationErrorCode {
-  InvalidProperties = 'INVALID_PROPERTIES',
-  MissingProperties = 'MISSING_PROPERTIES',
-  EmptyTarget = 'EMPTY_TARGET',
-}
+export const ValidationErrorCode  = {
+  InvalidProperties: 'INVALID_PROPERTIES',
+  MissingProperties: 'MISSING_PROPERTIES',
+  EmptyTarget: 'EMPTY_TARGET',
+} as const
 
-export enum PropertyValidationErrorCode {
-  Missing = 'MISSING_PROPERTY',
-  Extraneous = 'EXTRANEOUS_PROPERTY',
-  Unmatching = 'UNMATCHING_PROPERTIES',
-  ExtraneousElement = 'EXTRANEOUS_ELEMENT',
-  MoreItemsExpected = 'MORE_ITEMS_EXPECTED',
-  LessItemsExpected = 'LESS_ITEMS_EXPECTED',
-  NumericConstraint = 'NUMERIC_CONSTRAINT',
-  StringConstraint = 'STRING_CONSTRAINT',
-}
+export const PropertyValidationErrorCode = {
+  Missing: 'MISSING_PROPERTY',
+  Extraneous: 'EXTRANEOUS_PROPERTY',
+  Unmatching: 'UNMATCHING_PROPERTIES',
+  ExtraneousElement: 'EXTRANEOUS_ELEMENT',
+  MoreItemsExpected: 'MORE_ITEMS_EXPECTED',
+  LessItemsExpected: 'LESS_ITEMS_EXPECTED',
+  NumericConstraint: 'NUMERIC_CONSTRAINT',
+  StringConstraint: 'STRING_CONSTRAINT',
+} as const
 
-export enum TraverseError {
-  InvalidDocumentId = 'INVALID_DOCUMENT_ID',
-  InvalidTempfile = 'INVALID_TEMPFILE',
-}
+export const TraverseError = {
+  InvalidDocumentId: 'INVALID_DOCUMENT_ID',
+  InvalidTempfile: 'INVALID_TEMPFILE',
+} as const
 
 export type PropertyValidationError = {
-  type: PropertyValidationErrorCode
+  type: typeof PropertyValidationErrorCode[keyof typeof PropertyValidationErrorCode]
   index?: number
   details?: {
     expected: unknown
@@ -30,17 +30,17 @@ export type PropertyValidationError = {
 }
 
 export type ValidationErrorInvalidProperties = {
-  code: ValidationErrorCode.InvalidProperties
+  code: typeof ValidationErrorCode.InvalidProperties
   details: Record<string, PropertyValidationError | ValidationError>
 }
 
 export type ValidationErrorMissingProperties = {
-  code: ValidationErrorCode.MissingProperties
+  code: typeof ValidationErrorCode.MissingProperties
   details: Record<string, { type: 'missing' }>
 }
 
 export type ValidationErrorEmptyTarget = {
-  code: ValidationErrorCode.EmptyTarget
+  code: typeof ValidationErrorCode.EmptyTarget
   details: {}
 }
 

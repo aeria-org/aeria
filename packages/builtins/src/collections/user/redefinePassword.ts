@@ -4,12 +4,12 @@ import { decodeToken, ObjectId } from '@aeriajs/core'
 import { Result, ACError, HTTPStatus } from '@aeriajs/types'
 import * as bcrypt from 'bcrypt'
 
-export enum ActivationError {
-  UserNotFound = 'USER_NOT_FOUND',
-  UserNotActive = 'USER_NOT_ACTIVE',
-  InvalidLink = 'INVALID_LINK',
-  InvalidToken = 'INVALID_TOKEN',
-}
+export const ActivationError = {
+  UserNotFound: 'USER_NOT_FOUND',
+  UserNotActive: 'USER_NOT_ACTIVE',
+  InvalidLink: 'INVALID_LINK',
+  InvalidToken: 'INVALID_TOKEN',
+} as const
 
 export const redefinePassword = async (
   payload:{

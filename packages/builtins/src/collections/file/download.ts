@@ -4,9 +4,9 @@ import { HTTPStatus, ACError } from '@aeriajs/types'
 import { ObjectId } from '@aeriajs/core'
 import * as fs from 'node:fs'
 
-export enum DownloadError {
-  RangeNotSatisfiable = 'RANGE_NOT_SATISFIABLE',
-}
+export const DownloadError = {
+  RangeNotSatisfiable: 'RANGE_NOT_SATISFIABLE',
+} as const
 
 export const download = async (
   payload: {

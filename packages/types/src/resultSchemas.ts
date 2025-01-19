@@ -32,7 +32,7 @@ export const resultSchema = <const TResult extends Property>(result: TResult) =>
 }
 
 export const endpointErrorSchema = <
-  const THTTPStatus extends HTTPStatus[],
+  const THTTPStatus extends typeof HTTPStatus[keyof typeof HTTPStatus][],
   const TCode extends string[],
 >(error: {
   httpStatus: THTTPStatus,

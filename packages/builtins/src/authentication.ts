@@ -18,10 +18,10 @@ export type SuccessfulAuthentication = {
   token: TokenRecipient
 }
 
-export enum AuthenticationError {
-  InvalidCredentials = 'INVALID_CREDENTIALS',
-  InactiveUser = 'INACTIVE_USER',
-}
+export const AuthenticationError = {
+  InvalidCredentials: 'INVALID_CREDENTIALS',
+  InactiveUser: 'INACTIVE_USER',
+} as const
 
 export const successfulAuthentication = async <TUser extends TokenableUser>(user: TUser, context: RouteContext): Promise<SuccessfulAuthentication> => {
   const tokenContent: Omit<AuthenticatedToken, 'authenticated'> = {

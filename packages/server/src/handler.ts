@@ -8,7 +8,7 @@ import { appendPagination } from './appendPagination.js'
 
 const postPipe = pipe([appendPagination])
 
-const getACErrorHttpCode = (code: ACError) => {
+const getACErrorHttpCode = (code: typeof ACError[keyof typeof ACError]) => {
   switch( code ) {
     case ACError.FunctionNotFound: return HTTPStatus.NotFound
     case ACError.FunctionNotExposed: return HTTPStatus.Forbidden

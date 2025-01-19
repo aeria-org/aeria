@@ -364,8 +364,8 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
 
 ): Promise<Result.Either<
   | ValidationError
-  | TraverseError
-  | ACError.InsecureOperator,
+  | typeof TraverseError[keyof typeof TraverseError]
+  | typeof ACError.InsecureOperator,
   TRecursionTarget
 >> => {
   const entries: Record<string, unknown> = {}
@@ -576,7 +576,7 @@ export const traverseDocument = async <TWhat>(
   }
 
   let
-    traverseError: TraverseError | undefined,
+    traverseError: typeof TraverseError[keyof typeof TraverseError] | undefined,
     validationError: Record<string, ValidationError> | ValidationErrorMissingProperties | undefined
 
   const mutateTarget = <TValue, TReturn>(fn: (value: TValue, ctx: PhaseContext)=> TReturn | Promise<TReturn>) => {

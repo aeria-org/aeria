@@ -21,18 +21,18 @@ export type RoleFromAccessCondition<TAccessCondition extends AccessCondition | u
             ? UserRole
             : never
 
-export enum ACError {
-  AuthenticationError = 'AUTHENTICATION_ERROR',
-  AuthorizationError = 'AUTHORIZATION_ERROR',
-  FunctionNotFound = 'FUNCTION_NOT_FOUND',
-  FunctionNotExposed = 'FUNCTION_NOT_EXPOSED',
-  TargetImmutable = 'TARGET_IMMUTABLE',
-  InvalidLimit = 'INVALID_LIMIT',
-  OwnershipError = 'OWNERSHIP_ERROR',
-  ResourceNotFound = 'RESOURCE_NOT_FOUND',
-  InsecureOperator = 'INSECURE_OPERATOR',
-  MalformedInput = 'MALFORMED_INPUT',
-  UniquenessViolated = 'UNIQUENESS_VIOLATED',
-  UnknownError = 'UNKNOWN_ERROR',
-}
+export const ACError = {
+  AuthenticationError: 'AUTHENTICATION_ERROR',
+  AuthorizationError: 'AUTHORIZATION_ERROR',
+  FunctionNotFound: 'FUNCTION_NOT_FOUND',
+  FunctionNotExposed: 'FUNCTION_NOT_EXPOSED',
+  TargetImmutable: 'TARGET_IMMUTABLE',
+  InvalidLimit: 'INVALID_LIMIT',
+  OwnershipError: 'OWNERSHIP_ERROR',
+  ResourceNotFound: 'RESOURCE_NOT_FOUND',
+  InsecureOperator: 'INSECURE_OPERATOR',
+  MalformedInput: 'MALFORMED_INPUT',
+  UniquenessViolated: 'UNIQUENESS_VIOLATED',
+  UnknownError: 'UNKNOWN_ERROR',
+} as const
 

@@ -53,7 +53,7 @@ const getPropertyType = (property: Property) => {
 }
 
 const makePropertyError = <
-  TCode extends PropertyValidationErrorCode,
+  TCode extends typeof PropertyValidationErrorCode[keyof typeof PropertyValidationErrorCode],
   TDetails extends PropertyValidationError['details'],
 >(type: TCode, details?: TDetails) => {
   return ({

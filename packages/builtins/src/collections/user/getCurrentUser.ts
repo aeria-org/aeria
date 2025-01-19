@@ -4,11 +4,11 @@ import { Result } from '@aeriajs/types'
 import { get } from '@aeriajs/core'
 import { defaultSuccessfulAuthentication } from '../../authentication.js'
 
-export enum ActivationError {
-  UserNotFound = 'USER_NOT_FOUND',
-  AlreadyActiveUser = 'ALREADY_ACTIVE_USER',
-  InvalidLink = 'INVALID_LINK',
-}
+export const ActivationError = {
+  UserNotFound: 'USER_NOT_FOUND',
+  AlreadyActiveUser: 'ALREADY_ACTIVE_USER',
+  InvalidLink: 'INVALID_LINK',
+} as const
 
 export const getCurrentUser = async (_payload: undefined, context: Context<typeof description>) => {
   if( !context.token.authenticated ) {
