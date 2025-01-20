@@ -19,6 +19,8 @@ export const TokenType = {
   MacroName: 'MACRO_NAME',
 } as const
 
+export type TokenType = typeof TokenType[keyof typeof TokenType]
+
 export type TypeMap = {
   [TokenType.Number]: number
   [TokenType.Boolean]: boolean

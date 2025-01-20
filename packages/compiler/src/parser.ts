@@ -324,7 +324,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
   }): AST.PropertyNode => {
     let property: AST.PropertyNode['property']
     let nestedProperties: Record<string, AST.PropertyNode> | undefined
-    let modifierToken: Token<TokenType.Identifier> | undefined
+    let modifierToken: Token<typeof TokenType.Identifier> | undefined
 
     if( match(TokenType.LeftSquareBracket) ) {
       consume(TokenType.LeftSquareBracket)
