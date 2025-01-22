@@ -1,4 +1,5 @@
-import { TokenType, type Token, type Location } from './token.js'
+import type { TokenType, Token, Location } from './token.js'
+import { TokenTypes } from './token.js'
 import { Diagnostic } from './diagnostic.js'
 
 type TokenConfig = {
@@ -102,56 +103,56 @@ const TOKENS: TokenConfig[] = [
     matcher: /\r?[ \t]+/,
   },
   {
-    type: TokenType.LineBreak,
+    type: TokenTypes.LineBreak,
     matcher: '\n',
   },
   {
-    type: TokenType.Comment,
+    type: TokenTypes.Comment,
     matcher: '//',
   },
   {
-    type: TokenType.LeftBracket,
+    type: TokenTypes.LeftBracket,
     matcher: '{',
   },
   {
-    type: TokenType.RightBracket,
+    type: TokenTypes.RightBracket,
     matcher: '}',
   },
   {
-    type: TokenType.LeftParens,
+    type: TokenTypes.LeftParens,
     matcher: '(',
   },
   {
-    type: TokenType.RightParens,
+    type: TokenTypes.RightParens,
     matcher: ')',
   },
   {
-    type: TokenType.LeftSquareBracket,
+    type: TokenTypes.LeftSquareBracket,
     matcher: '[',
   },
   {
-    type: TokenType.RightSquareBracket,
+    type: TokenTypes.RightSquareBracket,
     matcher: ']',
   },
   {
-    type: TokenType.Pipe,
+    type: TokenTypes.Pipe,
     matcher: '|',
   },
   {
-    type: TokenType.Comma,
+    type: TokenTypes.Comma,
     matcher: ',',
   },
   {
-    type: TokenType.Dot,
+    type: TokenTypes.Dot,
     matcher: '.',
   },
   {
-    type: TokenType.Number,
+    type: TokenTypes.Number,
     matcher: /[0-9]+(\.[0-9]+)?/,
     construct: Number,
   },
   {
-    type: TokenType.Boolean,
+    type: TokenTypes.Boolean,
     matcher: [
       'true',
       'false',
@@ -159,26 +160,26 @@ const TOKENS: TokenConfig[] = [
     construct: Boolean,
   },
   {
-    type: TokenType.Keyword,
+    type: TokenTypes.Keyword,
     matcher: Array.from(keywordsSet),
     condition: (state) => !state.inProperties,
   },
   {
-    type: TokenType.MacroName,
+    type: TokenTypes.MacroName,
     matcher: /[a-zA-Z]([a-zA-Z0-9]|_)+\(/,
     valueExtractor: (value) => value.slice(0, -1),
   },
   {
-    type: TokenType.Identifier,
+    type: TokenTypes.Identifier,
     matcher: /([a-zA-Z0-9]|_)+/,
   },
   {
-    type: TokenType.QuotedString,
+    type: TokenTypes.QuotedString,
     matcher: /"([^"]+)"/,
     valueExtractor: (value) => value.slice(1, -1),
   },
   {
-    type: TokenType.AttributeName,
+    type: TokenTypes.AttributeName,
     matcher: /@[a-zA-Z0-9]+/,
     valueExtractor: (value) => value.slice(1),
   },
@@ -239,12 +240,12 @@ export const tokenize = function (input: string) {
 
         switch( type ) {
           case null: break
-          case TokenType.LineBreak:
+          case TokenTypes.LineBreak:
             line++
             end = 0
             start = 0
             break
-          case TokenType.Comment: {
+          case TokenTypes.Comment: {
             while( input[index++] !== '\n' ) {}
             line++
             break
@@ -267,7 +268,7 @@ export const tokenize = function (input: string) {
             }
 
             switch( type ) {
-              case TokenType.LeftBracket: {
+              case TokenTypes.LeftBracket: {
                 const lastToken = tokens.at(-1)
                 if( lastToken ) {
                   switch( lastToken.value ) {
@@ -282,7 +283,7 @@ export const tokenize = function (input: string) {
                 }
                 break
               }
-              case TokenType.RightBracket: {
+              case TokenTypes.RightBracket: {
                 if( state.inProperties ) {
                   state.inProperties = false
                 }

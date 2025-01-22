@@ -1,5 +1,6 @@
 import type * as AST from '../ast'
-import { functions as aeriaFunctions, type Property } from 'aeria'
+import type { Property } from '@aeriajs/types'
+import { functions as aeriaFunctions } from '@aeriajs/core'
 
 export const aeriaPackageName = 'aeria'
 

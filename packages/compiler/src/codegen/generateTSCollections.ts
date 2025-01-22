@@ -1,4 +1,4 @@
-import type { Collection, Property } from 'aeria'
+import type { Collection, Property } from '@aeriajs/types'
 import type * as AST from '../ast.js'
 import { getProperties, stringify, makeASTImports, resizeFirstChar, aeriaPackageName, getCollectionId, type StringifyProperty, UnquotedSymbol } from './utils.js'
 

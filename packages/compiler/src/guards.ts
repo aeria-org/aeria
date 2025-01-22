@@ -1,4 +1,4 @@
-import * as AST from './ast'
+import * as AST from './ast.js'
 
 export const isNativePropertyType = (value: string): value is keyof typeof AST.PropertyType => {
   return value in AST.PropertyType

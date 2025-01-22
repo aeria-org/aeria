@@ -1,6 +1,6 @@
-import type * as aeria from 'aeria'
 import type * as AST from '../ast.js'
-import { errorSchema, type Property, resultSchema } from 'aeria'
+import type { Property } from '@aeriajs/types'
+import { errorSchema, resultSchema } from '@aeriajs/types'
 import { getProperties, propertyToSchema, stringify, UnquotedSymbol, type StringifyProperty } from './utils.js'
 
 export const generateContracts = (ast: AST.Node[]) => {
@@ -11,7 +11,7 @@ export const generateContracts = (ast: AST.Node[]) => {
 }
 
 const makeJSContractsCode = (ast: AST.Node[]) => {
-  const imports = new Set<keyof typeof aeria>(['defineContract'])
+  const imports = new Set<string>(['defineContract'])
 
   const getCodeForResponse = (responseProperty: AST.PropertyNode) => {
     const { kind, modifier, ...propertyNode } = responseProperty

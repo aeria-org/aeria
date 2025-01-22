@@ -1,4 +1,4 @@
-import type * as aeria from 'aeria'
+import { Collection, Property } from '@aeriajs/types'
 import type * as AST from '../ast.js'
 import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, type StringifyProperty, UnquotedSymbol } from './utils.js'
 
@@ -6,7 +6,7 @@ const initialImportedFunctions = [
   'extendCollection',
   'defineCollection',
   'defineContract',
-] satisfies (keyof typeof aeria)[]
+]
 
 export const generateJSCollections = (ast: AST.Node[]) => {
   let javascriptCode = ''
@@ -44,10 +44,10 @@ const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
 }
 
 const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
-  const collectionSchema: Omit<aeria.Collection, 'item' | 'functions'> & { functions?: StringifyProperty } = {
+  const collectionSchema: Omit<Collection, 'item' | 'functions'> & { functions?: StringifyProperty } = {
     description: {
       $id: collectionId,
-      properties: getProperties(collectionNode.properties) as Record<string, aeria.Property>,
+      properties: getProperties(collectionNode.properties) as Record<string, Property>,
     },
   }
 

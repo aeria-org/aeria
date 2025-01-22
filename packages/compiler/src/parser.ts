@@ -1,8 +1,9 @@
 import type { CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
+import type { TokenType, Token, Location } from './token.js'
+import { TokenTypes } from './token.js'
 import { DESCRIPTION_PRESETS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { icons } from '@phosphor-icons/core'
 import { Diagnostic } from './diagnostic.js'
-import { TokenType, type Token, type Location } from './token.js'
 import * as AST from './ast.js'
 import * as guards from './guards.js'
 import * as lexer from './lexer.js'
@@ -60,9 +61,9 @@ export const parse = (tokens: (Token | undefined)[]) => {
   }
 
   const foldBrackets = () => {
-    if( match(TokenType.LeftBracket) ) {
+    if( match(TokenTypes.LeftBracket) ) {
       advance()
-      while( !match(TokenType.RightBracket) ) {
+      while( !match(TokenTypes.RightBracket) ) {
         foldBrackets()
         advance()
       }
@@ -113,26 +114,26 @@ export const parse = (tokens: (Token | undefined)[]) => {
   const recover = (keywords: readonly lexer.Keyword[]) => {
     let token: Token | undefined
     while ( token = tokens[++index] ) {
-      if( token.type === TokenType.Keyword && keywords.includes(token.value as lexer.Keyword) ) {
+      if( token.type === TokenTypes.Keyword && keywords.includes(token.value as lexer.Keyword) ) {
         break
       }
     }
   }
 
   const parseArray = <TTokenType extends TokenType>(type: TTokenType) => {
-    consume(TokenType.LeftSquareBracket)
+    consume(TokenTypes.LeftSquareBracket)
 
     const array: unknown[] = []
-    while( !match(TokenType.RightSquareBracket) ) {
+    while( !match(TokenTypes.RightSquareBracket) ) {
       const { value } = consume(type)
       array.push(value)
 
-      if( match(TokenType.Comma) ) {
-        consume(TokenType.Comma)
+      if( match(TokenTypes.Comma) ) {
+        consume(TokenTypes.Comma)
       }
     }
 
-    consume(TokenType.RightSquareBracket)
+    consume(TokenTypes.RightSquareBracket)
     return array as Token<TTokenType>['value'][]
   }
 
@@ -140,10 +141,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
     const array: unknown[] = []
     const symbols: symbol[] = []
 
-    consume(TokenType.LeftBracket)
+    consume(TokenTypes.LeftBracket)
 
-    while( !match(TokenType.RightBracket) ) {
-      const { value: identifier, location } = consume(TokenType.Identifier, value)
+    while( !match(TokenTypes.RightBracket) ) {
+      const { value: identifier, location } = consume(TokenTypes.Identifier, value)
       const elemSymbol = Symbol()
 
       array.push(identifier)
@@ -151,7 +152,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
       locationMap.set(elemSymbol, location)
     }
 
-    consume(TokenType.RightBracket)
+    consume(TokenTypes.RightBracket)
     return {
       value: array as TValue extends readonly (infer E)[] ? E[] : string[],
       symbols,
@@ -162,26 +163,26 @@ export const parse = (tokens: (Token | undefined)[]) => {
     const array: Record<string, Record<string, unknown> | null> = {}
     let hasAttributes = false
 
-    consume(TokenType.LeftBracket)
+    consume(TokenTypes.LeftBracket)
 
-    while( !match(TokenType.RightBracket) ) {
-      const { value: identifier } = consume(TokenType.Identifier)
+    while( !match(TokenTypes.RightBracket) ) {
+      const { value: identifier } = consume(TokenTypes.Identifier)
       array[identifier] = {}
 
-      while( match(TokenType.AttributeName) ) {
+      while( match(TokenTypes.AttributeName) ) {
         hasAttributes = true
 
-        const { value: attributeName } = consume(TokenType.AttributeName)
-        if( match(TokenType.LeftParens) ) {
-          consume(TokenType.LeftParens)
-          consume(TokenType.RightParens)
+        const { value: attributeName } = consume(TokenTypes.AttributeName)
+        if( match(TokenTypes.LeftParens) ) {
+          consume(TokenTypes.LeftParens)
+          consume(TokenTypes.RightParens)
         } else {
           array[identifier][attributeName] = true
         }
       }
     }
 
-    consume(TokenType.RightBracket)
+    consume(TokenTypes.RightBracket)
     return hasAttributes
       ? array
       : Object.keys(array)
@@ -189,27 +190,27 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
   const parsePropertyAttributeValue = (attributeName: string, property: Property, location: Location) => {
     const consumeBoolean = () => {
-      if( match(TokenType.Boolean) ) {
-        const { value } = consume(TokenType.Boolean)
+      if( match(TokenTypes.Boolean) ) {
+        const { value } = consume(TokenTypes.Boolean)
         return value
       }
       return true
     }
 
     if( 'enum' in property && attributeName === 'values' ) {
-      property.enum = parseArray(TokenType.QuotedString)
+      property.enum = parseArray(TokenTypes.QuotedString)
       return
     }
 
     switch( attributeName ) {
       case 'icon': {
-        const { value } = consume(TokenType.QuotedString, ICON_NAMES)
+        const { value } = consume(TokenTypes.QuotedString, ICON_NAMES)
         property[attributeName] = value
         return
       }
       case 'hint':
       case 'description': {
-        const { value } = consume(TokenType.QuotedString)
+        const { value } = consume(TokenTypes.QuotedString)
         property[attributeName] = value
         return
       }
@@ -226,11 +227,11 @@ export const parse = (tokens: (Token | undefined)[]) => {
         case 'form':
         case 'populate':
         case 'indexes': {
-          property[attributeName] = parseArray(TokenType.Identifier)
+          property[attributeName] = parseArray(TokenTypes.Identifier)
           return
         }
         case 'populateDepth': {
-          const { value } = consume(TokenType.Number)
+          const { value } = consume(TokenTypes.Number)
           property[attributeName] = value
           return
         }
@@ -240,7 +241,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         switch( attributeName ) {
           case 'extensions':
           case 'accept': {
-            property[attributeName] = parseArray(TokenType.QuotedString)
+            property[attributeName] = parseArray(TokenTypes.QuotedString)
             return
           }
         }
@@ -252,43 +253,43 @@ export const parse = (tokens: (Token | undefined)[]) => {
         case 'string': {
           switch( attributeName ) {
             case 'format': {
-              const { value } = consume(TokenType.QuotedString, PROPERTY_FORMATS)
+              const { value } = consume(TokenTypes.QuotedString, PROPERTY_FORMATS)
               property[attributeName] = value
               return
             }
             case 'mask': {
-              if( match(TokenType.LeftSquareBracket) ) {
-                property[attributeName] = parseArray(TokenType.QuotedString)
+              if( match(TokenTypes.LeftSquareBracket) ) {
+                property[attributeName] = parseArray(TokenTypes.QuotedString)
                 return
               } else {
-                const { value } = consume(TokenType.QuotedString)
+                const { value } = consume(TokenTypes.QuotedString)
                 property[attributeName] = value
                 return
               }
             }
             case 'maskedValue': {
-              const { value } = consume(TokenType.Boolean)
+              const { value } = consume(TokenTypes.Boolean)
               property[attributeName] = value
               return
             }
             case 'minLength':
             case 'maxLength': {
-              const { value } = consume(TokenType.Number)
+              const { value } = consume(TokenTypes.Number)
               property[attributeName] = value
               return
             }
             case 'inputType': {
-              const { value } = consume(TokenType.QuotedString, PROPERTY_INPUT_TYPES)
+              const { value } = consume(TokenTypes.QuotedString, PROPERTY_INPUT_TYPES)
               property[attributeName] = value
               return
             }
             case 'element': {
-              const { value } = consume(TokenType.QuotedString, PROPERTY_INPUT_ELEMENTS)
+              const { value } = consume(TokenTypes.QuotedString, PROPERTY_INPUT_ELEMENTS)
               property[attributeName] = value
               return
             }
             case 'placeholder': {
-              const { value } = consume(TokenType.QuotedString)
+              const { value } = consume(TokenTypes.QuotedString)
               property[attributeName] = value
               return
             }
@@ -302,12 +303,12 @@ export const parse = (tokens: (Token | undefined)[]) => {
             case 'exclusiveMaximum':
             case 'minimum':
             case 'maximum': {
-              const { value } = consume(TokenType.Number)
+              const { value } = consume(TokenTypes.Number)
               property[attributeName] = value
               return
             }
             case 'placeholder': {
-              const { value } = consume(TokenType.QuotedString)
+              const { value } = consume(TokenTypes.QuotedString)
               property[attributeName] = value
               return
             }
@@ -324,11 +325,11 @@ export const parse = (tokens: (Token | undefined)[]) => {
   }): AST.PropertyNode => {
     let property: AST.PropertyNode['property']
     let nestedProperties: Record<string, AST.PropertyNode> | undefined
-    let modifierToken: Token<TokenType.Identifier> | undefined
+    let modifierToken: Token<typeof TokenTypes.Identifier> | undefined
 
-    if( match(TokenType.LeftSquareBracket) ) {
-      consume(TokenType.LeftSquareBracket)
-      consume(TokenType.RightSquareBracket)
+    if( match(TokenTypes.LeftSquareBracket) ) {
+      consume(TokenTypes.LeftSquareBracket)
+      consume(TokenTypes.RightSquareBracket)
 
       const { property: items, nestedProperties } = parsePropertyType(options)
       property = {
@@ -345,13 +346,13 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
     if( options.allowModifiers ) {
       const nextToken = next()
-      if( match(TokenType.Identifier) && (nextToken.type === TokenType.LeftBracket || nextToken.type === TokenType.Identifier) ) {
-        modifierToken = consume(TokenType.Identifier)
+      if( match(TokenTypes.Identifier) && (nextToken.type === TokenTypes.LeftBracket || nextToken.type === TokenTypes.Identifier) ) {
+        modifierToken = consume(TokenTypes.Identifier)
       }
     }
 
-    if( match(TokenType.LeftBracket) ) {
-      consume(TokenType.LeftBracket)
+    if( match(TokenTypes.LeftBracket) ) {
+      consume(TokenTypes.LeftBracket)
 
       property = {
         type: 'object',
@@ -362,19 +363,19 @@ export const parse = (tokens: (Token | undefined)[]) => {
         },
       }
 
-      while( !match(TokenType.RightBracket) ) {
+      while( !match(TokenTypes.RightBracket) ) {
         const { value: keyword, location } = current()
         switch( keyword ) {
           case 'writable':
           case 'required': {
-            consume(TokenType.Keyword)
+            consume(TokenTypes.Keyword)
             const { value, symbols } = parseArrayBlock()
             property[keyword] = value
             property[AST.LOCATION_SYMBOL]!.arrays[keyword] = symbols
             break
           }
           case 'properties': {
-            consume(TokenType.Keyword)
+            consume(TokenTypes.Keyword)
             nestedProperties = parsePropertiesBlock(options)
             break
           }
@@ -383,10 +384,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
         }
       }
 
-      consume(TokenType.RightBracket)
+      consume(TokenTypes.RightBracket)
 
     } else {
-      const { value: identifier, location } = consume(TokenType.Identifier)
+      const { value: identifier, location } = consume(TokenTypes.Identifier)
       if( guards.isNativePropertyType(identifier) ) {
         switch( identifier ) {
           case 'enum': {
@@ -426,10 +427,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
       }
     }
 
-    while( match(TokenType.AttributeName) ) {
-      const { value: attributeName, location } = consume(TokenType.AttributeName)
-      if( match(TokenType.LeftParens) ) {
-        consume(TokenType.LeftParens)
+    while( match(TokenTypes.AttributeName) ) {
+      const { value: attributeName, location } = consume(TokenTypes.AttributeName)
+      if( match(TokenTypes.LeftParens) ) {
+        consume(TokenTypes.LeftParens)
         const attributeSymbol = Symbol()
         locationMap.set(attributeSymbol, next().location)
 
@@ -441,7 +442,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         property[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
 
         parsePropertyAttributeValue(attributeName, property, location)
-        consume(TokenType.RightParens)
+        consume(TokenTypes.RightParens)
 
       } else {
         parsePropertyAttributeValue(attributeName, property, location)
@@ -467,33 +468,33 @@ export const parse = (tokens: (Token | undefined)[]) => {
   const parsePropertiesBlock = (options = {
     allowModifiers: false,
   }) => {
-    consume(TokenType.LeftBracket)
+    consume(TokenTypes.LeftBracket)
 
     const properties: Record<string, AST.PropertyNode> = {}
-    while( !match(TokenType.RightBracket) ) {
+    while( !match(TokenTypes.RightBracket) ) {
       try {
-        const { value: propName } = consume(TokenType.Identifier)
+        const { value: propName } = consume(TokenTypes.Identifier)
         properties[propName] = parsePropertyType(options)
 
-        if( match(TokenType.Comma) ) {
-          consume(TokenType.Comma)
+        if( match(TokenTypes.Comma) ) {
+          consume(TokenTypes.Comma)
         }
       } catch( err ) {
         if( err instanceof Diagnostic ) {
           errors.push(err)
           recoverLoop: for( ;; ) {
             switch( current().type ) {
-              case TokenType.RightBracket:
-              case TokenType.Identifier: {
+              case TokenTypes.RightBracket:
+              case TokenTypes.Identifier: {
                 break recoverLoop
               }
             }
 
-            while( match(TokenType.AttributeName) ) {
+            while( match(TokenTypes.AttributeName) ) {
               advance()
-              if( match(TokenType.LeftParens) ) {
+              if( match(TokenTypes.LeftParens) ) {
                 advance()
-                while( !match(TokenType.RightParens) ) {
+                while( !match(TokenTypes.RightParens) ) {
                   advance()
                 }
               }
@@ -507,22 +508,22 @@ export const parse = (tokens: (Token | undefined)[]) => {
       }
     }
 
-    consume(TokenType.RightBracket)
+    consume(TokenTypes.RightBracket)
     return properties
   }
 
   const parseMultiplePropertyTypes = (options = {
     allowModifiers: false,
   }) => {
-    if( match(TokenType.Pipe) ) {
-      consume(TokenType.Pipe)
+    if( match(TokenTypes.Pipe) ) {
+      consume(TokenTypes.Pipe)
 
       const properties = []
       while( index < tokens.length ) {
         properties.push(parsePropertyType(options))
 
-        if( match(TokenType.Pipe) ) {
-          consume(TokenType.Pipe)
+        if( match(TokenTypes.Pipe) ) {
+          consume(TokenTypes.Pipe)
         } else {
           break
         }
@@ -535,8 +536,8 @@ export const parse = (tokens: (Token | undefined)[]) => {
   }
 
   const parseCollection = (ast: AST.ProgramNode): AST.CollectionNode => {
-    consume(TokenType.Keyword, 'collection')
-    const { value: name } = consume(TokenType.Identifier)
+    consume(TokenTypes.Keyword, 'collection')
+    const { value: name } = consume(TokenTypes.Identifier)
 
     const node: AST.CollectionNode = {
       kind: 'collection',
@@ -547,34 +548,34 @@ export const parse = (tokens: (Token | undefined)[]) => {
       },
     }
 
-    if( match(TokenType.Keyword, 'extends') ) {
-      consume(TokenType.Keyword)
-      const { value: packageName } = consume(TokenType.Identifier)
-      consume(TokenType.Dot)
+    if( match(TokenTypes.Keyword, 'extends') ) {
+      consume(TokenTypes.Keyword)
+      const { value: packageName } = consume(TokenTypes.Identifier)
+      consume(TokenTypes.Dot)
 
-      const { value: symbolName } = consume(TokenType.Identifier)
+      const { value: symbolName } = consume(TokenTypes.Identifier)
       node.extends = {
         packageName,
         symbolName: symbolName[0].toLowerCase() + symbolName.slice(1),
       }
     }
 
-    consume(TokenType.LeftBracket)
+    consume(TokenTypes.LeftBracket)
 
-    while( !match(TokenType.RightBracket) ) {
-      const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_KEYWORDS)
+    while( !match(TokenTypes.RightBracket) ) {
+      const { value: keyword } = consume(TokenTypes.Keyword, lexer.COLLECTION_KEYWORDS)
       try {
         switch( keyword ) {
           case 'owned': {
-            if( match(TokenType.QuotedString, 'on-write') ) {
-              node.owned = consume(TokenType.QuotedString).value === 'true'
+            if( match(TokenTypes.QuotedString, 'on-write') ) {
+              node.owned = consume(TokenTypes.QuotedString).value === 'true'
             } else {
-              node.owned = consume(TokenType.Boolean).value
+              node.owned = consume(TokenTypes.Boolean).value
             }
             break
           }
           case 'icon': {
-            const { value } = consume(TokenType.QuotedString, ICON_NAMES)
+            const { value } = consume(TokenTypes.QuotedString, ICON_NAMES)
             node.icon = value
             break
           }
@@ -624,22 +625,22 @@ export const parse = (tokens: (Token | undefined)[]) => {
       }
     }
 
-    consume(TokenType.RightBracket)
+    consume(TokenTypes.RightBracket)
     return node
   }
 
   const parseContract = (): AST.ContractNode => {
-    consume(TokenType.Keyword, 'contract')
-    const { value: name } = consume(TokenType.Identifier)
-    consume(TokenType.LeftBracket)
+    consume(TokenTypes.Keyword, 'contract')
+    const { value: name } = consume(TokenTypes.Identifier)
+    consume(TokenTypes.LeftBracket)
 
     const node: AST.ContractNode = {
       kind: 'contract',
       name,
     }
 
-    while( !match(TokenType.RightBracket) ) {
-      const { value: keyword } = consume(TokenType.Keyword, lexer.CONTRACT_KEYWORDS)
+    while( !match(TokenTypes.RightBracket) ) {
+      const { value: keyword } = consume(TokenTypes.Keyword, lexer.CONTRACT_KEYWORDS)
       switch( keyword ) {
         case 'payload': {
           node.payload = parsePropertyType({
@@ -662,21 +663,21 @@ export const parse = (tokens: (Token | undefined)[]) => {
       }
     }
 
-    consume(TokenType.RightBracket)
+    consume(TokenTypes.RightBracket)
     return node
   }
 
   const parseFunctionsBlock = (ast: AST.ProgramNode) => {
-    consume(TokenType.LeftBracket)
+    consume(TokenTypes.LeftBracket)
 
     const functions: AST.CollectionNode['functions'] = {}
-    while( !match(TokenType.RightBracket) ) {
-      if( match(TokenType.MacroName) ) {
-        const { value: macroName } = consume(TokenType.MacroName, ['include'])
+    while( !match(TokenTypes.RightBracket) ) {
+      if( match(TokenTypes.MacroName) ) {
+        const { value: macroName } = consume(TokenTypes.MacroName, ['include'])
 
         switch( macroName ) {
           case 'include': {
-            const { value: functionSetName, location } = consume(TokenType.Identifier)
+            const { value: functionSetName, location } = consume(TokenTypes.Identifier)
             const functionset = ast.functionsets.find((node) => node.name === functionSetName)
 
             if( !functionset ) {
@@ -684,7 +685,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
             }
 
             Object.assign(functions, functionset.functions)
-            consume(TokenType.RightParens)
+            consume(TokenTypes.RightParens)
           }
 
         }
@@ -692,25 +693,25 @@ export const parse = (tokens: (Token | undefined)[]) => {
         continue
       }
 
-      const { value: functionName } = consume(TokenType.Identifier)
+      const { value: functionName } = consume(TokenTypes.Identifier)
       functions[functionName] = {
         accessCondition: false,
       }
 
-      while( match(TokenType.AttributeName, 'expose') ) {
-        consume(TokenType.AttributeName, 'expose')
-        if( match(TokenType.LeftParens) ) {
-          consume(TokenType.LeftParens)
-          if( match(TokenType.Boolean) ) {
-            const { value } = consume(TokenType.Boolean)
+      while( match(TokenTypes.AttributeName, 'expose') ) {
+        consume(TokenTypes.AttributeName, 'expose')
+        if( match(TokenTypes.LeftParens) ) {
+          consume(TokenTypes.LeftParens)
+          if( match(TokenTypes.Boolean) ) {
+            const { value } = consume(TokenTypes.Boolean)
             functions[functionName] = {
               accessCondition: value,
             }
-          } else if( match(TokenType.QuotedString, [
+          } else if( match(TokenTypes.QuotedString, [
             'unauthenticated',
             'unauthenticated-only',
           ]) ) {
-            const { value } = consume(TokenType.QuotedString, [
+            const { value } = consume(TokenTypes.QuotedString, [
               'unauthenticated',
               'unauthenticated-only',
             ])
@@ -718,13 +719,13 @@ export const parse = (tokens: (Token | undefined)[]) => {
               accessCondition: value,
             }
           } else {
-            const value = parseArray(TokenType.QuotedString)
+            const value = parseArray(TokenTypes.QuotedString)
             functions[functionName] = {
               accessCondition: value as readonly UserRole[],
             }
           }
 
-          consume(TokenType.RightParens)
+          consume(TokenTypes.RightParens)
 
         } else {
           functions[functionName] = {
@@ -734,13 +735,13 @@ export const parse = (tokens: (Token | undefined)[]) => {
       }
     }
 
-    consume(TokenType.RightBracket)
+    consume(TokenTypes.RightBracket)
     return functions
   }
 
   const parseFunctionSet = (ast: AST.ProgramNode): AST.FunctionSetNode => {
-    consume(TokenType.Keyword, 'functionset')
-    const { value: name } = consume(TokenType.Identifier)
+    consume(TokenTypes.Keyword, 'functionset')
+    const { value: name } = consume(TokenTypes.Identifier)
     const node: AST.FunctionSetNode = {
       kind: 'functionset',
       name,
@@ -753,10 +754,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
   const parseActionsBlock = () => {
     const actions: CollectionActions = {}
 
-    consume(TokenType.LeftBracket)
-    while( !match(TokenType.RightBracket) ) {
-      const { value: actionName } = consume(TokenType.Identifier)
-      consume(TokenType.LeftBracket)
+    consume(TokenTypes.LeftBracket)
+    while( !match(TokenTypes.RightBracket) ) {
+      const { value: actionName } = consume(TokenTypes.Identifier)
+      consume(TokenTypes.LeftBracket)
 
       const baseSlots: CollectionAction = {}
 
@@ -780,34 +781,34 @@ export const parse = (tokens: (Token | undefined)[]) => {
         | 'event'
         | undefined
 
-      while( !match(TokenType.RightBracket) ) {
-        const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_ACTIONS_KEYWORDS)
+      while( !match(TokenTypes.RightBracket) ) {
+        const { value: keyword } = consume(TokenTypes.Keyword, lexer.COLLECTION_ACTIONS_KEYWORDS)
         switch( keyword ) {
           case 'icon': {
-            const { value } = consume(TokenType.QuotedString, ICON_NAMES)
+            const { value } = consume(TokenTypes.QuotedString, ICON_NAMES)
             baseSlots[keyword] = value
             break
           }
           case 'label': {
-            const { value } = consume(TokenType.QuotedString)
+            const { value } = consume(TokenTypes.QuotedString)
             baseSlots[keyword] = value
             break
           }
           case 'ask':
           case 'button':
           case 'translate': {
-            const { value } = consume(TokenType.Boolean)
+            const { value } = consume(TokenTypes.Boolean)
             baseSlots[keyword] = value
             break
           }
           case 'roles':
           case 'requires': {
-            const value = parseArray(TokenType.Identifier)
+            const value = parseArray(TokenTypes.Identifier)
             baseSlots[keyword] = value
             break
           }
           case 'route': {
-            const { value } = consume(TokenType.QuotedString)
+            const { value } = consume(TokenTypes.QuotedString)
             actionType = 'route'
             slots.route.route.name = value
             break
@@ -815,28 +816,28 @@ export const parse = (tokens: (Token | undefined)[]) => {
           case 'setItem':
           case 'fetchItem':
           case 'clearItem': {
-            const { value } = consume(TokenType.Boolean)
+            const { value } = consume(TokenTypes.Boolean)
             slots.route.route[keyword] = value
             break
           }
           case 'function': {
-            const { value } = consume(TokenType.QuotedString)
+            const { value } = consume(TokenTypes.QuotedString)
             actionType = 'function'
             slots.function.function = value
             break
           }
           case 'effect': {
-            const { value } = consume(TokenType.QuotedString)
+            const { value } = consume(TokenTypes.QuotedString)
             slots.function.effect = value
             break
           }
           case 'selection': {
-            const { value } = consume(TokenType.Boolean)
+            const { value } = consume(TokenTypes.Boolean)
             slots.function.selection = value
             break
           }
           case 'event': {
-            const { value } = consume(TokenType.QuotedString)
+            const { value } = consume(TokenTypes.QuotedString)
             actionType = 'event'
             slots.event.event = value
             break
@@ -853,26 +854,26 @@ export const parse = (tokens: (Token | undefined)[]) => {
         actions[actionName] = baseSlots
       }
 
-      consume(TokenType.RightBracket)
+      consume(TokenTypes.RightBracket)
     }
 
-    consume(TokenType.RightBracket)
+    consume(TokenTypes.RightBracket)
     return actions
   }
 
   const parseSearchBlock = (): SearchOptions => {
     const searchSlots: Partial<SearchOptions> = {}
-    const { location } = consume(TokenType.LeftBracket)
-    while( !match(TokenType.RightBracket) ) {
-      const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_SEARCH_KEYWORDS)
+    const { location } = consume(TokenTypes.LeftBracket)
+    while( !match(TokenTypes.RightBracket) ) {
+      const { value: keyword } = consume(TokenTypes.Keyword, lexer.COLLECTION_SEARCH_KEYWORDS)
       switch( keyword ) {
         case 'placeholder': {
-          const { value } = consume(TokenType.QuotedString)
+          const { value } = consume(TokenTypes.QuotedString)
           searchSlots[keyword] = value
           break
         }
         case 'exactMatches': {
-          const { value } = consume(TokenType.Boolean)
+          const { value } = consume(TokenTypes.Boolean)
           searchSlots[keyword] = value
           break
         }
@@ -889,7 +890,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
       throw new Diagnostic('"indexes" option is required', location)
     }
 
-    consume(TokenType.RightBracket)
+    consume(TokenTypes.RightBracket)
 
     return {
       ...searchSlots,

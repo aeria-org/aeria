@@ -1,4 +1,4 @@
-export const TokenType = {
+export const TokenTypes = {
   LineBreak: 'LINE_BREAK',
   Comment: 'COMMENT',
   LeftBracket: 'LEFT_BRACKET',
@@ -19,9 +19,11 @@ export const TokenType = {
   MacroName: 'MACRO_NAME',
 } as const
 
+export type TokenType = typeof TokenTypes[keyof typeof TokenTypes]
+
 export type TypeMap = {
-  [TokenType.Number]: number
-  [TokenType.Boolean]: boolean
+  [TokenTypes.Number]: number
+  [TokenTypes.Boolean]: boolean
 }
 
 export type Location = {
@@ -32,7 +34,7 @@ export type Location = {
 }
 
 export type Token<
-  TTokenType extends typeof TokenType[keyof typeof TokenType] = typeof TokenType[keyof typeof TokenType],
+  TTokenType extends TokenType = TokenType,
   TValue = TTokenType extends keyof TypeMap
     ? TypeMap[TTokenType]
     : string,
