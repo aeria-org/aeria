@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.233
+
+### Patch Changes
+
+- d1877a0: Translate user roles
+  - @aeriajs/core@0.0.233
+
 ## 0.0.232
 
 ### Patch Changes
