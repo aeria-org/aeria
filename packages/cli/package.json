@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.179",
   "description": "",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/index.js",
+      "import": "./src/index.ts",
       "types": "./dist/index.d.ts"
     },
     "./config/*": "./dist/config/*"
@@ -40,6 +40,7 @@
   "devDependencies": {
     "@aeriajs/builtins": "link:../builtins",
     "@aeriajs/common": "link:../common",
+    "@aeriajs/compiler": "link:../compiler",
     "@aeriajs/core": "link:../core",
     "@aeriajs/entrypoint": "link:../entrypoint",
     "@aeriajs/types": "link:../types"
@@ -47,11 +48,9 @@
   "peerDependencies": {
     "@aeriajs/builtins": "^0.0.231",
     "@aeriajs/common": "^0.0.132",
+    "@aeriajs/compiler": "link:../compiler",
     "@aeriajs/core": "^0.0.231",
     "@aeriajs/entrypoint": "^0.0.135",
     "@aeriajs/types": "^0.0.114"
-  },
-  "optionalDependencies": {
-    "aeria-lang": "0.0.11"
   }
 }
