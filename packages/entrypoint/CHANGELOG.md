@@ -1,5 +1,11 @@
 # @aeriajs/entrypoint
 
+## 0.0.136
+
+### Patch Changes
+
+- 32414bb: Exclude `unauthenticated` from `getAvailableRoles()`
+
 ## 0.0.135
 
 ### Patch Changes
