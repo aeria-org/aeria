@@ -46,20 +46,17 @@ export const generateScaffolding = async (options: CompilationOptions) => {
   return directories
 }
 
-export const compileFromFiles = async (fileList: string[], options: CompilationOptions) => {
-  await fs.promises.mkdir('schemas', {
-    recursive: true,
-  })
-  
+export const compileFromFiles = async (schemaDir: string, options: CompilationOptions) => {
   let code = ''
+  const fileList = await fs.promises.readdir(schemaDir)
   for (const file of fileList) {
-    const fileCode = await fs.promises.readFile(file)
+    const fileCode = await fs.promises.readFile(`${schemaDir}/${file}`)
     code += fileCode + '\n\n'
   }
-    
-  const compilation = await compile(code)
-  const codes = generateCode(compilation.ast.collections, ".aeria")
-  console.log(codes);
   
+  const compilation = await compile(code)
+  const compiledCode = generateCode(compilation.ast.collections, options.outDir)
+
+  return compiledCode
 }
 

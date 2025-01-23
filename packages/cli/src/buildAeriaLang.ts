@@ -4,9 +4,9 @@ import { compileFromFiles } from '@aeriajs/compiler'
 
 export const buildAeriaLang = async () => {
   const tsConfig = await getUserTsconfig()
-
+  
   try {
-    return await compileFromFiles(['schemas/*.aeria'], {
+    return await compileFromFiles('schemas', {
       outDir: '.aeria/out'
     })
 

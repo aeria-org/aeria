@@ -1,21 +1,77 @@
 import { generateContracts, generateExports, generateJSCollections, generateTSCollections } from './codegen/index.js'
 import type * as AST from './ast'
+import fs from 'fs'
+import path from 'path'
 
-export const generateCode = (ast: AST.Node[], aeriaFolderPath: string) => {
-  const generatedCodes = {
-    [aeriaFolderPath + '/out/collections/collections.d.ts']: generateTSCollections(ast),
-    [aeriaFolderPath + '/out/collections/collections.js']: generateJSCollections(ast),
+type GroupFolders = 'collections' | 'contracts'
+
+/**
+ * Maps the path tree into a object with the full paths
+ * {
+ *  folderX: {
+ *    folderY: {
+ *      file: ...
+ *    }
+ *  }
+ * }
+ * turns into
+ * {
+ *  ['rootDir/folderX/folderY/file']: ...
+ * }
+ */
+const generateFileStructure = async (fileTree: Record<string, string | object>, rootDir: string) => {
+  const mappedPaths: Record<string, string> = {}
+
+  const mapPathTree = async (tree: Record<string, string | object>, previousPath: string) => {
+    return new Promise<void>(async (resolve) => {
+      for (const treePath in tree) {
+        const currentPath = path.join(previousPath, treePath)
+        if (typeof tree[treePath] === "object") {
+          await mapPathTree(tree[treePath] as Record<string, string | object>, currentPath)
+          continue
+        }
+        
+        await fs.promises.mkdir(previousPath, {
+          recursive: true
+        })
+        
+        mappedPaths[currentPath] = tree[treePath]
+      }
+      resolve()
+    })
   }
+
+  await mapPathTree(fileTree, rootDir)
   
+  return mappedPaths
+}
+
+export const generateCode = async (ast: AST.Node[], outDir: string) => {
   const exports = generateExports(ast)
-  for (const path in exports) {
-    generatedCodes[aeriaFolderPath + `/${path}`] = exports[path] 
+  const contracts = generateContracts(ast)
+
+  const fileTree: Record<string, string | object> = {
+    ['collections']: {
+      ['collections.d.ts']: generateTSCollections(ast),
+      ['collections.js']: generateJSCollections(ast),
+      ['index.d.ts']: exports.collections.dTs,
+      ['index.js']: exports.collections.js,
+    },
+    ['contracts']: {
+      ['contracts.js']: contracts.js,
+      ['contracts.d.ts']: contracts.dTs,
+      ['index.d.ts']: exports.contracts.dTs,
+      ['index.js']: exports.contracts.js,
+    },
+    ['index.d.ts']: exports.main.dTs,
+    ['index.js']: exports.main.js,
   }
   
-  const contracts = generateContracts(ast)
-  for (const path in generateContracts(ast)) {
-    generatedCodes[aeriaFolderPath + `/${path}`] = contracts[path as keyof typeof contracts] 
+  const fileStructure = await generateFileStructure(fileTree, outDir)
+  
+  for (const path in fileStructure) {
+    await fs.promises.writeFile(path, fileStructure[path])
   }
 
-  return ast
+  return fileStructure
 }

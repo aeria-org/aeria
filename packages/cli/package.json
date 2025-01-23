@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.179",
   "description": "",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "exports": {
     ".": {
-      "import": "./src/index.ts",
+      "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     },
     "./config/*": "./dist/config/*"

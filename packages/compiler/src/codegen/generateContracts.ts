@@ -5,8 +5,8 @@ import { getProperties, propertyToSchema, stringify, UnquotedSymbol, type String
 
 export const generateContracts = (ast: AST.Node[]) => {
   return {
-    ['out/contracts/contracts.js']: makeJSContractsCode(ast),
-    ['out/contracts/contracts.d.ts']: makeTSContractsCode(ast),
+    js: makeJSContractsCode(ast),
+    dTs: makeTSContractsCode(ast),
   }
 }
 

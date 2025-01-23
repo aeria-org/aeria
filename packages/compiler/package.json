@@ -2,7 +2,7 @@
   "name": "@aeriajs/compiler",
   "version": "0.0.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "publishConfig": {
@@ -19,8 +19,7 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./src/index.ts",
+      "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     }
   },

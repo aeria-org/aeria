@@ -7,40 +7,6 @@ type SymbolToExport = {
   extend: string
 }
 
-//[FilePath, CodeGenerator]
-const codeGenerators = new Map<string, (symbols: SymbolToExport[]) => string>([
-  [
-    '/out/collections/index.js',
-    (symbols) => `export { ${symbols.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
-  ],
-  [
-    '/out/collections/index.d.ts',
-    (symbols) => `export { ${symbols.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
-  ],
-  [
-    '/out/contracts/index.js',
-    (_symbols) => 'export * from \'./contracts.js\'',
-  ],
-  [
-    '/out/contracts/index.d.ts',
-    (_symbols) => 'export * from \'./contracts.js\'',
-  ],
-  [
-    '/out/index.d.ts',
-    (symbols) =>
-      'export * as contracts from \'./contracts/index.js\'\n' +
-      'export * as collections from \'./collections/index.js\'\n' +
-            `export { ${symbols.map((symbol) => `${symbol.extend}, ${symbol.schema}`).join(', ')} } from './collections/collections.js'`,
-  ],
-  [
-    '/out/index.js',
-    (symbols) =>
-      'export * as contracts from \'./contracts/index.js\'\n' +
-      'export * as collections from \'./collections/index.js\'\n' +
-            `export { ${symbols.map((symbol) => symbol.extend).join(', ')} } from './collections/collections.js'`,
-  ],
-])
-
 export const generateExports = (ast: AST.Node[]) => {
   const symbolsToExport = ast.filter((node) => node.kind === 'collection').map<SymbolToExport>((node) => ({
     id: getCollectionId(node.name),
@@ -48,11 +14,23 @@ export const generateExports = (ast: AST.Node[]) => {
     extend: getExtendName(node.name),
   }))
 
-  const statements: Record<string, string> = {}
-  for( const [name, fn] of codeGenerators.entries() ) {
-    statements[name] = fn(symbolsToExport)
+  return {
+    collections: {
+      js: `export { ${symbolsToExport.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
+      dTs: `export { ${symbolsToExport.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
+    },
+    contracts: {
+      js: 'export * from \'./contracts.js\'',
+      dTs: 'export * from \'./contracts.js\'',
+    },
+    main: {
+      js: 'export * as contracts from \'./contracts/index.js\'\n' +
+        'export * as collections from \'./collections/index.js\'\n' +
+        `export { ${symbolsToExport.map((symbol) => symbol.extend).join(', ')} } from './collections/collections.js'`,
+      dTs: 'export * as contracts from \'./contracts/index.js\'\n' +
+        'export * as collections from \'./collections/index.js\'\n' +
+        `export { ${symbolsToExport.map((symbol) => `${symbol.extend}, ${symbol.schema}`).join(', ')} } from './collections/collections.js'`,
+    }
   }
-
-  return statements
 }
 
