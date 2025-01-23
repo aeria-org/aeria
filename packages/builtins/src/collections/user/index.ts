@@ -1,5 +1,6 @@
 import type { AccessCondition, Collection, Context } from '@aeriajs/types'
 import { defineCollection, get, getAll, remove, upload, removeFile } from '@aeriajs/core'
+import { functionSchemas } from '@aeriajs/types'
 import { description } from './description.js'
 import { authenticate } from './authenticate.js'
 import { activate } from './activate.js'
@@ -67,6 +68,19 @@ export const user = defineCollection({
 Object.assign(user, {
   exposedFunctions,
   contracts: {
+    editProfile: {
+      payload: {
+        type: 'object',
+        required: [],
+        properties: description.properties,
+      },
+      response: [
+        functionSchemas.insertError(),
+        {
+          $ref: 'user',
+        },
+      ],
+    },
     getCurrentUser: {
       response: {
         $ref: 'user',
