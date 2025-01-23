@@ -3,8 +3,6 @@ import type * as AST from './ast'
 import fs from 'fs'
 import path from 'path'
 
-type GroupFolders = 'collections' | 'contracts'
-
 /**
  * Maps the path tree into a object with the full paths
  * {
@@ -26,15 +24,15 @@ const generateFileStructure = async (fileTree: Record<string, string | object>, 
     return new Promise<void>(async (resolve) => {
       for (const treePath in tree) {
         const currentPath = path.join(previousPath, treePath)
-        if (typeof tree[treePath] === "object") {
+        if (typeof tree[treePath] === 'object') {
           await mapPathTree(tree[treePath] as Record<string, string | object>, currentPath)
           continue
         }
-        
+
         await fs.promises.mkdir(previousPath, {
-          recursive: true
+          recursive: true,
         })
-        
+
         mappedPaths[currentPath] = tree[treePath]
       }
       resolve()
@@ -42,7 +40,7 @@ const generateFileStructure = async (fileTree: Record<string, string | object>, 
   }
 
   await mapPathTree(fileTree, rootDir)
-  
+
   return mappedPaths
 }
 
@@ -66,9 +64,9 @@ export const generateCode = async (ast: AST.Node[], outDir: string) => {
     ['index.d.ts']: exports.main.dTs,
     ['index.js']: exports.main.js,
   }
-  
+
   const fileStructure = await generateFileStructure(fileTree, outDir)
-  
+
   for (const path in fileStructure) {
     await fs.promises.writeFile(path, fileStructure[path])
   }

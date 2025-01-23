@@ -30,7 +30,7 @@ export const generateExports = (ast: AST.Node[]) => {
       dTs: 'export * as contracts from \'./contracts/index.js\'\n' +
         'export * as collections from \'./collections/index.js\'\n' +
         `export { ${symbolsToExport.map((symbol) => `${symbol.extend}, ${symbol.schema}`).join(', ')} } from './collections/collections.js'`,
-    }
+    },
   }
 }
 

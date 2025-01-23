@@ -53,7 +53,7 @@ export const compileFromFiles = async (schemaDir: string, options: CompilationOp
     const fileCode = await fs.promises.readFile(`${schemaDir}/${file}`)
     code += fileCode + '\n\n'
   }
-  
+
   const compilation = await compile(code)
   const compiledCode = generateCode(compilation.ast.collections, options.outDir)
 
