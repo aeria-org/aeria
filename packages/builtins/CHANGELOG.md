@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.234
+
+### Patch Changes
+
+- 2d461b1: Add contract for `user.editProfile()`
+  - @aeriajs/core@0.0.234
+
 ## 0.0.233
 
 ### Patch Changes
