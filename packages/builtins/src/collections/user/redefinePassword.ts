@@ -12,7 +12,7 @@ export const ActivationError = {
 } as const
 
 export const redefinePassword = async (
-  payload:{
+  payload: {
     password?: string
     userId?: string
     token?: string
@@ -63,27 +63,19 @@ export const redefinePassword = async (
   }
 
   if( !password ) {
-    /* if( context.request.method === 'GET' ) {
-            return context.response.writeHead(302, {
-                location: `/user/activation?step=password&u=${userId}&t=${token}`,
-            }).end()
-        } */
     return context.error(HTTPStatus.UnprocessableContent, {
       code: ACError.MalformedInput,
     })
   }
 
-  await context.collection.model.updateOne(
-    {
-      _id: user._id,
+  await context.collection.model.updateOne({
+    _id: user._id,
+  }, {
+    $set: {
+      active: true,
+      password: await bcrypt.hash(password, 10),
     },
-    {
-      $set: {
-        active: true,
-        password: await bcrypt.hash(password, 10),
-      },
-    },
-  )
+  })
 
   return Result.result({
     userId: user._id,

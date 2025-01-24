@@ -99,6 +99,7 @@ export const description = defineDescription({
       picture: 'picture_file',
       information: 'email',
       active: 'active',
+      translateBadge: true,
     },
   },
   individualActions: {

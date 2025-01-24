@@ -3,10 +3,7 @@ import { HTTPStatus, ACError, type Context, type SchemaWithId, type PackReferenc
 import { insert as originalInsert } from '@aeriajs/core'
 import * as bcrypt from 'bcrypt'
 
-export const editProfile = async (
-  payload: Partial<PackReferences<SchemaWithId<typeof description>>> & Record<string, unknown>,
-  context: Context<typeof description>,
-) => {
+export const editProfile = async (payload: Partial<PackReferences<SchemaWithId<typeof description>>>, context: Context<typeof description>) => {
   const mutableProperties = context.config.security.mutableUserProperties
   if( !context.token.sub ){
     throw new Error

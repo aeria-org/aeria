@@ -1,5 +1,11 @@
 # @aeriajs/node-http
 
+## 0.0.160
+
+### Patch Changes
+
+- @aeriajs/http@0.0.160
+
 ## 0.0.159
 
 ### Patch Changes

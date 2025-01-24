@@ -1,5 +1,35 @@
 # @aeriajs/server
 
+## 0.0.236
+
+### Patch Changes
+
+- Updated dependencies [2d461b1]
+  - @aeriajs/builtins@0.0.234
+  - @aeriajs/core@0.0.234
+  - @aeriajs/server@0.0.236
+
+## 0.0.235
+
+### Patch Changes
+
+- Updated dependencies [d1877a0]
+  - @aeriajs/builtins@0.0.233
+  - @aeriajs/core@0.0.233
+  - @aeriajs/server@0.0.235
+
+## 0.0.234
+
+### Patch Changes
+
+- Updated dependencies [32414bb]
+  - @aeriajs/entrypoint@0.0.136
+  - @aeriajs/builtins@0.0.232
+  - @aeriajs/core@0.0.232
+  - @aeriajs/http@0.0.160
+  - @aeriajs/server@0.0.234
+  - @aeriajs/node-http@0.0.160
+
 ## 0.0.233
 
 ### Patch Changes

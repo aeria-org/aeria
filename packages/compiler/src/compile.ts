@@ -8,29 +8,31 @@ import fs from 'fs'
 import { generateCode } from './codegen.js'
 
 export type CompilationResult = {
+  success: boolean
   ast: AST.ProgramNode
   errors: Diagnostic[]
   errorCount: number
-  success: boolean
+  emittedFiles: string[]
 }
 
 export type CompilationOptions = {
   outDir: string
 }
 
-export const compile = async (input: string): Promise<CompilationResult> => {
-  const { tokens, errors: lexerErrors } = tokenize(input)
-  const { ast, errors: parserErrors } = parse(Array.from(tokens))
+export const parseAndCheck = async (input: string): Promise<CompilationResult> => {
+  const { errors: lexerErrors, tokens } = tokenize(input)
+  const { errors: parserErrors, ast } = parse(Array.from(tokens))
   const { errors: semanticErrors } = await analyze(ast)
 
   const errors = lexerErrors.concat(parserErrors, semanticErrors)
   const errorCount = errors.length
 
   return {
+    success: !errorCount,
     ast,
     errors,
     errorCount,
-    success: !errorCount,
+    emittedFiles: [],
   }
 }
 
@@ -54,8 +56,8 @@ export const compileFromFiles = async (schemaDir: string, options: CompilationOp
     code += fileCode + '\n\n'
   }
 
-  const compilation = await compile(code)
-  const compiledCode = generateCode(compilation.ast.collections, options.outDir)
+  const parsed = await parseAndCheck(code)
+  const compiledCode = generateCode(parsed.ast.collections, options.outDir)
 
   return compiledCode
 }
