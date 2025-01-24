@@ -20,8 +20,10 @@ export const generateJSCollections = (ast: AST.Node[]) => {
 }
 
 const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, string>) => {
-  return ast.filter((node) => node.kind === 'collection')
-    .map((collectionNode) => {
+  return Object.values(
+    ast
+    .filter((node) => node.kind === 'collection')
+    .reduce<Record<string, string>>((collectionCodes, collectionNode) => {
       const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
       const extendCollectionName = getExtendName(collectionNode.name)
 
@@ -35,12 +37,15 @@ const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
         ? modifiedSymbols[id]
         : id}, collection)`
 
-      return [
+      collectionCodes[collectionNode.name] = [
         '//' + collectionNode.name,
         collectionDefinition,
         collectionDeclaration,
       ].join('\n')
-    }).join('\n\n')
+
+      return collectionCodes
+    }, {})
+  ).join('\n\n')
 }
 
 const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
