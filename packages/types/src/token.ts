@@ -2,6 +2,8 @@ import type { ObjectId } from 'mongodb'
 import type { PackReferences } from './schema.js'
 import type { AccessCondition } from './accessControl.js'
 
+export type UserInfo = Omit<Collections['user']['item'], '_id' | 'roles'>
+
 export type UserRole =
   | (
     Collections['user']['item'] extends { roles: infer Roles }
@@ -21,8 +23,7 @@ export type UserRole =
 
 export type AuthenticatedToken<
   TAccessCondition extends AccessCondition = true,
-  TUserRole = UserRole,
-  TUserInfo = Omit<Collections['user']['item'], '_id' | 'roles'>,
+  TUserRole = UserRole
 > = {
   authenticated: true
   sub: ObjectId | null
@@ -35,8 +36,8 @@ export type AuthenticatedToken<
         : readonly []
   picture?: string
   userinfo: Partial<
-    | TUserInfo
-    | PackReferences<TUserInfo>
+    | UserInfo
+    | PackReferences<UserInfo>
   >
 }
 
@@ -52,8 +53,7 @@ export type TokenRecipient = {
 
 export type Token<
   TAccessCondition extends AccessCondition = false,
-  TUserRole = UserRole,
-  TUserInfo = Omit<Collections['user']['item'], '_id' | 'roles'>,
+  TUserRole = UserRole
 > = (
   false extends TAccessCondition
     ? false
@@ -66,6 +66,6 @@ export type Token<
   'unauthenticated-only' extends TAccessCondition
     ? UnauthenticatedToken
     :
-        | AuthenticatedToken<true, TUserRole, TUserInfo>
+        | AuthenticatedToken<true, TUserRole>
         | UnauthenticatedToken
 
