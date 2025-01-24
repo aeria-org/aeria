@@ -20,8 +20,7 @@ export const generateTSCollections = (ast: AST.Node[]): string => {
 
 /** Creates the code exporting the collection type, declaration, schema and extend for each collection and returns them in a string */
 const makeTSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, string>) => {
-  return Object.values(
-    ast
+  return Object.values(ast
     .filter((node): node is AST.CollectionNode => node.kind === 'collection')
     .reduce<Record<string, string>>((collectionCodes, collectionNode) => {
       const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
@@ -53,10 +52,8 @@ const makeTSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
         collectionExtend,
       ].join('\n')
 
-
       return collectionCodes
-    }, {})
-  ).join('\n\n')
+    }, {})).join('\n\n')
 }
 
 const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
