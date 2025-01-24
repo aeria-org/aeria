@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.115
+
+### Patch Changes
+
+- 158a285: Fix `context.token.userinfo` type
+
 ## 0.0.114
 
 ### Patch Changes
