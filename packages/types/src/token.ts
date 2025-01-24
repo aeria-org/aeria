@@ -23,7 +23,7 @@ export type UserRole =
 
 export type AuthenticatedToken<
   TAccessCondition extends AccessCondition = true,
-  TUserRole = UserRole
+  TUserRole = UserRole,
 > = {
   authenticated: true
   sub: ObjectId | null
@@ -53,7 +53,7 @@ export type TokenRecipient = {
 
 export type Token<
   TAccessCondition extends AccessCondition = false,
-  TUserRole = UserRole
+  TUserRole = UserRole,
 > = (
   false extends TAccessCondition
     ? false

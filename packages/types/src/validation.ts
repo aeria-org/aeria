@@ -1,4 +1,4 @@
-export const ValidationErrorCode  = {
+export const ValidationErrorCode = {
   InvalidProperties: 'INVALID_PROPERTIES',
   MissingProperties: 'MISSING_PROPERTIES',
   EmptyTarget: 'EMPTY_TARGET',
