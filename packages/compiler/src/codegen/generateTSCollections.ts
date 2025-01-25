@@ -69,9 +69,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
   }
 
   if( collectionNode.functions ) {
-    collectionSchema.functions = {
-      functions: makeTSFunctions(collectionNode.functions),
-    }
+    collectionSchema.functions = makeTSFunctions(collectionNode.functions)
   }
 
   return stringify(collectionSchema)

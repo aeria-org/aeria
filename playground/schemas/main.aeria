@@ -228,6 +228,7 @@ collection  Contacts {
     insert @expose
     remove @expose
     upload @expose
+    custom @expose(true)
   }
   presets {
    crud
