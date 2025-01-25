@@ -2,6 +2,7 @@ import { generateContracts, generateExports, generateJSCollections, generateTSCo
 import type * as AST from './ast'
 import fs from 'fs'
 import path from 'path'
+import { CompilationOptions } from './compile.js'
 
 /**
  * Maps the path tree into a object with the full paths
@@ -44,7 +45,7 @@ const generateFileStructure = async (fileTree: Record<string, string | object>, 
   return mappedPaths
 }
 
-export const generateCode = async (ast: AST.Node[], outDir: string) => {
+export const generateCode = async (ast: AST.Node[], options: CompilationOptions) => {
   const exports = generateExports(ast)
   const contracts = generateContracts(ast)
 
@@ -65,10 +66,12 @@ export const generateCode = async (ast: AST.Node[], outDir: string) => {
     ['index.js']: exports.main.js,
   }
 
-  const fileStructure = await generateFileStructure(fileTree, outDir)
-
-  for (const path in fileStructure) {
-    await fs.promises.writeFile(path, fileStructure[path])
+  const fileStructure = await generateFileStructure(fileTree, options.outDir)
+  
+  if (!options.dryRun) {  
+    for (const path in fileStructure) {
+      await fs.promises.writeFile(path, fileStructure[path])
+    }
   }
 
   return fileStructure

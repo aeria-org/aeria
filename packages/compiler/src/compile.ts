@@ -16,7 +16,8 @@ export type CompilationResult = {
 }
 
 export type CompilationOptions = {
-  outDir: string
+  outDir: string,
+  dryRun?: true
 }
 
 export const parseAndCheck = async (input: string): Promise<CompilationResult> => {
@@ -49,15 +50,16 @@ export const generateScaffolding = async (options: CompilationOptions) => {
 }
 
 export const compileFromFiles = async (schemaDir: string, options: CompilationOptions) => {
-  let code = ''
   const fileList = await fs.promises.readdir(schemaDir)
+  
+  let schemaCode = ''
   for (const file of fileList) {
     const fileCode = await fs.promises.readFile(`${schemaDir}/${file}`)
-    code += fileCode + '\n\n'
+    schemaCode += fileCode + '\n\n'
   }
 
-  const parsed = await parseAndCheck(code)
-  const compiledCode = generateCode(parsed.ast.collections, options.outDir)
+  const parsed = await parseAndCheck(schemaCode)
+  const compiledCode = generateCode(parsed.ast.collections, options)
 
   return compiledCode
 }
