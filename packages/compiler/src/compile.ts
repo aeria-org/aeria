@@ -1,11 +1,11 @@
-import path from 'path'
 import type * as AST from './ast.js'
 import type { Diagnostic } from './diagnostic.js'
 import { tokenize } from './lexer.js'
 import { parse } from './parser.js'
 import { analyze } from './semantic.js'
-import fs from 'fs'
 import { generateCode } from './codegen.js'
+import * as path from 'node:path'
+import * as fsPromises from 'node:fs/promises'
 
 export type CompilationResult = {
   success: boolean
@@ -41,7 +41,7 @@ export const generateScaffolding = async (options: CompilationOptions) => {
   const directories = [path.join(options.outDir, 'collections')]
 
   for( const dir of directories ) {
-    await fs.promises.mkdir(dir, {
+    await fsPromises.mkdir(dir, {
       recursive: true,
     })
   }
@@ -50,11 +50,11 @@ export const generateScaffolding = async (options: CompilationOptions) => {
 }
 
 export const compileFromFiles = async (schemaDir: string, options: CompilationOptions) => {
-  const fileList = await fs.promises.readdir(schemaDir)
+  const fileList = await fsPromises.readdir(schemaDir)
 
   let schemaCode = ''
   for (const file of fileList) {
-    const fileCode = await fs.promises.readFile(`${schemaDir}/${file}`)
+    const fileCode = await fsPromises.readFile(`${schemaDir}/${file}`)
     schemaCode += fileCode + '\n\n'
   }
 

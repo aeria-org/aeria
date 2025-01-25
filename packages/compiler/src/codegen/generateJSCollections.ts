@@ -1,6 +1,6 @@
-import { type Collection, type Property } from '@aeriajs/types'
+import type { Collection, Property } from '@aeriajs/types'
 import type * as AST from '../ast.js'
-import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, type StringifyProperty, UnquotedSymbol, defaultFunctions } from './utils.js'
+import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, StringifyProperty, UnquotedSymbol, defaultFunctions } from './utils.js'
 
 const initialImportedFunctions = [
   'extendCollection',

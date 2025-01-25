@@ -1,8 +1,8 @@
-import { generateContracts, generateExports, generateJSCollections, generateTSCollections } from './codegen/index.js'
+import type { CompilationOptions } from './compile.js'
 import type * as AST from './ast'
-import fs from 'fs'
-import path from 'path'
-import { type CompilationOptions } from './compile.js'
+import { generateContracts, generateExports, generateJSCollections, generateTSCollections } from './codegen/index.js'
+import * as fsPromises from 'node:fs/promises'
+import * as path from 'node:path'
 
 /**
  * Maps the path tree into a object with the full paths
@@ -30,7 +30,7 @@ const generateFileStructure = async (fileTree: Record<string, string | object>, 
           continue
         }
 
-        await fs.promises.mkdir(previousPath, {
+        await fsPromises.mkdir(previousPath, {
           recursive: true,
         })
 
@@ -70,7 +70,7 @@ export const generateCode = async (ast: AST.Node[], options: CompilationOptions)
 
   if (!options.dryRun) {
     for (const path in fileStructure) {
-      await fs.promises.writeFile(path, fileStructure[path])
+      await fsPromises.writeFile(path, fileStructure[path])
     }
   }
 
