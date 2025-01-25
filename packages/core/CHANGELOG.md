@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.236
+
+### Patch Changes
+
+- 2ef3d60: Fix `ExtendCollection<L, R>` type
+  - @aeriajs/builtins@0.0.236
+  - @aeriajs/security@0.0.236
+
 ## 0.0.235
 
 ### Patch Changes
