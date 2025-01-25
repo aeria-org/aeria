@@ -68,7 +68,7 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
 }
 
 const makeJSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
-  return Object.entries(functions).map(([key, value]) => defaultFunctions.includes(key)
+  return Object.entries(functions).map(([key, _value]) => defaultFunctions.includes(key)
     ? key
     : `${key}: () => { throw new Error('Function not implemented') }`).join(', ')
 }
