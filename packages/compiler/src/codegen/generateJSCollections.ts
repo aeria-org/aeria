@@ -1,6 +1,6 @@
 import { type Collection, type Property } from '@aeriajs/types'
 import type * as AST from '../ast.js'
-import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, type StringifyProperty, UnquotedSymbol } from './utils.js'
+import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, type StringifyProperty, UnquotedSymbol, defaultFunctions } from './utils.js'
 
 const initialImportedFunctions = [
   'extendCollection',
@@ -68,7 +68,7 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
 }
 
 const makeJSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
-  return Object.entries(functions).map(([key, value]) => value.fromFunctionSet
+  return Object.entries(functions).map(([key, value]) => defaultFunctions.includes(key)
     ? key
     : `${key}: () => { throw new Error('Function not implemented') }`).join(', ')
 }

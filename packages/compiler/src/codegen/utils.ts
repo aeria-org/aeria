@@ -3,6 +3,7 @@ import type { Property } from '@aeriajs/types'
 import { functions as aeriaFunctions } from '@aeriajs/core'
 
 export const aeriaPackageName = 'aeria'
+export const defaultFunctions = Object.keys(aeriaFunctions)
 
 export const ArraySymbol = Symbol('array')
 
@@ -25,7 +26,7 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
       }
 
       if (node.functions) {
-        const functionsToImport = Object.keys(node.functions).filter((key) => Object.keys(aeriaFunctions).includes(key))
+        const functionsToImport = Object.keys(node.functions).filter((key) => defaultFunctions.includes(key))
         if (functionsToImport.length > 0) {
           if (!(aeriaPackageName in imports)) {
             imports[aeriaPackageName] = new Set()

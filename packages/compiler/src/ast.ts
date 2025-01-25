@@ -55,8 +55,7 @@ export type CollectionNode = NodeBase<'collection'> & {
   individualActions?: CollectionActions
   properties: Record<string, PropertyNode>
   functions?: Record<string, {
-    accessCondition: AccessCondition,
-    fromFunctionSet?: true
+    accessCondition: AccessCondition
   }>
   required?: Record<string, unknown> | string[]
   indexes?: string[]

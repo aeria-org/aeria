@@ -1,6 +1,6 @@
 import type { Collection, Property } from '@aeriajs/types'
 import type * as AST from '../ast.js'
-import { getProperties, stringify, makeASTImports, resizeFirstChar, aeriaPackageName, getCollectionId, type StringifyProperty, UnquotedSymbol } from './utils.js'
+import { getProperties, stringify, makeASTImports, resizeFirstChar, aeriaPackageName, getCollectionId, type StringifyProperty, UnquotedSymbol, defaultFunctions } from './utils.js'
 
 const initialImportedTypes = [
   'Collection',
@@ -79,7 +79,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
 const makeTSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
   return Object.keys(functions).reduce<Record<string, StringifyProperty>>((acc, key) => {
     acc[key] = {
-      [UnquotedSymbol]: functions[key].fromFunctionSet
+      [UnquotedSymbol]: defaultFunctions.includes(key)
         ? `typeof ${key}`
         : '() => never',
     }

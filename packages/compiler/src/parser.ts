@@ -625,10 +625,6 @@ export const parse = (tokens: (Token | undefined)[]) => {
       }
     }
 
-    if (node.name === 'Contacts') {
-      console.log(node)
-    }
-
     consume(TokenTypes.RightBracket)
     return node
   }
