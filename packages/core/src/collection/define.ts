@@ -12,7 +12,9 @@ import type {
 import { deepMerge, freshItem } from '@aeriajs/common'
 
 export type ExtendCollection<
-  TLeftCollection extends Omit<Collection, 'item'>,
+  TLeftCollection extends Omit<Collection, 'item' | 'functions'> & {
+    functions?: unknown
+  },
   TRightCollection,
 > = TLeftCollection & TRightCollection & {
   item: SchemaWithId<(TLeftCollection & TRightCollection)['description']>
