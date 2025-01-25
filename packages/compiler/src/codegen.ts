@@ -2,7 +2,7 @@ import { generateContracts, generateExports, generateJSCollections, generateTSCo
 import type * as AST from './ast'
 import fs from 'fs'
 import path from 'path'
-import { CompilationOptions } from './compile.js'
+import { type CompilationOptions } from './compile.js'
 
 /**
  * Maps the path tree into a object with the full paths
@@ -67,8 +67,8 @@ export const generateCode = async (ast: AST.Node[], options: CompilationOptions)
   }
 
   const fileStructure = await generateFileStructure(fileTree, options.outDir)
-  
-  if (!options.dryRun) {  
+
+  if (!options.dryRun) {
     for (const path in fileStructure) {
       await fs.promises.writeFile(path, fileStructure[path])
     }

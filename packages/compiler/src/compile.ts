@@ -51,7 +51,7 @@ export const generateScaffolding = async (options: CompilationOptions) => {
 
 export const compileFromFiles = async (schemaDir: string, options: CompilationOptions) => {
   const fileList = await fs.promises.readdir(schemaDir)
-  
+
   let schemaCode = ''
   for (const file of fileList) {
     const fileCode = await fs.promises.readFile(`${schemaDir}/${file}`)
