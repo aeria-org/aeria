@@ -129,13 +129,13 @@ collection Ticket {
       "Reparando",
       "Resolvido"
     ] ) 
-    status_changed_by user
+    status_changed_by User
     priority enum @values([
       "168h",
       "72h",
       "24h"
     ])
-    description str @element("textarea")
+    description str @element("textarea") @mask("###")
     observation str @element("textarea")
     attached File @accept(["image/*"])
     created_at str @format("date-time")
@@ -174,7 +174,7 @@ collection Broadcast {
   }
   properties {
     title str
-    system topic
+    system Topic
     message str @element("textarea")
     picture File @accept(["image/*"])
   }

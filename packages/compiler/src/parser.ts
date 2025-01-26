@@ -1,7 +1,7 @@
-import type { CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
+import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
 import type { TokenType, Token, Location } from './token.js'
 import { TokenTypes } from './token.js'
-import { DESCRIPTION_PRESETS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
+import { DESCRIPTION_PRESETS, PROPERTY_ARRAY_ELEMENTS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { icons } from '@phosphor-icons/core'
 import { Diagnostic } from './diagnostic.js'
 import * as AST from './ast.js'
@@ -313,6 +313,27 @@ export const parse = (tokens: (Token | undefined)[]) => {
               return
             }
           }
+          break
+        }
+        case 'array': {
+          switch( attributeName ) {
+            case 'minItems':
+            case 'maxItems': {
+              const { value } = consume(TokenTypes.Number)
+              property[attributeName] = value
+              return
+            }
+            case 'uniqueItems': {
+              const { value } = consume(TokenTypes.Boolean)
+              property[attributeName] = value
+              return
+            }
+            case 'element': {
+              const { value } = consume(TokenTypes.QuotedString, PROPERTY_ARRAY_ELEMENTS)
+              property[attributeName] = value
+              return
+            }
+          }
         }
       }
     }
@@ -320,8 +341,9 @@ export const parse = (tokens: (Token | undefined)[]) => {
     throw new Diagnostic(`invalid attribute name "${attributeName}"`, location)
   }
 
-  const parsePropertyType = (options = {
+  const parsePropertyType = (options: { allowModifiers: boolean, isArray?: boolean } = {
     allowModifiers: false,
+    isArray: false
   }): AST.PropertyNode => {
     let property: AST.PropertyNode['property']
     let nestedProperties: Record<string, AST.PropertyNode> | undefined
@@ -331,7 +353,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
       consume(TokenTypes.LeftSquareBracket)
       consume(TokenTypes.RightSquareBracket)
 
-      const { property: items, nestedProperties } = parsePropertyType(options)
+      const { property: items, nestedProperties } = parsePropertyType({
+        ...options,
+        isArray: true
+      })
       property = {
         type: 'array',
         items,
@@ -425,6 +450,12 @@ export const parse = (tokens: (Token | undefined)[]) => {
           $ref: identifier,
         }
       }
+    }
+
+    if (options.isArray) {
+      Object.assign(property, {
+        type: 'array'
+      } as ArrayProperty)
     }
 
     while( match(TokenTypes.AttributeName) ) {

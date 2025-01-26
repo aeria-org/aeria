@@ -1,10 +1,7 @@
 import { Result } from '@aeriajs/types'
-import { getUserTsconfig } from './compile.js'
 import { compileFromFiles } from '@aeriajs/compiler'
 
 export const buildAeriaLang = async () => {
-  /* const tsConfig = */ await getUserTsconfig()
-
   try {
     return await compileFromFiles('schemas', {
       outDir: '.aeria/out',
@@ -24,14 +21,14 @@ export const buildAeriaLangPhase = async () => {
   }
 
   if( !result.success ) {
-    return Result.error(result.diagnostics)
+    return Result.error(result.errors.map(error => `\n${error.message} at line ${error.location?.line}, column ${error.location?.start}-${error.location?.end}`).join(" | "))
   }
 
-  if( result.emittedFiles.length === 0 ) {
+  if( Object.keys(result.emittedFiles).length === 0 ) {
     return Result.result('no aeria files to build')
   }
 
-  return Result.result(result.emittedFiles.length > 0
+  return Result.result(Object.keys(result.emittedFiles).length > 0
     ? 'aeria files built'
     : 'no aeria files to build')
 }
