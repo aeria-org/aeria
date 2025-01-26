@@ -2,8 +2,10 @@ import type { ApiConfig } from '@aeriajs/types'
 
 export const DEFAULT_API_CONFIG = {
   baseUrl: '/',
-  port: 3000,
   defaultPaginationLimit: 10,
+  server: {
+    port: 3000,
+  },
   security: {
     tokenExpiration: 36000,
     linkTokenExpiration: 36000,
