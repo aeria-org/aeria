@@ -341,9 +341,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
     throw new Diagnostic(`invalid attribute name "${attributeName}"`, location)
   }
 
-  const parsePropertyType = (options: { allowModifiers: boolean, isArray?: boolean } = {
+  const parsePropertyType = (options: { allowModifiers: boolean,
+    isArray?: boolean } = {
     allowModifiers: false,
-    isArray: false
+    isArray: false,
   }): AST.PropertyNode => {
     let property: AST.PropertyNode['property']
     let nestedProperties: Record<string, AST.PropertyNode> | undefined
@@ -355,7 +356,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
       const { property: items, nestedProperties } = parsePropertyType({
         ...options,
-        isArray: true
+        isArray: true,
       })
       property = {
         type: 'array',
@@ -454,7 +455,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
     if (options.isArray) {
       Object.assign(property, {
-        type: 'array'
+        type: 'array',
       } as ArrayProperty)
     }
 

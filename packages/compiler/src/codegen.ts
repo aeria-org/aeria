@@ -65,7 +65,7 @@ export const generateCode = async (ast: AST.Node[], options: CompilationOptions)
     ['index.d.ts']: exports.main.dTs,
     ['index.js']: exports.main.js,
   }
-  
+
   const fileStructure = await generateFileStructure(fileTree, options.outDir)
 
   if (!options.dryRun) {

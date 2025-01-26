@@ -61,9 +61,9 @@ export const compileFromFiles = async (schemaDir: string, options: CompilationOp
   const parsed = await parseAndCheck(schemaCode)
   const emittedFiles = generateCode(parsed.ast.collections, options)
 
-  return { 
-    ...parsed, 
-    emittedFiles 
+  return {
+    ...parsed,
+    emittedFiles,
   }
 }
 

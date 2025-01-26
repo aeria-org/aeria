@@ -21,7 +21,7 @@ export const buildAeriaLangPhase = async () => {
   }
 
   if( !result.success ) {
-    return Result.error(result.errors.map(error => `\n${error.message} at line ${error.location?.line}, column ${error.location?.start}-${error.location?.end}`).join(" | "))
+    return Result.error(result.errors.map((error) => `\n${error.message} at line ${error.location?.line}, column ${error.location?.start}-${error.location?.end}`).join(' | '))
   }
 
   if( Object.keys(result.emittedFiles).length === 0 ) {
