@@ -1,5 +1,20 @@
 # @aeriajs/server
 
+## 0.0.239
+
+### Patch Changes
+
+- 867e98e: Add `enableLogging` option
+- Updated dependencies [867e98e]
+  - @aeriajs/node-http@0.0.162
+  - @aeriajs/common@0.0.134
+  - @aeriajs/server@0.0.239
+  - @aeriajs/types@0.0.116
+  - @aeriajs/http@0.0.162
+  - @aeriajs/builtins@0.0.237
+  - @aeriajs/core@0.0.237
+  - @aeriajs/entrypoint@0.0.138
+
 ## 0.0.238
 
 ### Patch Changes
