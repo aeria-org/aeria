@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.116
+
+### Patch Changes
+
+- 867e98e: Add `enableLogging` option
+
 ## 0.0.115
 
 ### Patch Changes

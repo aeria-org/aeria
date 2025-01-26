@@ -1,5 +1,16 @@
 # @aeriajs/http
 
+## 0.0.162
+
+### Patch Changes
+
+- 867e98e: Add `enableLogging` option
+- Updated dependencies [867e98e]
+  - @aeriajs/common@0.0.134
+  - @aeriajs/types@0.0.116
+  - @aeriajs/entrypoint@0.0.138
+  - @aeriajs/validation@0.0.150
+
 ## 0.0.161
 
 ### Patch Changes
