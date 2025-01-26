@@ -23,4 +23,3 @@ export const escape = (code: EscapeCode | EscapeCode[], text: string) => {
   return `${codeStr}${text}\x1b[0m`
 }
 
-
