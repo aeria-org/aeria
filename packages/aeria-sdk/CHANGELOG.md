@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.172
+
+### Patch Changes
+
+- 3a640a8: Fix URL in `upload()`
+
 ## 0.0.171
 
 ### Patch Changes
