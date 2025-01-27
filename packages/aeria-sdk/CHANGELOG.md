@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.171
+
+### Patch Changes
+
+- ed62970: Fix `upload()` function bug
+
 ## 0.0.170
 
 ### Patch Changes
