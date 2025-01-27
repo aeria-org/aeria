@@ -21,7 +21,7 @@ export const uploader = (config: InstanceConfig) => (bearerToken?: string) => as
   } satisfies typeof FileMetadata
 
   const url = new URL(publicUrl(config))
-  url.pathname += `/${collectionName}`
+  url.pathname += `/${collectionName}/upload`
 
   for( const [paramName, paramValue] of Object.entries(urlParams) ) {
     url.searchParams.set(paramName, paramValue)
