@@ -60,9 +60,9 @@ export const propertyToSchema = (propertyNode: AST.PropertyNode): Property => {
     ...('items' in propertyNode.property && {
       items: propertyToSchema({
         kind: 'property',
-        property: propertyNode.property.items
+        property: propertyNode.property.items,
       }),
-    })
+    }),
   } as Property
 }
 

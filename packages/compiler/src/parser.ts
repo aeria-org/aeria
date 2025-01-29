@@ -317,10 +317,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
         }
         case 'array': {
           if (match(TokenTypes.Dot) || match(TokenTypes.Number)) {
-            console.log();
+            console.log()
           } else {
             switch( attributeName ) {
-  /*             case 'minItems':
+              /*             case 'minItems':
               case 'maxItems': {
                 const { value } = consume(TokenTypes.Number)
                 property[attributeName] = value
@@ -360,8 +360,8 @@ export const parse = (tokens: (Token | undefined)[]) => {
         type: 'array',
         [AST.LOCATION_SYMBOL]: {
           arrays: {},
-          attributes: {}
-        }
+          attributes: {},
+        },
       }
       while( match(TokenTypes.AttributeName) || match(TokenTypes.RangeSeparator) ) {
         const { value: attributeName, location } = consume(TokenTypes.AttributeName)
@@ -369,17 +369,17 @@ export const parse = (tokens: (Token | undefined)[]) => {
           consume(TokenTypes.LeftParens)
           const attributeSymbol = Symbol()
           locationMap.set(attributeSymbol, next().location)
-  
+
           preProperty[AST.LOCATION_SYMBOL] ??= {
             attributes: {},
             arrays: {},
           }
-  
+
           preProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
-  
+
           parsePropertyAttributeValue(attributeName, preProperty as AST.PropertyNode['property'], location)
           consume(TokenTypes.RightParens)
-  
+
         } else {
           parsePropertyAttributeValue(attributeName, preProperty as AST.PropertyNode['property'], location)
         }
