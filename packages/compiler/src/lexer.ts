@@ -143,6 +143,13 @@ const TOKENS: TokenConfig[] = [
     matcher: ',',
   },
   {
+    type: TokenTypes.RangeSeparator,
+    matcher: /(\d+\.\.\d*|\d*\.\.\d+)/g,
+    valueExtractor: (value) => {
+      return value
+    },
+  },
+  {
     type: TokenTypes.Dot,
     matcher: '.',
   },
@@ -217,7 +224,7 @@ export const tokenize = function (input: string) {
         }
       } else if( matcher instanceof RegExp ) {
         const currentMatcher = new RegExp(matcher.source, 'y')
-        currentMatcher.lastIndex = index
+        currentMatcher.lastIndex = matcher.global ? index - 1 : index
 
         const matched = currentMatcher.exec(input)
         if( matched ) {

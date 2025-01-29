@@ -316,22 +316,26 @@ export const parse = (tokens: (Token | undefined)[]) => {
           break
         }
         case 'array': {
-          switch( attributeName ) {
-            case 'minItems':
-            case 'maxItems': {
-              const { value } = consume(TokenTypes.Number)
-              property[attributeName] = value
-              return
-            }
-            case 'uniqueItems': {
-              const { value } = consume(TokenTypes.Boolean)
-              property[attributeName] = value
-              return
-            }
-            case 'element': {
-              const { value } = consume(TokenTypes.QuotedString, PROPERTY_ARRAY_ELEMENTS)
-              property[attributeName] = value
-              return
+          if (match(TokenTypes.Dot) || match(TokenTypes.Number)) {
+            console.log();
+          } else {
+            switch( attributeName ) {
+  /*             case 'minItems':
+              case 'maxItems': {
+                const { value } = consume(TokenTypes.Number)
+                property[attributeName] = value
+                return
+              } */
+              case 'uniqueItems': {
+                const { value } = consume(TokenTypes.Boolean)
+                property[attributeName] = value
+                return
+              }
+              case 'element': {
+                const { value } = consume(TokenTypes.QuotedString, PROPERTY_ARRAY_ELEMENTS)
+                property[attributeName] = value
+                return
+              }
             }
           }
         }
@@ -352,6 +356,34 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
     if( match(TokenTypes.LeftSquareBracket) ) {
       consume(TokenTypes.LeftSquareBracket)
+      const preProperty: Omit<Extract<AST.PropertyNode['property'], { type: 'array' }>, 'items' > = {
+        type: 'array',
+        [AST.LOCATION_SYMBOL]: {
+          arrays: {},
+          attributes: {}
+        }
+      }
+      while( match(TokenTypes.AttributeName) || match(TokenTypes.RangeSeparator) ) {
+        const { value: attributeName, location } = consume(TokenTypes.AttributeName)
+        if( match(TokenTypes.LeftParens) ) {
+          consume(TokenTypes.LeftParens)
+          const attributeSymbol = Symbol()
+          locationMap.set(attributeSymbol, next().location)
+  
+          preProperty[AST.LOCATION_SYMBOL] ??= {
+            attributes: {},
+            arrays: {},
+          }
+  
+          preProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
+  
+          parsePropertyAttributeValue(attributeName, preProperty as AST.PropertyNode['property'], location)
+          consume(TokenTypes.RightParens)
+  
+        } else {
+          parsePropertyAttributeValue(attributeName, preProperty as AST.PropertyNode['property'], location)
+        }
+      }
       consume(TokenTypes.RightSquareBracket)
 
       const { property: items, nestedProperties } = parsePropertyType({

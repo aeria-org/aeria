@@ -48,7 +48,7 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
   }
 }
 
-export const propertyToSchema = (propertyNode: AST.PropertyNode) => {
+export const propertyToSchema = (propertyNode: AST.PropertyNode): Property => {
   if ('$ref' in propertyNode.property) {
     propertyNode.property.$ref = getCollectionId(propertyNode.property.$ref)
   }
@@ -57,6 +57,12 @@ export const propertyToSchema = (propertyNode: AST.PropertyNode) => {
     ...(propertyNode.nestedProperties && {
       properties: getProperties(propertyNode.nestedProperties),
     }),
+    ...('items' in propertyNode.property && {
+      items: propertyToSchema({
+        kind: 'property',
+        property: propertyNode.property.items
+      }),
+    })
   } as Property
 }
 

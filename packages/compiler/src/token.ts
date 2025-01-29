@@ -17,6 +17,7 @@ export const TokenTypes = {
   QuotedString: 'QUOTED_STRING',
   AttributeName: 'ATTRIBUTE_NAME',
   MacroName: 'MACRO_NAME',
+  RangeSeparator: 'RANGE_SEPARATOR'
 } as const
 
 export type TokenType = typeof TokenTypes[keyof typeof TokenTypes]
