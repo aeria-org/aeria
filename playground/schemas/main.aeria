@@ -27,10 +27,10 @@ collection Comment {
   }
   properties {
     ticket Ticket
-    description str @element("textarea") 
-    images [1..3 @accept(["image/*"])]File
+    description str @element("textarea")
+    images [1..3 @element("checkbox")]File @accept(["image/*"])
     owner User @populate([name, email, roles])
-    liked_by []User @populate([picture_file, roles])
+    liked_by [..2]User @populate([picture_file, roles])
   }
   functions {
     get @expose

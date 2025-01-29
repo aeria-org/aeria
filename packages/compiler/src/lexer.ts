@@ -224,9 +224,7 @@ export const tokenize = function (input: string) {
         }
       } else if( matcher instanceof RegExp ) {
         const currentMatcher = new RegExp(matcher.source, 'y')
-        currentMatcher.lastIndex = matcher.global
-          ? index - 1
-          : index
+        currentMatcher.lastIndex = index
 
         const matched = currentMatcher.exec(input)
         if( matched ) {
