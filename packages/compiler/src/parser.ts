@@ -355,21 +355,18 @@ export const parse = (tokens: (Token | undefined)[]) => {
           arrays: {},
         }
 
-        if (match(TokenTypes.RangeSeparator)) {
-          const { value: rangeSeparator } = consume(TokenTypes.RangeSeparator)
-
-          const minItems = Number(rangeSeparator[0])
-          if (minItems) {
-            const attributeName: keyof ArrayProperty = 'minItems'
-            arrayProperty[attributeName] = minItems,
-            arrayProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
-          }
-
-          const maxItems = Number(rangeSeparator[rangeSeparator.length - 1])
-          if (maxItems) {
-            const attributeName: keyof ArrayProperty = 'maxItems'
-            arrayProperty[attributeName] = maxItems
-            arrayProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
+        if (match(TokenTypes.Range)) {
+          locationMap.set(attributeSymbol, next().location)
+          const { value: range } = consume(TokenTypes.Range)
+          for (let i = 0; i < 2; i++) {
+            const number = range[i]
+            if (!isNaN(number)) {
+              const attributeName: keyof ArrayProperty = i === 0
+                ? 'minItems'
+                : 'maxItems'
+              arrayProperty[attributeName] = number,
+              arrayProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
+            }
           }
           continue
         }

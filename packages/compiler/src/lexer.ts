@@ -2,6 +2,8 @@ import type { TokenType, Token, Location } from './token.js'
 import { TokenTypes } from './token.js'
 import { Diagnostic } from './diagnostic.js'
 
+type TokenValue = Token['value'] | string
+
 type TokenConfig = {
   type:
     | TokenType
@@ -10,8 +12,8 @@ type TokenConfig = {
     | RegExp
     | string
     | readonly string[]
-  valueExtractor?: (value: string) => string
-  construct?: (value: string) => Token['value']
+  valueExtractor?: (value: string) => TokenValue
+  construct?: (value: TokenValue) => TokenValue
   condition?: (state: LexerState) => boolean
 }
 
@@ -143,10 +145,14 @@ const TOKENS: TokenConfig[] = [
     matcher: ',',
   },
   {
-    type: TokenTypes.RangeSeparator,
+    type: TokenTypes.Range,
     matcher: /(\d+\.\.\d*|\d*\.\.\d+)/g,
     valueExtractor: (value) => {
-      return value
+      const [, left, right] = value.match(/(\d*)\.\.(\d*)/)!
+      return [
+        parseInt(left),
+        parseInt(right),
+      ] as const
     },
   },
   {

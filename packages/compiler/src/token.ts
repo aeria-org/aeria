@@ -17,7 +17,7 @@ export const TokenTypes = {
   QuotedString: 'QUOTED_STRING',
   AttributeName: 'ATTRIBUTE_NAME',
   MacroName: 'MACRO_NAME',
-  RangeSeparator: 'RANGE_SEPARATOR',
+  Range: 'RANGE',
 } as const
 
 export type TokenType = typeof TokenTypes[keyof typeof TokenTypes]
@@ -25,6 +25,7 @@ export type TokenType = typeof TokenTypes[keyof typeof TokenTypes]
 export type TypeMap = {
   [TokenTypes.Number]: number
   [TokenTypes.Boolean]: boolean
+  [TokenTypes.Range]: readonly [number, number]
 }
 
 export type Location = {
