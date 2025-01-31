@@ -1,6 +1,7 @@
-import type { Collection, Property } from '@aeriajs/types'
+import type { Property } from '@aeriajs/types'
 import type * as AST from '../ast.js'
-import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, type StringifyProperty, UnquotedSymbol, defaultFunctions } from './utils.js'
+import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, UnquotedSymbol, defaultFunctions } from './utils.js'
+import { type Entries } from '../utils.js'
 
 const initialImportedFunctions = [
   'extendCollection',
@@ -26,6 +27,10 @@ const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
       const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
       const extendCollectionName = getExtendName(collectionNode.name)
 
+      if (id === 'ticket') {
+        console.log()
+
+      }
       const collectionDefinition =
             `export const ${id} = ${collectionNode.extends
               ? 'extendCollection'
@@ -47,24 +52,49 @@ const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
 }
 
 const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
-  const collectionSchema: Omit<Collection, 'item' | 'functions'> & { functions?: StringifyProperty } = {
-    description: {
-      $id: collectionId,
-      properties: getProperties(collectionNode.properties) as Record<string, Property>,
-    },
-  }
+  const nodeEntries = Object.entries(collectionNode) as Entries<typeof collectionNode>
+  return stringify(nodeEntries.reduce<Partial<Record<string, any>>>((collectionSchema, [key, value]) => {
+    switch (key) {
+      case 'properties':
+        collectionSchema.description = {
+          $id: collectionId,
+          properties: getProperties(value) as Record<string, Property>,
+        }
+        break
 
-  if (collectionNode.owned === true) {
-    collectionSchema.description.owned = true
-  }
+      case 'owned':
+        if (value === true) {
+          collectionSchema.description.owned = true
+        }
+        break
 
-  if( collectionNode.functions ) {
-    collectionSchema.functions = {
-      [UnquotedSymbol]: `{ ${makeJSFunctions(collectionNode.functions)} }`,
+      case 'functions':
+        if (value) {
+          collectionSchema.functions = {
+            [UnquotedSymbol]: `{ ${makeJSFunctions(value)} }`,
+          }
+        }
+        break
+
+      case 'actions':
+      case 'filters':
+      case 'form':
+      case 'icon':
+      case 'indexes':
+      case 'individualActions':
+      case 'presets':
+      case 'table':
+      case 'search':
+      case 'required':
+        if (value) {
+          Object.assign(collectionSchema.description, {
+            [key]: value,
+          })
+        }
+        break
     }
-  }
-
-  return stringify(collectionSchema)
+    return collectionSchema
+  }, {}))
 }
 
 const makeJSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {

@@ -8,11 +8,17 @@ type SymbolToExport = {
 }
 
 export const generateExports = (ast: AST.Node[]) => {
-  const symbolsToExport = ast.filter((node) => node.kind === 'collection').map<SymbolToExport>((node) => ({
-    id: getCollectionId(node.name),
-    schema: resizeFirstChar(node.name, true),
-    extend: getExtendName(node.name),
-  }))
+  const symbolsToExport = Object.values(ast.filter((node) => node.kind === 'collection')
+    .reduce<Record<string, SymbolToExport>>((symbols, node) => {
+      const id = getCollectionId(node.name)
+      symbols[id] = {
+        id,
+        schema: resizeFirstChar(node.name, true),
+        extend: getExtendName(node.name),
+      }
+
+      return symbols
+    }, {}))
 
   return {
     collections: {

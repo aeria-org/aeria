@@ -1,11 +1,12 @@
 import type { Location } from './token.js'
 
-let file: string
-export const changeCurrentFile = (newFile: string) => file = newFile
 export class Diagnostic extends Error {
-  public file: string | undefined = file
+  static currentFile: string | undefined = undefined
+
+  public fileLocation: string | undefined
   constructor(public message: string, public location?: Location) {
     super()
+    this.fileLocation = Diagnostic.currentFile
   }
 }
 

@@ -1,5 +1,5 @@
 import type * as AST from './ast.js'
-import { changeCurrentFile, type Diagnostic } from './diagnostic.js'
+import { Diagnostic } from './diagnostic.js'
 import { tokenize } from './lexer.js'
 import { parse } from './parser.js'
 import { analyze } from './semantic.js'
@@ -26,7 +26,7 @@ export const parseAndCheck = async (schemas: Record<string, string>): Promise<Co
   let ast: CompilationResult['ast'] | undefined = undefined
 
   for (const fileName in schemas) {
-    changeCurrentFile(fileName)
+    Diagnostic.currentFile = fileName
 
     const { errors: lexerErrors, tokens } = tokenize(schemas[fileName])
     const { errors: parserErrors, ast: currentAst } = parse(Array.from(tokens))
