@@ -7,7 +7,7 @@ type SymbolToExport = {
   extend: string
 }
 
-export const generateExports = (ast: AST.Node[], hasContracts: boolean = false) => {
+export const generateExports = (ast: AST.Node[], hasContracts = false) => {
   const symbolsToExport = Object.values(ast.filter((node) => node.kind === 'collection')
     .reduce<Record<string, SymbolToExport>>((symbols, node) => {
       const id = getCollectionId(node.name)
@@ -39,10 +39,14 @@ export const generateExports = (ast: AST.Node[], hasContracts: boolean = false) 
       dTs: `export { ${symbolsToExport.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
     },
     main: {
-      js: (hasContracts ? 'export * as contracts from \'./contracts/index.js\'\n' : '') +
+      js: (hasContracts
+        ? 'export * as contracts from \'./contracts/index.js\'\n'
+        : '') +
         'export * as collections from \'./collections/index.js\'\n' +
         `export { ${symbolsToExport.map((symbol) => symbol.extend).join(', ')} } from './collections/collections.js'`,
-      dTs: (hasContracts ? 'export * as contracts from \'./contracts/index.js\'\n' : '') +
+      dTs: (hasContracts
+        ? 'export * as contracts from \'./contracts/index.js\'\n'
+        : '') +
         'export * as collections from \'./collections/index.js\'\n' +
         `export { ${symbolsToExport.map((symbol) => `${symbol.extend}, ${symbol.schema}`).join(', ')} } from './collections/collections.js'`,
     },

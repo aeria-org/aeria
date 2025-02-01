@@ -33,33 +33,33 @@ const makeJSContractsCode = (contractAst: AST.ContractNode[]) => {
   }
 
   const declarations = contractAst.map((contractNode) => {
-      const { name, kind, roles, response, ...contractProperty } = contractNode
+    const { name, kind, roles, response, ...contractProperty } = contractNode
 
-      let responseString = ''
-      if (response) {
-        if (Array.isArray(response)) {
-          const responseArray: StringifyProperty[] = []
-          for (const responseElement of response) {
-            responseArray.push({
-              [UnquotedSymbol]: getCodeForResponse(responseElement),
-            })
-          }
-
-          responseString = stringify(responseArray)
-        } else {
-          responseString = stringify(getCodeForResponse(response))
+    let responseString = ''
+    if (response) {
+      if (Array.isArray(response)) {
+        const responseArray: StringifyProperty[] = []
+        for (const responseElement of response) {
+          responseArray.push({
+            [UnquotedSymbol]: getCodeForResponse(responseElement),
+          })
         }
-      }
 
-      const contractSchema: Record<string, unknown> = getProperties(contractProperty)
-      contractSchema.response = {
-        [UnquotedSymbol]: responseString,
+        responseString = stringify(responseArray)
+      } else {
+        responseString = stringify(getCodeForResponse(response))
       }
+    }
 
-      return `export const ${name}Contract = defineContract(${
-        stringify(contractSchema)
-      })`
-    }).join('\n\n')
+    const contractSchema: Record<string, unknown> = getProperties(contractProperty)
+    contractSchema.response = {
+      [UnquotedSymbol]: responseString,
+    }
+
+    return `export const ${name}Contract = defineContract(${
+      stringify(contractSchema)
+    })`
+  }).join('\n\n')
 
   return `import { ${Array.from(imports).join(', ')} } from \'aeria\'\n\n` + declarations
 }
@@ -77,23 +77,23 @@ const getResponseSchema = (response: AST.PropertyNode) => {
 
 const makeTSContractsCode = (contractAst: AST.ContractNode[]) => {
   return contractAst.map((contractNode) => {
-      const { name, kind, roles, ...contractSchema } = contractNode
+    const { name, kind, roles, ...contractSchema } = contractNode
 
-      let responseSchema: Property | Property[] | null = null
-      if (contractSchema.response) {
-        if (Array.isArray(contractSchema.response)) {
-          responseSchema = contractSchema.response.map(getResponseSchema)
-        } else {
-          responseSchema = getResponseSchema(contractSchema.response)
-        }
+    let responseSchema: Property | Property[] | null = null
+    if (contractSchema.response) {
+      if (Array.isArray(contractSchema.response)) {
+        responseSchema = contractSchema.response.map(getResponseSchema)
+      } else {
+        responseSchema = getResponseSchema(contractSchema.response)
       }
+    }
 
-      return `export declare const ${contractNode.name}Contract: ${
-        stringify({
-          ...getProperties(contractSchema),
-          response: responseSchema,
-        })
-      }`
-    }).join('\n\n')
+    return `export declare const ${contractNode.name}Contract: ${
+      stringify({
+        ...getProperties(contractSchema),
+        response: responseSchema,
+      })
+    }`
+  }).join('\n\n')
 }
 
