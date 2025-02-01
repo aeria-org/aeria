@@ -356,20 +356,24 @@ export const parse = (tokens: (Token | undefined)[]) => {
         }
 
         if (match(TokenTypes.Range)) {
-          locationMap.set(attributeSymbol, next().location)
-          const { value: range } = consume(TokenTypes.Range)
-          for (let i = 0; i < 2; i++) {
-            const number = range[i]
-            if (!isNaN(number)) {
-              const attributeName: keyof ArrayProperty = i === 0
-                ? 'minItems'
-                : 'maxItems'
-              arrayProperty[attributeName] = number,
-              arrayProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
-            }
+          const { value: rangeSeparator } = consume(TokenTypes.Range)
+          let attributeName: keyof ArrayProperty
+
+          const minItems = rangeSeparator[0]
+          if (!isNaN(minItems)) {
+            attributeName= 'minItems'
+            arrayProperty[attributeName] = minItems,
+            arrayProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
           }
-          continue
+
+          const maxItems = rangeSeparator[1]
+          if (!isNaN(maxItems)) {
+            attributeName = 'maxItems'
+            arrayProperty[attributeName] = maxItems
+            arrayProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
+          }
         }
+        
         const { value: attributeName, location } = consume(TokenTypes.AttributeName)
         if( match(TokenTypes.LeftParens) ) {
           consume(TokenTypes.LeftParens)
