@@ -7,7 +7,7 @@ type SymbolToExport = {
   extend: string
 }
 
-export const generateExports = (ast: AST.Node[]) => {
+export const generateExports = (ast: AST.Node[], hasContracts: boolean = false) => {
   const symbolsToExport = Object.values(ast.filter((node) => node.kind === 'collection')
     .reduce<Record<string, SymbolToExport>>((symbols, node) => {
       const id = getCollectionId(node.name)
@@ -20,23 +20,41 @@ export const generateExports = (ast: AST.Node[]) => {
       return symbols
     }, {}))
 
-  return {
+  const exports: {
+    main: {
+      js: string
+      dTs: string
+    },
+    collections: {
+      js: string
+      dTs: string
+    },
+    contracts?: {
+      js: string
+      dTs: string
+    },
+  } = {
     collections: {
       js: `export { ${symbolsToExport.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
       dTs: `export { ${symbolsToExport.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
     },
-    contracts: {
-      js: 'export * from \'./contracts.js\'',
-      dTs: 'export * from \'./contracts.js\'',
-    },
     main: {
-      js: 'export * as contracts from \'./contracts/index.js\'\n' +
+      js: (hasContracts ? 'export * as contracts from \'./contracts/index.js\'\n' : '') +
         'export * as collections from \'./collections/index.js\'\n' +
         `export { ${symbolsToExport.map((symbol) => symbol.extend).join(', ')} } from './collections/collections.js'`,
-      dTs: 'export * as contracts from \'./contracts/index.js\'\n' +
+      dTs: (hasContracts ? 'export * as contracts from \'./contracts/index.js\'\n' : '') +
         'export * as collections from \'./collections/index.js\'\n' +
         `export { ${symbolsToExport.map((symbol) => `${symbol.extend}, ${symbol.schema}`).join(', ')} } from './collections/collections.js'`,
     },
   }
+
+  if (hasContracts) {
+    exports.contracts = {
+      js: 'export * from \'./contracts.js\'',
+      dTs: 'export * from \'./contracts.js\'',
+    }
+  }
+
+  return exports
 }
 

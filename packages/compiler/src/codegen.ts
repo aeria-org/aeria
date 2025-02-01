@@ -46,8 +46,8 @@ const generateFileStructure = async (fileTree: Record<string, string | object>, 
 }
 
 export const generateCode = async (ast: AST.Node[], options: CompilationOptions) => {
-  const exports = generateExports(ast)
   const contracts = generateContracts(ast)
+  const exports = generateExports(ast, Boolean(contracts))
 
   const fileTree: Record<string, string | object> = {
     ['collections']: {
@@ -56,14 +56,17 @@ export const generateCode = async (ast: AST.Node[], options: CompilationOptions)
       ['index.d.ts']: exports.collections.dTs,
       ['index.js']: exports.collections.js,
     },
-    ['contracts']: {
-      ['contracts.js']: contracts.js,
-      ['contracts.d.ts']: contracts.dTs,
-      ['index.d.ts']: exports.contracts.dTs,
-      ['index.js']: exports.contracts.js,
-    },
     ['index.d.ts']: exports.main.dTs,
     ['index.js']: exports.main.js,
+  }
+
+  if (contracts) {
+    fileTree.contracts = {
+      ['contracts.js']: contracts.js,
+      ['contracts.d.ts']: contracts.dTs,
+      ['index.d.ts']: exports.contracts!.dTs,
+      ['index.js']: exports.contracts!.js,
+    }
   }
 
   const fileStructure = await generateFileStructure(fileTree, options.outDir)

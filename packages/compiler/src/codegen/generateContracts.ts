@@ -4,13 +4,17 @@ import { errorSchema, resultSchema } from '@aeriajs/types'
 import { getProperties, propertyToSchema, stringify, UnquotedSymbol, type StringifyProperty } from './utils.js'
 
 export const generateContracts = (ast: AST.Node[]) => {
+  const contractNodes = ast.filter((node) => node.kind === 'contract')
+  if (contractNodes.length === 0) {
+    return false
+  }
   return {
-    js: makeJSContractsCode(ast),
-    dTs: makeTSContractsCode(ast),
+    js: makeJSContractsCode(contractNodes),
+    dTs: makeTSContractsCode(contractNodes),
   }
 }
 
-const makeJSContractsCode = (ast: AST.Node[]) => {
+const makeJSContractsCode = (contractAst: AST.ContractNode[]) => {
   const imports = new Set<string>(['defineContract'])
 
   const getCodeForResponse = (responseProperty: AST.PropertyNode) => {
@@ -28,8 +32,7 @@ const makeJSContractsCode = (ast: AST.Node[]) => {
     return `${modifierSymbol}(${stringify(propertyToSchema(propertyNode as AST.PropertyNode))})`
   }
 
-  const declarations = ast.filter((node) => node.kind === 'contract')
-    .map((contractNode) => {
+  const declarations = contractAst.map((contractNode) => {
       const { name, kind, roles, response, ...contractProperty } = contractNode
 
       let responseString = ''
@@ -72,9 +75,8 @@ const getResponseSchema = (response: AST.PropertyNode) => {
     errorSchema(responseSchema)
 }
 
-const makeTSContractsCode = (ast: AST.Node[]) => {
-  return ast.filter((node) => node.kind === 'contract')
-    .map((contractNode) => {
+const makeTSContractsCode = (contractAst: AST.ContractNode[]) => {
+  return contractAst.map((contractNode) => {
       const { name, kind, roles, ...contractSchema } = contractNode
 
       let responseSchema: Property | Property[] | null = null

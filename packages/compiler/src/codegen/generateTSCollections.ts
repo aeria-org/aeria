@@ -69,8 +69,8 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
         break
 
       case 'owned':
-        if (value === true) {
-          collectionSchema.description.owned = true
+        if (value) {
+          collectionSchema.description.owned = value
         }
         break
 

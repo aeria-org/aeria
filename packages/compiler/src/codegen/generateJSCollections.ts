@@ -6,7 +6,6 @@ import { type Entries } from '../utils.js'
 const initialImportedFunctions = [
   'extendCollection',
   'defineCollection',
-  'defineContract',
 ]
 
 export const generateJSCollections = (ast: AST.Node[]) => {
@@ -27,10 +26,6 @@ const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
       const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
       const extendCollectionName = getExtendName(collectionNode.name)
 
-      if (id === 'ticket') {
-        console.log()
-
-      }
       const collectionDefinition =
             `export const ${id} = ${collectionNode.extends
               ? 'extendCollection'
@@ -63,8 +58,8 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
         break
 
       case 'owned':
-        if (value === true) {
-          collectionSchema.description.owned = true
+        if (value) {
+          collectionSchema.description.owned = value
         }
         break
 

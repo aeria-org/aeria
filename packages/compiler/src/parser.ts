@@ -372,6 +372,8 @@ export const parse = (tokens: (Token | undefined)[]) => {
             arrayProperty[attributeName] = maxItems
             arrayProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
           }
+
+          continue
         }
 
         const { value: attributeName, location } = consume(TokenTypes.AttributeName)
@@ -627,7 +629,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         switch( keyword ) {
           case 'owned': {
             if( match(TokenTypes.QuotedString, 'on-write') ) {
-              node.owned = consume(TokenTypes.QuotedString).value === 'true'
+              node.owned = consume(TokenTypes.QuotedString).value === 'on-write'
             } else {
               node.owned = consume(TokenTypes.Boolean).value
             }
