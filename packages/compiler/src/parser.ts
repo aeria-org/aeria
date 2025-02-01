@@ -361,7 +361,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
           const minItems = rangeSeparator[0]
           if (!isNaN(minItems)) {
-            attributeName= 'minItems'
+            attributeName = 'minItems'
             arrayProperty[attributeName] = minItems,
             arrayProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
           }
@@ -373,7 +373,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
             arrayProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
           }
         }
-        
+
         const { value: attributeName, location } = consume(TokenTypes.AttributeName)
         if( match(TokenTypes.LeftParens) ) {
           consume(TokenTypes.LeftParens)
