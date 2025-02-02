@@ -8,10 +8,11 @@ export const defaultFunctions = Object.keys(aeriaFunctions)
 export const ArraySymbol = Symbol('array')
 
 export const getExposedFunctions = (astFunctions: NonNullable<AST.CollectionNode['functions']>) => {
-  return Object.fromEntries(
-    Object.entries(astFunctions)
-    .map(([key, value]) => [key, value.accessCondition])
-  )
+  return Object.fromEntries(Object.entries(astFunctions)
+    .map(([key, value]) => [
+      key,
+      value.accessCondition,
+    ]))
 }
 
 /**
