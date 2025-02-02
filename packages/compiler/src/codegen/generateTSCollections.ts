@@ -76,7 +76,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
 
       case 'functions':
         if (value) {
-          collectionSchema.description[key] = makeTSFunctions(value)
+          collectionSchema[key] = makeTSFunctions(value)
           collectionSchema.exposedFunctions = getExposedFunctions(value)
         }
         break
