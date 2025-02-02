@@ -1,5 +1,6 @@
 export * from './arraysIntersect.js'
 export * from './checkForEmptiness.js'
+export * from './console.js'
 export * from './deepClone.js'
 export * from './deepMerge.js'
 export * from './dynamicImport.js'
