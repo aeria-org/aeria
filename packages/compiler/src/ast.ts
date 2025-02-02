@@ -49,7 +49,7 @@ export type PropertyNode = NodeBase<'property'> & {
 export type CollectionNode = NodeBase<'collection'> & {
   name: string
   extends?: ExportSymbol
-  owned?: boolean
+  owned?: 'on-write' | 'always'
   icon?: string
   actions?: CollectionActions
   individualActions?: CollectionActions
