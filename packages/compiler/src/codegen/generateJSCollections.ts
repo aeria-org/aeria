@@ -1,8 +1,7 @@
 import type { Property } from '@aeriajs/types'
 import type * as AST from '../ast.js'
+import type { Entries } from '../utils.js'
 import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, UnquotedSymbol, defaultFunctions, getExposedFunctions } from './utils.js'
-import { type Entries } from '../utils.js'
-
 const initialImportedFunctions = [
   'extendCollection',
   'defineCollection',
@@ -28,8 +27,10 @@ const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
 
       const collectionDefinition =
             `export const ${id} = ${collectionNode.extends
-              ? 'extendCollection'
-              : 'defineCollection'}(${makeJSCollectionSchema(collectionNode, id)})`
+              ? `extendCollection(${id in modifiedSymbols
+              ? modifiedSymbols[id]
+              : id}, ${makeJSCollectionSchema(collectionNode, id)})`
+              : `defineCollection(${makeJSCollectionSchema(collectionNode, id)})`}`
 
       const collectionDeclaration =
       `export const ${extendCollectionName} = (collection) => extendCollection(${id in modifiedSymbols
