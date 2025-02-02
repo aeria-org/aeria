@@ -28,8 +28,8 @@ const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
       const collectionDefinition =
             `export const ${id} = ${collectionNode.extends
               ? `extendCollection(${id in modifiedSymbols
-              ? modifiedSymbols[id]
-              : id}, ${makeJSCollectionSchema(collectionNode, id)})`
+                ? modifiedSymbols[id]
+                : id}, ${makeJSCollectionSchema(collectionNode, id)})`
               : `defineCollection(${makeJSCollectionSchema(collectionNode, id)})`}`
 
       const collectionDeclaration =
