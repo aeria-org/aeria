@@ -1,6 +1,6 @@
 import type { Property } from '@aeriajs/types'
 import type * as AST from '../ast.js'
-import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, UnquotedSymbol, defaultFunctions } from './utils.js'
+import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, UnquotedSymbol, defaultFunctions, getExposedFunctions } from './utils.js'
 import { type Entries } from '../utils.js'
 
 const initialImportedFunctions = [
@@ -68,6 +68,8 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
           collectionSchema.functions = {
             [UnquotedSymbol]: `{ ${makeJSFunctions(value)} }`,
           }
+
+          collectionSchema.exposedFunctions = getExposedFunctions(value)
         }
         break
 
