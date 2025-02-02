@@ -33,9 +33,7 @@ const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
               : `defineCollection(${makeJSCollectionSchema(collectionNode, id)})`}`
 
       const collectionDeclaration =
-      `export const ${extendCollectionName} = (collection) => extendCollection(${id in modifiedSymbols
-        ? modifiedSymbols[id]
-        : id}, collection)`
+      `export const ${extendCollectionName} = (collection) => extendCollection(${id}, collection)`
 
       collectionCodes[collectionNode.name] = [
         '//' + collectionNode.name,
