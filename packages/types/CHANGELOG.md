@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.117
+
+### Patch Changes
+
+- 141be55: Fix `InferProperties<T>`
+
 ## 0.0.116
 
 ### Patch Changes
