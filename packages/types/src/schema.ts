@@ -79,21 +79,23 @@ export type SchemaWithId<TSchema, TSchemaOptions extends SchemaOptions = {}> = S
   _id: ObjectId
 }
 
-export type InferProperties<TSchema> = TSchema extends readonly unknown[]
+export type InferProperties<TSchema> = (TSchema extends readonly unknown[]
   ? TSchema extends readonly (infer SchemaOption)[]
     ? SchemaOption extends unknown
-      ? SchemaOption extends
-        | { $ref: infer K }
-        | { items: { $ref: infer K } }
-        ? K extends keyof Collections
-          ? 'items' extends keyof SchemaOption
-            ? Collections[K]['item'][]
-            : Collections[K]['item']
-          : never
-        : InferProperty<SchemaOption>
+      ? SchemaOption
       : never
     : never
-  : InferProperty<TSchema>
+  : TSchema) extends infer InferredSchema
+    ? InferredSchema extends
+      | { $ref: infer K }
+      | { items: { $ref: infer K } }
+      ? K extends keyof Collections
+        ? 'items' extends keyof InferredSchema
+          ? Collections[K]['item'][]
+          : Collections[K]['item']
+        : never
+      : InferProperty<InferredSchema>
+    : never
 
 export type PackReferences<T> = {
   [P in keyof T]: PackReferencesAux<T[P]>
