@@ -18,7 +18,7 @@ type TokenConfig = {
 }
 
 type LexerState = {
-  inProperties: boolean
+  inPropertiesStack: boolean[]
 }
 
 export type Keyword =
@@ -175,7 +175,7 @@ const TOKENS: TokenConfig[] = [
   {
     type: TokenTypes.Keyword,
     matcher: Array.from(keywordsSet),
-    condition: (state) => !state.inProperties,
+    condition: (state) => !state.inPropertiesStack.at(-1),
   },
   {
     type: TokenTypes.MacroName,
@@ -209,7 +209,7 @@ export const tokenize = function (input: string) {
   const errors: Diagnostic[] = []
 
   const state: LexerState = {
-    inProperties: false,
+    inPropertiesStack: [],
   }
 
   while( index < input.length ) {
@@ -283,22 +283,18 @@ export const tokenize = function (input: string) {
             switch( type ) {
               case TokenTypes.LeftBracket: {
                 const lastToken = tokens.at(-1)
-                if( lastToken ) {
-                  switch( lastToken.value ) {
-                    case 'properties': {
-                      state.inProperties = true
-                      break
-                    }
-                    default: {
-                      state.inProperties = false
-                    }
+                if (lastToken) {
+                  if (lastToken.value === 'properties') {
+                    state.inPropertiesStack.push(true)
+                  } else {
+                    state.inPropertiesStack.push(false)
                   }
                 }
                 break
               }
               case TokenTypes.RightBracket: {
-                if( state.inProperties ) {
-                  state.inProperties = false
+                if (state.inPropertiesStack.length > 0) {
+                  state.inPropertiesStack.pop()
                 }
                 break
               }

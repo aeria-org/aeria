@@ -1,5 +1,5 @@
 import type * as AST from '../ast'
-import type { Property } from '@aeriajs/types'
+import type { FixedObjectProperty, Property } from '@aeriajs/types'
 import { functions as aeriaFunctions } from '@aeriajs/core'
 
 export const aeriaPackageName = 'aeria'
@@ -60,22 +60,29 @@ export const propertyToSchema = (propertyNode: AST.PropertyNode): Property => {
   if ('$ref' in propertyNode.property) {
     propertyNode.property.$ref = getCollectionId(propertyNode.property.$ref)
   }
-  return {
-    ...propertyNode.property,
-    ...(propertyNode.nestedProperties && {
-      properties: getProperties(propertyNode.nestedProperties),
-    }),
-    ...('items' in propertyNode.property && {
-      items: propertyToSchema({
-        kind: 'property',
-        property: propertyNode.property.items,
-      }),
-    }),
-  } as Property
+
+  const propertySchema: Property = propertyNode.property
+
+  if (propertyNode.nestedProperties && 'type' in propertySchema) {
+    if (propertySchema.type === 'object') {
+      (propertySchema as FixedObjectProperty).properties = getProperties(propertyNode.nestedProperties)
+    } else if (propertySchema.type === 'array') {
+      propertySchema.items = {
+        type: 'object',
+        properties: getProperties(propertyNode.nestedProperties),
+      }
+    }
+  }
+
+  return propertySchema
 }
 
 /** Transforms the AST properties to the format of aeria schema properties */
-export const getProperties = (properties: Record<string, AST.PropertyNode | AST.PropertyNode[]>) => {
+export const getProperties = <
+  TProperties extends Record<string, AST.PropertyNode | AST.PropertyNode[]>,
+  TReturnType = TProperties[keyof TProperties] extends Array<unknown> ? Record<string, Property[]> : Record<string, Property>,
+>
+(properties: TProperties): TReturnType => {
   return Object.entries(properties).reduce<Record<string, Property | Property[]>>((acc, [key, value]) => {
     if (Array.isArray(value)) {
       acc[key] = value.map((propertyNode) => propertyToSchema(propertyNode))
@@ -83,7 +90,7 @@ export const getProperties = (properties: Record<string, AST.PropertyNode | AST.
       acc[key] = propertyToSchema(value)
     }
     return acc
-  }, {})
+  }, {}) as TReturnType
 }
 
 export const UnquotedSymbol = Symbol('unquoted')

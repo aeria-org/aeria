@@ -88,9 +88,10 @@ const makeTSContractsCode = (contractAst: AST.ContractNode[]) => {
       }
     }
 
+    const contractProperties = getProperties(contractSchema)
     return `export declare const ${contractNode.name}Contract: ${
       stringify({
-        ...getProperties(contractSchema),
+        ...contractProperties,
         response: responseSchema,
       })
     }`

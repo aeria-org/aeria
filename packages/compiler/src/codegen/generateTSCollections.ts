@@ -1,4 +1,3 @@
-import type { Property } from '@aeriajs/types'
 import type * as AST from '../ast.js'
 import { getProperties, stringify, makeASTImports, resizeFirstChar, aeriaPackageName, getCollectionId, type StringifyProperty, UnquotedSymbol, defaultFunctions, getExposedFunctions } from './utils.js'
 import { type Entries } from '../utils.js'
@@ -64,7 +63,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
       case 'properties':
         collectionSchema.description = {
           $id: collectionId,
-          properties: getProperties(value) as Record<string, Property>,
+          properties: getProperties(value),
         }
         break
 
@@ -102,7 +101,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
   }, {}))
 }
 
-/** Turns each function to 'typeof functioName' if it's from aeria or  */
+/** Turns each function to 'typeof functioName' if it's from aeria or not */
 const makeTSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
   return Object.keys(functions).reduce<Record<string, StringifyProperty>>((acc, key) => {
     acc[key] = {

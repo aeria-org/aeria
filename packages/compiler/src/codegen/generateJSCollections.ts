@@ -1,4 +1,3 @@
-import type { Property } from '@aeriajs/types'
 import type * as AST from '../ast.js'
 import type { Entries } from '../utils.js'
 import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, UnquotedSymbol, defaultFunctions, getExposedFunctions } from './utils.js'
@@ -52,7 +51,7 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
       case 'properties':
         collectionSchema.description = {
           $id: collectionId,
-          properties: getProperties(value) as Record<string, Property>,
+          properties: getProperties(value),
         }
         break
 
