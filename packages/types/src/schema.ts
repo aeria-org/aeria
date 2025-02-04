@@ -86,16 +86,16 @@ export type InferProperties<TSchema> = (TSchema extends readonly unknown[]
       : never
     : never
   : TSchema) extends infer InferredSchema
-    ? InferredSchema extends
+  ? InferredSchema extends
       | { $ref: infer K }
       | { items: { $ref: infer K } }
-      ? K extends keyof Collections
-        ? 'items' extends keyof InferredSchema
-          ? Collections[K]['item'][]
-          : Collections[K]['item']
-        : never
-      : InferProperty<InferredSchema>
-    : never
+    ? K extends keyof Collections
+      ? 'items' extends keyof InferredSchema
+        ? Collections[K]['item'][]
+        : Collections[K]['item']
+      : never
+    : InferProperty<InferredSchema>
+  : never
 
 export type PackReferences<T> = {
   [P in keyof T]: PackReferencesAux<T[P]>
