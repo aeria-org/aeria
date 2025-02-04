@@ -42,7 +42,7 @@ const makeTSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, stri
               functions?: {
                 [F: string]: (payload: any, context: Context<typeof ${id}["description"]>) => unknown
               }
-            }>(collection: Pick<TCollection, keyof Collection>) => ExtendCollection<typeof ${id}, TCollection>`
+            }>(collection: TCollection) => ExtendCollection<typeof ${id}, TCollection>`
 
       collectionCodes[collectionNode.name] = [
         '//' + collectionNode.name,

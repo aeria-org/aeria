@@ -1,5 +1,25 @@
 # aeria-sdk
 
+## 0.0.172
+
+### Patch Changes
+
+- 3a640a8: Fix URL in `upload()`
+
+## 0.0.171
+
+### Patch Changes
+
+- ed62970: Fix `upload()` function bug
+
+## 0.0.170
+
+### Patch Changes
+
+- Updated dependencies [867e98e]
+  - @aeriajs/common@0.0.134
+  - @aeriajs/types@0.0.116
+
 ## 0.0.169
 
 ### Patch Changes

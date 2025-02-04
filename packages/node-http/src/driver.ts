@@ -1,5 +1,5 @@
-import type { GenericRequest, GenericResponse } from '@aeriajs/types'
-import type { ServerOptions } from '@aeriajs/http'
+import type { GenericRequest, GenericResponse, ServerOptions } from '@aeriajs/types'
+import { logResponse } from '@aeriajs/http'
 import { ERROR_SYMBOL_DESCRIPTION } from '@aeriajs/types'
 import { isEndpointError } from '@aeriajs/common'
 import * as http from 'node:http'
@@ -38,7 +38,7 @@ export const abstractRequest = async (request: http.IncomingMessage) => {
   return req
 }
 
-export const abstractResponse = (response: http.ServerResponse): GenericResponse => {
+export const abstractResponse = (response: http.ServerResponse, options: ServerOptions): GenericResponse => {
   const { end } = response
 
   return Object.assign(response, {
@@ -46,6 +46,9 @@ export const abstractResponse = (response: http.ServerResponse): GenericResponse
     setHeader: response.setHeader.bind(response),
     end: (value) => {
       if( value === undefined ) {
+        if( options.enableLogging ) {
+          logResponse(response)
+        }
         return end.bind(response)()
       }
 
@@ -67,6 +70,9 @@ export const abstractResponse = (response: http.ServerResponse): GenericResponse
           }
         }
 
+        if( options.enableLogging ) {
+          logResponse(response)
+        }
         return end.bind(response)(JSON.stringify(value))
       }
 
@@ -74,14 +80,17 @@ export const abstractResponse = (response: http.ServerResponse): GenericResponse
         ? value
         : String(value)
 
+      if( options.enableLogging ) {
+        logResponse(response)
+      }
       return end.bind(response)(endVal)
     },
   } satisfies Partial<GenericResponse>)
 }
 
-const abstractTransaction = async ($req: http.IncomingMessage, $res: http.ServerResponse) => {
+const abstractTransaction = async ($req: http.IncomingMessage, $res: http.ServerResponse, options: ServerOptions) => {
   const req = await abstractRequest($req)
-  const res = abstractResponse($res)
+  const res = abstractResponse($res, options)
 
   return {
     req,
@@ -94,7 +103,7 @@ export const registerServer = (options: ServerOptions, cb: (req: GenericRequest,
     const {
       req,
       res,
-    } = await abstractTransaction($req, $res)
+    } = await abstractTransaction($req, $res, options)
 
     cb(req, res)
   })

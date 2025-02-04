@@ -377,6 +377,9 @@ importers:
       '@aeriajs/common':
         specifier: link:../packages/common
         version: link:../packages/common
+      '@aeriajs/compiler':
+        specifier: link:../packages/compiler
+        version: link:../packages/compiler
       '@aeriajs/core':
         specifier: link:../packages/core
         version: link:../packages/core

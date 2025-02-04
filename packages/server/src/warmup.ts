@@ -1,31 +1,7 @@
 import type { ContractWithRoles, RouteUri } from '@aeriajs/types'
+import { escape, AnsiColor, METHOD_COLORS } from '@aeriajs/common'
 import { getEndpoints } from '@aeriajs/core'
 import { getConfig, getAvailableRoles } from '@aeriajs/entrypoint'
-
-type EscapeCode = `[${string}m`
-
-const AnsiColor = {
-  Green: '[32m',
-  Yellow: '[33m',
-  Blue: '[36m',
-  Red: '[31m',
-  White: '[37m',
-} as const
-
-const METHOD_COLORS: Record<string, typeof AnsiColor[keyof typeof AnsiColor]> = {
-  GET: AnsiColor.Green,
-  PUT: AnsiColor.Blue,
-  POST: AnsiColor.White,
-  DELETE: AnsiColor.Red,
-}
-
-const escape = (code: EscapeCode | EscapeCode[], text: string) => {
-  const codeStr = Array.isArray(code)
-    ? code.map((c) => `\x1b${c}`).join('')
-    : `\x1b${code}`
-
-  return `${codeStr}${text}\x1b[0m`
-}
 
 const colorizedRoute = async (
   method: string,

@@ -1,7 +1,7 @@
 import type { RouteContext, Collection, GenericRequest, ApiConfig, Token, AuthenticatedToken, NonCircularJsonSchema } from '@aeriajs/types'
 import { Result, ACError, HTTPStatus } from '@aeriajs/types'
 import { endpointError, throwIfError, deepMerge } from '@aeriajs/common'
-import { defineServerOptions, cors, wrapRouteExecution, type createRouter } from '@aeriajs/http'
+import { cors, wrapRouteExecution, type createRouter } from '@aeriajs/http'
 import { registerServer } from '@aeriajs/node-http'
 import { createContext, getDatabase, decodeToken, traverseDocument, ObjectId } from '@aeriajs/core'
 import { DEFAULT_API_CONFIG } from './constants.js'
@@ -92,14 +92,9 @@ export const init = (_options: InitOptions = {}) => {
         await warmup()
       }
 
-      const serverOptions = defineServerOptions({
-        host: options.config.host,
-        port: options.config.port,
-      })
-
       const apiRouter = registerRoutes()
 
-      const server = registerServer(serverOptions, async (request, response) => {
+      const server = registerServer(options.config.server!, async (request, response) => {
         if( cors(request, response) === null ) {
           return
         }

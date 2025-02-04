@@ -9,16 +9,21 @@ export type RolesHierarchy = Record<
   readonly UserRole[] | boolean
 >
 
+export type ServerOptions = {
+  host?: string
+  port?: number
+  enableLogging?: boolean
+}
+
 export type ApiConfig = {
   name?: string
   secret?: string
   baseUrl?: RouteUri
   publicUrl?: string
   webPublicUrl?: string
-  host?: string
-  port?: number
   defaultPaginationLimit?: number
   noWarmup?: boolean
+  server?: ServerOptions
   database?: {
     mongodbUrl?: string
     noDatabase?: boolean
