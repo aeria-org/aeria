@@ -118,7 +118,9 @@ export type RemovePayload<TDocument extends WithId<unknown>> = {
   filters: Filters<TDocument>
 }
 
-export type RemoveAllPayload<TDocument extends WithId<unknown>> = GetPayload<TDocument>
+export type RemoveAllPayload = {
+  filters: (ObjectId | string)[]
+}
 
 export type RemoveFilePayload = UploadAuxProps & {
   filters: {
@@ -161,7 +163,7 @@ export type CollectionFunctions<TSchema extends JsonSchema = JsonSchema> = Schem
       insert: (payload: InsertPayload<SchemaWithId<TSchema, { keepTempIds: true }>>)=> Promise<InsertReturnType<InferredDocument>>
       remove: (payload: RemovePayload<InferredDocument>)=> Promise<RemoveReturnType<InferredDocument>>
       // @TODO
-      removeAll: (payload: RemoveAllPayload<InferredDocument>)=> Promise<unknown>
+      removeAll: (payload: RemoveAllPayload)=> Promise<unknown>
       removeFile: (payload: RemoveFilePayload)=> Promise<unknown>
     }
     : never
@@ -176,7 +178,7 @@ export type CollectionFunctionsSDK<TSchema extends JsonSchema = JsonSchema> = Sc
       insert: (payload: InsertPayload<SchemaWithId<TSchema, { keepTempIds: true }>>)=> Promise<WithACErrors<InsertReturnType<InferredDocument>>>
       remove: (payload: RemovePayload<InferredDocument>)=> Promise<WithACErrors<RemoveReturnType<InferredDocument>>>
       // @TODO
-      removeAll: (payload: RemoveAllPayload<InferredDocument>)=> Promise<unknown>
+      removeAll: (payload: RemoveAllPayload)=> Promise<unknown>
       removeFile: (payload: RemoveFilePayload)=> Promise<unknown>
     }
     : never
