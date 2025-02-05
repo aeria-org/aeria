@@ -628,7 +628,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
       try {
         switch( keyword ) {
           case 'owned': {
-            if( match(TokenTypes.QuotedString, ['always', 'on-write']) ) {
+            if( match(TokenTypes.QuotedString, [
+              'always',
+              'on-write',
+            ]) ) {
               node.owned = consume(TokenTypes.QuotedString).value as AST.CollectionNode['owned']
             }
             break

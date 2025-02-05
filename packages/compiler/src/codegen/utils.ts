@@ -1,5 +1,5 @@
 import type * as AST from '../ast'
-import type { FixedObjectProperty, Property } from '@aeriajs/types'
+import type { Property } from '@aeriajs/types'
 import { functions as aeriaFunctions } from '@aeriajs/core'
 
 export const aeriaPackageName = 'aeria'
@@ -57,15 +57,17 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
 }
 
 export const propertyToSchema = (propertyNode: AST.PropertyNode): Property => {
-  if ('$ref' in propertyNode.property) {
-    propertyNode.property.$ref = getCollectionId(propertyNode.property.$ref)
-  }
-
   const propertySchema: Property = propertyNode.property
 
+  if ('$ref' in propertySchema) {
+    propertySchema.$ref = getCollectionId(propertySchema.$ref)
+  } else if ('items' in propertySchema && '$ref' in propertySchema.items) {
+    propertySchema.items.$ref = getCollectionId(propertySchema.items.$ref)
+  }
+
   if (propertyNode.nestedProperties && 'type' in propertySchema) {
-    if (propertySchema.type === 'object') {
-      (propertySchema as FixedObjectProperty).properties = getProperties(propertyNode.nestedProperties)
+    if (propertySchema.type === 'object' && 'properties' in propertySchema) {
+      propertySchema.properties = getProperties(propertyNode.nestedProperties)
     } else if (propertySchema.type === 'array') {
       propertySchema.items = {
         type: 'object',
