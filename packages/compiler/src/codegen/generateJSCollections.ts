@@ -6,7 +6,7 @@ const initialImportedFunctions = [
   'defineCollection',
 ]
 
-export const generateJSCollections = (ast: AST.Node[]) => {
+export const generateJSCollections = (ast: AST.CollectionNode[]) => {
   let javascriptCode = ''
   const importsResult = makeASTImports(ast, {
     [aeriaPackageName]: new Set(initialImportedFunctions),
@@ -17,10 +17,8 @@ export const generateJSCollections = (ast: AST.Node[]) => {
   return javascriptCode
 }
 
-const makeJSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, string>) => {
-  return Object.values(ast
-    .filter((node) => node.kind === 'collection')
-    .reduce<Record<string, string>>((collectionCodes, collectionNode) => {
+const makeJSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<string, string>) => {
+  return Object.values(ast.reduce<Record<string, string>>((collectionCodes, collectionNode) => {
       const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
       const extendCollectionName = getExtendName(collectionNode.name)
 

@@ -45,14 +45,14 @@ const generateFileStructure = async (fileTree: Record<string, string | object>, 
   return mappedPaths
 }
 
-export const generateCode = async (ast: AST.Node[], options: CompilationOptions) => {
-  const contracts = generateContracts(ast)
+export const generateCode = async (ast: AST.ProgramNode, options: CompilationOptions) => {
+  const contracts = generateContracts(ast.contracts)
   const exports = generateExports(ast, Boolean(contracts))
 
   const fileTree: Record<string, string | object> = {
     ['collections']: {
-      ['collections.d.ts']: generateTSCollections(ast),
-      ['collections.js']: generateJSCollections(ast),
+      ['collections.d.ts']: generateTSCollections(ast.collections),
+      ['collections.js']: generateJSCollections(ast.collections),
       ['index.d.ts']: exports.collections.dTs,
       ['index.js']: exports.collections.js,
     },

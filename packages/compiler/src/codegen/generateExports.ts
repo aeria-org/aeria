@@ -7,9 +7,8 @@ type SymbolToExport = {
   extend: string
 }
 
-export const generateExports = (ast: AST.Node[], hasContracts = false) => {
-  const symbolsToExport = Object.values(ast.filter((node) => node.kind === 'collection')
-    .reduce<Record<string, SymbolToExport>>((symbols, node) => {
+export const generateExports = (ast: AST.ProgramNode, hasContracts = false) => {
+  const symbolsToExport = Object.values(ast.collections.reduce<Record<string, SymbolToExport>>((symbols, node) => {
       const id = getCollectionId(node.name)
       symbols[id] = {
         id,

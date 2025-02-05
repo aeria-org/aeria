@@ -341,7 +341,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
   }): AST.PropertyNode => {
     let property: AST.PropertyNode['property']
     let nestedProperties: Record<string, AST.PropertyNode> | undefined
-    let modifierToken: Token<typeof TokenTypes.Identifier> | undefined
+    let modifierToken: StrictToken<typeof TokenTypes.Identifier, keyof typeof AST.PropertyModifiers> | undefined
 
     if( match(TokenTypes.LeftSquareBracket) ) {
       consume(TokenTypes.LeftSquareBracket)
@@ -407,7 +407,8 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
     if( options.allowModifiers ) {
       const nextToken = next()
-      if( match(TokenTypes.Identifier) && (nextToken.type === TokenTypes.LeftBracket || nextToken.type === TokenTypes.Identifier) ) {
+      const currentTokenValue = current().value
+      if( match(TokenTypes.Identifier) && typeof currentTokenValue === 'string' && guards.isValidPropertyModifier(currentTokenValue) && (nextToken.type === TokenTypes.LeftBracket || nextToken.type === TokenTypes.Identifier)) {
         modifierToken = consume(TokenTypes.Identifier)
       }
     }
@@ -517,9 +518,6 @@ export const parse = (tokens: (Token | undefined)[]) => {
     }
 
     if( modifierToken ) {
-      if( !guards.isValidPropertyModifier(modifierToken.value) ) {
-        throw new Diagnostic(`invalid modifier: "${modifierToken.value}"`, modifierToken.location)
-      }
       node.modifier = modifierToken.value
     }
 

@@ -37,7 +37,9 @@ export const parseAndCheck = async (schemas: Record<string, string>): Promise<Co
     if (!ast) {
       ast = currentAst
     } else {
-      Object.assign(ast, currentAst)
+      ast.collections.push(...currentAst.collections)
+      ast.contracts.push(...currentAst.contracts)
+      ast.functionsets.push(...currentAst.functionsets)
     }
   }
 
@@ -71,7 +73,7 @@ export const compileFromFiles = async (schemaDir: string, options: CompilationOp
   }
 
   const parsed = await parseAndCheck(schemas)
-  const emittedFiles = await generateCode(parsed.ast.collections, options)
+  const emittedFiles = await generateCode(parsed.ast, options)
 
   return {
     ...parsed,

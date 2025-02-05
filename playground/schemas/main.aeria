@@ -234,3 +234,16 @@ collection  Contacts {
    crud
   }
 }
+
+contract ContractTest {
+  payload {
+    properties {
+      name str
+      contacts Topic
+    }
+  }
+  response
+    | Error { properties { name str } }
+    | Result { properties { name str, age num } }
+    | str
+}

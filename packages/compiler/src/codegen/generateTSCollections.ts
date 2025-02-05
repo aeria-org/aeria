@@ -9,7 +9,7 @@ const initialImportedTypes = [
   'Context',
 ]
 
-export const generateTSCollections = (ast: AST.Node[]): string => {
+export const generateTSCollections = (ast: AST.CollectionNode[]): string => {
   let code = ''
   code += `import type { ${initialImportedTypes.join(', ')} } from '${aeriaPackageName}'\n` //Used types
   const importsResult = makeASTImports(ast)
@@ -19,10 +19,8 @@ export const generateTSCollections = (ast: AST.Node[]): string => {
 }
 
 /** Creates the code exporting the collection type, declaration, schema and extend for each collection and returns them in a string */
-const makeTSCollections = (ast: AST.Node[], modifiedSymbols: Record<string, string>) => {
-  return Object.values(ast
-    .filter((node): node is AST.CollectionNode => node.kind === 'collection')
-    .reduce<Record<string, string>>((collectionCodes, collectionNode) => {
+const makeTSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<string, string>) => {
+  return Object.values(ast.reduce<Record<string, string>>((collectionCodes, collectionNode) => {
       const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
       const schemaName = resizeFirstChar(collectionNode.name, true) //collectionName -> CollectionName
       const typeName = id + 'Collection' //Pet -> petCollection

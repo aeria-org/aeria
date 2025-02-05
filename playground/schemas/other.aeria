@@ -1,0 +1,16 @@
+collection TestCollection {
+  owned "on-write"
+  properties {
+    name str
+  }
+  functions {
+    get @expose("unauthenticated")
+    getAll @expose(true)
+    insert @expose
+    remove @expose
+    upload @expose
+  }
+  presets {
+    crud
+  }
+}
