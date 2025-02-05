@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.118
+
+### Patch Changes
+
+- d021960: Fix `removeAll()` bug
+
 ## 0.0.117
 
 ### Patch Changes
