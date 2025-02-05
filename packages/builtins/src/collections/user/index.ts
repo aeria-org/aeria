@@ -1,6 +1,6 @@
 import type { AccessCondition, Collection, Context } from '@aeriajs/types'
 import { defineCollection, get, getAll, remove, upload, removeFile } from '@aeriajs/core'
-import { functionSchemas } from '@aeriajs/types'
+import { functionSchemas, resultSchema } from '@aeriajs/types'
 import { description } from './description.js'
 import { authenticate } from './authenticate.js'
 import { activate } from './activate.js'
@@ -76,15 +76,17 @@ Object.assign(user, {
       },
       response: [
         functionSchemas.insertError(),
-        {
+        resultSchema({
           $ref: 'user',
-        },
+        }),
       ],
     },
     getCurrentUser: {
-      response: {
-        $ref: 'user',
-      },
+      response: [
+        resultSchema({
+          $ref: 'user',
+        }),
+      ],
     },
   },
 } satisfies Partial<Collection>)
