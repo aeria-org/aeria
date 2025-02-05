@@ -78,15 +78,15 @@ Object.assign(user, {
         functionSchemas.insertError(),
         resultSchema({
           $ref: 'user',
-        })
+        }),
       ],
     },
     getCurrentUser: {
       response: [
         resultSchema({
           $ref: 'user',
-        })
-      ]
+        }),
+      ],
     },
   },
 } satisfies Partial<Collection>)
