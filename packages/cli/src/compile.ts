@@ -161,6 +161,7 @@ export const compilationPhase = async (options: CompileOptions = {}) => {
       format: tsConfig.compilerOptions.module === ts.ModuleKind.CommonJS
         ? 'cjs'
         : 'esm',
+      sourcemap: tsConfig.compilerOptions.sourceMap
     })
 
     await transpileCtx.rebuild()

@@ -76,6 +76,7 @@ export const watch = async (options: CompileOptions = {}) => {
       format: tsConfig.compilerOptions.module === ts.ModuleKind.CommonJS
         ? 'cjs'
         : 'esm',
+      sourcemap: tsConfig.compilerOptions.sourceMap
     })
     : null
 
