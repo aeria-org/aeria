@@ -9,15 +9,15 @@ type SymbolToExport = {
 
 export const generateExports = (ast: AST.ProgramNode, hasContracts = false) => {
   const symbolsToExport = Object.values(ast.collections.reduce<Record<string, SymbolToExport>>((symbols, node) => {
-      const id = getCollectionId(node.name)
-      symbols[id] = {
-        id,
-        schema: resizeFirstChar(node.name, true),
-        extend: getExtendName(node.name),
-      }
+    const id = getCollectionId(node.name)
+    symbols[id] = {
+      id,
+      schema: resizeFirstChar(node.name, true),
+      extend: getExtendName(node.name),
+    }
 
-      return symbols
-    }, {}))
+    return symbols
+  }, {}))
 
   const exports: {
     main: {

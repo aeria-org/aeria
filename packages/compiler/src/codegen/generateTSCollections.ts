@@ -21,19 +21,19 @@ export const generateTSCollections = (ast: AST.CollectionNode[]): string => {
 /** Creates the code exporting the collection type, declaration, schema and extend for each collection and returns them in a string */
 const makeTSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<string, string>) => {
   return Object.values(ast.reduce<Record<string, string>>((collectionCodes, collectionNode) => {
-      const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
-      const schemaName = resizeFirstChar(collectionNode.name, true) //collectionName -> CollectionName
-      const typeName = id + 'Collection' //Pet -> petCollection
+    const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
+    const schemaName = resizeFirstChar(collectionNode.name, true) //collectionName -> CollectionName
+    const typeName = id + 'Collection' //Pet -> petCollection
 
-      const collectionType = `export declare type ${typeName} = ${
-        id in modifiedSymbols ?
-          `ExtendCollection<typeof ${modifiedSymbols[id]}, ${makeTSCollectionSchema(collectionNode, id)}>`
-          : makeTSCollectionSchema(collectionNode, id)
-      }`
+    const collectionType = `export declare type ${typeName} = ${
+      id in modifiedSymbols ?
+        `ExtendCollection<typeof ${modifiedSymbols[id]}, ${makeTSCollectionSchema(collectionNode, id)}>`
+        : makeTSCollectionSchema(collectionNode, id)
+    }`
 
-      const collectionDeclaration = `export declare const ${id}: ${typeName} & { item: SchemaWithId<${typeName}["description"]> }`
-      const collectionSchema = `export declare type ${schemaName} = SchemaWithId<typeof ${id}.description>`
-      const collectionExtend = `export declare const extend${schemaName}Collection: <
+    const collectionDeclaration = `export declare const ${id}: ${typeName} & { item: SchemaWithId<${typeName}["description"]> }`
+    const collectionSchema = `export declare type ${schemaName} = SchemaWithId<typeof ${id}.description>`
+    const collectionExtend = `export declare const extend${schemaName}Collection: <
             const TCollection extends {
               [P in Exclude<keyof Collection, "functions">]?: Partial<Collection[P]>
             } & {
@@ -42,16 +42,16 @@ const makeTSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<st
               }
             }>(collection: TCollection) => ExtendCollection<typeof ${id}, TCollection>`
 
-      collectionCodes[collectionNode.name] = [
-        '//' + collectionNode.name,
-        collectionType,
-        collectionDeclaration,
-        collectionSchema,
-        collectionExtend,
-      ].join('\n')
+    collectionCodes[collectionNode.name] = [
+      '//' + collectionNode.name,
+      collectionType,
+      collectionDeclaration,
+      collectionSchema,
+      collectionExtend,
+    ].join('\n')
 
-      return collectionCodes
-    }, {})).join('\n\n')
+    return collectionCodes
+  }, {})).join('\n\n')
 }
 
 const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {

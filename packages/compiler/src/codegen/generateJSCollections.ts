@@ -19,27 +19,27 @@ export const generateJSCollections = (ast: AST.CollectionNode[]) => {
 
 const makeJSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<string, string>) => {
   return Object.values(ast.reduce<Record<string, string>>((collectionCodes, collectionNode) => {
-      const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
-      const extendCollectionName = getExtendName(collectionNode.name)
+    const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
+    const extendCollectionName = getExtendName(collectionNode.name)
 
-      const collectionDefinition =
+    const collectionDefinition =
             `export const ${id} = ${collectionNode.extends
               ? `extendCollection(${id in modifiedSymbols
                 ? modifiedSymbols[id]
                 : id}, ${makeJSCollectionSchema(collectionNode, id)})`
               : `defineCollection(${makeJSCollectionSchema(collectionNode, id)})`}`
 
-      const collectionDeclaration =
+    const collectionDeclaration =
       `export const ${extendCollectionName} = (collection) => extendCollection(${id}, collection)`
 
-      collectionCodes[collectionNode.name] = [
-        '//' + collectionNode.name,
-        collectionDefinition,
-        collectionDeclaration,
-      ].join('\n')
+    collectionCodes[collectionNode.name] = [
+      '//' + collectionNode.name,
+      collectionDefinition,
+      collectionDeclaration,
+    ].join('\n')
 
-      return collectionCodes
-    }, {})).join('\n\n')
+    return collectionCodes
+  }, {})).join('\n\n')
 }
 
 const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
