@@ -74,38 +74,27 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
       case 'properties':
         collectionSchema.description.properties = getProperties(collectionNode[key])
         break
-
       case 'owned':
         collectionSchema.description.owned = collectionNode[key]
         break
-
       case 'functions':
         collectionSchema.functions = makeTSFunctions(collectionNode[key])
         collectionSchema.exposedFunctions = getExposedFunctions(collectionNode[key])
         break
-
-      case 'actions':
-        collectionSchema.description[key] = collectionNode[key]
-        break
+      case 'table':
       case 'filters':
+      case 'indexes':
+      case 'form':
         collectionSchema.description[key] = collectionNode[key]
         break
-      case 'form':
+      case 'actions':
+      case 'individualActions':
         collectionSchema.description[key] = collectionNode[key]
         break
       case 'icon':
         collectionSchema.description[key] = collectionNode[key]
         break
-      case 'indexes':
-        collectionSchema.description[key] = collectionNode[key]
-        break
-      case 'individualActions':
-        collectionSchema.description[key] = collectionNode[key]
-        break
       case 'presets':
-        collectionSchema.description[key] = collectionNode[key]
-        break
-      case 'table':
         collectionSchema.description[key] = collectionNode[key]
         break
       case 'search':
