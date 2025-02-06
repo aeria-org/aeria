@@ -1,5 +1,4 @@
-import type { TokenType, Token, Location } from './token.js'
-import { TokenTypes } from './token.js'
+import { TokenType, type Token, type Location } from './token.js'
 import { Diagnostic } from './diagnostic.js'
 
 type TokenValue = Token['value'] | string
@@ -105,47 +104,47 @@ const TOKENS: TokenConfig[] = [
     matcher: /\r?[ \t]+/,
   },
   {
-    type: TokenTypes.LineBreak,
+    type: TokenType.LineBreak,
     matcher: '\n',
   },
   {
-    type: TokenTypes.Comment,
+    type: TokenType.Comment,
     matcher: '//',
   },
   {
-    type: TokenTypes.LeftBracket,
+    type: TokenType.LeftBracket,
     matcher: '{',
   },
   {
-    type: TokenTypes.RightBracket,
+    type: TokenType.RightBracket,
     matcher: '}',
   },
   {
-    type: TokenTypes.LeftParens,
+    type: TokenType.LeftParens,
     matcher: '(',
   },
   {
-    type: TokenTypes.RightParens,
+    type: TokenType.RightParens,
     matcher: ')',
   },
   {
-    type: TokenTypes.LeftSquareBracket,
+    type: TokenType.LeftSquareBracket,
     matcher: '[',
   },
   {
-    type: TokenTypes.RightSquareBracket,
+    type: TokenType.RightSquareBracket,
     matcher: ']',
   },
   {
-    type: TokenTypes.Pipe,
+    type: TokenType.Pipe,
     matcher: '|',
   },
   {
-    type: TokenTypes.Comma,
+    type: TokenType.Comma,
     matcher: ',',
   },
   {
-    type: TokenTypes.Range,
+    type: TokenType.Range,
     matcher: /(\d+\.\.\d*|\d*\.\.\d+)/g,
     valueExtractor: (value) => {
       const [, left, right] = value.match(/(\d*)\.\.(\d*)/)!
@@ -156,16 +155,16 @@ const TOKENS: TokenConfig[] = [
     },
   },
   {
-    type: TokenTypes.Dot,
+    type: TokenType.Dot,
     matcher: '.',
   },
   {
-    type: TokenTypes.Number,
+    type: TokenType.Number,
     matcher: /[0-9]+(\.[0-9]+)?/,
     construct: Number,
   },
   {
-    type: TokenTypes.Boolean,
+    type: TokenType.Boolean,
     matcher: [
       'true',
       'false',
@@ -173,26 +172,26 @@ const TOKENS: TokenConfig[] = [
     construct: Boolean,
   },
   {
-    type: TokenTypes.Keyword,
+    type: TokenType.Keyword,
     matcher: Array.from(keywordsSet),
     condition: (state) => !state.inPropertiesStack.at(-1),
   },
   {
-    type: TokenTypes.MacroName,
+    type: TokenType.MacroName,
     matcher: /[a-zA-Z]([a-zA-Z0-9]|_)+\(/,
     valueExtractor: (value) => value.slice(0, -1),
   },
   {
-    type: TokenTypes.Identifier,
+    type: TokenType.Identifier,
     matcher: /([a-zA-Z0-9]|_)+/,
   },
   {
-    type: TokenTypes.QuotedString,
+    type: TokenType.QuotedString,
     matcher: /"([^"]+)"/,
     valueExtractor: (value) => value.slice(1, -1),
   },
   {
-    type: TokenTypes.AttributeName,
+    type: TokenType.AttributeName,
     matcher: /@[a-zA-Z0-9]+/,
     valueExtractor: (value) => value.slice(1),
   },
@@ -253,12 +252,12 @@ export const tokenize = function (input: string) {
 
         switch( type ) {
           case null: break
-          case TokenTypes.LineBreak:
+          case TokenType.LineBreak:
             line++
             end = 0
             start = 0
             break
-          case TokenTypes.Comment: {
+          case TokenType.Comment: {
             while( input[index++] !== '\n' ) {}
             line++
             break
@@ -281,7 +280,7 @@ export const tokenize = function (input: string) {
             }
 
             switch( type ) {
-              case TokenTypes.LeftBracket: {
+              case TokenType.LeftBracket: {
                 const lastToken = tokens.at(-1)
                 if (lastToken) {
                   if (lastToken.value === 'properties') {
@@ -292,7 +291,7 @@ export const tokenize = function (input: string) {
                 }
                 break
               }
-              case TokenTypes.RightBracket: {
+              case TokenType.RightBracket: {
                 if (state.inPropertiesStack.length > 0) {
                   state.inPropertiesStack.pop()
                 }

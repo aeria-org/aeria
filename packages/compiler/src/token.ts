@@ -1,4 +1,4 @@
-export const TokenTypes = {
+export const TokenType = {
   LineBreak: 'LINE_BREAK',
   Comment: 'COMMENT',
   LeftBracket: 'LEFT_BRACKET',
@@ -20,12 +20,12 @@ export const TokenTypes = {
   Range: 'RANGE',
 } as const
 
-export type TokenType = typeof TokenTypes[keyof typeof TokenTypes]
+export type TokenType = typeof TokenType[keyof typeof TokenType]
 
 export type TypeMap = {
-  [TokenTypes.Number]: number
-  [TokenTypes.Boolean]: boolean
-  [TokenTypes.Range]: readonly [number, number]
+  [TokenType.Number]: number
+  [TokenType.Boolean]: boolean
+  [TokenType.Range]: readonly [number, number]
 }
 
 export type Location = {

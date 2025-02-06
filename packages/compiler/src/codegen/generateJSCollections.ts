@@ -1,5 +1,5 @@
 import type * as AST from '../ast.js'
-import type { Entries } from '../utils.js'
+import type { Description, RequiredProperties } from '@aeriajs/types'
 import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, UnquotedSymbol, defaultFunctions, getExposedFunctions } from './utils.js'
 const initialImportedFunctions = [
   'extendCollection',
@@ -18,16 +18,18 @@ export const generateJSCollections = (ast: AST.CollectionNode[]) => {
 }
 
 const makeJSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<string, string>) => {
-  return Object.values(ast.reduce<Record<string, string>>((collectionCodes, collectionNode) => {
-    const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
+  const collectionCodes: Record<string, string> = {}
+
+  for (const collectionNode of ast) {
+    const id = getCollectionId(collectionNode.name) // CollectionName -> collectionName
     const extendCollectionName = getExtendName(collectionNode.name)
 
     const collectionDefinition =
-            `export const ${id} = ${collectionNode.extends
-              ? `extendCollection(${id in modifiedSymbols
-                ? modifiedSymbols[id]
-                : id}, ${makeJSCollectionSchema(collectionNode, id)})`
-              : `defineCollection(${makeJSCollectionSchema(collectionNode, id)})`}`
+      `export const ${id} = ${collectionNode.extends
+        ? `extendCollection(${id in modifiedSymbols
+          ? modifiedSymbols[id]
+          : id}, ${makeJSCollectionSchema(collectionNode, id)})`
+        : `defineCollection(${makeJSCollectionSchema(collectionNode, id)})`}`
 
     const collectionDeclaration =
       `export const ${extendCollectionName} = (collection) => extendCollection(${id}, collection)`
@@ -37,57 +39,74 @@ const makeJSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<st
       collectionDefinition,
       collectionDeclaration,
     ].join('\n')
+  }
 
-    return collectionCodes
-  }, {})).join('\n\n')
+  return Object.values(collectionCodes).join('\n\n')
 }
 
 const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
-  const nodeEntries = Object.entries(collectionNode) as Entries<typeof collectionNode>
-  return stringify(nodeEntries.reduce<Partial<Record<string, any>>>((collectionSchema, [key, value]) => {
+  const collectionSchema: Record<string, unknown>
+    & { description: Partial<Description> } = {
+      description: {
+        $id: collectionId,
+      },
+    }
+
+  for (const key of Object.keys(collectionNode) as Array<keyof typeof collectionNode>) {
+    if (collectionNode[key] === undefined) {
+      continue
+    }
+
     switch (key) {
       case 'properties':
-        collectionSchema.description = {
-          $id: collectionId,
-          properties: getProperties(value),
-        }
+        collectionSchema.description.properties = getProperties(collectionNode[key])
         break
 
       case 'owned':
-        if (value) {
-          collectionSchema.description.owned = value
-        }
+        collectionSchema.description.owned = collectionNode[key]
         break
 
       case 'functions':
-        if (value) {
-          collectionSchema.functions = {
-            [UnquotedSymbol]: `{ ${makeJSFunctions(value)} }`,
-          }
-
-          collectionSchema.exposedFunctions = getExposedFunctions(value)
+        collectionSchema.functions = {
+          [UnquotedSymbol]: `{ ${makeJSFunctions(collectionNode[key])} }`,
         }
+        collectionSchema.exposedFunctions = getExposedFunctions(collectionNode[key])
         break
 
       case 'actions':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'filters':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'form':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'icon':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'indexes':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'individualActions':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'presets':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'table':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'search':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'required':
-        if (value) {
-          Object.assign(collectionSchema.description, {
-            [key]: value,
-          })
-        }
+        collectionSchema.description[key] = collectionNode[key] as RequiredProperties<any>
         break
     }
-    return collectionSchema
-  }, {}))
+  }
+
+  return stringify(collectionSchema)
 }
 
 const makeJSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {

@@ -5,5 +5,3 @@ export type ArrayProperties<T> = keyof {
     : never
   ]: never
 }
-
-export type Entries<T, K extends keyof T = keyof T> = (K extends unknown ? [K, T[K]] : never)[]

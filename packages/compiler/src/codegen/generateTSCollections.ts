@@ -1,6 +1,6 @@
 import type * as AST from '../ast.js'
 import { getProperties, stringify, makeASTImports, resizeFirstChar, aeriaPackageName, getCollectionId, type StringifyProperty, UnquotedSymbol, defaultFunctions, getExposedFunctions } from './utils.js'
-import { type Entries } from '../utils.js'
+import { type Description, type RequiredProperties } from '@aeriajs/types'
 
 const initialImportedTypes = [
   'Collection',
@@ -20,19 +20,22 @@ export const generateTSCollections = (ast: AST.CollectionNode[]): string => {
 
 /** Creates the code exporting the collection type, declaration, schema and extend for each collection and returns them in a string */
 const makeTSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<string, string>) => {
-  return Object.values(ast.reduce<Record<string, string>>((collectionCodes, collectionNode) => {
-    const id = getCollectionId(collectionNode.name) //CollectionName -> collectionName
-    const schemaName = resizeFirstChar(collectionNode.name, true) //collectionName -> CollectionName
-    const typeName = id + 'Collection' //Pet -> petCollection
+  const collectionCodes: Record<string, string> = {}
 
-    const collectionType = `export declare type ${typeName} = ${
-      id in modifiedSymbols ?
-        `ExtendCollection<typeof ${modifiedSymbols[id]}, ${makeTSCollectionSchema(collectionNode, id)}>`
-        : makeTSCollectionSchema(collectionNode, id)
+  for (const collectionNode of ast) {
+    const id = getCollectionId(collectionNode.name) // CollectionName -> collectionName
+    const schemaName = resizeFirstChar(collectionNode.name, true) // collectionName -> CollectionName
+    const typeName = id + 'Collection' // Pet -> petCollection
+
+    const collectionType = `export declare type ${typeName} = ${id in modifiedSymbols
+      ? `ExtendCollection<typeof ${modifiedSymbols[id]}, ${makeTSCollectionSchema(collectionNode, id)}>`
+      : makeTSCollectionSchema(collectionNode, id)
     }`
 
     const collectionDeclaration = `export declare const ${id}: ${typeName} & { item: SchemaWithId<${typeName}["description"]> }`
+
     const collectionSchema = `export declare type ${schemaName} = SchemaWithId<typeof ${id}.description>`
+
     const collectionExtend = `export declare const extend${schemaName}Collection: <
             const TCollection extends {
               [P in Exclude<keyof Collection, "functions">]?: Partial<Collection[P]>
@@ -49,54 +52,72 @@ const makeTSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<st
       collectionSchema,
       collectionExtend,
     ].join('\n')
+  }
 
-    return collectionCodes
-  }, {})).join('\n\n')
+  return Object.values(collectionCodes).join('\n\n')
 }
 
 const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
-  const nodeEntries = Object.entries(collectionNode) as Entries<typeof collectionNode>
-  return stringify(nodeEntries.reduce<Partial<Record<string, any>>>((collectionSchema, [key, value]) => {
+  const collectionSchema: Record<string, unknown>
+    & { description: Partial<Description> } = {
+      description: {
+        $id: collectionId,
+      },
+    }
+
+  for (const key of Object.keys(collectionNode) as Array<keyof typeof collectionNode>) {
+    if (collectionNode[key] === undefined) {
+      continue
+    }
+
     switch (key) {
       case 'properties':
-        collectionSchema.description = {
-          $id: collectionId,
-          properties: getProperties(value),
-        }
+        collectionSchema.description.properties = getProperties(collectionNode[key])
         break
 
       case 'owned':
-        if (value) {
-          collectionSchema.description.owned = value
-        }
+        collectionSchema.description.owned = collectionNode[key]
         break
 
       case 'functions':
-        if (value) {
-          collectionSchema[key] = makeTSFunctions(value)
-          collectionSchema.exposedFunctions = getExposedFunctions(value)
-        }
+        collectionSchema.functions = makeTSFunctions(collectionNode[key])
+        collectionSchema.exposedFunctions = getExposedFunctions(collectionNode[key])
         break
 
       case 'actions':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'filters':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'form':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'icon':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'indexes':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'individualActions':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'presets':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'table':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'search':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'required':
-        if (value) {
-          Object.assign(collectionSchema.description, {
-            [key]: value,
-          })
-        }
+        collectionSchema.description[key] = collectionNode[key] as RequiredProperties<any>
         break
     }
-    return collectionSchema
-  }, {}))
+  }
+
+  return stringify(collectionSchema)
 }
 
 /** Turns each function to 'typeof functioName' if it's from aeria or not */
