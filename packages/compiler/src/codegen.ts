@@ -22,22 +22,20 @@ const generateFileStructure = async (fileTree: Record<string, string | object>, 
   const mappedPaths: Record<string, string> = {}
 
   const mapPathTree = async (tree: Record<string, string | object>, previousPath: string) => {
-    return new Promise<void>(async (resolve) => {
-      for (const treePath in tree) {
-        const currentPath = path.join(previousPath, treePath)
-        if (typeof tree[treePath] === 'object') {
-          await mapPathTree(tree[treePath] as Record<string, string | object>, currentPath)
-          continue
-        }
-
-        await fsPromises.mkdir(previousPath, {
-          recursive: true,
-        })
-
-        mappedPaths[currentPath] = tree[treePath]
+    for (const treePath in tree) {
+      const currentPath = path.join(previousPath, treePath)
+      if (typeof tree[treePath] === 'object') {
+        await mapPathTree(tree[treePath] as Record<string, string | object>, currentPath)
+        continue
       }
-      resolve()
-    })
+
+      await fsPromises.mkdir(previousPath, {
+        recursive: true,
+      })
+
+      mappedPaths[currentPath] = tree[treePath]
+    }
+    return
   }
 
   await mapPathTree(fileTree, rootDir)
