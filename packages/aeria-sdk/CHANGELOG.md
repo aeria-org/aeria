@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.176
+
+### Patch Changes
+
+- 5fd3c7f: Fix mirror bug
+
 ## 0.0.175
 
 ### Patch Changes
