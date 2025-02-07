@@ -148,8 +148,15 @@ export const writeMirrorFiles = async (mirror: MirrorObject, config: InstanceCon
     const runtimeBase = path.dirname(resolvedPath)
 
     await writeFile(path.join(mirrorPath, DTS_FILENAME), dts)
-    await writeFile(path.join(runtimeBase, 'runtime.js'), cjs)
-    await writeFile(path.join(runtimeBase, 'runtime.mjs'), esm)
+    // this array join must be used, otherwise the .js will be transformed by the transform-import-extensions script
+    await writeFile(path.join(runtimeBase, [
+      'runtime',
+      'js',
+    ].join('.')), cjs)
+    await writeFile(path.join(runtimeBase, [
+      'runtime',
+      'mjs',
+    ].join('.')), esm)
   }
 }
 

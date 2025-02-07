@@ -5,7 +5,7 @@
   "types": "src/index.ts",
   "scripts": {
     "test": "echo skipping",
-    "postinstall": "tsx ../packages/core/src/__scripts__/postinstall.ts",
+    "postinstall": "node ../packages/core/src/__scripts__/postinstall.ts",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "build": "NODE_PATH=./node_modules aeria -ci",

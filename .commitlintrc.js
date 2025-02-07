@@ -1,8 +1,8 @@
 export default {
   extends: ['@commitlint/config-conventional'],
   ignores: [
-    () => {
-      return !!process.env.GITHUB_ACTIONS
+    (message) => {
+      return ['Version Packages'].includes(message)
     }
   ],
 }

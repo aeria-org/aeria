@@ -1,4 +1,4 @@
-#!/usr/bin/env -S node --import tsx/esm
+#!/usr/bin/env node
 
 import path from 'node:path'
 import { extractIcons, iconsEsmContent, iconsCjsContent, iconsDtsContent } from '../packages/cli/dist/index.js'
