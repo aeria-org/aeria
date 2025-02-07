@@ -17,7 +17,7 @@
     "build:cjs": "tsc",
     "build:esm": "esbuild './src/**/*.ts' --outdir=dist --out-extension:.js=.mjs && pnpm build:esm-transform",
     "build:esm-transform": "pnpm -w esm-transform $PWD/dist",
-    "postinstall": "test -f dist/__scripts__/postinstall.js && node dist/__scripts__/postinstall.js"
+    "postinstall": "if test -f dist/__scripts__/postinstall.js; then node dist/__scripts__/postinstall.js; fi"
   },
   "exports": {
     ".": {
