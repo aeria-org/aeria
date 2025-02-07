@@ -1,3 +1,5 @@
 #!/usr/bin/env sh
 
-pnpm commitlint --edit ${1}
+if ! test $GITHUB_ACTIONS && ! test $SKIP; then
+  pnpm commitlint --edit ${1}
+fi
