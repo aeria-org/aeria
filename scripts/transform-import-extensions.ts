@@ -1,4 +1,4 @@
-#!/usr/bin/env -S node --import tsx/esm
+#!/usr/bin/env node
 
 import { Transform } from 'node:stream'
 import * as fs from 'node:fs'
