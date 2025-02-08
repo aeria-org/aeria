@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.7
+
+### Patch Changes
+
+- 3db0e44: Remove `@aeriajs/core` dependency
+
 ## 0.0.6
 
 ### Patch Changes
