@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.1
+
+### Patch Changes
+
+- 84f601a: New language version
+
 ## 0.0.4
 
 ### Patch Changes
