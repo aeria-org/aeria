@@ -40,6 +40,7 @@
   "devDependencies": {
     "@aeriajs/builtins": "link:../builtins",
     "@aeriajs/common": "link:../common",
+    "@aeriajs/compiler": "link:../compiler",
     "@aeriajs/core": "link:../core",
     "@aeriajs/entrypoint": "link:../entrypoint",
     "@aeriajs/types": "link:../types"

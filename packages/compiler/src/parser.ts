@@ -1,8 +1,8 @@
-import type { CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
-import { DESCRIPTION_PRESETS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
+import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
+import { TokenType, type Token, type Location } from './token.js'
+import { DESCRIPTION_PRESETS, PROPERTY_ARRAY_ELEMENTS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { icons } from '@phosphor-icons/core'
 import { Diagnostic } from './diagnostic.js'
-import { TokenType, type Token, type Location } from './token.js'
 import * as AST from './ast.js'
 import * as guards from './guards.js'
 import * as lexer from './lexer.js'
@@ -312,6 +312,22 @@ export const parse = (tokens: (Token | undefined)[]) => {
               return
             }
           }
+          break
+        }
+        case 'array': {
+          switch (attributeName) {
+            case 'uniqueItems': {
+              const { value } = consume(TokenType.Boolean)
+              property[attributeName] = value
+              return
+            }
+            case 'element': {
+              const { value } = consume(TokenType.QuotedString, PROPERTY_ARRAY_ELEMENTS)
+              property[attributeName] = value
+              return
+            }
+
+          }
         }
       }
     }
@@ -324,15 +340,60 @@ export const parse = (tokens: (Token | undefined)[]) => {
   }): AST.PropertyNode => {
     let property: AST.PropertyNode['property']
     let nestedProperties: Record<string, AST.PropertyNode> | undefined
-    let modifierToken: Token<typeof TokenType.Identifier> | undefined
+    let modifierToken: StrictToken<typeof TokenType.Identifier, keyof typeof AST.PropertyModifiers> | undefined
 
     if( match(TokenType.LeftSquareBracket) ) {
       consume(TokenType.LeftSquareBracket)
+      const arrayProperty: Omit<Extract<AST.PropertyNode['property'], { type: 'array' }>, 'items' > = {
+        type: 'array',
+      }
+      while( !match(TokenType.RightSquareBracket) ) {
+        const attributeSymbol = Symbol()
+        arrayProperty[AST.LOCATION_SYMBOL] ??= {
+          attributes: {},
+          arrays: {},
+        }
+
+        if (match(TokenType.Range)) {
+          const { value: rangeSeparator } = consume(TokenType.Range)
+          let attributeName: keyof ArrayProperty
+
+          const minItems = rangeSeparator[0]
+          if (!isNaN(minItems)) {
+            attributeName = 'minItems'
+            arrayProperty[attributeName] = minItems,
+            arrayProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
+          }
+
+          const maxItems = rangeSeparator[1]
+          if (!isNaN(maxItems)) {
+            attributeName = 'maxItems'
+            arrayProperty[attributeName] = maxItems
+            arrayProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
+          }
+
+          continue
+        }
+
+        const { value: attributeName, location } = consume(TokenType.AttributeName)
+        if( match(TokenType.LeftParens) ) {
+          consume(TokenType.LeftParens)
+          locationMap.set(attributeSymbol, next().location)
+
+          arrayProperty[AST.LOCATION_SYMBOL].attributes[attributeName] = attributeSymbol
+
+          parsePropertyAttributeValue(attributeName, arrayProperty as AST.PropertyNode['property'], location)
+          consume(TokenType.RightParens)
+
+        } else {
+          parsePropertyAttributeValue(attributeName, arrayProperty as AST.PropertyNode['property'], location)
+        }
+      }
       consume(TokenType.RightSquareBracket)
 
       const { property: items, nestedProperties } = parsePropertyType(options)
       property = {
-        type: 'array',
+        ...arrayProperty,
         items,
       }
 
@@ -345,7 +406,8 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
     if( options.allowModifiers ) {
       const nextToken = next()
-      if( match(TokenType.Identifier) && (nextToken.type === TokenType.LeftBracket || nextToken.type === TokenType.Identifier) ) {
+      const currentTokenValue = current().value
+      if( match(TokenType.Identifier) && typeof currentTokenValue === 'string' && guards.isValidPropertyModifier(currentTokenValue) && (nextToken.type === TokenType.LeftBracket || nextToken.type === TokenType.Identifier)) {
         modifierToken = consume(TokenType.Identifier)
       }
     }
@@ -455,9 +517,6 @@ export const parse = (tokens: (Token | undefined)[]) => {
     }
 
     if( modifierToken ) {
-      if( !guards.isValidPropertyModifier(modifierToken.value) ) {
-        throw new Diagnostic(`invalid modifier: "${modifierToken.value}"`, modifierToken.location)
-      }
       node.modifier = modifierToken.value
     }
 
@@ -566,10 +625,11 @@ export const parse = (tokens: (Token | undefined)[]) => {
       try {
         switch( keyword ) {
           case 'owned': {
-            if( match(TokenType.QuotedString, 'on-write') ) {
-              node.owned = consume(TokenType.QuotedString).value === 'true'
-            } else {
-              node.owned = consume(TokenType.Boolean).value
+            if( match(TokenType.QuotedString, [
+              'always',
+              'on-write',
+            ]) ) {
+              node.owned = consume(TokenType.QuotedString).value as AST.CollectionNode['owned']
             }
             break
           }

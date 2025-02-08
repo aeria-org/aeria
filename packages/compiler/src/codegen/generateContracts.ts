@@ -1,17 +1,21 @@
-import type * as aeria from 'aeria'
 import type * as AST from '../ast.js'
-import { errorSchema, type Property, resultSchema } from 'aeria'
+import type { Property } from '@aeriajs/types'
+import { errorSchema, resultSchema } from '@aeriajs/types'
 import { getProperties, propertyToSchema, stringify, UnquotedSymbol, type StringifyProperty } from './utils.js'
 
 export const generateContracts = (ast: AST.Node[]) => {
+  const contractNodes = ast.filter((node) => node.kind === 'contract')
+  if (contractNodes.length === 0) {
+    return false
+  }
   return {
-    ['out/contracts/contracts.js']: makeJSContractsCode(ast),
-    ['out/contracts/contracts.d.ts']: makeTSContractsCode(ast),
+    js: makeJSContractsCode(contractNodes),
+    dTs: makeTSContractsCode(contractNodes),
   }
 }
 
-const makeJSContractsCode = (ast: AST.Node[]) => {
-  const imports = new Set<keyof typeof aeria>(['defineContract'])
+const makeJSContractsCode = (contractAst: AST.ContractNode[]) => {
+  const imports = new Set<string>(['defineContract'])
 
   const getCodeForResponse = (responseProperty: AST.PropertyNode) => {
     const { kind, modifier, ...propertyNode } = responseProperty
@@ -28,35 +32,34 @@ const makeJSContractsCode = (ast: AST.Node[]) => {
     return `${modifierSymbol}(${stringify(propertyToSchema(propertyNode as AST.PropertyNode))})`
   }
 
-  const declarations = ast.filter((node) => node.kind === 'contract')
-    .map((contractNode) => {
-      const { name, kind, roles, response, ...contractProperty } = contractNode
+  const declarations = contractAst.map((contractNode) => {
+    const { name, kind, roles, response, ...contractProperty } = contractNode
 
-      let responseString = ''
-      if (response) {
-        if (Array.isArray(response)) {
-          const responseArray: StringifyProperty[] = []
-          for (const responseElement of response) {
-            responseArray.push({
-              [UnquotedSymbol]: getCodeForResponse(responseElement),
-            })
-          }
-
-          responseString = stringify(responseArray)
-        } else {
-          responseString = stringify(getCodeForResponse(response))
+    let responseString = ''
+    if (response) {
+      if (Array.isArray(response)) {
+        const responseArray: StringifyProperty[] = []
+        for (const responseElement of response) {
+          responseArray.push({
+            [UnquotedSymbol]: getCodeForResponse(responseElement),
+          })
         }
-      }
 
-      const contractSchema: Record<string, unknown> = getProperties(contractProperty)
-      contractSchema.response = {
-        [UnquotedSymbol]: responseString,
+        responseString = stringify(responseArray)
+      } else {
+        responseString = stringify(getCodeForResponse(response))
       }
+    }
 
-      return `export const ${name}Contract = defineContract(${
-        stringify(contractSchema)
-      })`
-    }).join('\n\n')
+    const contractSchema: Record<string, unknown> = getProperties(contractProperty)
+    contractSchema.response = {
+      [UnquotedSymbol]: responseString,
+    }
+
+    return `export const ${name}Contract = defineContract(${
+      stringify(contractSchema)
+    })`
+  }).join('\n\n')
 
   return `import { ${Array.from(imports).join(', ')} } from \'aeria\'\n\n` + declarations
 }
@@ -72,26 +75,26 @@ const getResponseSchema = (response: AST.PropertyNode) => {
     errorSchema(responseSchema)
 }
 
-const makeTSContractsCode = (ast: AST.Node[]) => {
-  return ast.filter((node) => node.kind === 'contract')
-    .map((contractNode) => {
-      const { name, kind, roles, ...contractSchema } = contractNode
+const makeTSContractsCode = (contractAst: AST.ContractNode[]) => {
+  return contractAst.map((contractNode) => {
+    const { name, kind, roles, ...contractSchema } = contractNode
 
-      let responseSchema: Property | Property[] | null = null
-      if (contractSchema.response) {
-        if (Array.isArray(contractSchema.response)) {
-          responseSchema = contractSchema.response.map(getResponseSchema)
-        } else {
-          responseSchema = getResponseSchema(contractSchema.response)
-        }
+    let responseSchema: Property | Property[] | null = null
+    if (contractSchema.response) {
+      if (Array.isArray(contractSchema.response)) {
+        responseSchema = contractSchema.response.map(getResponseSchema)
+      } else {
+        responseSchema = getResponseSchema(contractSchema.response)
       }
+    }
 
-      return `export declare const ${contractNode.name}Contract: ${
-        stringify({
-          ...getProperties(contractSchema),
-          response: responseSchema,
-        })
-      }`
-    }).join('\n\n')
+    const contractProperties = getProperties(contractSchema)
+    return `export declare const ${contractNode.name}Contract: ${
+      stringify({
+        ...contractProperties,
+        response: responseSchema,
+      })
+    }`
+  }).join('\n\n')
 }
 

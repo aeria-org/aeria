@@ -17,6 +17,7 @@ export const TokenType = {
   QuotedString: 'QUOTED_STRING',
   AttributeName: 'ATTRIBUTE_NAME',
   MacroName: 'MACRO_NAME',
+  Range: 'RANGE',
 } as const
 
 export type TokenType = typeof TokenType[keyof typeof TokenType]
@@ -24,6 +25,7 @@ export type TokenType = typeof TokenType[keyof typeof TokenType]
 export type TypeMap = {
   [TokenType.Number]: number
   [TokenType.Boolean]: boolean
+  [TokenType.Range]: readonly [number, number]
 }
 
 export type Location = {
@@ -34,7 +36,7 @@ export type Location = {
 }
 
 export type Token<
-  TTokenType extends typeof TokenType[keyof typeof TokenType] = typeof TokenType[keyof typeof TokenType],
+  TTokenType extends TokenType = TokenType,
   TValue = TTokenType extends keyof TypeMap
     ? TypeMap[TTokenType]
     : string,

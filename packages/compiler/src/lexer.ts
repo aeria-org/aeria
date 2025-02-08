@@ -1,6 +1,8 @@
 import { TokenType, type Token, type Location } from './token.js'
 import { Diagnostic } from './diagnostic.js'
 
+type TokenValue = Token['value'] | string
+
 type TokenConfig = {
   type:
     | TokenType
@@ -9,13 +11,13 @@ type TokenConfig = {
     | RegExp
     | string
     | readonly string[]
-  valueExtractor?: (value: string) => string
-  construct?: (value: string) => Token['value']
+  valueExtractor?: (value: string) => TokenValue
+  construct?: (value: TokenValue) => TokenValue
   condition?: (state: LexerState) => boolean
 }
 
 type LexerState = {
-  inProperties: boolean
+  inPropertiesStack: boolean[]
 }
 
 export type Keyword =
@@ -142,6 +144,17 @@ const TOKENS: TokenConfig[] = [
     matcher: ',',
   },
   {
+    type: TokenType.Range,
+    matcher: /(\d+\.\.\d*|\d*\.\.\d+)/g,
+    valueExtractor: (value) => {
+      const [, left, right] = value.match(/(\d*)\.\.(\d*)/)!
+      return [
+        parseInt(left),
+        parseInt(right),
+      ] as const
+    },
+  },
+  {
     type: TokenType.Dot,
     matcher: '.',
   },
@@ -161,7 +174,7 @@ const TOKENS: TokenConfig[] = [
   {
     type: TokenType.Keyword,
     matcher: Array.from(keywordsSet),
-    condition: (state) => !state.inProperties,
+    condition: (state) => !state.inPropertiesStack.at(-1),
   },
   {
     type: TokenType.MacroName,
@@ -195,7 +208,7 @@ export const tokenize = function (input: string) {
   const errors: Diagnostic[] = []
 
   const state: LexerState = {
-    inProperties: false,
+    inPropertiesStack: [],
   }
 
   while( index < input.length ) {
@@ -269,22 +282,18 @@ export const tokenize = function (input: string) {
             switch( type ) {
               case TokenType.LeftBracket: {
                 const lastToken = tokens.at(-1)
-                if( lastToken ) {
-                  switch( lastToken.value ) {
-                    case 'properties': {
-                      state.inProperties = true
-                      break
-                    }
-                    default: {
-                      state.inProperties = false
-                    }
+                if (lastToken) {
+                  if (lastToken.value === 'properties') {
+                    state.inPropertiesStack.push(true)
+                  } else {
+                    state.inPropertiesStack.push(false)
                   }
                 }
                 break
               }
               case TokenType.RightBracket: {
-                if( state.inProperties ) {
-                  state.inProperties = false
+                if (state.inPropertiesStack.length > 0) {
+                  state.inPropertiesStack.pop()
                 }
                 break
               }

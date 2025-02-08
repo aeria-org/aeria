@@ -20,6 +20,7 @@
     "@aeriajs/builtins-icons": "link:packages/builtins-icons",
     "@aeriajs/cli": "link:packages/cli",
     "@aeriajs/common": "link:packages/common",
+    "@aeriajs/compiler": "link:packages/compiler",
     "@aeriajs/core": "link:packages/core",
     "@aeriajs/entrypoint": "link:packages/entrypoint",
     "@aeriajs/http": "link:packages/http",

@@ -1,18 +1,10 @@
-import ts from 'typescript'
-import { build, ppDiagnostic } from 'aeria-lang'
 import { Result } from '@aeriajs/types'
-import { getUserTsconfig } from './compile.js'
+import { compileFromFiles } from '@aeriajs/compiler'
 
 export const buildAeriaLang = async () => {
-  const tsConfig = await getUserTsconfig()
-
   try {
-    return await build(['schemas/*.aeria'], {
+    return await compileFromFiles('schemas', {
       outDir: '.aeria/out',
-      // deprecated: new compiler only outputs esnext
-      module: tsConfig.compilerOptions.module === ts.ModuleKind.CommonJS
-        ? 'commonjs'
-        : 'esnext',
     })
 
   } catch( err ) {
@@ -29,14 +21,14 @@ export const buildAeriaLangPhase = async () => {
   }
 
   if( !result.success ) {
-    return Result.error(ppDiagnostic(result.diagnostics))
+    return Result.error(result.errors.map((error) => `\n${error.fileLocation}:${error.location?.line} at column (${error.location?.start}-${error.location?.end}) - ${error.message}`).join(' | '))
   }
 
-  if( result.emittedFiles.length === 0 ) {
+  if( Object.keys(result.emittedFiles).length === 0 ) {
     return Result.result('no aeria files to build')
   }
 
-  return Result.result(result.emittedFiles.length > 0
+  return Result.result(Object.keys(result.emittedFiles).length > 0
     ? 'aeria files built'
     : 'no aeria files to build')
 }

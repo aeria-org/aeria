@@ -1,9 +1,19 @@
 import type * as AST from '../ast'
-import { functions as aeriaFunctions, type Property } from 'aeria'
+import type { Property } from '@aeriajs/types'
+import { functions as aeriaFunctions } from '@aeriajs/core'
 
 export const aeriaPackageName = 'aeria'
+export const defaultFunctions = Object.keys(aeriaFunctions)
 
 export const ArraySymbol = Symbol('array')
+
+export const getExposedFunctions = (astFunctions: NonNullable<AST.CollectionNode['functions']>) => {
+  return Object.fromEntries(Object.entries(astFunctions)
+    .map(([key, value]) => [
+      key,
+      value.accessCondition,
+    ]))
+}
 
 /**
  * Obs: It will save and return any modified symbols to avoid name duplication later
@@ -24,7 +34,7 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
       }
 
       if (node.functions) {
-        const functionsToImport = Object.keys(node.functions).filter((key) => Object.keys(aeriaFunctions).includes(key))
+        const functionsToImport = Object.keys(node.functions).filter((key) => defaultFunctions.includes(key))
         if (functionsToImport.length > 0) {
           if (!(aeriaPackageName in imports)) {
             imports[aeriaPackageName] = new Set()
@@ -46,20 +56,35 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
   }
 }
 
-export const propertyToSchema = (propertyNode: AST.PropertyNode) => {
-  if ('$ref' in propertyNode.property) {
-    propertyNode.property.$ref = getCollectionId(propertyNode.property.$ref)
+export const propertyToSchema = (propertyNode: AST.PropertyNode): Property => {
+  const propertySchema: Property = propertyNode.property
+
+  if ('$ref' in propertySchema) {
+    propertySchema.$ref = getCollectionId(propertySchema.$ref)
+  } else if ('items' in propertySchema && '$ref' in propertySchema.items) {
+    propertySchema.items.$ref = getCollectionId(propertySchema.items.$ref)
   }
-  return {
-    ...propertyNode.property,
-    ...(propertyNode.nestedProperties && {
-      properties: getProperties(propertyNode.nestedProperties),
-    }),
-  } as Property
+
+  if (propertyNode.nestedProperties && 'type' in propertySchema) {
+    if (propertySchema.type === 'object' && 'properties' in propertySchema) {
+      propertySchema.properties = getProperties(propertyNode.nestedProperties)
+    } else if (propertySchema.type === 'array') {
+      propertySchema.items = {
+        type: 'object',
+        properties: getProperties(propertyNode.nestedProperties),
+      }
+    }
+  }
+
+  return propertySchema
 }
 
 /** Transforms the AST properties to the format of aeria schema properties */
-export const getProperties = (properties: Record<string, AST.PropertyNode | AST.PropertyNode[]>) => {
+export const getProperties = <
+  TProperties extends Record<string, AST.PropertyNode | AST.PropertyNode[]>,
+  TReturnType = TProperties[keyof TProperties] extends Array<unknown> ? Record<string, Property[]> : Record<string, Property>,
+>
+(properties: TProperties): TReturnType => {
   return Object.entries(properties).reduce<Record<string, Property | Property[]>>((acc, [key, value]) => {
     if (Array.isArray(value)) {
       acc[key] = value.map((propertyNode) => propertyToSchema(propertyNode))
@@ -67,7 +92,7 @@ export const getProperties = (properties: Record<string, AST.PropertyNode | AST.
       acc[key] = propertyToSchema(value)
     }
     return acc
-  }, {})
+  }, {}) as TReturnType
 }
 
 export const UnquotedSymbol = Symbol('unquoted')

@@ -1,5 +1,4 @@
 import type { BuildContext } from 'esbuild'
-import ts from 'typescript'
 import * as chokidar from 'chokidar'
 import { fileURLToPath } from 'node:url'
 import { spawn, fork, type ChildProcessWithoutNullStreams } from 'node:child_process'
@@ -28,7 +27,7 @@ const compileOnChanges = async (transpileCtx: BuildContext | null) => {
     }
   }
 
-  log('info', result!)
+  log('info', String(result))
 
   if( transpileCtx ) {
     try {
@@ -73,9 +72,7 @@ export const watch = async (options: CompileOptions = {}) => {
   const transpileCtx = !options.useTsc
     ? await transpile.init({
       outdir: tsConfig.compilerOptions.outDir,
-      format: tsConfig.compilerOptions.module === ts.ModuleKind.CommonJS
-        ? 'cjs'
-        : 'esm',
+      sourcemap: tsConfig.compilerOptions.sourceMap,
     })
     : null
 

@@ -13,6 +13,7 @@ pnpm --filter='./packages/types' build:cjs \
   && pnpm --filter='./packages/builtins' build:cjs \
   && pnpm --filter='./packages/server' build:cjs \
   && pnpm --filter='./packages/aeria-sdk' build:cjs \
+  && pnpm --filter='./packages/compiler' build \
   && pnpm --filter='./packages/cli' build \
   && pnpm --filter='./packages/aeria' build:cjs
 

@@ -5,4 +5,3 @@ export type ArrayProperties<T> = keyof {
     : never
   ]: never
 }
-
