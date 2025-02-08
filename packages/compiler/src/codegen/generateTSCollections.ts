@@ -1,5 +1,5 @@
 import type * as AST from '../ast.js'
-import { getProperties, stringify, makeASTImports, resizeFirstChar, aeriaPackageName, getCollectionId, type StringifyProperty, UnquotedSymbol, defaultFunctions, getExposedFunctions } from './utils.js'
+import { getProperties, stringify, makeASTImports, resizeFirstChar, getCollectionId, UnquotedSymbol, getExposedFunctions, PACKAGE_NAME, DEFAULT_FUNCTIONS, type StringifyProperty } from './utils.js'
 import { type Description, type RequiredProperties } from '@aeriajs/types'
 
 const initialImportedTypes = [
@@ -11,7 +11,7 @@ const initialImportedTypes = [
 
 export const generateTSCollections = (ast: AST.CollectionNode[]): string => {
   let code = ''
-  code += `import type { ${initialImportedTypes.join(', ')} } from '${aeriaPackageName}'\n` //Used types
+  code += `import type { ${initialImportedTypes.join(', ')} } from '${PACKAGE_NAME}'\n` //Used types
   const importsResult = makeASTImports(ast)
   code += importsResult.code + '\n\n'
   code += makeTSCollections(ast, importsResult.modifiedSymbols) + '\n'
@@ -113,7 +113,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
 const makeTSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
   return Object.keys(functions).reduce<Record<string, StringifyProperty>>((acc, key) => {
     acc[key] = {
-      [UnquotedSymbol]: defaultFunctions.includes(key)
+      [UnquotedSymbol]: DEFAULT_FUNCTIONS.includes(key)
         ? `typeof ${key}`
         : '() => never',
     }

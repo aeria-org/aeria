@@ -1,9 +1,18 @@
-import type * as AST from '../ast'
+import type * as AST from '../ast.js'
 import type { Property } from '@aeriajs/types'
-import { functions as aeriaFunctions } from '@aeriajs/core'
 
-export const aeriaPackageName = 'aeria'
-export const defaultFunctions = Object.keys(aeriaFunctions)
+export const PACKAGE_NAME = 'aeria'
+
+export const DEFAULT_FUNCTIONS = [
+  'count',
+  'get',
+  'getAll',
+  'insert',
+  'upload',
+  'remove',
+  'removeAll',
+  'removeFile',
+]
 
 export const ArraySymbol = Symbol('array')
 
@@ -34,14 +43,14 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
       }
 
       if (node.functions) {
-        const functionsToImport = Object.keys(node.functions).filter((key) => defaultFunctions.includes(key))
+        const functionsToImport = Object.keys(node.functions).filter((key) => DEFAULT_FUNCTIONS.includes(key))
         if (functionsToImport.length > 0) {
-          if (!(aeriaPackageName in imports)) {
-            imports[aeriaPackageName] = new Set()
+          if (!(PACKAGE_NAME in imports)) {
+            imports[PACKAGE_NAME] = new Set()
           }
 
           for (const key of functionsToImport) {
-            imports[aeriaPackageName].add(key)
+            imports[PACKAGE_NAME].add(key)
           }
         }
       }

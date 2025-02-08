@@ -1,6 +1,6 @@
 import type * as AST from '../ast.js'
 import type { Description, RequiredProperties } from '@aeriajs/types'
-import { makeASTImports, getProperties, stringify, aeriaPackageName, getExtendName, getCollectionId, UnquotedSymbol, defaultFunctions, getExposedFunctions } from './utils.js'
+import { makeASTImports, getProperties, stringify, getExtendName, getCollectionId, UnquotedSymbol, getExposedFunctions, PACKAGE_NAME, DEFAULT_FUNCTIONS } from './utils.js'
 const initialImportedFunctions = [
   'extendCollection',
   'defineCollection',
@@ -9,7 +9,7 @@ const initialImportedFunctions = [
 export const generateJSCollections = (ast: AST.CollectionNode[]) => {
   let javascriptCode = ''
   const importsResult = makeASTImports(ast, {
-    [aeriaPackageName]: new Set(initialImportedFunctions),
+    [PACKAGE_NAME]: new Set(initialImportedFunctions),
   })
   javascriptCode += importsResult.code + '\n\n'
   javascriptCode += makeJSCollections(ast, importsResult.modifiedSymbols) + '\n\n'
@@ -99,7 +99,7 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
 }
 
 const makeJSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
-  return Object.entries(functions).map(([key, _value]) => defaultFunctions.includes(key)
+  return Object.entries(functions).map(([key, _value]) => DEFAULT_FUNCTIONS.includes(key)
     ? key
     : `${key}: () => { throw new Error('Function not implemented') }`).join(', ')
 }
