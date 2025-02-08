@@ -3,6 +3,9 @@
   "type": "module",
   "private": true,
   "packageManager": "pnpm@9.1.0",
+  "engines": {
+    "node": ">=23"
+  },
   "scripts": {
     "test": "NODE_PATH=../../playground/node_modules pnpm -r test",
     "build": "./scripts/build.sh && pnpm write-icons",
