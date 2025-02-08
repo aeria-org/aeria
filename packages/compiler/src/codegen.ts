@@ -4,6 +4,10 @@ import { generateContracts, generateExports, generateJSCollections, generateTSCo
 import * as fsPromises from 'node:fs/promises'
 import * as path from 'node:path'
 
+type FileTree = {
+  [P: string]: string | FileTree
+}
+
 /**
  * Maps the path tree into a object with the full paths
  * {
@@ -15,17 +19,17 @@ import * as path from 'node:path'
  * }
  * turns into
  * {
- *  ['rootDir/folderX/folderY/file']: ...
+ *  ['outDir/folderX/folderY/file']: ...
  * }
  */
-const generateFileStructure = async (fileTree: Record<string, string | object>, rootDir: string) => {
+const generateFileMap = async (fileTree: FileTree, outDir: string) => {
   const mappedPaths: Record<string, string> = {}
 
-  const mapPathTree = async (tree: Record<string, string | object>, previousPath: string) => {
+  const mapPathTree = async (tree: FileTree, previousPath: string) => {
     for (const treePath in tree) {
       const currentPath = path.join(previousPath, treePath)
       if (typeof tree[treePath] === 'object') {
-        await mapPathTree(tree[treePath] as Record<string, string | object>, currentPath)
+        await mapPathTree(tree[treePath], currentPath)
         continue
       }
 
@@ -38,8 +42,7 @@ const generateFileStructure = async (fileTree: Record<string, string | object>, 
     return
   }
 
-  await mapPathTree(fileTree, rootDir)
-
+  await mapPathTree(fileTree, outDir)
   return mappedPaths
 }
 
@@ -47,7 +50,7 @@ export const generateCode = async (ast: AST.ProgramNode, options: CompilationOpt
   const contracts = generateContracts(ast.contracts)
   const exports = generateExports(ast, Boolean(contracts))
 
-  const fileTree: Record<string, string | object> = {
+  const fileTree: FileTree = {
     ['collections']: {
       ['collections.d.ts']: generateTSCollections(ast.collections),
       ['collections.js']: generateJSCollections(ast.collections),
@@ -67,7 +70,7 @@ export const generateCode = async (ast: AST.ProgramNode, options: CompilationOpt
     }
   }
 
-  const fileStructure = await generateFileStructure(fileTree, options.outDir)
+  const fileStructure = await generateFileMap(fileTree, options.outDir)
 
   if (!options.dryRun) {
     for (const path in fileStructure) {
@@ -77,3 +80,4 @@ export const generateCode = async (ast: AST.ProgramNode, options: CompilationOpt
 
   return fileStructure
 }
+

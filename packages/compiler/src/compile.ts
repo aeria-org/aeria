@@ -19,16 +19,15 @@ export type CompilationOptions = {
   dryRun?: true
 }
 
-export const parseAndCheck = async (schemas: Record<string, string>): Promise<CompilationResult> => {
-
+export const parseAndCheck = async (sources: Record<string, string>): Promise<CompilationResult> => {
   const errors: CompilationResult['errors'] = []
   let errorCount: CompilationResult['errorCount'] = 0
-  let ast: CompilationResult['ast'] | undefined = undefined
+  let ast: CompilationResult['ast'] | undefined
 
-  for (const fileName in schemas) {
+  for (const fileName in sources) {
     Diagnostic.currentFile = fileName
 
-    const { errors: lexerErrors, tokens } = tokenize(schemas[fileName])
+    const { errors: lexerErrors, tokens } = tokenize(sources[fileName])
     const { errors: parserErrors, ast: currentAst } = parse(Array.from(tokens))
     const { errors: semanticErrors } = await analyze(currentAst)
 
@@ -66,13 +65,13 @@ export const generateScaffolding = async (options: CompilationOptions) => {
 export const compileFromFiles = async (schemaDir: string, options: CompilationOptions) => {
   const fileList = await fsPromises.readdir(schemaDir)
 
-  const schemas: Record<string, string> = {}
+  const sources: Record<string, string> = {}
   for (const file of fileList) {
     const fileContent = await fsPromises.readFile(`${schemaDir}/${file}`)
-    schemas[file] = fileContent.toString()
+    sources[file] = fileContent.toString()
   }
 
-  const parsed = await parseAndCheck(schemas)
+  const parsed = await parseAndCheck(sources)
   const emittedFiles = await generateCode(parsed.ast, options)
 
   return {

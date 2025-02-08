@@ -1,8 +1,8 @@
 import { Result } from '@aeriajs/types'
-import { compileFromFiles } from '@aeriajs/compiler'
 
 export const buildAeriaLang = async () => {
   try {
+    const { compileFromFiles } = await import('@aeriajs/compiler')
     return await compileFromFiles('schemas', {
       outDir: '.aeria/out',
     })

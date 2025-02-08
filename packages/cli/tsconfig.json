@@ -13,6 +13,9 @@
       "@aeriajs/common": [
         "../common/dist"
       ],
+      "@aeriajs/compiler": [
+        "../compiler/dist"
+      ],
       "@aeriajs/entrypoint": [
         "../entrypoint/dist"
       ],
