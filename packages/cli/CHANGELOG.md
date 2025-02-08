@@ -1,5 +1,13 @@
 # aeria-build
 
+## 0.0.189
+
+### Patch Changes
+
+- 84f601a: New language version
+- Updated dependencies [84f601a]
+  - @aeriajs/compiler@0.0.1
+
 ## 0.0.188
 
 ### Patch Changes
