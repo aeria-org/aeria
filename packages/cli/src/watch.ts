@@ -27,7 +27,9 @@ const compileOnChanges = async (transpileCtx: BuildContext | null) => {
     }
   }
 
-  log('info', String(result))
+  if( result ) {
+    log('info', result)
+  }
 
   if( transpileCtx ) {
     try {
