@@ -358,9 +358,6 @@ importers:
       mongodb:
         specifier: ^6.5.0
         version: 6.12.0(socks@2.8.3)
-      playground:
-        specifier: 'link:'
-        version: 'link:'
     devDependencies:
       '@aeriajs/builtins':
         specifier: link:../packages/builtins

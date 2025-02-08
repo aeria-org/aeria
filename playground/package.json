@@ -40,8 +40,5 @@
   },
   "peerDependencies": {
     "mongodb": "^6.5.0"
-  },
-  "dependencies": {
-    "playground": "link:"
   }
 }
