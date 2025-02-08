@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.6
+
+### Patch Changes
+
+- a6cbbde: Release compiler
+
 ## 0.0.1
 
 ### Patch Changes
