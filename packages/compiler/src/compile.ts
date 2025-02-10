@@ -67,8 +67,9 @@ export const compileFromFiles = async (schemaDir: string, options: CompilationOp
 
   const sources: Record<string, string> = {}
   for (const file of fileList) {
-    const fileContent = await fsPromises.readFile(`${schemaDir}/${file}`)
-    sources[file] = fileContent.toString()
+    sources[file] = await fsPromises.readFile(`${schemaDir}/${file}`, {
+      encoding: 'utf-8',
+    })
   }
 
   const parsed = await parseAndCheck(sources)
