@@ -45,6 +45,20 @@ exports.default = init({
         },
       },
     },
+    featured: {
+      functions: {
+        get,
+      },
+      description: {
+        $id: 'featured',
+        properties: {
+          post: {
+            $ref: 'post',
+            inline: true,
+          }
+        },
+      },
+    },
     circularA: {
       functions: {
         get,

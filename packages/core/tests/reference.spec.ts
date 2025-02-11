@@ -2,6 +2,7 @@ import { expect, assert, test } from 'vitest'
 import { ObjectId } from 'mongodb'
 import { documents } from './fixtures/documents.js'
 import { circularDocuments } from './fixtures/circularDocuments.js'
+import { Featured, Post, UnpackReferences } from './fixtures/types.js'
 
 test('populates top level references', async () => {
   const {
@@ -106,5 +107,11 @@ test('populates reference in nested structure inside parent reference (array)', 
   assert('meta' in post1.comments[0])
   assert(post1.comments[0].meta.user)
   expect(post1.comments[0].meta.user._id).toBeInstanceOf(ObjectId)
+})
+
+test('populates array of references inside parent reference', async () => {
+  const post1 = (await documents).post1 as UnpackReferences<Post>
+  const featured1 = (await documents).featured1 as UnpackReferences<Featured>
+  expect(featured1.post.comments[0]._id?.equals(post1.comments[0]._id))
 })
 

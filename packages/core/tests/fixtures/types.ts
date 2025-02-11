@@ -1,6 +1,20 @@
 import type { User, File } from '@aeriajs/builtins'
 import type { ObjectId } from '../../dist/index.js'
 
+export type UnpackReferences<T> = T extends object
+  ? {
+    [P in keyof T]: P extends '_id'
+      ? T[P]
+      : ObjectId extends T[P]
+        ? UnpackReferences<Exclude<T[P], ObjectId>>
+        : T[P] extends (infer E)[]
+          ? ObjectId extends E
+            ? UnpackReferences<Exclude<E, ObjectId>>[]
+            : E[]
+          : T[P]
+  }
+  : T
+
 export type Person = {
   _id: ObjectId
   name: string
@@ -53,6 +67,11 @@ export type Post = {
   title: string
   single_comment: Comment | ObjectId
   comments: (Comment | ObjectId)[]
+}
+
+export type Featured = {
+  _id?: ObjectId
+  post: Post | ObjectId
 }
 
 export type CircularA = {

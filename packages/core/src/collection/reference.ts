@@ -5,7 +5,7 @@ import { getCollectionAsset } from '../assets.js'
 
 export type Reference = {
   isArray?: boolean
-  isArrayElement?: boolean
+  isArrayOrArrayElement?: boolean
   isInline?: boolean
   isRecursive?: boolean
   deepReferences?: ReferenceMap
@@ -21,7 +21,7 @@ export type GetReferenceOptions = {
   depth?: number
   maxDepth?: number
   populate?: string[]
-  isArrayElement?: boolean
+  isArrayOrArrayElement?: boolean
 }
 
 export type BuildLookupPipelineOptions = {
@@ -47,7 +47,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
     maxDepth = 3,
     memoize,
     populate,
-    isArrayElement,
+    isArrayOrArrayElement,
   } = options
 
   if( memoize ) {
@@ -81,7 +81,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
           populate: refProperty.populate
             ? Array.from(refProperty.populate)
             : undefined,
-          isArrayElement: 'items' in property,
+          isArrayOrArrayElement: 'items' in property,
         })
 
         if( Object.keys(deepReferences).length > 0 ) {
@@ -124,8 +124,8 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
       reference.isArray = true
     }
 
-    if( isArrayElement ) {
-      reference.isArrayElement = true
+    if( 'items' in property || isArrayOrArrayElement ) {
+      reference.isArrayOrArrayElement = true
     }
 
     if( depth > 0 ) {
@@ -155,7 +155,7 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
   noCond: false,
 }): Document => {
   const [refName, isRef] = path.at(-1)!
-  const shouldUseArrayIndex = reference.isRecursive && !(reference.isArrayElement && reference.isArray === false)
+  const shouldUseArrayIndex = reference.isRecursive && !(reference.isArrayOrArrayElement && reference.isArray === false)
 
   let indexOfArray: {}
   if( shouldUseArrayIndex ) {
@@ -217,7 +217,7 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
 
     let mapInput = parentElem
     if( reference.isRecursive ) {
-      if( reference.isArrayElement ) {
+      if( reference.isArrayOrArrayElement ) {
         mapInput = {
           $arrayElemAt: [
             `$${getTempName(path.slice(0, -1))}.${refName}`,

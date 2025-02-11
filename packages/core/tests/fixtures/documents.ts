@@ -1,6 +1,6 @@
 import type { PackReferences, Token } from '@aeriajs/types'
 import type { User } from '@aeriajs/builtins'
-import type { Person, Day, Project, Post, Comment } from './types.js'
+import type { Person, Day, Project, Post, Comment, Featured } from './types.js'
 import { throwIfError } from '@aeriajs/common'
 import { createContext, insert, ObjectId } from '../../dist/index.js'
 import { dbPromise } from './database.js'
@@ -23,6 +23,11 @@ export const documents = (async () => {
 
   const postContext = await createContext({
     collectionName: 'post',
+    token,
+  })
+
+  const featuredCountext = await createContext({
+    collectionName: 'featured',
     token,
   })
 
@@ -127,6 +132,8 @@ export const documents = (async () => {
     } satisfies PackReferences<Omit<Post, '_id'>>,
   }, postContext)) as Post
 
+  const featured1 = throwIfError(await insert({ what: { post: post1._id! } satisfies PackReferences<Omit<Featured, '_id'>> }, featuredCountext)) as Featured
+
   return {
     file1,
     file2,
@@ -139,6 +146,7 @@ export const documents = (async () => {
     project,
     comment1,
     post1,
+    featured1,
   }
 })()
 
