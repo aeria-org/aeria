@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.241
+
+### Patch Changes
+
+- eae953d: Fix bug where array of references inside parent reference wasnt being populated
+  - @aeriajs/builtins@0.0.241
+  - @aeriajs/security@0.0.241
+
 ## 0.0.240
 
 ### Patch Changes
