@@ -6,6 +6,7 @@ import { analyze } from './semantic.js'
 import { generateCode } from './codegen.js'
 import * as path from 'node:path'
 import * as fsPromises from 'node:fs/promises'
+import { existsSync } from 'node:fs'
 
 export type CompilationResult = {
   success: boolean
@@ -63,9 +64,13 @@ export const generateScaffolding = async (options: CompilationOptions) => {
 }
 
 export const compileFromFiles = async (schemaDir: string, options: CompilationOptions) => {
-  await fsPromises.mkdir(schemaDir, {
-    recursive: true,
-  })
+  if (!existsSync(schemaDir)) {
+    return {
+      success: false,
+      emittedFiles: null
+    }
+  }
+
   const fileList = await fsPromises.readdir(schemaDir)
 
   const sources: Record<string, string> = {}
