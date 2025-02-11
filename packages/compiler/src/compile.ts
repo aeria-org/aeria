@@ -5,8 +5,7 @@ import { parse } from './parser.js'
 import { analyze } from './semantic.js'
 import { generateCode } from './codegen.js'
 import * as path from 'node:path'
-import * as fsPromises from 'node:fs/promises'
-import { existsSync } from 'node:fs'
+import * as fs from 'node:fs'
 
 export type CompilationResult = {
   success: boolean
@@ -47,7 +46,7 @@ export const parseAndCheck = async (sources: Record<string, string>): Promise<Co
     success: errorCount === 0,
     errors,
     errorCount,
-    ast: ast!,
+    ast,
   }
 }
 
@@ -55,7 +54,7 @@ export const generateScaffolding = async (options: CompilationOptions) => {
   const directories = [path.join(options.outDir, 'collections')]
 
   for( const dir of directories ) {
-    await fsPromises.mkdir(dir, {
+    await fs.promises.mkdir(dir, {
       recursive: true,
     })
   }
@@ -64,29 +63,23 @@ export const generateScaffolding = async (options: CompilationOptions) => {
 }
 
 export const compileFromFiles = async (schemaDir: string, options: CompilationOptions) => {
-  if (!existsSync(schemaDir)) {
-    return {
-      success: false,
-      emittedFiles: null,
-    }
-  }
-
-  const fileList = await fsPromises.readdir(schemaDir)
+  const fileList = await fs.promises.readdir(schemaDir)
 
   const sources: Record<string, string> = {}
   for (const file of fileList) {
-    sources[file] = await fsPromises.readFile(`${schemaDir}/${file}`, {
+    sources[file] = await fs.promises.readFile(`${schemaDir}/${file}`, {
       encoding: 'utf-8',
     })
   }
 
-  const parsed = await parseAndCheck(sources)
-  const emittedFiles = parsed.ast ?
-    await generateCode(parsed.ast, options) :
-    {}
+  const result = await parseAndCheck(sources)
+  if( !result.ast ) {
+    return result
+  }
 
+  const emittedFiles = await generateCode(result.ast, options)
   return {
-    ...parsed,
+    ...result,
     emittedFiles,
   }
 }
