@@ -67,7 +67,7 @@ export const compileFromFiles = async (schemaDir: string, options: CompilationOp
   if (!existsSync(schemaDir)) {
     return {
       success: false,
-      emittedFiles: null
+      emittedFiles: null,
     }
   }
 
