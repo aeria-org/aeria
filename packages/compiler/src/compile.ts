@@ -9,7 +9,7 @@ import * as fsPromises from 'node:fs/promises'
 
 export type CompilationResult = {
   success: boolean
-  ast: AST.ProgramNode
+  ast?: AST.ProgramNode
   errors: Diagnostic[]
   errorCount: number
 }
@@ -63,6 +63,9 @@ export const generateScaffolding = async (options: CompilationOptions) => {
 }
 
 export const compileFromFiles = async (schemaDir: string, options: CompilationOptions) => {
+  await fsPromises.mkdir(schemaDir, {
+    recursive: true,
+  })
   const fileList = await fsPromises.readdir(schemaDir)
 
   const sources: Record<string, string> = {}
@@ -73,7 +76,9 @@ export const compileFromFiles = async (schemaDir: string, options: CompilationOp
   }
 
   const parsed = await parseAndCheck(sources)
-  const emittedFiles = await generateCode(parsed.ast, options)
+  const emittedFiles = parsed.ast ?
+    await generateCode(parsed.ast, options) :
+    {}
 
   return {
     ...parsed,
