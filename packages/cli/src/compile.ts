@@ -159,6 +159,9 @@ export const compilationPhase = async (options: CompileOptions = {}) => {
     const transpileCtx = await transpile.init({
       outdir: tsConfig.compilerOptions.outDir,
       sourcemap: tsConfig.compilerOptions.sourceMap,
+      format: tsConfig.compilerOptions.module === ts.ModuleKind.CommonJS
+        ? 'cjs'
+        : 'esm',
     })
 
     await transpileCtx.rebuild()
