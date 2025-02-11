@@ -1,5 +1,13 @@
 # aeria-build
 
+## 0.0.193
+
+### Patch Changes
+
+- 2d0613e: Fix compilation bug when schemas folder isnt detected
+- Updated dependencies [2d0613e]
+  - @aeriajs/compiler@0.0.8
+
 ## 0.0.192
 
 ### Patch Changes
