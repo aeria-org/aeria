@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.242
+
+### Patch Changes
+
+- 08a22c4: Revert to Windows-compatible script
+  - @aeriajs/builtins@0.0.242
+  - @aeriajs/security@0.0.242
+
 ## 0.0.241
 
 ### Patch Changes
