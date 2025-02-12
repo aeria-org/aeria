@@ -1,5 +1,12 @@
 # @aeriajs/compiler
 
+## 0.0.9
+
+### Patch Changes
+
+- e9da6d5: Detect LSP environment in compiler
+- 8ab4be8: Convert CRLF to LF
+
 ## 0.0.8
 
 ### Patch Changes
