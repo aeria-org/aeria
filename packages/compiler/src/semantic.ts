@@ -1,13 +1,17 @@
 import type { Location } from './token.js'
 import type { ArrayProperties } from './utils.js'
+import type { CompilationOptions } from './types.js'
 import { isValidCollection } from '@aeriajs/common'
 import { locationMap } from './parser.js'
 import { Diagnostic } from './diagnostic.js'
 import * as AST from './ast.js'
 
-const collectionHasProperty = async (collection: AST.CollectionNode, propName: string) => {
+const collectionHasProperty = async (collection: AST.CollectionNode, propName: string, options: Pick<CompilationOptions, 'languageServer'>) => {
   let hasProperty = propName in collection.properties
   if( !hasProperty ) {
+    if( options.languageServer ) {
+      return true
+    }
     if( collection.extends ) {
       const { packageName, symbolName } = collection.extends
       const { [symbolName]: importedCollection } = await import(packageName)
@@ -23,7 +27,7 @@ const collectionHasProperty = async (collection: AST.CollectionNode, propName: s
   return hasProperty
 }
 
-export const analyze = async (ast: AST.ProgramNode, errors: Diagnostic[] = []) => {
+export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOptions, 'languageServer'>, errors: Diagnostic[] = []) => {
   const checkCollectionForeignProperties = async <TProperty extends Extract<AST.PropertyNode['property'], { $ref: string }>>(
     foreignCollection: AST.CollectionNode,
     property: TProperty,
@@ -34,7 +38,7 @@ export const analyze = async (ast: AST.ProgramNode, errors: Diagnostic[] = []) =
     }
 
     for( const foreignPropName of property[attributeName] as string[] ) {
-      if( !await collectionHasProperty(foreignCollection, foreignPropName) ) {
+      if( !await collectionHasProperty(foreignCollection, foreignPropName, options) ) {
         let location: Location | undefined
         if( property[AST.LOCATION_SYMBOL] ) {
           location = locationMap.get(property[AST.LOCATION_SYMBOL].attributes[attributeName])
@@ -53,7 +57,7 @@ export const analyze = async (ast: AST.ProgramNode, errors: Diagnostic[] = []) =
     for( const index in node[attributeName] ) {
       const propName = node[attributeName][index]
       const symbol = node[AST.LOCATION_SYMBOL].arrays[attributeName]![index]
-      if( !await collectionHasProperty(node, propName) ) {
+      if( !await collectionHasProperty(node, propName, options) ) {
         const location = locationMap.get(symbol)
 
         errors.push(new Diagnostic(`collection "${node.name}" hasn't such property "${propName}"`, location))

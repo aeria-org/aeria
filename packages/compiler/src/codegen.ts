@@ -1,5 +1,5 @@
-import type { CompilationOptions } from './compile.js'
-import type * as AST from './ast'
+import type * as AST from './ast.js'
+import type { CompilationOptions } from './types.js'
 import { generateContracts, generateExports, generateJSCollections, generateTSCollections } from './codegen/index.js'
 import * as fsPromises from 'node:fs/promises'
 import * as path from 'node:path'

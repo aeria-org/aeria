@@ -1,3 +1,4 @@
+import type { CompilationOptions, CompilationResult } from './types.js'
 import type * as AST from './ast.js'
 import { Diagnostic } from './diagnostic.js'
 import { tokenize } from './lexer.js'
@@ -7,19 +8,7 @@ import { generateCode } from './codegen.js'
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 
-export type CompilationResult = {
-  success: boolean
-  ast?: AST.ProgramNode
-  errors: Diagnostic[]
-  errorCount: number
-}
-
-export type CompilationOptions = {
-  outDir: string,
-  dryRun?: true
-}
-
-export const parseAndCheck = async (sources: Record<string, string>): Promise<CompilationResult> => {
+export const parseAndCheck = async (sources: Record<string, string>, options: Pick<CompilationOptions, 'languageServer'> = {}): Promise<CompilationResult> => {
   const errors: CompilationResult['errors'] = []
   let errorCount: CompilationResult['errorCount'] = 0
   let ast: CompilationResult['ast'] | undefined
@@ -29,7 +18,7 @@ export const parseAndCheck = async (sources: Record<string, string>): Promise<Co
 
     const { errors: lexerErrors, tokens } = tokenize(sources[fileName])
     const { errors: parserErrors, ast: currentAst } = parse(Array.from(tokens))
-    const { errors: semanticErrors } = await analyze(currentAst)
+    const { errors: semanticErrors } = await analyze(currentAst, options)
 
     errors.push(...lexerErrors.concat(parserErrors, semanticErrors))
     errorCount += errors.length
@@ -72,7 +61,7 @@ export const compileFromFiles = async (schemaDir: string, options: CompilationOp
     })
   }
 
-  const result = await parseAndCheck(sources)
+  const result = await parseAndCheck(sources, options)
   if( !result.ast ) {
     return result
   }
