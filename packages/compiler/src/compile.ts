@@ -1,5 +1,4 @@
 import type { CompilationOptions, CompilationResult } from './types.js'
-import type * as AST from './ast.js'
 import { Diagnostic } from './diagnostic.js'
 import { tokenize } from './lexer.js'
 import { parse } from './parser.js'

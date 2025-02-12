@@ -1,5 +1,5 @@
 import type * as AST from './ast.js'
-import { Diagnostic } from './diagnostic.js'
+import { type Diagnostic } from './diagnostic.js'
 
 export type CompilationResult = {
   success: boolean
