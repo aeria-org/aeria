@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.243
+
+### Patch Changes
+
+- e2be753: Fix resolution of references nested inside structures
+  - @aeriajs/builtins@0.0.243
+  - @aeriajs/security@0.0.243
+
 ## 0.0.242
 
 ### Patch Changes
