@@ -122,13 +122,16 @@ export const documents = (async () => {
     } satisfies PackReferences<Omit<Project, '_id'>>,
   }, projectContext)) as Project
 
-  const { insertedId: comment1 } = await db.collection<PackReferences<Omit<Comment, '_id'>>>('comment').insertOne({ meta: { user: user1 } })
+  const { insertedIds: { 0: comment1, 1: comment2 } } = await db.collection<PackReferences<Omit<Comment, '_id'>>>('comment').insertMany([
+    { meta: { user: user1 } },
+    { meta: { user: user2 } },
+  ])
 
   const post1 = throwIfError(await insert({
     what: {
       title: 'Hello, world',
       single_comment: comment1,
-      comments: [comment1],
+      comments: [comment1, comment2],
     } satisfies PackReferences<Omit<Post, '_id'>>,
   }, postContext)) as Post
 
@@ -144,7 +147,6 @@ export const documents = (async () => {
     person2,
     person3,
     project,
-    comment1,
     post1,
     featured1,
   }
