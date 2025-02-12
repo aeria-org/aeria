@@ -131,7 +131,10 @@ export const documents = (async () => {
     what: {
       title: 'Hello, world',
       single_comment: comment1,
-      comments: [comment1, comment2],
+      comments: [
+        comment1,
+        comment2,
+      ],
     } satisfies PackReferences<Omit<Post, '_id'>>,
   }, postContext)) as Post
 

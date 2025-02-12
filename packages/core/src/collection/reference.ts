@@ -420,7 +420,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
           ? '_'
           : ''
 
-        for( let i = 0; i<newPath.length; i++ ) {
+        for( let i = 0; i < newPath.length; i++ ) {
           localField += newPath[i][0]
 
           if( newPath[i + 1] ) {
