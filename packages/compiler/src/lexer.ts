@@ -197,7 +197,9 @@ const TOKENS: TokenConfig[] = [
   },
 ]
 
-export const tokenize = function (input: string) {
+export const tokenize = function (rawInput: string) {
+  const input = rawInput.replace(/\r\n/g, '\n')
+
   let
     index = 0,
     line = 1,
