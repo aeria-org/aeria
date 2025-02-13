@@ -7,9 +7,7 @@ import { generateCode } from './codegen.js'
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 
-export const FILE_PRECEDENCE = [
-  'contract',
-]
+export const FILE_PRECEDENCE = ['contract']
 
 export const parseAndCheck = async (sources: Record<string, string>, options: Pick<CompilationOptions, 'languageServer'> = {}): Promise<CompilationResult> => {
   const errors: CompilationResult['errors'] = []
