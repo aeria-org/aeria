@@ -1,5 +1,12 @@
 # aeria-build
 
+## 0.0.196
+
+### Patch Changes
+
+- Updated dependencies [5924bcc]
+  - @aeriajs/compiler@0.0.10
+
 ## 0.0.195
 
 ### Patch Changes

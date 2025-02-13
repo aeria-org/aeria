@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.10
+
+### Patch Changes
+
+- 5924bcc: Implement file precedence
+
 ## 0.0.9
 
 ### Patch Changes
