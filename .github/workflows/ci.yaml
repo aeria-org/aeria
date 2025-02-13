@@ -27,7 +27,7 @@ jobs:
         run: pnpm install
       - name: Build packages
         run: pnpm build
-      - name: Run tests
+      - name: Typecheck tests
         run: pnpm -r 'test:typecheck'
       - name: Run tests
         run: pnpm -r test
