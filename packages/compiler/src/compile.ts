@@ -7,6 +7,10 @@ import { generateCode } from './codegen.js'
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 
+export const FILE_PRECEDENCE = [
+  'contract',
+]
+
 export const parseAndCheck = async (sources: Record<string, string>, options: Pick<CompilationOptions, 'languageServer'> = {}): Promise<CompilationResult> => {
   const errors: CompilationResult['errors'] = []
   let errorCount: CompilationResult['errorCount'] = 0
@@ -51,11 +55,23 @@ export const generateScaffolding = async (options: CompilationOptions) => {
 }
 
 export const compileFromFiles = async (schemaDir: string, options: CompilationOptions) => {
-  const fileList = await fs.promises.readdir(schemaDir)
+  const fileList = await Array.fromAsync(fs.promises.glob(`${schemaDir}/*.aeria`))
+  const sortedFileList = fileList.sort((a, b) => {
+    const aIndex = FILE_PRECEDENCE.findIndex((file) => a.split('/').at(-1)!.startsWith(file))
+    const bIndex = FILE_PRECEDENCE.findIndex((file) => b.split('/').at(-1)!.startsWith(file))
+
+    if( !~aIndex && !~bIndex ) {
+      return 1
+    }
+
+    return aIndex > bIndex
+      ? 1
+      : -1
+  })
 
   const sources: Record<string, string> = {}
-  for (const file of fileList) {
-    sources[file] = await fs.promises.readFile(`${schemaDir}/${file}`, {
+  for (const file of sortedFileList) {
+    sources[file] = await fs.promises.readFile(file, {
       encoding: 'utf-8',
     })
   }
