@@ -28,6 +28,8 @@ jobs:
       - name: Build packages
         run: pnpm build
       - name: Run tests
+        run: pnpm -r 'test:typecheck'
+      - name: Run tests
         run: pnpm -r test
       - name: Build playground
         run: pnpm --filter=playground build

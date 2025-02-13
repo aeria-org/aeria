@@ -15,6 +15,7 @@ exports.default = init({
             properties: {
               user: {
                 $ref: 'user',
+                inline: true,
               }
             }
           }

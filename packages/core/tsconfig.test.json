@@ -1,0 +1,40 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@aeriajs/common": [
+        "../common/dist"
+      ],
+      "@aeriajs/entrypoint": [
+        "../entrypoint/dist"
+      ],
+      "@aeriajs/security": [
+        "../security/dist"
+      ],
+      "@aeriajs/builtins": [
+        "../builtins/dist"
+      ],
+      "@aeriajs/types": [
+        "../types/dist"
+      ],
+      "@aeriajs/types/*": [
+        "../types/dist/*"
+      ],
+      "@aeriajs/http": [
+        "../http/dist"
+      ],
+      "@aeriajs/validation": [
+        "../validation/dist"
+      ],
+      "mongodb": [
+        "./node_modules/mongodb"
+      ]
+    }
+  },
+  "include": [
+    "@types/*.d.ts",
+    "tests"
+  ]
+}

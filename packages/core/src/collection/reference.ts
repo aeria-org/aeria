@@ -402,7 +402,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
 
       tempNames.unshift(tempName)
 
-      if( reference.populate && reference.populate.length > 0 ) {
+      if( reference.populate && reference.populate.length > 0 && !reference.isInline ) {
         lookupPipeline.push({
           $project: Object.fromEntries(reference.populate.map((index) => [
             index,
@@ -465,6 +465,10 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
     const finalPipeline = rootPipeline.concat(pipeline)
     if( memoize ) {
       lookupMemo[memoize] = finalPipeline
+
+      // if( memoize.includes('featured') ) {
+      //   console.log(JSON.stringify(finalPipeline, null, 2))
+      // }
     }
 
     return finalPipeline
