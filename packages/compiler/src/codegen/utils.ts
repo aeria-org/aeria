@@ -17,11 +17,10 @@ export const DEFAULT_FUNCTIONS = [
 export const ArraySymbol = Symbol('array')
 
 export const getExposedFunctions = (astFunctions: NonNullable<AST.CollectionNode['functions']>) => {
-  return Object.fromEntries(Object.entries(astFunctions)
-    .map(([key, value]) => [
-      key,
-      value.accessCondition,
-    ]))
+  return Object.fromEntries(Object.entries(astFunctions).map(([key, value]) => [
+    key,
+    value.accessCondition,
+  ]))
 }
 
 /**
@@ -65,8 +64,8 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
   }
 }
 
-export const propertyToSchema = (propertyNode: AST.PropertyNode): Property => {
-  const propertySchema: Property = propertyNode.property
+export const propertyToSchema = ({ property, nestedProperties }: Pick<AST.PropertyNode, 'property' | 'nestedProperties'>): Property => {
+  const propertySchema: Property = property
 
   if ('$ref' in propertySchema) {
     propertySchema.$ref = getCollectionId(propertySchema.$ref)
@@ -74,13 +73,13 @@ export const propertyToSchema = (propertyNode: AST.PropertyNode): Property => {
     propertySchema.items.$ref = getCollectionId(propertySchema.items.$ref)
   }
 
-  if (propertyNode.nestedProperties && 'type' in propertySchema) {
+  if (nestedProperties && 'type' in propertySchema) {
     if (propertySchema.type === 'object' && 'properties' in propertySchema) {
-      propertySchema.properties = getProperties(propertyNode.nestedProperties)
+      propertySchema.properties = getProperties(nestedProperties)
     } else if (propertySchema.type === 'array') {
       propertySchema.items = {
         type: 'object',
-        properties: getProperties(propertyNode.nestedProperties),
+        properties: getProperties(nestedProperties),
       }
     }
   }

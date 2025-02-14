@@ -465,10 +465,6 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
     const finalPipeline = rootPipeline.concat(pipeline)
     if( memoize ) {
       lookupMemo[memoize] = finalPipeline
-
-      // if( memoize.includes('featured') ) {
-      //   console.log(JSON.stringify(finalPipeline, null, 2))
-      // }
     }
 
     return finalPipeline

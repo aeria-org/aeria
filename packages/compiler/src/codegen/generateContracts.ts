@@ -20,7 +20,7 @@ const makeJSContractsCode = (contractAst: AST.ContractNode[]) => {
   const getCodeForResponse = (responseProperty: AST.PropertyNode) => {
     const { kind, modifier, ...propertyNode } = responseProperty
     if (!modifier) {
-      return stringify(propertyToSchema(propertyNode as AST.PropertyNode))
+      return stringify(propertyToSchema(propertyNode))
     }
     const modifierSymbol = responseProperty.modifier === 'Result'
       ? 'resultSchema'
@@ -29,13 +29,13 @@ const makeJSContractsCode = (contractAst: AST.ContractNode[]) => {
       imports.add(modifierSymbol)
     }
 
-    return `${modifierSymbol}(${stringify(propertyToSchema(propertyNode as AST.PropertyNode))})`
+    return `${modifierSymbol}(${stringify(propertyToSchema(propertyNode))})`
   }
 
   const declarations = contractAst.map((contractNode) => {
     const { name, kind, roles, response, ...contractProperty } = contractNode
 
-    let responseString: string | undefined = undefined
+    let responseString: string | undefined
     if (response) {
       responseString = ''
       if (Array.isArray(response)) {
