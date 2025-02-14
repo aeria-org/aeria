@@ -95,7 +95,9 @@ const makeTSContractsCode = (contractAst: AST.ContractNode[]) => {
     return `export declare const ${contractNode.name}Contract: ${
       stringify({
         ...contractProperties,
-        ...(responseSchema && {response: responseSchema}),
+        ...(responseSchema && {
+          response: responseSchema,
+        }),
       })
     }`
   }).join('\n\n')
