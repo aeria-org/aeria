@@ -110,8 +110,18 @@ test('populates reference in nested structure inside parent reference (array)', 
 })
 
 test('populates array of references inside parent reference', async () => {
+  const { user1, user2, file1, file2 } = await documents
   const post1 = (await documents).post1 as UnpackReferences<Post>
   const featured1 = (await documents).featured1 as UnpackReferences<Featured>
-  expect(featured1.post.comments[0]._id?.equals(post1.comments[0]._id))
+
+  expect(featured1.post.single_comment.meta.user._id.equals(user1)).toBeTruthy()
+  expect(featured1.post.single_comment.meta.user.picture_file._id.equals(file1)).toBeTruthy()
+  expect(featured1.post.comments.length).toBe(post1.comments.length)
+  expect(featured1.post.comments[0]._id?.equals(post1.comments[0]._id)).toBeTruthy()
+  expect(featured1.post.comments[1]._id?.equals(post1.comments[1]._id)).toBeTruthy()
+  expect(featured1.post.comments[0].meta.user._id.equals(user1)).toBeTruthy()
+  expect(featured1.post.comments[1].meta.user._id.equals(user2)).toBeTruthy()
+  expect(featured1.post.comments[0].meta.user.picture_file._id.equals(file1)).toBeTruthy()
+  expect(featured1.post.comments[1].meta.user.picture_file._id.equals(file2)).toBeTruthy()
 })
 

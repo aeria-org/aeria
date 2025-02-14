@@ -402,7 +402,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
 
       tempNames.unshift(tempName)
 
-      if( reference.populate && reference.populate.length > 0 ) {
+      if( reference.populate && reference.populate.length > 0 && !reference.isInline ) {
         lookupPipeline.push({
           $project: Object.fromEntries(reference.populate.map((index) => [
             index,
@@ -415,10 +415,21 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       if( reference.isRecursive ) {
         localField = `${getTempName(path)}.${refName}`
       } else {
-        const localFieldPath = newPath.map(([segment]) => segment).join('.')
+        let separator = '_'
         localField = path[0] && path[0][1]
-          ? `_${localFieldPath}`
-          : localFieldPath
+          ? '_'
+          : ''
+
+        for( let i = 0; i < newPath.length; i++ ) {
+          localField += newPath[i][0]
+
+          if( newPath[i + 1] ) {
+            if( !newPath[i][1] || !newPath[i + 1][1] ) {
+              separator = '.'
+            }
+            localField += separator
+          }
+        }
       }
 
       rootPipeline.unshift({
@@ -454,6 +465,10 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
     const finalPipeline = rootPipeline.concat(pipeline)
     if( memoize ) {
       lookupMemo[memoize] = finalPipeline
+
+      // if( memoize.includes('featured') ) {
+      //   console.log(JSON.stringify(finalPipeline, null, 2))
+      // }
     }
 
     return finalPipeline

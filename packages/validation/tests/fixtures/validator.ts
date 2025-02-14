@@ -6,6 +6,7 @@ export const personCandidate = {
 }
 
 export const [Person1, personValidator] = validator({
+  $id: '',
   required: [
     'name',
     'age',

@@ -1,26 +1,15 @@
-import type * as AST from './ast.js'
+import type { CompilationOptions, CompilationResult } from './types.js'
 import { Diagnostic } from './diagnostic.js'
 import { tokenize } from './lexer.js'
 import { parse } from './parser.js'
 import { analyze } from './semantic.js'
 import { generateCode } from './codegen.js'
 import * as path from 'node:path'
-import * as fsPromises from 'node:fs/promises'
-import { existsSync } from 'node:fs'
+import * as fs from 'node:fs'
 
-export type CompilationResult = {
-  success: boolean
-  ast?: AST.ProgramNode
-  errors: Diagnostic[]
-  errorCount: number
-}
+export const FILE_PRECEDENCE = ['contract']
 
-export type CompilationOptions = {
-  outDir: string,
-  dryRun?: true
-}
-
-export const parseAndCheck = async (sources: Record<string, string>): Promise<CompilationResult> => {
+export const parseAndCheck = async (sources: Record<string, string>, options: Pick<CompilationOptions, 'languageServer'> = {}): Promise<CompilationResult> => {
   const errors: CompilationResult['errors'] = []
   let errorCount: CompilationResult['errorCount'] = 0
   let ast: CompilationResult['ast'] | undefined
@@ -30,7 +19,7 @@ export const parseAndCheck = async (sources: Record<string, string>): Promise<Co
 
     const { errors: lexerErrors, tokens } = tokenize(sources[fileName])
     const { errors: parserErrors, ast: currentAst } = parse(Array.from(tokens))
-    const { errors: semanticErrors } = await analyze(currentAst)
+    const { errors: semanticErrors } = await analyze(currentAst, options)
 
     errors.push(...lexerErrors.concat(parserErrors, semanticErrors))
     errorCount += errors.length
@@ -47,7 +36,7 @@ export const parseAndCheck = async (sources: Record<string, string>): Promise<Co
     success: errorCount === 0,
     errors,
     errorCount,
-    ast: ast!,
+    ast,
   }
 }
 
@@ -55,7 +44,7 @@ export const generateScaffolding = async (options: CompilationOptions) => {
   const directories = [path.join(options.outDir, 'collections')]
 
   for( const dir of directories ) {
-    await fsPromises.mkdir(dir, {
+    await fs.promises.mkdir(dir, {
       recursive: true,
     })
   }
@@ -64,29 +53,35 @@ export const generateScaffolding = async (options: CompilationOptions) => {
 }
 
 export const compileFromFiles = async (schemaDir: string, options: CompilationOptions) => {
-  if (!existsSync(schemaDir)) {
-    return {
-      success: false,
-      emittedFiles: null,
-    }
-  }
+  const fileList = await Array.fromAsync(fs.promises.glob(`${schemaDir}/*.aeria`))
+  const sortedFileList = fileList.sort((a, b) => {
+    const aIndex = FILE_PRECEDENCE.findIndex((file) => a.split('/').at(-1)!.startsWith(file))
+    const bIndex = FILE_PRECEDENCE.findIndex((file) => b.split('/').at(-1)!.startsWith(file))
 
-  const fileList = await fsPromises.readdir(schemaDir)
+    if( !~aIndex && !~bIndex ) {
+      return 1
+    }
+
+    return aIndex > bIndex
+      ? 1
+      : -1
+  })
 
   const sources: Record<string, string> = {}
-  for (const file of fileList) {
-    sources[file] = await fsPromises.readFile(`${schemaDir}/${file}`, {
+  for (const file of sortedFileList) {
+    sources[file] = await fs.promises.readFile(file, {
       encoding: 'utf-8',
     })
   }
 
-  const parsed = await parseAndCheck(sources)
-  const emittedFiles = parsed.ast ?
-    await generateCode(parsed.ast, options) :
-    {}
+  const result = await parseAndCheck(sources, options)
+  if( !result.ast ) {
+    return result
+  }
 
+  const emittedFiles = await generateCode(result.ast, options)
   return {
-    ...parsed,
+    ...result,
     emittedFiles,
   }
 }

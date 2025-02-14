@@ -1,35 +1,26 @@
 import { Result } from '@aeriajs/types'
+import { compileFromFiles } from '@aeriajs/compiler'
+import * as fs from 'node:fs'
 
-export const buildAeriaLang = async () => {
-  try {
-    const { compileFromFiles } = await import('@aeriajs/compiler')
-    return await compileFromFiles('schemas', {
-      outDir: '.aeria/out',
-    })
-
-  } catch( err ) {
-    if( (err as NodeJS.ErrnoException).code !== 'MODULE_NOT_FOUND' ) {
-      throw err
-    }
-  }
-}
+export const SCHEMAS_DIR = 'schemas'
 
 export const buildAeriaLangPhase = async () => {
-  const result = await buildAeriaLang()
-  if( !result ) {
-    return Result.result('skipped aeria-lang build (@aeria-lang/build dependency is absent)')
+  if( !fs.existsSync(SCHEMAS_DIR) ) {
+    return Result.result(`skipped build as the schemas directory ${SCHEMAS_DIR} wasn't found`)
   }
 
-  if( !result.emittedFiles || Object.keys(result.emittedFiles).length === 0 ) {
-    return Result.result('no aeria files to build')
+  const result = await compileFromFiles(SCHEMAS_DIR, {
+    outDir: '.aeria/out',
+  })
+
+  if( !('emittedFiles' in result) ) {
+    return Result.result('no aeria schemas to build')
   }
 
   if( !result.success ) {
     return Result.error(result.errors.map((error) => `\n${error.fileLocation}:${error.location.line} at column (${error.location.start}-${error.location.end}) - ${error.message}`).join(' | '))
   }
 
-  return Result.result(Object.keys(result.emittedFiles).length > 0
-    ? 'aeria files built'
-    : 'no aeria files to build')
+  return Result.result('aeria schemas built')
 }
 

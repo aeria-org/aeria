@@ -63,14 +63,9 @@ export const customVerbs = () => async (parentContext: RouteContext) => {
     parentContext,
   })
 
-  const { error, result: fn } = await getFunction(
-    collectionName,
-    functionName,
-    context.token,
-    {
-      exposedOnly: true,
-    },
-  )
+  const { error, result: fn } = await getFunction(collectionName, functionName, context.token, {
+    exposedOnly: true,
+  })
 
   if( error ) {
     return context.error(getACErrorHttpCode(error), {
@@ -113,14 +108,9 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
     }
   }
 
-  const { error, result: fn } = await getFunction(
-    collectionName,
-    functionName,
-    context.token,
-    {
-      exposedOnly: true,
-    },
-  )
+  const { error, result: fn } = await getFunction(collectionName, functionName, context.token, {
+    exposedOnly: true,
+  })
 
   if( error ) {
     return context.error(getACErrorHttpCode(error), {
