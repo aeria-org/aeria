@@ -35,8 +35,9 @@ const makeJSContractsCode = (contractAst: AST.ContractNode[]) => {
   const declarations = contractAst.map((contractNode) => {
     const { name, kind, roles, response, ...contractProperty } = contractNode
 
-    let responseString = ''
+    let responseString: string | undefined = undefined
     if (response) {
+      responseString = ''
       if (Array.isArray(response)) {
         const responseArray: StringifyProperty[] = []
         for (const responseElement of response) {
@@ -52,8 +53,10 @@ const makeJSContractsCode = (contractAst: AST.ContractNode[]) => {
     }
 
     const contractSchema: Record<string, unknown> = getProperties(contractProperty)
-    contractSchema.response = {
-      [UnquotedSymbol]: responseString,
+    if (responseString) {
+      contractSchema.response = {
+        [UnquotedSymbol]: responseString,
+      }
     }
 
     return `export const ${name}Contract = defineContract(${
@@ -92,7 +95,7 @@ const makeTSContractsCode = (contractAst: AST.ContractNode[]) => {
     return `export declare const ${contractNode.name}Contract: ${
       stringify({
         ...contractProperties,
-        response: responseSchema,
+        ...(responseSchema && {response: responseSchema}),
       })
     }`
   }).join('\n\n')
