@@ -1,5 +1,14 @@
 # aeria-build
 
+## 0.0.198
+
+### Patch Changes
+
+- deb925c: Fix cli bugs and contracts codegen bug
+- Updated dependencies [deb925c]
+- Updated dependencies [d95b215]
+  - @aeriajs/compiler@0.0.12
+
 ## 0.0.197
 
 ### Patch Changes
