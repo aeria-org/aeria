@@ -717,6 +717,17 @@ export const parse = (tokens: (Token | undefined)[]) => {
     while( !match(TokenType.RightBracket) ) {
       const { value: keyword } = consume(TokenType.Keyword, lexer.CONTRACT_KEYWORDS)
       switch( keyword ) {
+        case 'roles': {
+          if( match(TokenType.QuotedString, 'unauthenticated') ) {
+            node.roles = 'unauthenticated'
+          } else if( match(TokenType.QuotedString, 'unauthenticated-only') ) {
+            node.roles = 'unauthenticated-only'
+          } else {
+            const { value } = parseArrayBlock()
+            node.roles = value as UserRole[]
+          }
+          break
+        }
         case 'payload': {
           node.payload = parsePropertyType({
             allowModifiers: true,

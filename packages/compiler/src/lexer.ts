@@ -71,6 +71,7 @@ export const COLLECTION_SEARCH_KEYWORDS = [
 ] as const
 
 export const CONTRACT_KEYWORDS = [
+  'roles',
   'payload',
   'query',
   'response',
