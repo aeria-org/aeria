@@ -11,6 +11,9 @@ const MAX_ERROR_MESSAGE_ITEMS = 20
 const ICON_NAMES = icons.map((icon) => icon.name)
 
 export const locationMap = new WeakMap<symbol, Location>()
+export const memoTable: {
+  roles?: string[]
+} = {}
 
 type StrictToken<TTokenType extends TokenType, TValue> = undefined extends TValue
   ? Token<TTokenType>
@@ -20,6 +23,20 @@ type StrictToken<TTokenType extends TokenType, TValue> = undefined extends TValu
 
 const isFileProperty = (property: RefProperty | FileProperty): property is FileProperty => {
   return property.$ref === 'File'
+}
+
+const checkForValidRoles = (roles: string[], symbols: symbol[]) => {
+  if( memoTable.roles ) {
+    for( const [i, role] of roles.entries() ) {
+      const symbol = symbols[i]
+      if( !memoTable.roles.includes(role) ) {
+        const location = locationMap.get(symbol)
+        throw new Diagnostic(`invalid role "${role}"`, location)
+      }
+    }
+  }
+
+  return roles as readonly Extract<UserRole, string>[]
 }
 
 export const parse = (tokens: (Token | undefined)[]) => {
@@ -120,9 +137,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
   }
 
   const parseArray = <TTokenType extends TokenType>(types: TTokenType[]) => {
-    const { location } = consume(TokenType.LeftSquareBracket)
+    const { location: openingLocation } = consume(TokenType.LeftSquareBracket)
 
     const array: unknown[] = []
+    const symbols: symbol[] = []
     let type: TokenType | undefined
 
     for( const typeCandidate of types ) {
@@ -133,12 +151,16 @@ export const parse = (tokens: (Token | undefined)[]) => {
     }
 
     if( !type ) {
-      throw new Diagnostic(`array got an invalid type, accepted ones are: ${types.join(' | ')}`, location)
+      throw new Diagnostic(`array got an invalid type, accepted ones are: ${types.join(' | ')}`, openingLocation)
     }
 
     while( !match(TokenType.RightSquareBracket) ) {
-      const { value } = consume(type)
+      const { value, location } = consume(type)
+      const elemSymbol = Symbol()
+
       array.push(value)
+      symbols.push(elemSymbol)
+      locationMap.set(elemSymbol, location)
 
       if( match(TokenType.Comma) ) {
         consume(TokenType.Comma)
@@ -146,7 +168,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
     }
 
     consume(TokenType.RightSquareBracket)
-    return array as Token<TTokenType>['value'][]
+    return {
+      value: array as Token<TTokenType>['value'][],
+      symbols,
+    }
   }
 
   const parseArrayBlock = <TValue>(value?: TValue) => {
@@ -213,7 +238,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
       property.enum = parseArray([
         TokenType.QuotedString,
         TokenType.Number,
-      ])
+      ]).value
       return
     }
 
@@ -242,7 +267,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         case 'form':
         case 'populate':
         case 'indexes': {
-          property[attributeName] = parseArray([TokenType.Identifier])
+          property[attributeName] = parseArray([TokenType.Identifier]).value
           return
         }
         case 'populateDepth': {
@@ -256,7 +281,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         switch( attributeName ) {
           case 'extensions':
           case 'accept': {
-            property[attributeName] = parseArray([TokenType.QuotedString])
+            property[attributeName] = parseArray([TokenType.QuotedString]).value
             return
           }
         }
@@ -274,7 +299,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
             }
             case 'mask': {
               if( match(TokenType.LeftSquareBracket) ) {
-                property[attributeName] = parseArray([TokenType.QuotedString])
+                property[attributeName] = parseArray([TokenType.QuotedString]).value
                 return
               } else {
                 const { value } = consume(TokenType.QuotedString)
@@ -651,15 +676,15 @@ export const parse = (tokens: (Token | undefined)[]) => {
           }
           case 'icon': {
             const { value } = consume(TokenType.QuotedString, ICON_NAMES)
-            node.icon = value
+            node[keyword] = value
             break
           }
           case 'properties': {
-            node.properties = parsePropertiesBlock()
+            node[keyword] = parsePropertiesBlock()
             break
           }
           case 'functions': {
-            node.functions = parseFunctionsBlock(ast)
+            node[keyword] = parseFunctionsBlock(ast)
             break
           }
           case 'individualActions':
@@ -728,8 +753,9 @@ export const parse = (tokens: (Token | undefined)[]) => {
             consume(TokenType.QuotedString)
             node.roles = 'unauthenticated-only'
           } else {
-            const { value } = parseArrayBlock()
-            node.roles = value as UserRole[]
+            const { value, symbols } = parseArrayBlock()
+            const roles = checkForValidRoles(value, symbols)
+            node.roles = roles
           }
           break
         }
@@ -810,9 +836,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
               accessCondition: value,
             }
           } else {
-            const value = parseArray([TokenType.QuotedString])
+            const { value, symbols } = parseArray([TokenType.QuotedString])
+            const roles = checkForValidRoles(value, symbols)
             functions[functionName] = {
-              accessCondition: value as readonly UserRole[],
+              accessCondition: roles,
             }
           }
 
@@ -892,9 +919,14 @@ export const parse = (tokens: (Token | undefined)[]) => {
             baseSlots[keyword] = value
             break
           }
-          case 'roles':
+          case 'roles': {
+            const { value, symbols } = parseArray([TokenType.Identifier])
+            const roles = checkForValidRoles(value, symbols)
+            baseSlots[keyword] = roles
+            break
+          }
           case 'requires': {
-            const value = parseArray([TokenType.Identifier])
+            const { value } = parseArray([TokenType.Identifier])
             baseSlots[keyword] = value
             break
           }
@@ -995,7 +1027,15 @@ export const parse = (tokens: (Token | undefined)[]) => {
     try {
       switch( declType ) {
         case 'collection': {
-          ast.collections.push(parseCollection(ast))
+          const collection = parseCollection(ast)
+          if( collection.name === 'User' ) {
+            const { properties } = collection
+            if( 'roles' in properties && 'items' in properties.roles.property && 'enum' in properties.roles.property.items ) {
+              memoTable.roles = properties.roles.property.items.enum as string[]
+            }
+          }
+
+          ast.collections.push(collection)
           break
         }
         case 'contract': {
