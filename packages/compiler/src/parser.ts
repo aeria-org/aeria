@@ -634,12 +634,20 @@ export const parse = (tokens: (Token | undefined)[]) => {
     return parsePropertyType(options)
   }
 
-  const parseAccessCondition = (options = { arrayBlock: false }) => {
+  const parseAccessCondition = (options = {
+    arrayBlock: false,
+  }) => {
     if( match(TokenType.Boolean) ) {
       const { value } = consume(TokenType.Boolean)
       return value
-    } else if( match(TokenType.QuotedString, ['unauthenticated', 'unauthenticated-only']) ) {
-      const { value } = consume(TokenType.QuotedString, ['unauthenticated', 'unauthenticated-only'])
+    } else if( match(TokenType.QuotedString, [
+      'unauthenticated',
+      'unauthenticated-only',
+    ]) ) {
+      const { value } = consume(TokenType.QuotedString, [
+        'unauthenticated',
+        'unauthenticated-only',
+      ])
       return value
     } else {
       const { value, symbols } = options.arrayBlock
