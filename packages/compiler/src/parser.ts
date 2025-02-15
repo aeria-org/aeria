@@ -210,7 +210,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
     }
 
     if( 'enum' in property && attributeName === 'values' ) {
-      property.enum = parseArray([TokenType.QuotedString, TokenType.Number])
+      property.enum = parseArray([
+        TokenType.QuotedString,
+        TokenType.Number,
+      ])
       return
     }
 
