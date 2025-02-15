@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.11
+
+### Patch Changes
+
+- ae6b928: Add support for multiple array types
+
 ## 0.0.10
 
 ### Patch Changes
