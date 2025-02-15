@@ -1,5 +1,12 @@
 # @aeriajs/compiler
 
+## 0.0.12
+
+### Patch Changes
+
+- deb925c: Fix cli bugs and contracts codegen bug
+- d95b215: Parse `roles` block of contracts
+
 ## 0.0.11
 
 ### Patch Changes
