@@ -75,7 +75,7 @@ export const compileFromFiles = async (schemaDir: string, options: CompilationOp
   }
 
   const result = await parseAndCheck(sources, options)
-  if( !result.ast ) {
+  if( !result.ast || result.errorCount > 0 ) {
     return result
   }
 

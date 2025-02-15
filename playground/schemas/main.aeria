@@ -242,4 +242,9 @@ contract ContractTest {
       contacts Topic
     }
   }
+  response
+    | Error { properties { name str } }
+    | Result { properties { name str, age num } }
+    | str
+  roles true
 }

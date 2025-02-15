@@ -743,9 +743,14 @@ export const parse = (tokens: (Token | undefined)[]) => {
       const { value: keyword } = consume(TokenType.Keyword, lexer.CONTRACT_KEYWORDS)
       switch( keyword ) {
         case 'roles': {
-          if( match(TokenType.QuotedString, 'unauthenticated') ) {
+          if( match(TokenType.Boolean) ) {
+            const { value: boolean } = consume(TokenType.Boolean)
+            node.roles = boolean
+          } else if( match(TokenType.QuotedString, 'unauthenticated') ) {
+            consume(TokenType.QuotedString)
             node.roles = 'unauthenticated'
           } else if( match(TokenType.QuotedString, 'unauthenticated-only') ) {
+            consume(TokenType.QuotedString)
             node.roles = 'unauthenticated-only'
           } else {
             const { value, symbols } = parseArrayBlock()

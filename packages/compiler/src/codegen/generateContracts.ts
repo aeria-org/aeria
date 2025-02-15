@@ -1,5 +1,5 @@
 import type * as AST from '../ast.js'
-import type { Property } from '@aeriajs/types'
+import type { ContractWithRoles, Property } from '@aeriajs/types'
 import { errorSchema, resultSchema } from '@aeriajs/types'
 import { getProperties, propertyToSchema, stringify, UnquotedSymbol, type StringifyProperty } from './utils.js'
 
@@ -52,11 +52,14 @@ const makeJSContractsCode = (contractAst: AST.ContractNode[]) => {
       }
     }
 
-    const contractSchema: Record<string, unknown> = getProperties(contractProperty)
+    const contractSchema: Record<keyof ContractWithRoles, unknown> = getProperties(contractProperty)
     if (responseString) {
       contractSchema.response = {
         [UnquotedSymbol]: responseString,
       }
+    }
+    if (roles) {
+      contractSchema.roles = roles
     }
 
     return `export const ${name} = defineContract(${
@@ -91,14 +94,16 @@ const makeTSContractsCode = (contractAst: AST.ContractNode[]) => {
       }
     }
 
-    const contractProperties = getProperties(contractSchema)
+    const contractProperties: ContractWithRoles = getProperties(contractSchema)
+    if (responseSchema) {
+      contractProperties.response = responseSchema
+    }
+    if (roles) {
+      contractProperties.roles = roles
+    }
+
     return `export declare const ${contractNode.name}: ${
-      stringify({
-        ...contractProperties,
-        ...(responseSchema && {
-          response: responseSchema,
-        }),
-      })
+      stringify(contractProperties)
     }`
   }).join('\n\n')
 }
