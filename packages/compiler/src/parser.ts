@@ -13,7 +13,7 @@ const ICON_NAMES = icons.map((icon) => icon.name)
 export const locationMap = new WeakMap<symbol, Location>()
 export const memoTable: {
   roles?: string[]
-} =  {}
+} = {}
 
 type StrictToken<TTokenType extends TokenType, TValue> = undefined extends TValue
   ? Token<TTokenType>
@@ -1025,7 +1025,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
           const collection = parseCollection(ast)
           if( collection.name === 'User' ) {
             const { properties } = collection
-            if( properties.roles && 'items' in properties.roles.property && 'enum' in properties.roles.property.items ) {
+            if( 'roles' in properties && 'items' in properties.roles.property && 'enum' in properties.roles.property.items ) {
               memoTable.roles = properties.roles.property.items.enum as string[]
             }
           }
