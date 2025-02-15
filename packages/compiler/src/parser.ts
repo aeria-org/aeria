@@ -119,10 +119,23 @@ export const parse = (tokens: (Token | undefined)[]) => {
     }
   }
 
-  const parseArray = <TTokenType extends TokenType>(type: TTokenType) => {
-    consume(TokenType.LeftSquareBracket)
+  const parseArray = <TTokenType extends TokenType>(types: TTokenType[]) => {
+    const { location } = consume(TokenType.LeftSquareBracket)
 
     const array: unknown[] = []
+    let type: TokenType | undefined
+
+    for( const typeCandidate of types ) {
+      if( match(typeCandidate) ) {
+        type = typeCandidate
+        break
+      }
+    }
+
+    if( !type ) {
+      throw new Diagnostic(`array got an invalid type, accepted ones are: ${types.join(' | ')}`, location)
+    }
+
     while( !match(TokenType.RightSquareBracket) ) {
       const { value } = consume(type)
       array.push(value)
@@ -197,7 +210,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
     }
 
     if( 'enum' in property && attributeName === 'values' ) {
-      property.enum = parseArray(TokenType.QuotedString)
+      property.enum = parseArray([TokenType.QuotedString, TokenType.Number])
       return
     }
 
@@ -226,7 +239,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         case 'form':
         case 'populate':
         case 'indexes': {
-          property[attributeName] = parseArray(TokenType.Identifier)
+          property[attributeName] = parseArray([TokenType.Identifier])
           return
         }
         case 'populateDepth': {
@@ -240,7 +253,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         switch( attributeName ) {
           case 'extensions':
           case 'accept': {
-            property[attributeName] = parseArray(TokenType.QuotedString)
+            property[attributeName] = parseArray([TokenType.QuotedString])
             return
           }
         }
@@ -258,7 +271,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
             }
             case 'mask': {
               if( match(TokenType.LeftSquareBracket) ) {
-                property[attributeName] = parseArray(TokenType.QuotedString)
+                property[attributeName] = parseArray([TokenType.QuotedString])
                 return
               } else {
                 const { value } = consume(TokenType.QuotedString)
@@ -778,7 +791,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
               accessCondition: value,
             }
           } else {
-            const value = parseArray(TokenType.QuotedString)
+            const value = parseArray([TokenType.QuotedString])
             functions[functionName] = {
               accessCondition: value as readonly UserRole[],
             }
@@ -862,7 +875,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
           }
           case 'roles':
           case 'requires': {
-            const value = parseArray(TokenType.Identifier)
+            const value = parseArray([TokenType.Identifier])
             baseSlots[keyword] = value
             break
           }
