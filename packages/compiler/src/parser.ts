@@ -634,6 +634,22 @@ export const parse = (tokens: (Token | undefined)[]) => {
     return parsePropertyType(options)
   }
 
+  const parseAccessCondition = (options = { arrayBlock: false }) => {
+    if( match(TokenType.Boolean) ) {
+      const { value } = consume(TokenType.Boolean)
+      return value
+    } else if( match(TokenType.QuotedString, ['unauthenticated', 'unauthenticated-only']) ) {
+      const { value } = consume(TokenType.QuotedString, ['unauthenticated', 'unauthenticated-only'])
+      return value
+    } else {
+      const { value, symbols } = options.arrayBlock
+        ? parseArrayBlock()
+        : parseArray([TokenType.QuotedString])
+
+      return checkForValidRoles(value, symbols)
+    }
+  }
+
   const parseCollection = (ast: AST.ProgramNode): AST.CollectionNode => {
     consume(TokenType.Keyword, 'collection')
     const { value: name } = consume(TokenType.Identifier)
@@ -743,20 +759,9 @@ export const parse = (tokens: (Token | undefined)[]) => {
       const { value: keyword } = consume(TokenType.Keyword, lexer.CONTRACT_KEYWORDS)
       switch( keyword ) {
         case 'roles': {
-          if( match(TokenType.Boolean) ) {
-            const { value: boolean } = consume(TokenType.Boolean)
-            node.roles = boolean
-          } else if( match(TokenType.QuotedString, 'unauthenticated') ) {
-            consume(TokenType.QuotedString)
-            node.roles = 'unauthenticated'
-          } else if( match(TokenType.QuotedString, 'unauthenticated-only') ) {
-            consume(TokenType.QuotedString)
-            node.roles = 'unauthenticated-only'
-          } else {
-            const { value, symbols } = parseArrayBlock()
-            const roles = checkForValidRoles(value, symbols)
-            node.roles = roles
-          }
+          node.roles = parseAccessCondition({
+            arrayBlock: true,
+          })
           break
         }
         case 'payload': {
@@ -789,66 +794,60 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
     const functions: AST.CollectionNode['functions'] = {}
     while( !match(TokenType.RightBracket) ) {
-      if( match(TokenType.MacroName) ) {
-        const { value: macroName } = consume(TokenType.MacroName, ['include'])
+      try {
+        if( match(TokenType.MacroName) ) {
+          const { value: macroName } = consume(TokenType.MacroName, ['include'])
 
-        switch( macroName ) {
-          case 'include': {
-            const { value: functionSetName, location } = consume(TokenType.Identifier)
-            const functionset = ast.functionsets.find((node) => node.name === functionSetName)
+          switch( macroName ) {
+            case 'include': {
+              const { value: functionSetName, location } = consume(TokenType.Identifier)
+              const functionset = ast.functionsets.find((node) => node.name === functionSetName)
 
-            if( !functionset ) {
-              throw new Diagnostic(`functionset "${functionSetName}" not found`, location)
+              if( !functionset ) {
+                throw new Diagnostic(`functionset "${functionSetName}" not found`, location)
+              }
+
+              Object.assign(functions, functionset.functions)
+              consume(TokenType.RightParens)
             }
 
-            Object.assign(functions, functionset.functions)
-            consume(TokenType.RightParens)
           }
 
+          continue
         }
 
-        continue
-      }
+        const { value: functionName } = consume(TokenType.Identifier)
+        functions[functionName] = {
+          accessCondition: false,
+        }
 
-      const { value: functionName } = consume(TokenType.Identifier)
-      functions[functionName] = {
-        accessCondition: false,
-      }
+        while( match(TokenType.AttributeName, 'expose') ) {
+          consume(TokenType.AttributeName, 'expose')
+          if( match(TokenType.LeftParens) ) {
+            consume(TokenType.LeftParens)
+            functions[functionName] = {
+              accessCondition: parseAccessCondition(),
+            }
 
-      while( match(TokenType.AttributeName, 'expose') ) {
-        consume(TokenType.AttributeName, 'expose')
-        if( match(TokenType.LeftParens) ) {
-          consume(TokenType.LeftParens)
-          if( match(TokenType.Boolean) ) {
-            const { value } = consume(TokenType.Boolean)
-            functions[functionName] = {
-              accessCondition: value,
-            }
-          } else if( match(TokenType.QuotedString, [
-            'unauthenticated',
-            'unauthenticated-only',
-          ]) ) {
-            const { value } = consume(TokenType.QuotedString, [
-              'unauthenticated',
-              'unauthenticated-only',
-            ])
-            functions[functionName] = {
-              accessCondition: value,
-            }
+            consume(TokenType.RightParens)
+
           } else {
-            const { value, symbols } = parseArray([TokenType.QuotedString])
-            const roles = checkForValidRoles(value, symbols)
             functions[functionName] = {
-              accessCondition: roles,
+              accessCondition: true,
+            }
+          }
+        }
+      } catch( err ) {
+        if( err instanceof Diagnostic ) {
+          let token: Token | undefined
+          while ( token = tokens[++index] ) {
+            if( token.type === TokenType.Identifier || token.type === TokenType.RightBracket ) {
+              break
             }
           }
 
-          consume(TokenType.RightParens)
-
-        } else {
-          functions[functionName] = {
-            accessCondition: true,
-          }
+          errors.push(err)
+          continue
         }
       }
     }
