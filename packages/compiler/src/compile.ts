@@ -78,7 +78,7 @@ export const compileFromFiles = async (schemaDir: string, options: CompilationOp
   if( !result.ast || result.errorCount > 0 ) {
     return result
   }
-  
+
   const emittedFiles = await generateCode(result.ast, options)
   return {
     ...result,
