@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.15
+
+### Patch Changes
+
+- a8ae7f9: Add `const` type and allow commas in array blocks
+
 ## 0.0.14
 
 ### Patch Changes
