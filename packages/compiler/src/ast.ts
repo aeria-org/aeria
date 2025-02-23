@@ -11,6 +11,7 @@ export const PropertyType = {
   enum: 'enum',
   date: 'string',
   datetime: 'string',
+  const: 'const',
 } as const
 
 export const PropertyModifiers: Record<'Error' | 'Result', ExportSymbol> = {

@@ -187,6 +187,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
       array.push(identifier)
       symbols.push(elemSymbol)
       locationMap.set(elemSymbol, location)
+
+      if( match(TokenType.Comma) ) {
+        consume(TokenType.Comma)
+      }
     }
 
     consume(TokenType.RightBracket)
@@ -240,6 +244,24 @@ export const parse = (tokens: (Token | undefined)[]) => {
         TokenType.Number,
       ]).value
       return
+    }
+
+    if( 'const' in property && attributeName === 'value' ) {
+      const token = current()
+      advance()
+
+      switch( token.type ) {
+        case TokenType.Number:
+        case TokenType.Boolean:
+        case TokenType.Null:
+        case TokenType.QuotedString: {
+          property.const = (token as Token<typeof token.type>).value
+          return
+        }
+        default: {
+          throw new Diagnostic(`const received invalid value: "${token.value}"`, location)
+        }
+      }
     }
 
     switch( attributeName ) {
@@ -495,6 +517,12 @@ export const parse = (tokens: (Token | undefined)[]) => {
           case 'enum': {
             property = {
               enum: [],
+            }
+            break
+          }
+          case 'const': {
+            property = {
+              const: null,
             }
             break
           }

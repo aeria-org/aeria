@@ -12,6 +12,7 @@ export const TokenType = {
   Dot: 'DOT',
   Number: 'NUMBER',
   Boolean: 'BOOLEAN',
+  Null: 'NULL',
   Keyword: 'KEYWORD',
   Identifier: 'IDENTIFIER',
   QuotedString: 'QUOTED_STRING',
@@ -25,6 +26,7 @@ export type TokenType = typeof TokenType[keyof typeof TokenType]
 export type TypeMap = {
   [TokenType.Number]: number
   [TokenType.Boolean]: boolean
+  [TokenType.Null]: null
   [TokenType.Range]: readonly [number, number]
 }
 
