@@ -54,18 +54,18 @@ export const generateCode = async (ast: AST.ProgramNode, options: CompilationOpt
     ['collections']: {
       ['collections.d.ts']: generateTSCollections(ast.collections),
       ['collections.js']: generateJSCollections(ast.collections),
-      ['index.d.ts']: exports.collections.dTs,
+      ['index.d.ts']: exports.collections.dts,
       ['index.js']: exports.collections.js,
     },
-    ['index.d.ts']: exports.main.dTs,
+    ['index.d.ts']: exports.main.dts,
     ['index.js']: exports.main.js,
   }
 
   if (contracts) {
     fileTree.contracts = {
       ['contracts.js']: contracts.js,
-      ['contracts.d.ts']: contracts.dTs,
-      ['index.d.ts']: exports.contracts!.dTs,
+      ['contracts.d.ts']: contracts.dts,
+      ['index.d.ts']: exports.contracts!.dts,
       ['index.js']: exports.contracts!.js,
     }
   }

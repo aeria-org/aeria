@@ -10,7 +10,7 @@ export const generateContracts = (ast: AST.Node[]) => {
   }
   return {
     js: makeJSContractsCode(contractNodes),
-    dTs: makeTSContractsCode(contractNodes),
+    dts: makeTSContractsCode(contractNodes),
   }
 }
 

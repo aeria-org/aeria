@@ -1,5 +1,5 @@
 import type * as AST from '../ast.js'
-import type { Description, RequiredProperties } from '@aeriajs/types'
+import type { Description } from '@aeriajs/types'
 import { makeASTImports, getProperties, stringify, getExtendName, getCollectionId, UnquotedSymbol, getExposedFunctions, PACKAGE_NAME, DEFAULT_FUNCTIONS } from './utils.js'
 const initialImportedFunctions = [
   'extendCollection',
@@ -59,10 +59,10 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
 
     switch (key) {
       case 'properties':
-        collectionSchema.description.properties = getProperties(collectionNode[key])
+        collectionSchema.description[key] = getProperties(collectionNode[key])
         break
       case 'owned':
-        collectionSchema.description.owned = collectionNode[key]
+        collectionSchema.description[key] = collectionNode[key]
         break
       case 'functions':
         collectionSchema.functions = {
@@ -90,7 +90,7 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
         collectionSchema.description[key] = collectionNode[key]
         break
       case 'required':
-        collectionSchema.description[key] = collectionNode[key] as RequiredProperties<any>
+        collectionSchema.description[key] = collectionNode[key] as Record<string, boolean>
         break
     }
   }

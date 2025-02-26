@@ -22,20 +22,20 @@ export const generateExports = (ast: AST.ProgramNode, hasContracts = false) => {
   const exports: {
     main: {
       js: string
-      dTs: string
+      dts: string
     },
     collections: {
       js: string
-      dTs: string
+      dts: string
     },
     contracts?: {
       js: string
-      dTs: string
+      dts: string
     },
   } = {
     collections: {
       js: `export { ${symbolsToExport.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
-      dTs: `export { ${symbolsToExport.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
+      dts: `export { ${symbolsToExport.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
     },
     main: {
       js: (hasContracts
@@ -43,7 +43,7 @@ export const generateExports = (ast: AST.ProgramNode, hasContracts = false) => {
         : '') +
         'export * as collections from \'./collections/index.js\'\n' +
         `export { ${symbolsToExport.map((symbol) => symbol.extend).join(', ')} } from './collections/collections.js'`,
-      dTs: (hasContracts
+      dts: (hasContracts
         ? 'export * as contracts from \'./contracts/index.js\'\n'
         : '') +
         'export * as collections from \'./collections/index.js\'\n' +
@@ -54,7 +54,7 @@ export const generateExports = (ast: AST.ProgramNode, hasContracts = false) => {
   if (hasContracts) {
     exports.contracts = {
       js: 'export * from \'./contracts.js\'',
-      dTs: 'export * from \'./contracts.js\'',
+      dts: 'export * from \'./contracts.js\'',
     }
   }
 
