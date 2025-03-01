@@ -7,6 +7,12 @@ let collectionsMemo: Awaited<ReturnType<typeof internalGetCollections>> | undefi
 let availableRolesMemo: string[] | undefined
 const collectionMemo: Record<string, Collection | undefined> = {}
 
+const DEFAULT_CONFIG: ApiConfig = {
+  security: {
+    mutableUserProperties: [],
+  },
+}
+
 export const getEntrypointPath = async () => {
   if( process.env.AERIA_MAIN ) {
     return path.join(process.cwd(), process.env.AERIA_MAIN)
@@ -82,7 +88,7 @@ export const getConfig = async (): Promise<ApiConfig> => {
 
   return entrypoint.default
     ? entrypoint.default.options.config
-    : {}
+    : DEFAULT_CONFIG
 }
 
 export const getAvailableRoles = async () => {

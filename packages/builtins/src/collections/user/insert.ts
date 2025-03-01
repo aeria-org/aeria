@@ -2,7 +2,7 @@ import type { Context, SchemaWithId, InsertPayload, Description, UserRole } from
 import { HTTPStatus, ACError } from '@aeriajs/types'
 import { arraysIntersect } from '@aeriajs/common'
 import { ObjectId, insert as originalInsert } from '@aeriajs/core'
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 
 const isRoleAllowed = (targetRole: UserRole, context: Context) => {
   if( !context.config.security.rolesHierarchy ) {

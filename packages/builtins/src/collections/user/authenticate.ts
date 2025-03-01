@@ -1,7 +1,7 @@
 import type { Context, Token, TokenRecipient } from '@aeriajs/types'
 import type { description } from './description.js'
 import { Result, HTTPStatus, ACError } from '@aeriajs/types'
-import { compare as bcryptCompare } from 'bcrypt'
+import { compare as bcryptCompare } from 'bcryptjs'
 import { decodeToken, get } from '@aeriajs/core'
 import { throwIfError } from '@aeriajs/common'
 import { successfulAuthentication, defaultSuccessfulAuthentication, AuthenticationError } from '../../authentication.js'

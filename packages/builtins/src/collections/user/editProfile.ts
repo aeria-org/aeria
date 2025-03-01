@@ -1,7 +1,7 @@
 import type { description } from './description.js'
 import { HTTPStatus, ACError, type Context, type SchemaWithId, type PackReferences } from '@aeriajs/types'
 import { insert as originalInsert } from '@aeriajs/core'
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 
 export const editProfile = async (payload: Partial<PackReferences<SchemaWithId<typeof description>>>, context: Context<typeof description>) => {
   const mutableProperties = context.config.security.mutableUserProperties

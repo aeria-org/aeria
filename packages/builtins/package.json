@@ -43,7 +43,7 @@
     "dist"
   ],
   "dependencies": {
-    "bcrypt": "^5.1.1"
+    "bcryptjs": "^3.0.2"
   },
   "devDependencies": {
     "@aeriajs/common": "link:../common",
@@ -51,12 +51,11 @@
     "@aeriajs/entrypoint": "link:../entrypoint",
     "@aeriajs/types": "link:../types",
     "@aeriajs/validation": "link:../validation",
-    "@types/bcrypt": "^5.0.2",
     "mongodb": "^6.5.0"
   },
   "peerDependencies": {
-    "@aeriajs/core": "^0.0.243",
     "@aeriajs/common": "^0.0.136",
+    "@aeriajs/core": "^0.0.243",
     "@aeriajs/entrypoint": "^0.0.140",
     "@aeriajs/types": "^0.0.118",
     "@aeriajs/validation": "^0.0.152"

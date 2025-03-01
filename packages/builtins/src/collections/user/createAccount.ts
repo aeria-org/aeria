@@ -2,7 +2,7 @@ import type { Context, SchemaWithId, PackReferences } from '@aeriajs/types'
 import type { description } from './description.js'
 import { HTTPStatus, ACError } from '@aeriajs/types'
 import { validate } from '@aeriajs/validation'
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 import { insert as originalInsert } from '@aeriajs/core'
 
 export const CreateAccountError = {

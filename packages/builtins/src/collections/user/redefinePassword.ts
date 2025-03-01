@@ -2,7 +2,7 @@ import type { Context } from '@aeriajs/types'
 import type { description } from './description.js'
 import { decodeToken, ObjectId } from '@aeriajs/core'
 import { Result, ACError, HTTPStatus } from '@aeriajs/types'
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 
 export const ActivationError = {
   UserNotFound: 'USER_NOT_FOUND',
