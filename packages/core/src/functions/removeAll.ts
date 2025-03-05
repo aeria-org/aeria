@@ -19,9 +19,7 @@ const internalRemoveAll = async <TContext extends Context>(
   }))
 
   const it = context.collection.model.find(filters)
-
-  let doc: WithId<unknown> | null
-  while( doc = await it.next() ) {
+  for await ( const doc of it ) {
     await cascadingRemove(doc, context)
   }
 
