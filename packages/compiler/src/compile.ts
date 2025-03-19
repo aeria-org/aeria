@@ -1,4 +1,5 @@
 import type { CompilationOptions, CompilationResult } from './types.js'
+import type { Token } from './token.js'
 import { Diagnostic } from './diagnostic.js'
 import { tokenize } from './lexer.js'
 import { parse } from './parser.js'
@@ -11,31 +12,28 @@ export const FILE_PRECEDENCE = ['contract']
 
 export const parseAndCheck = async (sources: Record<string, string>, options: Pick<CompilationOptions, 'languageServer'> = {}): Promise<CompilationResult> => {
   const errors: CompilationResult['errors'] = []
-  let errorCount: CompilationResult['errorCount'] = 0
   let ast: CompilationResult['ast'] | undefined
 
+  const allTokens: Token[] = []
   for (const fileName in sources) {
     Diagnostic.currentFile = fileName
-
     const { errors: lexerErrors, tokens } = tokenize(sources[fileName])
-    const { errors: parserErrors, ast: currentAst } = parse(Array.from(tokens))
-    const { errors: semanticErrors } = await analyze(currentAst, options)
 
-    errors.push(...lexerErrors.concat(parserErrors, semanticErrors))
-    errorCount += errors.length
-    if (!ast) {
-      ast = currentAst
-    } else {
-      ast.collections.push(...currentAst.collections)
-      ast.contracts.push(...currentAst.contracts)
-      ast.functionsets.push(...currentAst.functionsets)
+    if (lexerErrors.length > 0) {
+      errors.push(...lexerErrors)
     }
+
+    allTokens.push(...tokens)
   }
 
+  const { errors: parserErrors, ast: currentAst } = parse(allTokens)
+  const { errors: semanticErrors } = await analyze(currentAst, options)
+
+  errors.push(...parserErrors.concat(semanticErrors))
   return {
-    success: errorCount === 0,
+    success: errors.length === 0,
     errors,
-    errorCount,
+    errorCount: errors.length,
     ast,
   }
 }
