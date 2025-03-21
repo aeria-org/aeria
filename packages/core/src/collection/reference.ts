@@ -157,18 +157,52 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
   const [refName, isRef] = path.at(-1)!
   const shouldUseArrayIndex = reference.isRecursive && !(reference.isArrayOrArrayElement && reference.isArray === false)
 
-  let indexOfArray: {}
+  let indexOfArray: Record<string, unknown>
   if( shouldUseArrayIndex ) {
     if( isRef ) {
+//       '$indexOfArray': [
+// api|                                                         '$_internal_notice_messages_created_by_picture_file._idXX',
+// api|                                                         {
+// api|                                                           '$arrayElemAt': [
+// api|                                                             '$_internal_notice_messages_created_by.picture_file',
+// api|                                                             {
+// api|                                                               '$indexOfArray': [
+// api|                                                                 '$_internal_notice_messages_created_by._idZZ',
+// api|                                                                 {
+// api|                                                                   '$arrayElemAt': [
+// api|                                                                     '$_internal_notice_messages.created_by',
+// api|                                                                     {
+// api|                                                                       '$indexOfArray': [
+// api|                                                                         '$_internal_notice_messages_created_by._idXX',
+// api|                                                                         {
+// api|                                                                           '$arrayElemAt': [
+// api|                                                                             '$_internal_notice_messages.created_by',
+// api|                                                                             {
+// api|                                                                               '$indexOfArray': [
+// api|                                                                                 '$_internal_notice_messages._idZZ',
+// api|                                                                                 '$$messages__elem'
+// api|                                                                               ]
+// api|                                                                             }
+// api|                                                                           ]
+// api|                                                                         }
+// api|                                                                       ]
+// api|                                                                     }
+// api|                                                                   ]
+// api|                                                                 }
+// api|                                                               ]
+// api|                                                             }
+// api|                                                           ]
+// api|                                                         }
+
       indexOfArray = {
         $indexOfArray: [
-          `$${getTempName(path)}._id`,
+          `$${getTempName(path)}._idXX`,
           {
             $arrayElemAt: [
               `$${getTempName(path.slice(0, -1))}.${refName}`,
               {
                 $indexOfArray: [
-                  `$${getTempName(path.slice(0, -1))}._id`,
+                  `$${getTempName(path.slice(0, -1))}._idZZ`,
                   parentElem,
                 ],
               },
@@ -179,7 +213,7 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
     } else {
       indexOfArray = {
         $indexOfArray: [
-          `$${getTempName(path.slice(0, -1))}._id`,
+          `$${getTempName(path.slice(0, -1))}._idYY`,
           parentElem,
         ],
       }
@@ -464,6 +498,9 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
 
     const finalPipeline = rootPipeline.concat(pipeline)
     if( memoize ) {
+      if( memoize.startsWith('order') ) {
+        console.log(inspect(finalPipeline, { depth: null }))
+      }
       lookupMemo[memoize] = finalPipeline
     }
 
@@ -472,6 +509,8 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
 
   return pipeline
 }
+
+import { inspect } from 'node:util'
 
 export const getLookupPipeline = async (description: Description, options?: BuildLookupPipelineOptions) => {
   const refMap = await getReferences(description.properties)

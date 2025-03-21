@@ -516,7 +516,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
       consume(TokenType.RightBracket)
 
     } else {
-      const { value: identifier, location } = consume(TokenType.Identifier)
+      const { value: identifier } = consume(TokenType.Identifier)
       if( guards.isNativePropertyType(identifier) ) {
         switch( identifier ) {
           case 'enum': {
