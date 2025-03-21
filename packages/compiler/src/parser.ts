@@ -405,6 +405,9 @@ export const parse = (tokens: (Token | undefined)[]) => {
     let nestedProperties: Record<string, AST.PropertyNode> | undefined
     let modifierToken: StrictToken<typeof TokenType.Identifier, keyof typeof AST.PropertyModifiers> | undefined
 
+    const typeSymbol = Symbol()
+    locationMap.set(typeSymbol, next().location)
+
     if( match(TokenType.LeftSquareBracket) ) {
       consume(TokenType.LeftSquareBracket)
       const arrayProperty: Omit<Extract<AST.PropertyNode['property'], { type: 'array' }>, 'items' > = {
@@ -413,6 +416,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
       while( !match(TokenType.RightSquareBracket) ) {
         const attributeSymbol = Symbol()
         arrayProperty[AST.LOCATION_SYMBOL] ??= {
+          type: typeSymbol,
           attributes: {},
           arrays: {},
         }
@@ -482,6 +486,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         type: 'object',
         properties: {},
         [AST.LOCATION_SYMBOL]: {
+          type: typeSymbol,
           attributes: {},
           arrays: {},
         },
@@ -546,13 +551,13 @@ export const parse = (tokens: (Token | undefined)[]) => {
             }
         }
       } else {
-        const collection = ast.collections.find((node) => node.name === identifier)
-        if( !collection ) {
-          throw new Diagnostic(`invalid reference "${identifier}"`, location)
-        }
-
         property = {
           $ref: identifier,
+          [AST.LOCATION_SYMBOL]: {
+            type: typeSymbol,
+            attributes: {},
+            arrays: {},
+          },
         }
       }
     }
@@ -565,6 +570,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         locationMap.set(attributeSymbol, next().location)
 
         property[AST.LOCATION_SYMBOL] ??= {
+          type: typeSymbol,
           attributes: {},
           arrays: {},
         }

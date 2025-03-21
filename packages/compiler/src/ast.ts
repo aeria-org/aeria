@@ -38,6 +38,7 @@ export type PropertyNode = NodeBase<'property'> & {
   modifier?: keyof typeof PropertyModifiers
   property: Property & {
     [LOCATION_SYMBOL]?: {
+      type: symbol
       attributes: Record<string, symbol>
       arrays: {
         [P in ArrayProperties<Extract<Property, { properties: unknown }>>]?: symbol[]

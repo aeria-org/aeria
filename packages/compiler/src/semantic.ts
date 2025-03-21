@@ -96,7 +96,9 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
       const foreignCollection = ast.collections.find(({ name }) => name === refName)
 
       if( !foreignCollection ) {
-        throw new Error
+        const location = locationMap.get(node.property[AST.LOCATION_SYMBOL]!.type)
+        errors.push(new Diagnostic(`invalid reference "${refName}"`, location))
+        return
       }
 
       await checkCollectionForeignProperties(foreignCollection, node.property, 'indexes')
