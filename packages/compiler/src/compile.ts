@@ -8,11 +8,8 @@ import { generateCode } from './codegen.js'
 import * as path from 'node:path'
 import * as fs from 'node:fs'
 
-export const FILE_PRECEDENCE = ['contract']
-
 export const parseAndCheck = async (sources: Record<string, string>, options: Pick<CompilationOptions, 'languageServer'> = {}): Promise<CompilationResult> => {
   const errors: CompilationResult['errors'] = []
-  let ast: CompilationResult['ast'] | undefined
 
   const allTokens: Token[] = []
   for (const fileName in sources) {
@@ -26,8 +23,8 @@ export const parseAndCheck = async (sources: Record<string, string>, options: Pi
     allTokens.push(...tokens)
   }
 
-  const { errors: parserErrors, ast: currentAst } = parse(allTokens)
-  const { errors: semanticErrors } = await analyze(currentAst, options)
+  const { errors: parserErrors, ast } = parse(allTokens)
+  const { errors: semanticErrors } = await analyze(ast, options)
 
   errors.push(...parserErrors.concat(semanticErrors))
   return {
@@ -52,22 +49,10 @@ export const generateScaffolding = async (options: CompilationOptions) => {
 
 export const compileFromFiles = async (globPattern: string, options: CompilationOptions) => {
   const fileList = await Array.fromAsync(fs.promises.glob(globPattern))
-  const sortedFileList = fileList.sort((a, b) => {
-    const aIndex = FILE_PRECEDENCE.findIndex((file) => a.split('/').at(-1)!.startsWith(file))
-    const bIndex = FILE_PRECEDENCE.findIndex((file) => b.split('/').at(-1)!.startsWith(file))
-
-    if( !~aIndex && !~bIndex ) {
-      return 1
-    }
-
-    return aIndex > bIndex
-      ? 1
-      : -1
-  })
 
   const sources: Record<string, string> = {}
-  for (const file of sortedFileList) {
-    sources[file] = await fs.promises.readFile(file, {
+  for (const fileName of fileList) {
+    sources[fileName] = await fs.promises.readFile(fileName, {
       encoding: 'utf-8',
     })
   }
