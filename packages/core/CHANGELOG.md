@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.244
+
+### Patch Changes
+
+- 3182483: Fix Aggregation Framework bug
+  - @aeriajs/builtins@0.0.244
+  - @aeriajs/security@0.0.244
+
 ## 0.0.243
 
 ### Patch Changes

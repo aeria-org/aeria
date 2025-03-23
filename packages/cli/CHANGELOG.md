@@ -1,5 +1,16 @@
 # aeria-build
 
+## 0.0.202
+
+### Patch Changes
+
+- 581b28a: Change compiler glob pattern
+- Updated dependencies [3182483]
+- Updated dependencies [581b28a]
+  - @aeriajs/core@0.0.244
+  - @aeriajs/compiler@0.0.16
+  - @aeriajs/builtins@0.0.244
+
 ## 0.0.201
 
 ### Patch Changes
