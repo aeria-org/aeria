@@ -1,5 +1,12 @@
 # @aeriajs/compiler
 
+## 0.0.17
+
+### Patch Changes
+
+- c834703: Fix token location bug
+- fb9d2d4: Fix `parseAndCheck()` bug
+
 ## 0.0.16
 
 ### Patch Changes
