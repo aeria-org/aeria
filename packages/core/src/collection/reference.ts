@@ -157,52 +157,18 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
   const [refName, isRef] = path.at(-1)!
   const shouldUseArrayIndex = reference.isRecursive && !(reference.isArrayOrArrayElement && reference.isArray === false)
 
-  let indexOfArray: Record<string, unknown>
+  let indexOfArray: {}
   if( shouldUseArrayIndex ) {
     if( isRef ) {
-//       '$indexOfArray': [
-// api|                                                         '$_internal_notice_messages_created_by_picture_file._idXX',
-// api|                                                         {
-// api|                                                           '$arrayElemAt': [
-// api|                                                             '$_internal_notice_messages_created_by.picture_file',
-// api|                                                             {
-// api|                                                               '$indexOfArray': [
-// api|                                                                 '$_internal_notice_messages_created_by._idZZ',
-// api|                                                                 {
-// api|                                                                   '$arrayElemAt': [
-// api|                                                                     '$_internal_notice_messages.created_by',
-// api|                                                                     {
-// api|                                                                       '$indexOfArray': [
-// api|                                                                         '$_internal_notice_messages_created_by._idXX',
-// api|                                                                         {
-// api|                                                                           '$arrayElemAt': [
-// api|                                                                             '$_internal_notice_messages.created_by',
-// api|                                                                             {
-// api|                                                                               '$indexOfArray': [
-// api|                                                                                 '$_internal_notice_messages._idZZ',
-// api|                                                                                 '$$messages__elem'
-// api|                                                                               ]
-// api|                                                                             }
-// api|                                                                           ]
-// api|                                                                         }
-// api|                                                                       ]
-// api|                                                                     }
-// api|                                                                   ]
-// api|                                                                 }
-// api|                                                               ]
-// api|                                                             }
-// api|                                                           ]
-// api|                                                         }
-
       indexOfArray = {
         $indexOfArray: [
-          `$${getTempName(path)}._idXX`,
+          `$${getTempName(path)}._id`,
           {
             $arrayElemAt: [
               `$${getTempName(path.slice(0, -1))}.${refName}`,
               {
                 $indexOfArray: [
-                  `$${getTempName(path.slice(0, -1))}._idZZ`,
+                  `$${getTempName(path.slice(0, -1))}._id`,
                   parentElem,
                 ],
               },
@@ -213,7 +179,7 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
     } else {
       indexOfArray = {
         $indexOfArray: [
-          `$${getTempName(path.slice(0, -1))}._idYY`,
+          `$${getTempName(path.slice(0, -1))}._id`,
           parentElem,
         ],
       }
@@ -303,7 +269,12 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
           newElem = {
             $arrayElemAt: [
               `$${getTempName(path.slice(0, -1))}.${refName}`,
-              indexOfArray,
+              {
+                $indexOfArray: [
+                  `$${getTempName(path.slice(0, -1))}._id`,
+                  parentElem,
+                ],
+              },
             ],
           }
         } else {
@@ -498,9 +469,6 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
 
     const finalPipeline = rootPipeline.concat(pipeline)
     if( memoize ) {
-      if( memoize.startsWith('order') ) {
-        console.log(inspect(finalPipeline, { depth: null }))
-      }
       lookupMemo[memoize] = finalPipeline
     }
 
@@ -509,8 +477,6 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
 
   return pipeline
 }
-
-import { inspect } from 'node:util'
 
 export const getLookupPipeline = async (description: Description, options?: BuildLookupPipelineOptions) => {
   const refMap = await getReferences(description.properties)
