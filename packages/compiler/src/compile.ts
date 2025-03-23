@@ -50,8 +50,8 @@ export const generateScaffolding = async (options: CompilationOptions) => {
   return directories
 }
 
-export const compileFromFiles = async (schemaDir: string, options: CompilationOptions) => {
-  const fileList = await Array.fromAsync(fs.promises.glob(`${schemaDir}/*.aeria`))
+export const compileFromFiles = async (globPattern: string, options: CompilationOptions) => {
+  const fileList = await Array.fromAsync(fs.promises.glob(globPattern))
   const sortedFileList = fileList.sort((a, b) => {
     const aIndex = FILE_PRECEDENCE.findIndex((file) => a.split('/').at(-1)!.startsWith(file))
     const bIndex = FILE_PRECEDENCE.findIndex((file) => b.split('/').at(-1)!.startsWith(file))

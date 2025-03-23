@@ -1,16 +1,12 @@
 import { Result } from '@aeriajs/types'
 import { compileFromFiles } from '@aeriajs/compiler'
-import * as fs from 'node:fs'
 
-export const SCHEMAS_DIR = 'schemas'
+export const GLOB_PATTERN = '**/*.aeria'
+export const OUT_DIR = '.aeria/out'
 
 export const buildAeriaLangPhase = async () => {
-  if( !fs.existsSync(SCHEMAS_DIR) ) {
-    return Result.result(`skipped build as the schemas directory ${SCHEMAS_DIR} wasn't found`)
-  }
-
-  const result = await compileFromFiles(SCHEMAS_DIR, {
-    outDir: '.aeria/out',
+  const result = await compileFromFiles(GLOB_PATTERN, {
+    outDir: OUT_DIR,
   })
 
   if( !result.success ) {
