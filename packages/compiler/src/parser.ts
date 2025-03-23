@@ -405,7 +405,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
     let nestedProperties: Record<string, AST.PropertyNode> | undefined
     let modifierToken: StrictToken<typeof TokenType.Identifier, keyof typeof AST.PropertyModifiers> | undefined
 
-    let typeSymbol = Symbol()
+    const typeSymbol = Symbol()
 
     if( match(TokenType.LeftSquareBracket) ) {
       consume(TokenType.LeftSquareBracket)
