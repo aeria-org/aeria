@@ -9,7 +9,7 @@ export type CompilationResult = {
 }
 
 export type CompilationOptions = {
-  outDir: string
+  outDir?: string
   dryRun?: boolean
   languageServer?: boolean
 }

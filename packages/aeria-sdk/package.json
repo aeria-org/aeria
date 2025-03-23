@@ -29,26 +29,26 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "webpack": "./dist/index.js",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./next": "./dist/index.js",
     "./config": {
+      "types": "./dist/config.d.ts",
       "import": "./dist/config.mjs",
-      "require": "./dist/config.js",
-      "types": "./dist/config.d.ts"
+      "require": "./dist/config.js"
     },
     "./http": {
+      "types": "./dist/http.d.ts",
       "import": "./dist/http.mjs",
-      "require": "./dist/http.js",
-      "types": "./dist/http.d.ts"
+      "require": "./dist/http.js"
     },
     "./mirror": {
+      "types": "./dist/mirror.d.ts",
       "import": "./dist/mirror.mjs",
-      "require": "./dist/mirror.js",
-      "types": "./dist/mirror.d.ts"
+      "require": "./dist/mirror.js"
     }
   },
   "devDependencies": {

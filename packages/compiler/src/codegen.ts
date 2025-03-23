@@ -22,7 +22,7 @@ type FileTree = {
  *  ['outDir/folderX/folderY/file']: ...
  * }
  */
-const generateFileMap = async (fileTree: FileTree, outDir: string) => {
+const generateFileMap = async (fileTree: FileTree, outDir: string = '.') => {
   const mappedPaths: Record<string, string> = {}
 
   const mapPathTree = async (tree: FileTree, previousPath: string) => {

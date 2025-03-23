@@ -23,19 +23,19 @@
   "license": "ISC",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./collections": {
+      "types": "./dist/collections/index.d.ts",
       "import": "./dist/collections/index.mjs",
-      "require": "./dist/collections/index.js",
-      "types": "./dist/collections/index.d.ts"
+      "require": "./dist/collections/index.js"
     },
     "./icons": {
+      "types": "./dist/icons.d.ts",
       "import": "./dist/icons.mjs",
-      "require": "./dist/icons.cjs",
-      "types": "./dist/icons.d.ts"
+      "require": "./dist/icons.cjs"
     },
     "./*": "./dist/*"
   },

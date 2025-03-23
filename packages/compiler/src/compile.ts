@@ -5,8 +5,9 @@ import { tokenize } from './lexer.js'
 import { parse } from './parser.js'
 import { analyze } from './semantic.js'
 import { generateCode } from './codegen.js'
-import * as path from 'node:path'
 import * as fs from 'node:fs'
+
+export const GLOB_PATTERN = '**/*.aeria'
 
 export const parseAndCheck = async (sources: Record<string, string>, options: Pick<CompilationOptions, 'languageServer'> = {}): Promise<CompilationResult> => {
   const errors: CompilationResult['errors'] = []
@@ -35,20 +36,8 @@ export const parseAndCheck = async (sources: Record<string, string>, options: Pi
   }
 }
 
-export const generateScaffolding = async (options: CompilationOptions) => {
-  const directories = [path.join(options.outDir, 'collections')]
-
-  for( const dir of directories ) {
-    await fs.promises.mkdir(dir, {
-      recursive: true,
-    })
-  }
-
-  return directories
-}
-
-export const compileFromFiles = async (globPattern: string, options: CompilationOptions) => {
-  const fileList = await Array.fromAsync(fs.promises.glob(globPattern))
+export const compileFromFiles = async (options: CompilationOptions) => {
+  const fileList = await Array.fromAsync(fs.promises.glob(GLOB_PATTERN))
 
   const sources: Record<string, string> = {}
   for (const fileName of fileList) {
@@ -62,10 +51,14 @@ export const compileFromFiles = async (globPattern: string, options: Compilation
     return result
   }
 
-  const emittedFiles = await generateCode(result.ast, options)
-  return {
-    ...result,
-    emittedFiles,
+  if( options.outDir ) {
+    const emittedFiles = await generateCode(result.ast, options)
+    return {
+      ...result,
+      emittedFiles,
+    }
   }
+
+  return result
 }
 

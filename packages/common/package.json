@@ -26,14 +26,14 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./either": {
+      "types": "./dist/either.d.ts",
       "import": "./dist/either.mjs",
-      "require": "./dist/either.js",
-      "types": "./dist/either.d.ts"
+      "require": "./dist/either.js"
     }
   },
   "devDependencies": {

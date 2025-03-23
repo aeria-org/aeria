@@ -1,11 +1,10 @@
 import { Result } from '@aeriajs/types'
 import { compileFromFiles } from '@aeriajs/compiler'
 
-export const GLOB_PATTERN = '**/*.aeria'
 export const OUT_DIR = '.aeria/out'
 
 export const buildAeriaLangPhase = async () => {
-  const result = await compileFromFiles(GLOB_PATTERN, {
+  const result = await compileFromFiles({
     outDir: OUT_DIR,
   })
 
