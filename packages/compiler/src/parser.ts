@@ -405,8 +405,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
     let nestedProperties: Record<string, AST.PropertyNode> | undefined
     let modifierToken: StrictToken<typeof TokenType.Identifier, keyof typeof AST.PropertyModifiers> | undefined
 
-    const typeSymbol = Symbol()
-    locationMap.set(typeSymbol, next().location)
+    let typeSymbol = Symbol()
 
     if( match(TokenType.LeftSquareBracket) ) {
       consume(TokenType.LeftSquareBracket)
@@ -464,6 +463,8 @@ export const parse = (tokens: (Token | undefined)[]) => {
         items,
       }
 
+      locationMap.set(typeSymbol, current().location)
+
       return {
         kind: 'property',
         property,
@@ -478,6 +479,8 @@ export const parse = (tokens: (Token | undefined)[]) => {
         modifierToken = consume(TokenType.Identifier)
       }
     }
+
+    locationMap.set(typeSymbol, current().location)
 
     if( match(TokenType.LeftBracket) ) {
       consume(TokenType.LeftBracket)
