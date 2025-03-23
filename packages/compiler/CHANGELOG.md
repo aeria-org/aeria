@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.16
+
+### Patch Changes
+
+- 581b28a: Change compiler glob pattern
+
 ## 0.0.15
 
 ### Patch Changes
