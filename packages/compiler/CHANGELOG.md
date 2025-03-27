@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.18
+
+### Patch Changes
+
+- d8be75e: Fix `additionalProperties`
+
 ## 0.0.17
 
 ### Patch Changes
