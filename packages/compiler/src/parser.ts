@@ -741,7 +741,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
             if( match(TokenType.Boolean) ) {
               node.owned = consume(TokenType.Boolean).value
             } else {
-              node.owned = consume(TokenType.QuotedString, ['always', 'on-write']).value
+              node.owned = consume(TokenType.QuotedString, [
+                'always',
+                'on-write',
+              ]).value
             }
             break
           }
