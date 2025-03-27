@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.245
+
+### Patch Changes
+
+- beb7c93: Add `table` attribute to `log` builtin collection
+  - @aeriajs/core@0.0.245
+
 ## 0.0.244
 
 ### Patch Changes
