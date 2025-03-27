@@ -8,6 +8,12 @@ export const log = defineCollection({
       'context',
       'message',
     ],
+    table: [
+      'owner',
+      'context',
+      'message',
+      'created_at',
+    ],
     properties: {
       owner: {
       // don't use "owned: true", we want it this way
