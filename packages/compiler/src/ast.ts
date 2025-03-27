@@ -46,6 +46,7 @@ export type PropertyNode = NodeBase<'property'> & {
     }
   }
   nestedProperties?: Record<string, PropertyNode>
+  nestedAdditionalProperties?: PropertyNode | boolean
 }
 
 export type CollectionNode = NodeBase<'collection'> & {

@@ -1,5 +1,5 @@
 import type * as AST from '../ast.js'
-import { getProperties, stringify, makeASTImports, resizeFirstChar, getCollectionId, UnquotedSymbol, getExposedFunctions, PACKAGE_NAME, DEFAULT_FUNCTIONS, type StringifyProperty } from './utils.js'
+import { recursivelyUnwrapPropertyNodes, stringify, makeASTImports, resizeFirstChar, getCollectionId, UnquotedSymbol, getExposedFunctions, PACKAGE_NAME, DEFAULT_FUNCTIONS, type StringifyProperty } from './utils.js'
 import { type Description, type RequiredProperties } from '@aeriajs/types'
 
 const initialImportedTypes = [
@@ -72,7 +72,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
 
     switch (key) {
       case 'properties':
-        collectionSchema.description.properties = getProperties(collectionNode[key])
+        collectionSchema.description.properties = recursivelyUnwrapPropertyNodes(collectionNode[key])
         break
       case 'owned':
         collectionSchema.description.owned = collectionNode[key]

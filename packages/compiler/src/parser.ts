@@ -402,7 +402,8 @@ export const parse = (tokens: (Token | undefined)[]) => {
     allowModifiers: false,
   }): AST.PropertyNode => {
     let property: AST.PropertyNode['property']
-    let nestedProperties: Record<string, AST.PropertyNode> | undefined
+    let nestedProperties: AST.PropertyNode['nestedProperties']
+    let nestedAdditionalProperties: AST.PropertyNode['nestedAdditionalProperties']
     let modifierToken: StrictToken<typeof TokenType.Identifier, keyof typeof AST.PropertyModifiers> | undefined
 
     const typeSymbol = Symbol()
@@ -511,6 +512,15 @@ export const parse = (tokens: (Token | undefined)[]) => {
             nestedProperties = parsePropertiesBlock(options)
             break
           }
+          case 'additionalProperties': {
+            consume(TokenType.Keyword)
+            if( match(TokenType.Boolean) ) {
+              nestedAdditionalProperties = consume(TokenType.Boolean).value
+            } else {
+              nestedAdditionalProperties = parsePropertyType()
+            }
+            break
+          }
           default:
             throw new Diagnostic(`invalid keyword "${keyword}"`, location)
         }
@@ -592,6 +602,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
       kind: 'property',
       property,
       nestedProperties,
+      nestedAdditionalProperties,
     }
 
     if( modifierToken ) {
@@ -727,11 +738,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
       try {
         switch( keyword ) {
           case 'owned': {
-            if( match(TokenType.QuotedString, [
-              'always',
-              'on-write',
-            ]) ) {
-              node.owned = consume(TokenType.QuotedString).value as AST.CollectionNode['owned']
+            if( match(TokenType.Boolean) ) {
+              node.owned = consume(TokenType.Boolean).value
+            } else {
+              node.owned = consume(TokenType.QuotedString, ['always', 'on-write']).value
             }
             break
           }

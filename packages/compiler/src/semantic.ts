@@ -82,14 +82,20 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
   }
 
   const recurseProperty = async (node: AST.PropertyNode) => {
-    if( node.nestedProperties && 'nestedProperties' in node ) {
-      await checkObjectLocalProperties(node, 'required')
-      await checkObjectLocalProperties(node, 'writable')
-      await checkObjectLocalProperties(node, 'form')
+    if( 'type' in node.property && node.property.type === 'object' ) {
+      if( typeof node.nestedAdditionalProperties === 'object' ) {
+        await recurseProperty(node.nestedAdditionalProperties)
+      }
 
-      for( const propName in node.nestedProperties ) {
-        const subProperty = node.nestedProperties[propName]
-        await recurseProperty(subProperty)
+      if( node.nestedProperties ) {
+        await checkObjectLocalProperties(node, 'required')
+        await checkObjectLocalProperties(node, 'writable')
+        await checkObjectLocalProperties(node, 'form')
+
+        for( const propName in node.nestedProperties ) {
+          const subProperty = node.nestedProperties[propName]
+          await recurseProperty(subProperty)
+        }
       }
     } else if( '$ref' in node.property ) {
       const refName = node.property.$ref
@@ -104,6 +110,11 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
       await checkCollectionForeignProperties(foreignCollection, node.property, 'indexes')
       await checkCollectionForeignProperties(foreignCollection, node.property, 'populate')
       await checkCollectionForeignProperties(foreignCollection, node.property, 'form')
+    } else if( 'items' in node.property ) {
+      await recurseProperty({
+        kind: 'property',
+        property: node.property.items,
+      })
     }
   }
 

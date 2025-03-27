@@ -30,6 +30,7 @@ export type Keyword =
 
 export const COLLECTION_KEYWORDS = [
   'actions',
+  'additionalProperties',
   'filters',
   'form',
   'functions',

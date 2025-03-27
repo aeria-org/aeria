@@ -64,40 +64,72 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
   }
 }
 
-export const propertyToSchema = ({ property, nestedProperties }: Pick<AST.PropertyNode, 'property' | 'nestedProperties'>): Property => {
-  const propertySchema: Property = property
+export const unwrapPropertyNode = ({ property, nestedProperties, nestedAdditionalProperties }: Pick<AST.PropertyNode, 'property' | 'nestedProperties' | 'nestedAdditionalProperties'>): Property => {
+  const propertyOrPropertyItems = 'items' in property
+    ? property.items
+    : property
 
-  if ('$ref' in propertySchema) {
-    propertySchema.$ref = getCollectionId(propertySchema.$ref)
-  } else if ('items' in propertySchema && '$ref' in propertySchema.items) {
-    propertySchema.items.$ref = getCollectionId(propertySchema.items.$ref)
-  }
+  let unwrappedProperty = propertyOrPropertyItems
 
-  if (nestedProperties && 'type' in propertySchema) {
-    if (propertySchema.type === 'object' && 'properties' in propertySchema) {
-      propertySchema.properties = getProperties(nestedProperties)
-    } else if (propertySchema.type === 'array') {
-      propertySchema.items = {
-        type: 'object',
-        properties: getProperties(nestedProperties),
+  if ('$ref' in propertyOrPropertyItems) {
+    unwrappedProperty = {
+      ...propertyOrPropertyItems,
+      $ref: getCollectionId(propertyOrPropertyItems.$ref),
+    }
+  } else if( 'type' in propertyOrPropertyItems && propertyOrPropertyItems.type === 'object' ) {
+    let properties: Extract<Property, { properties: unknown }>['properties'] | undefined
+    let additionalProperties: Extract<Property, { additionalProperties: unknown }>['additionalProperties'] | undefined
+
+    if( nestedProperties ) {
+      properties = recursivelyUnwrapPropertyNodes(nestedProperties)
+    }
+
+    if( nestedAdditionalProperties ) {
+      additionalProperties = typeof nestedAdditionalProperties === 'boolean'
+        ? nestedAdditionalProperties
+        : unwrapPropertyNode(nestedAdditionalProperties)
+    }
+
+    if( properties && additionalProperties ) {
+      unwrappedProperty = {
+        ...propertyOrPropertyItems,
+        properties,
+        additionalProperties,
+      }
+    } else if( properties ) {
+      unwrappedProperty = {
+        ...propertyOrPropertyItems,
+        properties,
+      }
+    } else if( additionalProperties ) {
+      unwrappedProperty = {
+        ...propertyOrPropertyItems,
+        additionalProperties,
       }
     }
   }
 
-  return propertySchema
+  if( 'items' in property ) {
+    return {
+      ...property,
+      items: unwrappedProperty,
+    }
+  }
+
+  return unwrappedProperty
 }
 
 /** Transforms the AST properties to the format of aeria schema properties */
-export const getProperties = <
+export const recursivelyUnwrapPropertyNodes = <
   TProperties extends Record<string, AST.PropertyNode | AST.PropertyNode[]>,
   TReturnType = TProperties[keyof TProperties] extends Array<unknown> ? Record<string, Property[]> : Record<string, Property>,
 >
 (properties: TProperties): TReturnType => {
   return Object.entries(properties).reduce<Record<string, Property | Property[]>>((acc, [key, value]) => {
     if (Array.isArray(value)) {
-      acc[key] = value.map((propertyNode) => propertyToSchema(propertyNode))
+      acc[key] = value.map((propertyNode) => unwrapPropertyNode(propertyNode))
     } else {
-      acc[key] = propertyToSchema(value)
+      acc[key] = unwrapPropertyNode(value)
     }
     return acc
   }, {}) as TReturnType
