@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.119
+
+### Patch Changes
+
+- 1c38130: Add token revalidation on each request
+
 ## 0.0.118
 
 ### Patch Changes
