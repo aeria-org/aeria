@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/http",
-  "version": "0.0.164",
+  "version": "0.0.165",
   "description": "## Installation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -37,9 +37,9 @@
     "@aeriajs/validation": "link:../validation"
   },
   "peerDependencies": {
-    "@aeriajs/common": "^0.0.136",
-    "@aeriajs/entrypoint": "^0.0.140",
-    "@aeriajs/types": "^0.0.118",
-    "@aeriajs/validation": "^0.0.152"
+    "@aeriajs/common": "^0.0.137",
+    "@aeriajs/entrypoint": "^0.0.141",
+    "@aeriajs/types": "^0.0.119",
+    "@aeriajs/validation": "^0.0.153"
   }
 }

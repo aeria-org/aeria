@@ -1,5 +1,20 @@
 # @aeriajs/server
 
+## 0.0.248
+
+### Patch Changes
+
+- 1c38130: Add token revalidation on each request
+- Updated dependencies [1c38130]
+  - @aeriajs/server@0.0.248
+  - @aeriajs/types@0.0.119
+  - @aeriajs/builtins@0.0.246
+  - @aeriajs/common@0.0.137
+  - @aeriajs/core@0.0.246
+  - @aeriajs/entrypoint@0.0.141
+  - @aeriajs/http@0.0.165
+  - @aeriajs/node-http@0.0.165
+
 ## 0.0.247
 
 ### Patch Changes
