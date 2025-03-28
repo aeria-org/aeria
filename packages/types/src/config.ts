@@ -53,6 +53,7 @@ export type ApiConfig = {
       | boolean
       | 'unauthenticated'
     rolesHierarchy?: RolesHierarchy
+    revalidateToken?: boolean
   }
   tokenUserProperties?: (keyof CollectionItem<'user'>)[]
   errorHandler?: <TError>(

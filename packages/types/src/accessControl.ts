@@ -28,6 +28,7 @@ export const ACError = {
   FunctionNotExposed: 'FUNCTION_NOT_EXPOSED',
   TargetImmutable: 'TARGET_IMMUTABLE',
   InvalidLimit: 'INVALID_LIMIT',
+  InvalidToken: 'INVALID_TOKEN',
   OwnershipError: 'OWNERSHIP_ERROR',
   ResourceNotFound: 'RESOURCE_NOT_FOUND',
   InsecureOperator: 'INSECURE_OPERATOR',

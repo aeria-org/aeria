@@ -13,15 +13,13 @@ const getACErrorHttpCode = (code: typeof ACError[keyof typeof ACError]) => {
     case ACError.FunctionNotFound: return HTTPStatus.NotFound
     case ACError.FunctionNotExposed: return HTTPStatus.Forbidden
     case ACError.AuthorizationError: return HTTPStatus.Unauthorized
+    case ACError.InvalidToken: return HTTPStatus.Unauthorized
     case ACError.AuthenticationError: return HTTPStatus.Forbidden
     default: return HTTPStatus.InternalServerError
   }
 }
 
-export const safeHandle = (
-  fn: (context: RouteContext)=> Promise<unknown>,
-  context: RouteContext,
-) => async () => {
+export const safeHandle = (fn: (context: RouteContext)=> Promise<unknown>, context: RouteContext) => async () => {
   try {
     const response = await fn(context)
     return response

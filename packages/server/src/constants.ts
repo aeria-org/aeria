@@ -17,6 +17,7 @@ export const DEFAULT_API_CONFIG = {
       'phone_number',
       'picture_file',
     ],
+    revalidateToken: true,
   },
 
 } satisfies ApiConfig

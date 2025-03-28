@@ -3,7 +3,7 @@ import { Result, ACError, HTTPStatus } from '@aeriajs/types'
 import { endpointError, throwIfError, deepMerge } from '@aeriajs/common'
 import { cors, wrapRouteExecution, type createRouter } from '@aeriajs/http'
 import { registerServer } from '@aeriajs/node-http'
-import { createContext, getDatabase, decodeToken, traverseDocument, ObjectId } from '@aeriajs/core'
+import { createContext, getDatabase, getDatabaseCollection, decodeToken, traverseDocument, ObjectId } from '@aeriajs/core'
 import { DEFAULT_API_CONFIG } from './constants.js'
 import { warmup } from './warmup.js'
 import { registerRoutes } from './routes.js'
@@ -53,6 +53,27 @@ export const getToken = async (request: GenericRequest, context: RouteContext) =
         Object.assign(decodedToken.userinfo, throwIfError(await traverseDocument(decodedToken.userinfo, context.collections.user.description, {
           autoCast: true,
         })))
+
+        if( context.config.security.revalidateToken ) {
+          const userCollection = getDatabaseCollection<{ roles: readonly string[] }>('user')
+          const user = await userCollection.findOne({
+            _id: decodedToken.sub,
+            active: true,
+          }, {
+            projection: {
+              roles: 1,
+            },
+          })
+
+          if( !user ) {
+            return Result.error(ACError.InvalidToken)
+          }
+
+          const rolesMatch = decodedToken.roles.every((role) => user.roles.includes(role))
+          if( !rolesMatch ) {
+            return Result.error(ACError.InvalidToken)
+          }
+        }
       }
     }
 
