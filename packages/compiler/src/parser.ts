@@ -408,6 +408,14 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
     const typeSymbol = Symbol()
 
+    if( options.allowModifiers ) {
+      const nextToken = next()
+      const currentTokenValue = current().value
+      if( match(TokenType.Identifier) && typeof currentTokenValue === 'string' && guards.isValidPropertyModifier(currentTokenValue) && (nextToken.type === TokenType.LeftBracket || nextToken.type === TokenType.LeftSquareBracket || nextToken.type === TokenType.Identifier)) {
+        modifierToken = consume(TokenType.Identifier)
+      }
+    }
+
     if( match(TokenType.LeftSquareBracket) ) {
       consume(TokenType.LeftSquareBracket)
       const arrayProperty: Omit<Extract<AST.PropertyNode['property'], { type: 'array' }>, 'items' > = {
@@ -470,14 +478,6 @@ export const parse = (tokens: (Token | undefined)[]) => {
         kind: 'property',
         property,
         nestedProperties,
-      }
-    }
-
-    if( options.allowModifiers ) {
-      const nextToken = next()
-      const currentTokenValue = current().value
-      if( match(TokenType.Identifier) && typeof currentTokenValue === 'string' && guards.isValidPropertyModifier(currentTokenValue) && (nextToken.type === TokenType.LeftBracket || nextToken.type === TokenType.Identifier)) {
-        modifierToken = consume(TokenType.Identifier)
       }
     }
 
