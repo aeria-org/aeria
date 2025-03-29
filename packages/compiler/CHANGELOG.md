@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.20
+
+### Patch Changes
+
+- 8d4c147: Fix modifiers usage with arrays
+
 ## 0.0.19
 
 ### Patch Changes

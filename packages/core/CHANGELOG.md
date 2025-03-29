@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.247
+
+### Patch Changes
+
+- 7ccfa1e: `makePagination()` signature
+  - @aeriajs/builtins@0.0.247
+  - @aeriajs/security@0.0.247
+
 ## 0.0.246
 
 ### Patch Changes
