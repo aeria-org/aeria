@@ -3,8 +3,8 @@ import type { Context, Description, Pagination, GetAllPayload, CountReturnType }
 import { throwIfError } from '@aeriajs/common'
 import { count } from '../functions/count.js'
 
-export const makePagination = async (
-  payload: GetAllPayload<WithId<unknown>>,
+export const makePagination = async <T>(
+  payload: GetAllPayload<WithId<T>>,
   documents: unknown[],
   context: Context<Description, {
     count?: (...args: unknown[])=> Promise<CountReturnType>
