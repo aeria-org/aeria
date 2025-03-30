@@ -1,5 +1,11 @@
 # @aeriajs/http
 
+## 0.0.166
+
+### Patch Changes
+
+- 06e9c27: Fix infer of query parameters in context
+
 ## 0.0.165
 
 ### Patch Changes
