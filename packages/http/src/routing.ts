@@ -38,7 +38,7 @@ type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<RouteCont
       ? PackReferences<InferProperties<Payload>>
       : Record<string, unknown>
     query: TContractWithRoles extends { query: infer Query }
-      ? InferProperties<Query>
+      ? PackReferences<InferProperties<Query>>
       : Record<string, unknown>
   }
 }
