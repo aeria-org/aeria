@@ -52,8 +52,5 @@
     "@aeriajs/core": "^0.0.248",
     "@aeriajs/entrypoint": "^0.0.141",
     "@aeriajs/types": "^0.0.119"
-  },
-  "optionalDependencies": {
-    "aeria-lang": "0.0.11"
   }
 }
