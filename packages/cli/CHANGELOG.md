@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.208
+
+### Patch Changes
+
+- 0fb852d: Remove unused optional dependency
+
 ## 0.0.207
 
 ### Patch Changes
