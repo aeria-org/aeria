@@ -1,4 +1,4 @@
-import { Description, GetAllPayload, Result, SchemaWithId, Context, CountReturnType, GetAllReturnType } from '@aeriajs/types'
+import { type Description, type GetAllPayload, Result, type SchemaWithId, type Context, type CountReturnType, type GetAllReturnType } from '@aeriajs/types'
 import { makePagination } from '../collection/makePagination.js'
 import { unpaginatedGetAll } from './unpaginatedGetAll.js'
 
