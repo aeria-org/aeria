@@ -47,6 +47,10 @@ const indepthCollection = (collectionName: string, collections: Record<string, C
 
   return {
     ...collection,
+    context: () => createContext({
+      parentContext,
+      collectionName,
+    }),
     functions: proxiedFunctions,
     originalFunctions: collection.functions,
     model: getDatabaseCollection(collectionName),
