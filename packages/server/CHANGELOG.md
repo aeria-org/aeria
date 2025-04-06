@@ -1,5 +1,20 @@
 # @aeriajs/server
 
+## 0.0.252
+
+### Patch Changes
+
+- 0164494: Refactor `getAll()` and `unpaginatedGetAll()`
+- Updated dependencies [0164494]
+  - @aeriajs/server@0.0.252
+  - @aeriajs/types@0.0.121
+  - @aeriajs/core@0.0.250
+  - @aeriajs/builtins@0.0.250
+  - @aeriajs/common@0.0.139
+  - @aeriajs/entrypoint@0.0.143
+  - @aeriajs/http@0.0.168
+  - @aeriajs/node-http@0.0.168
+
 ## 0.0.251
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.121
+
+### Patch Changes
+
+- 0164494: Refactor `getAll()` and `unpaginatedGetAll()`
+
 ## 0.0.120
 
 ### Patch Changes
