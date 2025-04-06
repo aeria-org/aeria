@@ -1,5 +1,14 @@
 # @aeriajs/compiler
 
+## 0.0.22
+
+### Patch Changes
+
+- 0164494: Add `unpaginatedGetAll()` to default functions
+- Updated dependencies [0164494]
+  - @aeriajs/types@0.0.121
+  - @aeriajs/common@0.0.139
+
 ## 0.0.21
 
 ### Patch Changes
