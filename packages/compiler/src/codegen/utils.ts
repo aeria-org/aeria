@@ -8,10 +8,11 @@ export const DEFAULT_FUNCTIONS = [
   'get',
   'getAll',
   'insert',
-  'upload',
   'remove',
   'removeAll',
   'removeFile',
+  'unpaginatedGetAll',
+  'upload',
 ]
 
 export const ArraySymbol = Symbol('array')

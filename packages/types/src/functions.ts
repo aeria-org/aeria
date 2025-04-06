@@ -138,7 +138,7 @@ export type GetReturnType<TDocument> = Result.Either<
   TDocument
 >
 
-export type GetAllReturnType<TDocument> = Result.Either<
+export type UnpaginatedGetAllReturnType<TDocument> = Result.Either<
   ExtractError<InferSchema<ReturnType<typeof functionSchemas.getAllError>>>,
   TDocument[]
 >
@@ -149,7 +149,7 @@ export type CountReturnType = Result.Either<
 >
 export type RemoveReturnType<TDocument> = Result.Either<EndpointError, TDocument>
 
-export type PaginatedGetAllReturnType<TDocument> = Result.Either<ExtractError<GetAllReturnType<TDocument>>, {
+export type GetAllReturnType<TDocument> = Result.Either<ExtractError<UnpaginatedGetAllReturnType<TDocument>>, {
   data: TDocument[]
   pagination: Pagination
 }>
@@ -165,6 +165,7 @@ export type CollectionFunctions<TSchema extends JsonSchema = JsonSchema> = Schem
       // @TODO
       removeAll: (payload: RemoveAllPayload)=> Promise<unknown>
       removeFile: (payload: RemoveFilePayload)=> Promise<unknown>
+      unpaginatedGetAll: (payload?: GetAllPayload<InferredDocument>)=> Promise<UnpaginatedGetAllReturnType<InferredDocument>>
     }
     : never
   : never
@@ -174,12 +175,13 @@ export type CollectionFunctionsSDK<TSchema extends JsonSchema = JsonSchema> = Sc
     ? {
       count: (payload: CountPayload<InferredDocument>)=> Promise<WithACErrors<CountReturnType>>
       get: (payload: GetPayload<InferredDocument>)=> Promise<WithACErrors<GetReturnType<InferredDocument>>>
-      getAll: (payload?: GetAllPayload<InferredDocument>)=> Promise<WithACErrors<PaginatedGetAllReturnType<InferredDocument>>>
+      getAll: (payload?: GetAllPayload<InferredDocument>)=> Promise<WithACErrors<GetAllReturnType<InferredDocument>>>
       insert: (payload: InsertPayload<SchemaWithId<TSchema, { keepTempIds: true }>>)=> Promise<WithACErrors<InsertReturnType<InferredDocument>>>
       remove: (payload: RemovePayload<InferredDocument>)=> Promise<WithACErrors<RemoveReturnType<InferredDocument>>>
       // @TODO
       removeAll: (payload: RemoveAllPayload)=> Promise<unknown>
       removeFile: (payload: RemoveFilePayload)=> Promise<unknown>
+      unpaginatedGetAll: (payload?: GetAllPayload<InferredDocument>)=> Promise<UnpaginatedGetAllReturnType<InferredDocument>>
     }
     : never
   : never

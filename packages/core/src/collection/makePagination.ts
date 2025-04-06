@@ -5,7 +5,7 @@ import { count } from '../functions/count.js'
 export const makePagination = async <TDescription extends Description>(
   payload: GetAllPayload<SchemaWithId<TDescription>>,
   documents: unknown[],
-  context: Context<Description, {
+  context: Context<Description, undefined | {
     count?: (...args: unknown[])=> Promise<CountReturnType>
   }>,
 ): Promise<Pagination> => {

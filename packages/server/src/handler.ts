@@ -3,10 +3,6 @@ import type { functions } from '@aeriajs/core'
 import { createContext, getFunction } from '@aeriajs/core'
 import { getCollection } from '@aeriajs/entrypoint'
 import { ACError, HTTPStatus, Result } from '@aeriajs/types'
-import { pipe } from '@aeriajs/common'
-import { appendPagination } from './appendPagination.js'
-
-const postPipe = pipe([appendPagination])
 
 const getACErrorHttpCode = (code: typeof ACError[keyof typeof ACError]) => {
   switch( code ) {
@@ -72,7 +68,7 @@ export const customVerbs = () => async (parentContext: RouteContext) => {
   }
 
   const result = await fn(context.request.payload, context)
-  return postPipe(result, context)
+  return result
 }
 
 export const regularVerb = (functionName: keyof typeof functions) => async (parentContext: RouteContext) => {
@@ -117,6 +113,6 @@ export const regularVerb = (functionName: keyof typeof functions) => async (pare
   }
 
   const result = await fn(requestCopy.payload, context)
-  return postPipe(result, context)
+  return result
 }
 

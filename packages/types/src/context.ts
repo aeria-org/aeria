@@ -53,7 +53,9 @@ export type IndepthCollection<TCollection> = TCollection extends {
     ? Omit<TCollection, 'functions'> & {
       item: SchemaWithId<InferredDescription>
       context: () => Promise<Context<InferredDescription, InferredFunctions>>
-      functions: UnionFunctions<InferredFunctions, InferredDescription>
+      functions: InferredFunctions extends undefined
+        ? Record<string, never>
+        : UnionFunctions<InferredFunctions, InferredDescription>,
       originalFunctions: InferredFunctions
       model: InferredDescription extends Description
         ? CollectionModel<InferredDescription>
