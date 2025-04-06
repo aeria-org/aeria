@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.249
+
+### Patch Changes
+
+- 532b7ef: Add `.context()` and `paginatedGetAll()`
+- Updated dependencies [532b7ef]
+  - @aeriajs/types@0.0.120
+  - @aeriajs/builtins@0.0.249
+  - @aeriajs/common@0.0.138
+  - @aeriajs/entrypoint@0.0.142
+  - @aeriajs/http@0.0.167
+  - @aeriajs/security@0.0.249
+  - @aeriajs/validation@0.0.154
+
 ## 0.0.248
 
 ### Patch Changes

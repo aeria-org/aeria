@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.120
+
+### Patch Changes
+
+- 532b7ef: Add `.context()` and `paginatedGetAll()`
+
 ## 0.0.119
 
 ### Patch Changes

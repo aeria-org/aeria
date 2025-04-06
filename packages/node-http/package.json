@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/node-http",
-  "version": "0.0.166",
+  "version": "0.0.167",
   "description": "## Installation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -35,7 +35,7 @@
     "@aeriajs/http": "link:../http"
   },
   "peerDependencies": {
-    "@aeriajs/common": "^0.0.137",
-    "@aeriajs/http": "^0.0.166"
+    "@aeriajs/common": "^0.0.138",
+    "@aeriajs/http": "^0.0.167"
   }
 }
