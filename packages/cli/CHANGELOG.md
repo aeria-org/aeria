@@ -1,5 +1,18 @@
 # aeria-build
 
+## 0.0.208
+
+### Patch Changes
+
+- 0fb852d: Remove unused optional dependency
+- Updated dependencies [532b7ef]
+  - @aeriajs/types@0.0.120
+  - @aeriajs/core@0.0.249
+  - @aeriajs/builtins@0.0.249
+  - @aeriajs/common@0.0.138
+  - @aeriajs/compiler@0.0.21
+  - @aeriajs/entrypoint@0.0.142
+
 ## 0.0.207
 
 ### Patch Changes
