@@ -157,13 +157,9 @@ export const registerRoute = async <TRouteContext extends RouteContext>(
   if( match ) {
     if( context.request.headers['content-type'] === 'application/json' ) {
       try {
-        context.request.payload = deepMerge(
-          safeJson(context.request.body),
-          context.request.payload,
-          {
-            arrays: false,
-          },
-        )
+        context.request.payload = deepMerge(safeJson(context.request.body), context.request.payload, {
+          arrays: false,
+        })
 
       } catch( err ) {
         return context.error(HTTPStatus.UnprocessableContent, {
