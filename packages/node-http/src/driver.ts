@@ -5,9 +5,9 @@ import { isEndpointError } from '@aeriajs/common'
 import * as http from 'node:http'
 import { parse as parseUrl } from 'node:url'
 
-const getBody = async ($req: http.IncomingMessage) => {
+const getBody = async (request: http.IncomingMessage) => {
   const bodyParts: Buffer[] = []
-  for await (const chunk of $req) {
+  for await (const chunk of request) {
     bodyParts.push(chunk)
   }
 
@@ -88,9 +88,9 @@ export const abstractResponse = (response: http.ServerResponse, options: ServerO
   } satisfies Partial<GenericResponse>)
 }
 
-const abstractTransaction = async ($req: http.IncomingMessage, $res: http.ServerResponse, options: ServerOptions) => {
-  const req = await abstractRequest($req)
-  const res = abstractResponse($res, options)
+const abstractTransaction = async (request: http.IncomingMessage, response: http.ServerResponse, options: ServerOptions) => {
+  const req = await abstractRequest(request)
+  const res = abstractResponse(response, options)
 
   return {
     req,
@@ -99,11 +99,11 @@ const abstractTransaction = async ($req: http.IncomingMessage, $res: http.Server
 }
 
 export const registerServer = (options: ServerOptions, cb: (req: GenericRequest, res: GenericResponse)=> void | Promise<void>) => {
-  const server = http.createServer(async ($req, $res) => {
+  const server = http.createServer(async (request, response) => {
     const {
       req,
       res,
-    } = await abstractTransaction($req, $res, options)
+    } = await abstractTransaction(request, response, options)
 
     cb(req, res)
   })
