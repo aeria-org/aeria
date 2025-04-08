@@ -1,4 +1,4 @@
-import { init, createRouter, resultSchema, functionSchemas, ACError, Result } from 'aeria'
+import { init, createRouter, resultSchema, functionSchemas, ACError, Result, unpaginatedGetAll } from 'aeria'
 export * as collections from './collections/index.js'
 
 const router = createRouter()
@@ -39,7 +39,13 @@ router.GET('/get-people', async (context) => {
     pet.toys.favorite.invalid
   }
 
-  return Result.result(context.collections.person.functions.getAll())
+  const { error: getAllError, result: people } = await unpaginatedGetAll({}, await context.collections.person.context())
+
+  if( getAllError ) {
+    return Result.error(getAllError)
+  }
+
+  return Result.result(people)
 }, {
   payload: {
     type: 'object',
@@ -51,6 +57,7 @@ router.GET('/get-people', async (context) => {
   },
   response: [
     functionSchemas.insertError(),
+    functionSchemas.getAllError(),
     resultSchema({
       type: 'array',
       items: {
