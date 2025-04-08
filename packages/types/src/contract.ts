@@ -18,9 +18,9 @@ export type ContractRoles = {
 }
 
 export type Contract = ContractBase & {
-  response?: Property | readonly Property[]
-  payload?: Property | readonly Property[]
-  query?: Property | readonly Property[]
+  response?: Property | Property[]
+  payload?: Property | Property[]
+  query?: Property | Property[]
 }
 
 export type ContractWithRoles = ContractRoles & Contract
