@@ -2,7 +2,7 @@ import type { Property } from './property.js'
 import type { HTTPStatus } from './http.js'
 
 export const errorSchema = <const TError extends Property>(error: TError) => {
-  return ({
+  const schema = {
     type: 'object',
     properties: {
       _tag: {
@@ -13,11 +13,13 @@ export const errorSchema = <const TError extends Property>(error: TError) => {
         const: undefined,
       },
     },
-  } as const) satisfies Property
+  } as const
+
+  return schema satisfies Property
 }
 
 export const resultSchema = <const TResult extends Property>(result: TResult) => {
-  return ({
+  const schema = {
     type: 'object',
     properties: {
       _tag: {
@@ -28,7 +30,9 @@ export const resultSchema = <const TResult extends Property>(result: TResult) =>
       },
       result,
     },
-  } as const) satisfies Property
+  } as const
+
+  return schema satisfies Property
 }
 
 export const endpointErrorSchema = <
