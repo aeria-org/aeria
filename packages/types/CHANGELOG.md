@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.122
+
+### Patch Changes
+
+- b84621d: Fix `resultSchema()` and `errorSchema()` type bug
+
 ## 0.0.121
 
 ### Patch Changes

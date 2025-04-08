@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.251
+
+### Patch Changes
+
+- 1044500: Add missing `options` parameter to `getAll()`
+- Updated dependencies [b84621d]
+  - @aeriajs/types@0.0.122
+  - @aeriajs/builtins@0.0.251
+  - @aeriajs/common@0.0.140
+  - @aeriajs/entrypoint@0.0.144
+  - @aeriajs/http@0.0.169
+  - @aeriajs/security@0.0.251
+  - @aeriajs/validation@0.0.156
+
 ## 0.0.250
 
 ### Patch Changes
