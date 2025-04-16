@@ -116,7 +116,7 @@ export type LayoutOptions<TDescription extends Description = Description> = {
   title?: PropertiesWithId<TDescription>
   picture?: PropertiesWithId<TDescription>
   badge?: PropertiesWithId<TDescription>
-  information?: PropertiesWithId<TDescription>
+  information?: PropertiesWithId<TDescription> | readonly PropertiesWithId<TDescription>[]
   active?: PropertiesWithId<TDescription>
   translateBadge?: boolean
 }

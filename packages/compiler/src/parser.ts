@@ -1,6 +1,6 @@
-import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
+import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Layout, LayoutName, LayoutOptions, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
 import { TokenType, type Token, type Location } from './token.js'
-import { DESCRIPTION_PRESETS, PROPERTY_ARRAY_ELEMENTS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
+import { DESCRIPTION_PRESETS, LAYOUT_NAMES, PROPERTY_ARRAY_ELEMENTS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { icons } from '@phosphor-icons/core'
 import { Diagnostic } from './diagnostic.js'
 import * as AST from './ast.js'
@@ -789,6 +789,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
             node[keyword] = parseSearchBlock()
             break
           }
+          case 'layout': {
+            node[keyword] = parseLayoutBlock()
+            break
+          }
         }
       } catch( err ) {
         if( err instanceof Diagnostic ) {
@@ -1075,6 +1079,66 @@ export const parse = (tokens: (Token | undefined)[]) => {
     return {
       ...searchSlots,
       indexes,
+    }
+  }
+
+  const parseLayoutBlock = (): Layout => {
+    let name: LayoutName | undefined
+    const options: LayoutOptions = {}
+
+    const { location } = consume(TokenType.LeftBracket)
+    while( !match(TokenType.RightBracket) ) {
+      const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_LAYOUT_KEYWORDS)
+      switch( keyword ) {
+        case 'name': {
+          name = consume(TokenType.QuotedString, LAYOUT_NAMES).value
+          break
+        }
+        case 'options': {
+          consume(TokenType.LeftBracket)
+
+          while( !match(TokenType.RightBracket) ) {
+            const { value: optionsKeyword } = consume(TokenType.Keyword, lexer.COLLECTION_LAYOUT_OPTIONS_KEYWORDS)
+            switch( optionsKeyword ) {
+                case 'active':
+                case 'title':
+                case 'picture':
+                case 'badge': {
+                const { value } = consume(TokenType.QuotedString)
+                options[optionsKeyword] = value
+                break
+              }
+              case 'information': {
+                if( match(TokenType.LeftBracket) ) {
+                  options[optionsKeyword] = parseArrayBlock().value
+                } else {
+                  options[optionsKeyword] = consume(TokenType.QuotedString).value
+                }
+                break
+              }
+              case 'translateBadge': {
+                const { value } = consume(TokenType.Boolean)
+                options[optionsKeyword] = value
+                break
+              }
+            }
+          }
+        }
+
+        consume(TokenType.RightBracket)
+        break
+      }
+    }
+
+    if( !name ) {
+      throw new Diagnostic('layout must have a "name" property', location)
+    }
+
+    consume(TokenType.RightBracket)
+
+    return {
+      name,
+      options,
     }
   }
 

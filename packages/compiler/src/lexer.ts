@@ -20,14 +20,6 @@ type LexerState = {
   inPropertiesStack: boolean[]
 }
 
-export type Keyword =
-  | typeof COLLECTION_KEYWORDS[number]
-  | typeof COLLECTION_ACTIONS_KEYWORDS[number]
-  | typeof COLLECTION_SEARCH_KEYWORDS[number]
-  | typeof CONTRACT_KEYWORDS[number]
-  | typeof TOPLEVEL_KEYWORDS[number]
-  | typeof MISC_KEYWORDS[number]
-
 export const COLLECTION_KEYWORDS = [
   'actions',
   'additionalProperties',
@@ -37,6 +29,7 @@ export const COLLECTION_KEYWORDS = [
   'icon',
   'indexes',
   'individualActions',
+  'layout',
   'owned',
   'presets',
   'properties',
@@ -71,6 +64,20 @@ export const COLLECTION_SEARCH_KEYWORDS = [
   'exactMatches',
 ] as const
 
+export const COLLECTION_LAYOUT_KEYWORDS = [
+  'name',
+  'options',
+] as const
+
+export const COLLECTION_LAYOUT_OPTIONS_KEYWORDS = [
+  'title',
+  'picture',
+  'badge',
+  'information',
+  'active',
+  'translateBadge',
+] as const
+
 export const CONTRACT_KEYWORDS = [
   'roles',
   'payload',
@@ -86,10 +93,22 @@ export const TOPLEVEL_KEYWORDS = [
 
 export const MISC_KEYWORDS = ['extends'] as const
 
+export type Keyword =
+  | typeof COLLECTION_KEYWORDS[number]
+  | typeof COLLECTION_ACTIONS_KEYWORDS[number]
+  | typeof COLLECTION_SEARCH_KEYWORDS[number]
+  | typeof COLLECTION_LAYOUT_KEYWORDS[number]
+  | typeof COLLECTION_LAYOUT_OPTIONS_KEYWORDS[number]
+  | typeof CONTRACT_KEYWORDS[number]
+  | typeof TOPLEVEL_KEYWORDS[number]
+  | typeof MISC_KEYWORDS[number]
+
 export const KEYWORDS = ([] as Keyword[]).concat(
   COLLECTION_KEYWORDS,
   COLLECTION_ACTIONS_KEYWORDS,
   COLLECTION_SEARCH_KEYWORDS,
+  COLLECTION_LAYOUT_KEYWORDS,
+  COLLECTION_LAYOUT_OPTIONS_KEYWORDS,
   CONTRACT_KEYWORDS,
   TOPLEVEL_KEYWORDS,
   MISC_KEYWORDS,

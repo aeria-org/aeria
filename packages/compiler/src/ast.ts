@@ -1,4 +1,4 @@
-import type { Property, AccessCondition, CollectionActions, SearchOptions, DescriptionPreset, Icon, OwnershipMode } from '@aeriajs/types'
+import type { Property, AccessCondition, CollectionActions, SearchOptions, DescriptionPreset, Icon, OwnershipMode, Layout } from '@aeriajs/types'
 import type { ArrayProperties } from './utils.js'
 
 export const LOCATION_SYMBOL = Symbol()
@@ -67,6 +67,7 @@ export type CollectionNode = NodeBase<'collection'> & {
   table?: string[]
   filters?: string[]
   search?: SearchOptions<any>
+  layout?: Layout
   [LOCATION_SYMBOL]: {
     arrays: {
       [P in ArrayProperties<CollectionNode>]?: symbol[]
