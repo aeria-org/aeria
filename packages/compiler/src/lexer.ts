@@ -305,11 +305,21 @@ export const tokenize = function (rawInput: string) {
             switch( type ) {
               case TokenType.LeftBracket: {
                 const lastToken = tokens.at(-1)
-                if (lastToken) {
-                  if (lastToken.value === 'properties') {
-                    state.inPropertiesStack.push(true)
-                  } else {
-                    state.inPropertiesStack.push(false)
+                if (lastToken && lastToken.type === TokenType.Keyword) {
+                  switch( lastToken.value ) {
+                    case 'form':
+                    case 'table':
+                    case 'indexes':
+                    case 'filters':
+                    case 'writable':
+                    case 'required':
+                    case 'properties': {
+                      state.inPropertiesStack.push(true)
+                      break
+                    }
+                    default: {
+                      state.inPropertiesStack.push(false)
+                    }
                   }
                 }
                 break
