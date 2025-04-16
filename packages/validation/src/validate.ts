@@ -137,6 +137,9 @@ export const validateProperty = <TWhat>(
       if( expectedType === 'string' && typeof what === 'number' ) {
         return Result.result(String(what))
       }
+      if( expectedType === 'datetime' && typeof what === 'string' ) {
+        return Result.result(new Date(what))
+      }
     }
 
     return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
