@@ -1100,10 +1100,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
           while( !match(TokenType.RightBracket) ) {
             const { value: optionsKeyword } = consume(TokenType.Keyword, lexer.COLLECTION_LAYOUT_OPTIONS_KEYWORDS)
             switch( optionsKeyword ) {
-                case 'active':
-                case 'title':
-                case 'picture':
-                case 'badge': {
+              case 'active':
+              case 'title':
+              case 'picture':
+              case 'badge': {
                 const { value } = consume(TokenType.QuotedString)
                 options[optionsKeyword] = value
                 break
@@ -1125,8 +1125,8 @@ export const parse = (tokens: (Token | undefined)[]) => {
           }
         }
 
-        consume(TokenType.RightBracket)
-        break
+          consume(TokenType.RightBracket)
+          break
       }
     }
 
