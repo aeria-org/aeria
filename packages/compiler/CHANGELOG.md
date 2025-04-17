@@ -1,5 +1,15 @@
 # @aeriajs/compiler
 
+## 0.0.24
+
+### Patch Changes
+
+- c722518: Add `layout` in codegen
+- c6570d2: Add `collection.layout`
+- Updated dependencies [c6570d2]
+  - @aeriajs/types@0.0.123
+  - @aeriajs/common@0.0.141
+
 ## 0.0.23
 
 ### Patch Changes
