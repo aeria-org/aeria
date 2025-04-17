@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.25
+
+### Patch Changes
+
+- 541f32b: Add semantic analysis to layout
+
 ## 0.0.24
 
 ### Patch Changes
