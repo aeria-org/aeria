@@ -89,6 +89,9 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
       case 'search':
         collectionSchema.description[key] = collectionNode[key]
         break
+      case 'layout':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'required':
         collectionSchema.description[key] = collectionNode[key] as Record<string, boolean>
         break
