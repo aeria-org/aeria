@@ -1,5 +1,15 @@
 # @aeriajs/validation
 
+## 0.0.157
+
+### Patch Changes
+
+- e6d0627: Coerce ISO date strings
+- Updated dependencies [c6570d2]
+  - @aeriajs/types@0.0.123
+  - @aeriajs/common@0.0.141
+  - @aeriajs/entrypoint@0.0.145
+
 ## 0.0.156
 
 ### Patch Changes

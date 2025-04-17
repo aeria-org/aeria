@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.123
+
+### Patch Changes
+
+- c6570d2: Add `collection.layout`
+
 ## 0.0.122
 
 ### Patch Changes
