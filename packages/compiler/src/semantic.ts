@@ -76,7 +76,7 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
       if( !(propName in node.property.properties) ) {
         const location = locationMap.get(symbol)
 
-        errors.push(new Diagnostic(`object "xxx" hasn't such property "${propName}"`, location))
+        errors.push(new Diagnostic(`object hasn't such property "${propName}"`, location))
       }
     }
   }
@@ -127,6 +127,28 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
     for( const propName in node.properties ) {
       const subNode = node.properties[propName]
       await recurseProperty(subNode)
+    }
+
+    if( node.layout ) {
+      if( node.layout.options ) {
+        for( const [name, value] of Object.entries(node.layout[AST.LOCATION_SYMBOL].options) ) {
+          const option = node.layout.options[name as keyof typeof node.layout.options]!
+
+          if( Array.isArray(option) ) {
+            for( const [i, propName] of option.entries() ) {
+              if( !(propName in node.properties) ) {
+                const location = locationMap.get((value as symbol[])[i])
+                errors.push(new Diagnostic(`invalid property "${propName}"`, location))
+              }
+            }
+          } else {
+            if( !(option as string in node.properties) ) {
+              const location = locationMap.get(value as symbol)
+              errors.push(new Diagnostic(`invalid property "${option}"`, location))
+            }
+          }
+        }
+      }
     }
   }
 

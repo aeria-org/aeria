@@ -1,4 +1,4 @@
-import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, Layout, LayoutName, LayoutOptions, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
+import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, LayoutName, LayoutOptions, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
 import { TokenType, type Token, type Location } from './token.js'
 import { DESCRIPTION_PRESETS, LAYOUT_NAMES, PROPERTY_ARRAY_ELEMENTS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { icons } from '@phosphor-icons/core'
@@ -1082,9 +1082,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
     }
   }
 
-  const parseLayoutBlock = (): Layout => {
+  const parseLayoutBlock = (): AST.LayoutNode => {
     let name: LayoutName | undefined
     const options: LayoutOptions = {}
+    const optionsSymbols: AST.LayoutNode[typeof AST.LOCATION_SYMBOL]['options'] = {}
 
     const { location } = consume(TokenType.LeftBracket)
     while( !match(TokenType.RightBracket) ) {
@@ -1104,15 +1105,24 @@ export const parse = (tokens: (Token | undefined)[]) => {
               case 'title':
               case 'picture':
               case 'badge': {
-                const { value } = consume(TokenType.QuotedString)
+                const { value, location } = consume(TokenType.Identifier)
+                const symbol = Symbol()
                 options[optionsKeyword] = value
+                optionsSymbols[optionsKeyword] = symbol
+                locationMap.set(symbol, location)
                 break
               }
               case 'information': {
                 if( match(TokenType.LeftBracket) ) {
-                  options[optionsKeyword] = parseArrayBlock().value
+                  const { value, symbols } = parseArrayBlock()
+                  options[optionsKeyword] = value
+                  optionsSymbols[optionsKeyword] = symbols
                 } else {
-                  options[optionsKeyword] = consume(TokenType.QuotedString).value
+                  const { value, location } = consume(TokenType.Identifier)
+                  const symbol = Symbol()
+                  options[optionsKeyword] = value
+                  optionsSymbols[optionsKeyword] = symbol
+                  locationMap.set(symbol, location)
                 }
                 break
               }
@@ -1137,8 +1147,12 @@ export const parse = (tokens: (Token | undefined)[]) => {
     consume(TokenType.RightBracket)
 
     return {
+      kind: 'layout',
       name,
       options,
+      [AST.LOCATION_SYMBOL]: {
+        options: optionsSymbols,
+      },
     }
   }
 

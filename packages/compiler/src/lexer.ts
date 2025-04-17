@@ -13,7 +13,7 @@ type TokenConfig = {
     | readonly string[]
   valueExtractor?: (value: string) => TokenValue
   construct?: (value: TokenValue) => TokenValue
-  condition?: (state: LexerState) => boolean
+  condition?: (state: LexerState, lastToken?: Token) => boolean
 }
 
 type LexerState = {
@@ -195,7 +195,22 @@ const TOKENS: TokenConfig[] = [
   {
     type: TokenType.Keyword,
     matcher: Array.from(keywordsSet),
-    condition: (state) => !state.inPropertiesStack.at(-1),
+    condition: (state, lastToken) => {
+      if( state.inPropertiesStack.at(-1) ) {
+        return false
+      }
+
+      if( lastToken && lastToken.type === TokenType.Keyword ) {
+        switch( lastToken.value ) {
+          case 'badge':
+          case 'title': {
+            return false
+          }
+        }
+      }
+
+      return true
+    },
   },
   {
     type: TokenType.MacroName,
@@ -239,9 +254,10 @@ export const tokenize = function (rawInput: string) {
     for( const { type, matcher, valueExtractor, construct, condition } of TOKENS ) {
       let value: string | undefined
       let token: Token
+      const lastToken = tokens.at(-1)
 
       if( condition ) {
-        if( !condition(state) ) {
+        if( !condition(state, lastToken) ) {
           continue
         }
       }
@@ -304,9 +320,9 @@ export const tokenize = function (rawInput: string) {
 
             switch( type ) {
               case TokenType.LeftBracket: {
-                const lastToken = tokens.at(-1)
                 if (lastToken && lastToken.type === TokenType.Keyword) {
                   switch( lastToken.value ) {
+                    case 'information':
                     case 'form':
                     case 'table':
                     case 'indexes':
