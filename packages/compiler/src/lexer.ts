@@ -17,7 +17,7 @@ type TokenConfig = {
 }
 
 type LexerState = {
-  inPropertiesStack: boolean[]
+  variableScopeStack: boolean[]
 }
 
 export const COLLECTION_KEYWORDS = [
@@ -196,7 +196,7 @@ const TOKENS: TokenConfig[] = [
     type: TokenType.Keyword,
     matcher: Array.from(keywordsSet),
     condition: (state, lastToken) => {
-      if( state.inPropertiesStack.at(-1) ) {
+      if( state.variableScopeStack.at(-1) ) {
         return false
       }
 
@@ -246,7 +246,7 @@ export const tokenize = function (rawInput: string) {
   const errors: Diagnostic[] = []
 
   const state: LexerState = {
-    inPropertiesStack: [],
+    variableScopeStack: [],
   }
 
   while( index < input.length ) {
@@ -320,6 +320,8 @@ export const tokenize = function (rawInput: string) {
 
             switch( type ) {
               case TokenType.LeftBracket: {
+                let variableScope = false
+
                 if (lastToken && lastToken.type === TokenType.Keyword) {
                   switch( lastToken.value ) {
                     case 'information':
@@ -330,19 +332,18 @@ export const tokenize = function (rawInput: string) {
                     case 'writable':
                     case 'required':
                     case 'properties': {
-                      state.inPropertiesStack.push(true)
+                      variableScope = true
                       break
-                    }
-                    default: {
-                      state.inPropertiesStack.push(false)
                     }
                   }
                 }
+
+                state.variableScopeStack.push(variableScope)
                 break
               }
               case TokenType.RightBracket: {
-                if (state.inPropertiesStack.length > 0) {
-                  state.inPropertiesStack.pop()
+                if (state.variableScopeStack.length > 0) {
+                  state.variableScopeStack.pop()
                 }
                 break
               }
