@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.26
+
+### Patch Changes
+
+- ccd6a4b: Fix lexer variable scope stack bug
+
 ## 0.0.25
 
 ### Patch Changes
