@@ -1,7 +1,7 @@
 {
   "name": "@aeriajs/cli",
   "type": "module",
-  "version": "0.0.212",
+  "version": "0.0.213",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -48,7 +48,7 @@
   "peerDependencies": {
     "@aeriajs/builtins": "^0.0.252",
     "@aeriajs/common": "^0.0.141",
-    "@aeriajs/compiler": "^0.0.25",
+    "@aeriajs/compiler": "^0.0.26",
     "@aeriajs/core": "^0.0.252",
     "@aeriajs/entrypoint": "^0.0.145",
     "@aeriajs/types": "^0.0.123"
