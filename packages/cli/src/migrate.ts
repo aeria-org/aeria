@@ -100,10 +100,6 @@ export const migrate = async () => {
       ...newIndexes.temporary.keys(),
       ...newIndexes.unique.keys(),
     ] ) {
-      console.log({
-        propertyName,
-        collectionName,
-      })
       const uniqueIndex = newIndexes.unique.get(propertyName)
       const temporaryIndex = newIndexes.temporary.get(propertyName)
 
