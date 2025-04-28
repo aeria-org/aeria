@@ -21,7 +21,7 @@ export const signToken = async ({ iat, exp, ...payload }: Record<string, unknown
     payload.aud = tokenConfig.name
   }
 
-  let tokenOptions: SignOptions = options || {}
+  const tokenOptions: SignOptions = options || {}
   if( !options ) {
     if( tokenConfig.tokenExpiration ) {
       tokenOptions.expiresIn = tokenConfig.tokenExpiration
