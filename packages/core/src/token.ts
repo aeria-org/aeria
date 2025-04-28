@@ -21,9 +21,14 @@ export const signToken = async ({ iat, exp, ...payload }: Record<string, unknown
     payload.aud = tokenConfig.name
   }
 
-  return jwt.sign(payload, secret || tokenConfig.secret, options || {
-    expiresIn: tokenConfig.tokenExpiration,
-  })
+  let tokenOptions: SignOptions = options || {}
+  if( !options ) {
+    if( tokenConfig.tokenExpiration ) {
+      tokenOptions.expiresIn = tokenConfig.tokenExpiration
+    }
+  }
+
+  return jwt.sign(payload, secret || tokenConfig.secret, tokenOptions)
 }
 
 export const decodeToken = async <TToken>(token: string, secret?: string) => {
