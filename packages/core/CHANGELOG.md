@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.253
+
+### Patch Changes
+
+- 92cd9dd: Fix undefined `tokenExpiration` not working
+  - @aeriajs/builtins@0.0.253
+  - @aeriajs/security@0.0.253
+
 ## 0.0.252
 
 ### Patch Changes
