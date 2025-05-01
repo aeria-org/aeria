@@ -1,4 +1,4 @@
-name: Continuos Integration
+name: Approve Dependabot PR
 on: pull_request
 
 permissions:
@@ -15,7 +15,7 @@ jobs:
         id: metadata
         uses: dependabot/fetch-metadata@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           cache: npm
       - name: Approve a PR
         run: gh pr review --approve "$PR_URL"
