@@ -19,6 +19,7 @@ export const TokenType = {
   AttributeName: 'ATTRIBUTE_NAME',
   MacroName: 'MACRO_NAME',
   Range: 'RANGE',
+  Operator: 'OPERATOR',
 } as const
 
 export type TokenType = typeof TokenType[keyof typeof TokenType]

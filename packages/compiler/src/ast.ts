@@ -1,4 +1,4 @@
-import type { Property, AccessCondition, CollectionActions, SearchOptions, DescriptionPreset, Icon, OwnershipMode, Layout, LayoutOptions } from '@aeriajs/types'
+import type { Property, AccessCondition, CollectionActions, SearchOptions, DescriptionPreset, Icon, OwnershipMode, Layout, LayoutOptions, FormLayout, Description } from '@aeriajs/types'
 import type { ArrayProperties } from './utils.js'
 
 export const LOCATION_SYMBOL = Symbol()
@@ -44,6 +44,16 @@ export type LayoutNode = NodeBase<'layout'> & Layout & {
   }
 }
 
+export type FormLayoutNode = NodeBase<'formLayout'> & FormLayout<Description> & {
+  [LOCATION_SYMBOL]: {
+    // options: {
+    //   [P in keyof LayoutOptions]?: readonly string[] extends LayoutOptions[P]
+    //     ? symbol | symbol[]
+    //     : symbol
+    // }
+  }
+}
+
 export type PropertyNode = NodeBase<'property'> & {
   modifier?: keyof typeof PropertyModifiers
   property: Property & {
@@ -78,6 +88,7 @@ export type CollectionNode = NodeBase<'collection'> & {
   filters?: string[]
   search?: SearchOptions<any>
   layout?: LayoutNode
+  formLayout?: FormLayoutNode
   [LOCATION_SYMBOL]: {
     arrays: {
       [P in ArrayProperties<CollectionNode>]?: symbol[]
@@ -113,6 +124,4 @@ export type Node =
   | CollectionNode
   | ContractNode
   | FunctionSetNode
-
-export type NoteKind = Node['kind']
 

@@ -1,4 +1,4 @@
-import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, FileProperty, LayoutName, LayoutOptions, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
+import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, Condition, FileProperty, FinalOperator, LayoutName, LayoutOptions, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
 import { TokenType, type Token, type Location } from './token.js'
 import { DESCRIPTION_PRESETS, LAYOUT_NAMES, PROPERTY_ARRAY_ELEMENTS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { icons } from '@phosphor-icons/core'
@@ -793,6 +793,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
             node[keyword] = parseLayoutBlock()
             break
           }
+          case 'formLayout': {
+            node[keyword] = parseFormLayoutBlock()
+            break
+          }
         }
       } catch( err ) {
         if( err instanceof Diagnostic ) {
@@ -1153,6 +1157,94 @@ export const parse = (tokens: (Token | undefined)[]) => {
       [AST.LOCATION_SYMBOL]: {
         options: optionsSymbols,
       },
+    }
+  }
+
+  const parseFormLayoutBlock = (): AST.FormLayoutNode => {
+    const fields: AST.FormLayoutNode['fields'] = {}
+
+    const { location } = consume(TokenType.LeftBracket)
+    while( !match(TokenType.RightBracket) ) {
+      const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_LAYOUT_KEYWORDS)
+      switch( keyword ) {
+        //
+      }
+    }
+
+    consume(TokenType.RightBracket)
+
+    return {
+      kind: 'formLayout',
+      [AST.LOCATION_SYMBOL]: {},
+    }
+  }
+
+  const parseCondition = (): Condition => {
+    if( match(TokenType.LeftParens) ) {
+      consume(TokenType.LeftParens)
+
+      let operatorType: 'or' | 'and' | undefined, newOp = operatorType
+
+      const conditions: Condition[] = []
+      while( !match(TokenType.RightParens) ) {
+        conditions.push(parseCondition())
+        const { value: operatorSymbol, location } = consume(TokenType.Operator)
+
+        switch( operatorSymbol ) {
+          case '&&': newOp = 'and'; break
+          case '||': newOp = 'or'; break
+          default: {
+            throw new Diagnostic(`unsupported operator: "${operatorSymbol}"`, location)
+          }
+        }
+
+        if( operatorType && newOp && operatorType !== newOp ) {
+          throw new Diagnostic('having "and" or "or" in the same expression is not supported, please use parenthesis', location)
+        }
+      }
+
+      consume(TokenType.RightParens)
+
+      switch( operatorType ) {
+        case 'and': {
+          return {
+            and: conditions,
+          }
+        }
+        case 'or': {
+          return {
+            or: conditions,
+          }
+        }
+        default: {
+          throw new Error()
+        }
+      }
+    }
+    
+    const { value: term1 } = consume(TokenType.Identifier)
+    const { value: operatorSymbol, location } = consume(TokenType.Operator)
+    const { value: term2 } = next()
+
+    advance()
+
+    let operator: FinalOperator
+    switch( operatorSymbol ) {
+      case '==': operator = 'equal'; break
+      case 'in': operator = 'in'; break
+      case '>=': operator = 'gte'; break
+      case '<=': operator = 'lte'; break
+      case '>': operator = 'gt'; break
+      case '<': operator = 'lt'; break
+      default: {
+        throw new Diagnostic(`unsuported operator: "${operatorSymbol}"`, location)
+      }
+    }
+
+    return {
+      operator,
+      term1,
+      term2,
     }
   }
 

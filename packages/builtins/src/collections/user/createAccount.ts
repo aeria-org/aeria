@@ -41,7 +41,7 @@ export const createAccount = async (
   })
 
   if( error ) {
-    return context.error(HTTPStatus.BadRequest, {
+    return context.error(HTTPStatus.UnprocessableContent, {
       code: ACError.MalformedInput,
       details: error,
     })

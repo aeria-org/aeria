@@ -15,6 +15,7 @@ export type FinalCondition<TSchema extends JsonSchema> = {
     | string
     | boolean
     | number
+    | null
     | readonly unknown[]
     | Condition
   fromState?: boolean

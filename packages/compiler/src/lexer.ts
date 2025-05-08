@@ -25,6 +25,7 @@ export const COLLECTION_KEYWORDS = [
   'additionalProperties',
   'filters',
   'form',
+  'formLayout',
   'functions',
   'icon',
   'indexes',
@@ -113,6 +114,17 @@ export const KEYWORDS = ([] as Keyword[]).concat(
   TOPLEVEL_KEYWORDS,
   MISC_KEYWORDS,
 )
+
+export const OPERATORS = [
+  '&&',
+  '||',
+  '==',
+  'in',
+  '>=',
+  '<=',
+  '>',
+  '<',
+] as const
 
 const keywordsSet = new Set<string>()
 for( const keyword of KEYWORDS ) {
@@ -229,6 +241,11 @@ const TOKENS: TokenConfig[] = [
   {
     type: TokenType.AttributeName,
     matcher: /@[a-zA-Z0-9]+/,
+    valueExtractor: (value) => value.slice(1),
+  },
+  {
+    type: TokenType.Operator,
+    matcher: OPERATORS,
     valueExtractor: (value) => value.slice(1),
   },
 ]
