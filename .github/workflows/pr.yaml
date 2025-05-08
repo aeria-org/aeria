@@ -23,6 +23,7 @@ jobs:
       - name: Run tests
         run: pnpm -r test
       - name: Lint
+        if: github.event.pull_request.user.login != 'dependabot[bot]'
         run: pnpm -r lint
       - name: Build playground
         run: pnpm --filter=playground build

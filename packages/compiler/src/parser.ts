@@ -1221,7 +1221,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         }
       }
     }
-    
+
     const { value: term1 } = consume(TokenType.Identifier)
     const { value: operatorSymbol, location } = consume(TokenType.Operator)
     const { value: term2 } = next()
