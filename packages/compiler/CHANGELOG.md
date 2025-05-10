@@ -1,5 +1,14 @@
 # @aeriajs/compiler
 
+## 0.0.27
+
+### Patch Changes
+
+- d8c7801: Add support for `formLayout` in Aeria Lang
+- Updated dependencies [d8c7801]
+  - @aeriajs/types@0.0.124
+  - @aeriajs/common@0.0.142
+
 ## 0.0.26
 
 ### Patch Changes
