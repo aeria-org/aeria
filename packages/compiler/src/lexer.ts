@@ -79,6 +79,14 @@ export const COLLECTION_LAYOUT_OPTIONS_KEYWORDS = [
   'translateBadge',
 ] as const
 
+export const COLLECTION_FORM_LAYOUT_KEYWORDS = [
+  'fields',
+  'if',
+  'span',
+  'verticalSpacing',
+  'separator',
+] as const
+
 export const CONTRACT_KEYWORDS = [
   'roles',
   'payload',
@@ -100,6 +108,7 @@ export type Keyword =
   | typeof COLLECTION_SEARCH_KEYWORDS[number]
   | typeof COLLECTION_LAYOUT_KEYWORDS[number]
   | typeof COLLECTION_LAYOUT_OPTIONS_KEYWORDS[number]
+  | typeof COLLECTION_FORM_LAYOUT_KEYWORDS[number]
   | typeof CONTRACT_KEYWORDS[number]
   | typeof TOPLEVEL_KEYWORDS[number]
   | typeof MISC_KEYWORDS[number]
@@ -110,6 +119,7 @@ export const KEYWORDS = ([] as Keyword[]).concat(
   COLLECTION_SEARCH_KEYWORDS,
   COLLECTION_LAYOUT_KEYWORDS,
   COLLECTION_LAYOUT_OPTIONS_KEYWORDS,
+  COLLECTION_FORM_LAYOUT_KEYWORDS,
   CONTRACT_KEYWORDS,
   TOPLEVEL_KEYWORDS,
   MISC_KEYWORDS,
@@ -167,6 +177,10 @@ const TOKENS: TokenConfig[] = [
   {
     type: TokenType.RightSquareBracket,
     matcher: ']',
+  },
+  {
+    type: TokenType.Operator,
+    matcher: OPERATORS,
   },
   {
     type: TokenType.Pipe,
@@ -241,11 +255,6 @@ const TOKENS: TokenConfig[] = [
   {
     type: TokenType.AttributeName,
     matcher: /@[a-zA-Z0-9]+/,
-    valueExtractor: (value) => value.slice(1),
-  },
-  {
-    type: TokenType.Operator,
-    matcher: OPERATORS,
     valueExtractor: (value) => value.slice(1),
   },
 ]
@@ -341,6 +350,7 @@ export const tokenize = function (rawInput: string) {
 
                 if (lastToken && lastToken.type === TokenType.Keyword) {
                   switch( lastToken.value ) {
+                    case 'fields':
                     case 'information':
                     case 'form':
                     case 'table':

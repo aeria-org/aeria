@@ -150,6 +150,17 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
         }
       }
     }
+
+    if( node.formLayout ) {
+      if( node.formLayout.fields ) {
+        for( const [name, value] of Object.entries(node.formLayout[AST.LOCATION_SYMBOL].fields) ) {
+          if( !(name in node.properties) ) {
+            const location = locationMap.get(value.name)
+            errors.push(new Diagnostic(`invalid property "${name}"`, location))
+          }
+        }
+      }
+    }
   }
 
   for( const node of ast.contracts ) {

@@ -652,6 +652,8 @@ export const parse = (tokens: (Token | undefined)[]) => {
           }
           continue
         }
+
+        throw err
       }
     }
 
@@ -804,6 +806,8 @@ export const parse = (tokens: (Token | undefined)[]) => {
           recover(lexer.COLLECTION_KEYWORDS)
           continue
         }
+
+        throw err
       }
     }
 
@@ -864,7 +868,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         if( match(TokenType.MacroName) ) {
           const { value: macroName } = consume(TokenType.MacroName, ['include'])
 
-          switch( macroName ) {
+          switch( macroName as string ) {
             case 'include': {
               const { value: functionSetName, location } = consume(TokenType.Identifier)
               const functionset = ast.functionsets.find((node) => node.name === functionSetName)
@@ -915,6 +919,8 @@ export const parse = (tokens: (Token | undefined)[]) => {
           errors.push(err)
           continue
         }
+
+        throw err
       }
     }
 
@@ -1162,21 +1168,75 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
   const parseFormLayoutBlock = (): AST.FormLayoutNode => {
     const fields: AST.FormLayoutNode['fields'] = {}
+    const node: AST.FormLayoutNode = {
+      kind: 'formLayout',
+      fields,
+      [AST.LOCATION_SYMBOL]: {
+        fields: {},
+      },
+    }
 
-    const { location } = consume(TokenType.LeftBracket)
+    consume(TokenType.LeftBracket)
     while( !match(TokenType.RightBracket) ) {
-      const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_LAYOUT_KEYWORDS)
+      const { value: keyword, location: keywordLocation } = consume(TokenType.Keyword, lexer.COLLECTION_FORM_LAYOUT_KEYWORDS)
       switch( keyword ) {
-        //
+        case 'fields': {
+          consume(TokenType.LeftBracket)
+          while( !match(TokenType.RightBracket) ) {
+            const { value: identifier, location: identifierLocation } = consume(TokenType.Identifier)
+            const identifierSymbol = Symbol()
+            locationMap.set(identifierSymbol, identifierLocation)
+
+            fields[identifier] ??= {}
+            node[AST.LOCATION_SYMBOL].fields[identifier] = {
+              name: identifierSymbol,
+              field: {},
+            }
+
+            consume(TokenType.LeftBracket)
+            while( !match(TokenType.RightBracket) ) {
+              const { value: keyword, location: keywordLocation } = consume(TokenType.Keyword, lexer.COLLECTION_FORM_LAYOUT_KEYWORDS)
+
+              switch( keyword ) {
+                case 'if': {
+                  fields[identifier].if = parseCondition()
+                  break
+                }
+                case 'span':
+                case 'verticalSpacing': {
+                  fields[identifier].span = consume(TokenType.Number).value
+                  break
+                }
+                case 'separator': {
+                  fields[identifier].separator = match(TokenType.Boolean)
+                    ? consume(TokenType.Boolean).value
+                    : consume(TokenType.QuotedString, [
+                      'top',
+                      'bottom',
+                    ]).value
+                  break
+                }
+                default: {
+                  throw new Diagnostic(`invalid keyword "${keyword}"`, keywordLocation)
+                }
+              }
+            }
+
+            consume(TokenType.RightBracket)
+          }
+
+          consume(TokenType.RightBracket)
+          break
+        }
+        default: {
+          throw new Diagnostic(`invalid keyword "${keyword}"`, keywordLocation)
+        }
       }
     }
 
     consume(TokenType.RightBracket)
 
-    return {
-      kind: 'formLayout',
-      [AST.LOCATION_SYMBOL]: {},
-    }
+    return node
   }
 
   const parseCondition = (): Condition => {
@@ -1188,6 +1248,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
       const conditions: Condition[] = []
       while( !match(TokenType.RightParens) ) {
         conditions.push(parseCondition())
+        if( match(TokenType.RightParens) ) {
+          break
+        }
+
         const { value: operatorSymbol, location } = consume(TokenType.Operator)
 
         switch( operatorSymbol ) {
@@ -1198,9 +1262,11 @@ export const parse = (tokens: (Token | undefined)[]) => {
           }
         }
 
-        if( operatorType && newOp && operatorType !== newOp ) {
+        if( operatorType && operatorType !== newOp ) {
           throw new Diagnostic('having "and" or "or" in the same expression is not supported, please use parenthesis', location)
         }
+
+        operatorType = newOp
       }
 
       consume(TokenType.RightParens)
@@ -1217,14 +1283,14 @@ export const parse = (tokens: (Token | undefined)[]) => {
           }
         }
         default: {
-          throw new Error()
+          return conditions[0]
         }
       }
     }
 
     const { value: term1 } = consume(TokenType.Identifier)
     const { value: operatorSymbol, location } = consume(TokenType.Operator)
-    const { value: term2 } = next()
+    const { value: term2 } = current()
 
     advance()
 

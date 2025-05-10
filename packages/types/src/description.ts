@@ -71,15 +71,11 @@ export type CollectionActions<TDescription extends Description = Description> = 
   | null
 >
 
-export type FormLayout<TDescription extends Description> = {
-  fields?: Partial<Record<PropertiesWithId<TDescription>, FormLayoutField<TDescription>>>
-}
-
 export type FormLayoutField<TDescription extends Description> = {
   span?: number
   verticalSpacing?: number
   separator?:
-    | true
+    | boolean
     | 'top'
     | 'bottom'
   if?: Condition<TDescription>
@@ -87,6 +83,10 @@ export type FormLayoutField<TDescription extends Description> = {
     name: string
     props?: Record<string, unknown>
   }
+}
+
+export type FormLayout<TDescription extends Description> = {
+  fields?: Partial<Record<PropertiesWithId<TDescription>, FormLayoutField<TDescription>>>
 }
 
 export type TableLayoutAction<TDescription extends Description> = {

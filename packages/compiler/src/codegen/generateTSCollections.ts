@@ -103,6 +103,9 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
       case 'layout':
         collectionSchema.description[key] = collectionNode[key]
         break
+      case 'formLayout':
+        collectionSchema.description[key] = collectionNode[key]
+        break
       case 'required':
         collectionSchema.description[key] = collectionNode[key] as RequiredProperties<any>
         break

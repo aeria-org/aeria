@@ -12,6 +12,10 @@ export class Diagnostic extends Error {
 
   constructor(public message: string, public location: Location = emptyLocation, public fileLocation = Diagnostic.currentFile) {
     super()
+
+    if( process.env.NODE_ENV === 'debug' ) {
+      console.error(message, location)
+    }
   }
 }
 
