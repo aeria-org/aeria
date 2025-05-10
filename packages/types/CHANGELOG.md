@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.124
+
+### Patch Changes
+
+- d8c7801: Add support for `formLayout` in Aeria Lang
+
 ## 0.0.123
 
 ### Patch Changes
