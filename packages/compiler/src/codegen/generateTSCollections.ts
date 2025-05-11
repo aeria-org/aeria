@@ -1,5 +1,5 @@
 import type * as AST from '../ast.js'
-import { recursivelyUnwrapPropertyNodes, stringify, makeASTImports, resizeFirstChar, getCollectionId, UnquotedSymbol, getExposedFunctions, PACKAGE_NAME, DEFAULT_FUNCTIONS, type StringifyProperty } from './utils.js'
+import { unwrapNode, recursivelyUnwrapPropertyNodes, stringify, makeASTImports, resizeFirstChar, getCollectionId, UnquotedSymbol, getExposedFunctions, PACKAGE_NAME, DEFAULT_FUNCTIONS, type StringifyProperty } from './utils.js'
 import { type Description, type RequiredProperties } from '@aeriajs/types'
 
 const initialImportedTypes = [
@@ -81,6 +81,9 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
         collectionSchema.functions = makeTSFunctions(collectionNode[key])
         collectionSchema.exposedFunctions = getExposedFunctions(collectionNode[key])
         break
+      case 'required':
+        collectionSchema.description[key] = collectionNode[key] as RequiredProperties<any>
+        break
       case 'table':
       case 'filters':
       case 'indexes':
@@ -101,13 +104,10 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
         collectionSchema.description[key] = collectionNode[key]
         break
       case 'layout':
-        collectionSchema.description[key] = collectionNode[key]
+        collectionSchema.description[key] = unwrapNode(collectionNode[key])
         break
       case 'formLayout':
-        collectionSchema.description[key] = collectionNode[key]
-        break
-      case 'required':
-        collectionSchema.description[key] = collectionNode[key] as RequiredProperties<any>
+        collectionSchema.description[key] = unwrapNode(collectionNode[key])
         break
     }
   }
