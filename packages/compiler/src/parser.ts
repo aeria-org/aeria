@@ -1292,7 +1292,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
     if( match(TokenType.Operator, '!') ) {
       consume(TokenType.Operator)
       return {
-        not: parseCondition()
+        not: parseCondition(),
       }
     }
 
