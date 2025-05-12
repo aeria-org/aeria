@@ -52,6 +52,7 @@ export type FormLayoutNode = NodeBase<'formLayout'> & FormLayout<Description> & 
         field: FormLayoutField<Description>
       }
     }
+    terms: symbol[]
   }
 }
 

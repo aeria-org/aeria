@@ -1296,7 +1296,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
       }
     }
 
-    const { value: term1 } = consume(TokenType.Identifier)
+    const { value: term1, location: term1Location } = consume(TokenType.Identifier)
+    const term1Symbol = Symbol()
+    locationMap.set(term1Symbol, term1Location)
+
     if( !match(TokenType.Operator, lexer.FINAL_OPERATORS) ) {
       return {
         operator: 'truthy',
