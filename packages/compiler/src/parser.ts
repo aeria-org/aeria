@@ -1,4 +1,4 @@
-import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, Condition, FileProperty, FinalOperator, LayoutName, LayoutOptions, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
+import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, Condition, FileProperty, FinalCondition, FinalOperator, JsonSchema, LayoutName, LayoutOptions, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
 import { TokenType, type Token, type Location } from './token.js'
 import { DESCRIPTION_PRESETS, LAYOUT_NAMES, PROPERTY_ARRAY_ELEMENTS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { icons } from '@phosphor-icons/core'
@@ -1289,11 +1289,30 @@ export const parse = (tokens: (Token | undefined)[]) => {
       }
     }
 
-    const { value: term1 } = consume(TokenType.Identifier)
-    const { value: operatorSymbol, location } = consume(TokenType.Operator)
-    const { value: term2 } = current()
+    if( match(TokenType.Operator, '!') ) {
+      consume(TokenType.Operator)
+      return {
+        not: parseCondition()
+      }
+    }
 
-    advance()
+    const { value: term1 } = consume(TokenType.Identifier)
+    if( !match(TokenType.Operator, lexer.FINAL_OPERATORS) ) {
+      return {
+        operator: 'truthy',
+        term1: term1,
+      }
+    }
+
+    const { value: operatorSymbol, location } = consume(TokenType.Operator)
+
+    let term2: FinalCondition<JsonSchema>['term2']
+    if( match(TokenType.LeftParens) ) {
+      term2 = parseCondition()
+    } else {
+      term2 = current().value
+      advance()
+    }
 
     let operator: FinalOperator
     switch( operatorSymbol ) {

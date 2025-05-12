@@ -125,15 +125,19 @@ export const KEYWORDS = ([] as Keyword[]).concat(
   MISC_KEYWORDS,
 )
 
-export const OPERATORS = [
-  '&&',
-  '||',
+export const FINAL_OPERATORS = [
   '==',
   'in',
   '>=',
   '<=',
   '>',
   '<',
+  '!',
+] as const
+
+export const LOGICAL_OPERATORS = [
+  '&&',
+  '||',
 ] as const
 
 const keywordsSet = new Set<string>()
@@ -180,7 +184,7 @@ const TOKENS: TokenConfig[] = [
   },
   {
     type: TokenType.Operator,
-    matcher: OPERATORS,
+    matcher: ([] as string[]).concat(FINAL_OPERATORS, LOGICAL_OPERATORS),
   },
   {
     type: TokenType.Pipe,

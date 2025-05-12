@@ -66,7 +66,7 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
 }
 
 export const unwrapNode = <TNode extends { kind: string }>(node: TNode) => {
-  const { kind, ...unwrappedNode } = Object.fromEntries(Object.entries(node).entries().filter(([key]) => typeof key === 'string'))
+  const { kind, ...unwrappedNode } = Object.fromEntries(Object.entries(node).filter(([key]) => typeof key === 'string'))
   return unwrappedNode as Omit<TNode, 'kind' | symbol>
 }
 
