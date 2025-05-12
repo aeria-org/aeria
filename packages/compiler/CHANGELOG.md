@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.28
+
+### Patch Changes
+
+- e7b3a61: Add missing operators
+
 ## 0.0.27
 
 ### Patch Changes
