@@ -123,6 +123,7 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
     await checkCollectionLocalProperties(node, 'filters')
     await checkCollectionLocalProperties(node, 'form')
     await checkCollectionLocalProperties(node, 'table')
+    await checkCollectionLocalProperties(node, 'tableMeta')
 
     for( const propName in node.properties ) {
       const subNode = node.properties[propName]
