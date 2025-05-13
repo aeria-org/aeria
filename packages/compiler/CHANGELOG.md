@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.29
+
+### Patch Changes
+
+- 09321d3: Add semantic analysis to condition operands
+
 ## 0.0.28
 
 ### Patch Changes
