@@ -160,6 +160,15 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
           }
         }
       }
+
+      if( node.formLayout[AST.LOCATION_SYMBOL].terms ) {
+        for( const [name, symbol] of node.formLayout[AST.LOCATION_SYMBOL].terms ) {
+          if( !(name in node.properties) ) {
+            const location = locationMap.get(symbol)
+            errors.push(new Diagnostic(`invalid left operand "${name}"`, location))
+          }
+        }
+      }
     }
   }
 

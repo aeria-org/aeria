@@ -1200,7 +1200,9 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
               switch( keyword ) {
                 case 'if': {
-                  fields[identifier].if = parseCondition()
+                  const ifTerms: [string, symbol][] = []
+                  fields[identifier].if = parseCondition(ifTerms)
+                  node[AST.LOCATION_SYMBOL].terms = ifTerms
                   break
                 }
                 case 'span':
@@ -1240,7 +1242,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
     return node
   }
 
-  const parseCondition = (): Condition => {
+  const parseCondition = (symbols: [string, symbol][] = []): Condition => {
     if( match(TokenType.LeftParens) ) {
       consume(TokenType.LeftParens)
 
@@ -1248,7 +1250,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
       const conditions: Condition[] = []
       while( !match(TokenType.RightParens) ) {
-        conditions.push(parseCondition())
+        conditions.push(parseCondition(symbols))
         if( match(TokenType.RightParens) ) {
           break
         }
@@ -1292,14 +1294,19 @@ export const parse = (tokens: (Token | undefined)[]) => {
     if( match(TokenType.Operator, '!') ) {
       consume(TokenType.Operator)
       return {
-        not: parseCondition(),
+        not: parseCondition(symbols),
       }
     }
+
+    const { value: term1, location: term1Location } = consume(TokenType.Identifier)
+    const term1Symbol = Symbol()
+    locationMap.set(term1Symbol, term1Location)
+    symbols.push([term1, term1Symbol])
 
     if( !match(TokenType.Operator, lexer.FINAL_OPERATORS) ) {
       return {
         operator: 'truthy',
-        term1: term1,
+        term1,
       }
     }
 
@@ -1307,7 +1314,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
     let term2: FinalCondition<JsonSchema>['term2']
     if( match(TokenType.LeftParens) ) {
-      term2 = parseCondition()
+      term2 = parseCondition(symbols)
     } else {
       term2 = current().value
       advance()
