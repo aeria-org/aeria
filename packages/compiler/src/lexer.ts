@@ -37,6 +37,7 @@ export const COLLECTION_KEYWORDS = [
   'required',
   'search',
   'table',
+  'tableMeta',
 ] as const
 
 export const COLLECTION_ACTIONS_KEYWORDS = [
@@ -358,6 +359,7 @@ export const tokenize = function (rawInput: string) {
                     case 'information':
                     case 'form':
                     case 'table':
+                    case 'tableMeta':
                     case 'indexes':
                     case 'filters':
                     case 'writable':

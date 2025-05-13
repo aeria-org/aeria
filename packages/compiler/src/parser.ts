@@ -276,6 +276,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
         property[attributeName] = value
         return
       }
+      case 'translate': {
+        property[attributeName] = consumeBoolean()
+        return
+      }
     }
 
     if( '$ref' in property ) {
@@ -781,6 +785,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
           case 'indexes':
           case 'form':
           case 'table':
+          case 'tableMeta':
           case 'filters': {
             const { value, symbols } = parseArrayBlock()
             node[keyword] = value

@@ -87,6 +87,7 @@ export type CollectionNode = NodeBase<'collection'> & {
   presets?: DescriptionPreset[]
   form?: string[]
   table?: string[]
+  tableMeta?: string[]
   filters?: string[]
   search?: SearchOptions<any>
   layout?: LayoutNode
