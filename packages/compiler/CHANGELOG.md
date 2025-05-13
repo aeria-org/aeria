@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.30
+
+### Patch Changes
+
+- 39e4212: Add `@translate` attribute
+
 ## 0.0.29
 
 ### Patch Changes
