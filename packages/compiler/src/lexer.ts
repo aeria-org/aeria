@@ -18,6 +18,7 @@ type TokenConfig = {
 
 type LexerState = {
   variableScopeStack: boolean[]
+  variableExpressionStack: boolean[]
 }
 
 export const COLLECTION_KEYWORDS = [
@@ -227,12 +228,13 @@ const TOKENS: TokenConfig[] = [
     type: TokenType.Keyword,
     matcher: Array.from(keywordsSet),
     condition: (state, lastToken) => {
-      if( state.variableScopeStack.at(-1) ) {
+      if( state.variableScopeStack.at(-1) || state.variableExpressionStack.at(-1) ) {
         return false
       }
 
       if( lastToken && lastToken.type === TokenType.Keyword ) {
         switch( lastToken.value ) {
+          case 'if':
           case 'badge':
           case 'title': {
             return false
@@ -278,6 +280,7 @@ export const tokenize = function (rawInput: string) {
 
   const state: LexerState = {
     variableScopeStack: [],
+    variableExpressionStack: [],
   }
 
   while( index < input.length ) {
@@ -374,9 +377,39 @@ export const tokenize = function (rawInput: string) {
                 state.variableScopeStack.push(variableScope)
                 break
               }
+              case TokenType.LeftParens: {
+                let variableExpression = false
+
+                if ( lastToken ) {
+                  switch( lastToken.type ) {
+                    case TokenType.Keyword: {
+                      switch( lastToken.value ) {
+                        case 'if': {
+                          variableExpression = true
+                          break
+                        }
+                      }
+                      break
+                    }
+                    case TokenType.Operator: {
+                      variableExpression = true
+                      break
+                    }
+                  }
+                }
+
+                state.variableExpressionStack.push(variableExpression)
+                break
+              }
               case TokenType.RightBracket: {
                 if (state.variableScopeStack.length > 0) {
                   state.variableScopeStack.pop()
+                }
+                break
+              }
+              case TokenType.RightParens: {
+                if (state.variableScopeStack.length > 0) {
+                  state.variableExpressionStack.pop()
                 }
                 break
               }
