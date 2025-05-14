@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.31
+
+### Patch Changes
+
+- d282409: Fix lexer detecting tokens inside expressions
+
 ## 0.0.30
 
 ### Patch Changes
