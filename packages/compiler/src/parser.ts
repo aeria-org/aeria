@@ -885,6 +885,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
               Object.assign(functions, functionset.functions)
               consume(TokenType.RightParens)
+              break
             }
 
           }
@@ -1337,7 +1338,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
       case '>': operator = 'gt'; break
       case '<': operator = 'lt'; break
       default: {
-        throw new Diagnostic(`unsuported operator: "${operatorSymbol}"`, location)
+        throw new Diagnostic(`unsupported operator: "${operatorSymbol}"`, location)
       }
     }
 

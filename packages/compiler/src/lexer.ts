@@ -408,7 +408,7 @@ export const tokenize = function (rawInput: string) {
                 break
               }
               case TokenType.RightParens: {
-                if (state.variableScopeStack.length > 0) {
+                if (state.variableExpressionStack.length > 0) {
                   state.variableExpressionStack.pop()
                 }
                 break
