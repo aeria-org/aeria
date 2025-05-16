@@ -130,6 +130,15 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
       await recurseProperty(subNode)
     }
 
+    if( node[AST.LOCATION_SYMBOL].requiredTerms ) {
+        for( const [name, symbol] of node[AST.LOCATION_SYMBOL].requiredTerms ) {
+          if( !(name in node.properties) ) {
+            const location = locationMap.get(symbol)
+            errors.push(new Diagnostic(`invalid left operand "${name}"`, location))
+          }
+        }
+    }
+
     if( node.layout ) {
       if( node.layout.options ) {
         for( const [name, value] of Object.entries(node.layout[AST.LOCATION_SYMBOL].options) ) {

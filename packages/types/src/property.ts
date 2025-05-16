@@ -37,7 +37,7 @@ export type PropertyFormat = typeof PROPERTY_FORMATS[number]
 export type PropertiesWithId<TJsonSchema extends JsonSchema> =
   Extract<keyof TJsonSchema['properties'], string> | '_id'
 
-export type RequiredProperties<TJsonSchema extends JsonSchema> = readonly PropertiesWithId<TJsonSchema>[] | Partial<Record<
+export type RequiredProperties<TJsonSchema extends JsonSchema = JsonSchema> = readonly PropertiesWithId<TJsonSchema>[] | Partial<Record<
   PropertiesWithId<TJsonSchema>,
   Condition<TJsonSchema> | boolean
 >>

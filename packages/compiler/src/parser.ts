@@ -1,4 +1,4 @@
-import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, Condition, FileProperty, FinalCondition, FinalOperator, JsonSchema, LayoutName, LayoutOptions, Property, RefProperty, SearchOptions, UserRole } from '@aeriajs/types'
+import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, Condition, FileProperty, FinalCondition, FinalOperator, JsonSchema, LayoutName, LayoutOptions, Property, RefProperty, RequiredProperties, SearchOptions, UserRole } from '@aeriajs/types'
 import { TokenType, type Token, type Location } from './token.js'
 import { DESCRIPTION_PRESETS, LAYOUT_NAMES, PROPERTY_ARRAY_ELEMENTS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { icons } from '@phosphor-icons/core'
@@ -200,26 +200,25 @@ export const parse = (tokens: (Token | undefined)[]) => {
     }
   }
 
-  const parseArrayBlockWithAttributes = () => {
-    const array: Record<string, Record<string, unknown> | null> = {}
+  const parseArrayBlockWithAttributes = <TAllowedAttribute extends string>(allowedAttributes: readonly TAllowedAttribute[], cb: (attributeName: TAllowedAttribute, array: Record<string, unknown>, identifier: string) => unknown) => {
+    const array: Record<string, Record<string, unknown> | boolean | null> = {}
     let hasAttributes = false
 
     consume(TokenType.LeftBracket)
 
     while( !match(TokenType.RightBracket) ) {
       const { value: identifier } = consume(TokenType.Identifier)
-      array[identifier] = {}
+      array[identifier] = true
+
+      if( match(TokenType.AttributeName) ) {
+        hasAttributes = true
+      }
 
       while( match(TokenType.AttributeName) ) {
-        hasAttributes = true
+        array[identifier] = {}
 
-        const { value: attributeName } = consume(TokenType.AttributeName)
-        if( match(TokenType.LeftParens) ) {
-          consume(TokenType.LeftParens)
-          consume(TokenType.RightParens)
-        } else {
-          array[identifier][attributeName] = true
-        }
+        const { value: attributeName } = consume(TokenType.AttributeName, allowedAttributes)
+        cb(attributeName, array, identifier)
       }
     }
 
@@ -773,7 +772,19 @@ export const parse = (tokens: (Token | undefined)[]) => {
             break
           }
           case 'required': {
-            node.required = parseArrayBlockWithAttributes()
+            node.required = parseArrayBlockWithAttributes(['if'], (attributeName, array, identifier) => {
+              switch( attributeName ) {
+                /* eslint-disable-next-line */ 
+                case 'if': {
+                  consume(TokenType.LeftParens)
+                  const ifTerms: [string, symbol][] = []
+                  array[identifier] = parseCondition(ifTerms)
+                  node[AST.LOCATION_SYMBOL].requiredTerms = ifTerms
+                  consume(TokenType.RightParens)
+                  break
+                }
+              }
+            }) as RequiredProperties
             break
           }
           case 'presets': {

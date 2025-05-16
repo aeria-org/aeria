@@ -1,16 +1,16 @@
-import type { RequiredProperties, JsonSchema } from '@aeriajs/types'
+import type { RequiredProperties } from '@aeriajs/types'
 import { expect, test } from 'vitest'
 import { isRequired } from '../src/index.js'
 
 test('isRequired() returns correctly with array', async () => {
-  const requiredArray: RequiredProperties<JsonSchema> = ['name']
+  const requiredArray: RequiredProperties = ['name']
 
   expect(isRequired('name', requiredArray, {})).toBeTruthy()
   expect(isRequired('job', requiredArray, {})).toBeFalsy()
 })
 
 test('isRequired() returns correctly with object', async () => {
-  const requiredKeyValue: RequiredProperties<JsonSchema> = {
+  const requiredKeyValue: RequiredProperties = {
     name: true,
     job: false,
   }
@@ -21,7 +21,7 @@ test('isRequired() returns correctly with object', async () => {
 })
 
 test('isRequired() returns correctly with condition', async () => {
-  const requiredCondition: RequiredProperties<JsonSchema> = {
+  const requiredCondition: RequiredProperties = {
     responsible: {
       operator: 'lt',
       term1: 'age',

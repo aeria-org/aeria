@@ -1,4 +1,4 @@
-import type { Property, AccessCondition, CollectionActions, SearchOptions, DescriptionPreset, Icon, OwnershipMode, Layout, LayoutOptions, FormLayout, Description, FormLayoutField } from '@aeriajs/types'
+import type { Property, AccessCondition, CollectionActions, SearchOptions, DescriptionPreset, Icon, OwnershipMode, Layout, LayoutOptions, FormLayout, Description, FormLayoutField, RequiredProperties } from '@aeriajs/types'
 import type { ArrayProperties } from './utils.js'
 
 export const LOCATION_SYMBOL = Symbol()
@@ -52,7 +52,7 @@ export type FormLayoutNode = NodeBase<'formLayout'> & FormLayout<Description> & 
         field: FormLayoutField<Description>
       }
     }
-    terms?: [string, symbol][]
+    terms?: readonly [string, symbol][]
   }
 }
 
@@ -82,7 +82,7 @@ export type CollectionNode = NodeBase<'collection'> & {
   functions?: Record<string, {
     accessCondition: AccessCondition
   }>
-  required?: Record<string, unknown> | string[]
+  required?: RequiredProperties
   indexes?: string[]
   presets?: DescriptionPreset[]
   form?: string[]
@@ -96,6 +96,7 @@ export type CollectionNode = NodeBase<'collection'> & {
     arrays: {
       [P in ArrayProperties<CollectionNode>]?: symbol[]
     }
+    requiredTerms?: readonly [string, symbol][]
   }
 }
 

@@ -1,6 +1,7 @@
-import type * as AST from '../ast.js'
 import type { Description } from '@aeriajs/types'
+import type * as AST from '../ast.js'
 import { unwrapNode, recursivelyUnwrapPropertyNodes, stringify, makeASTImports, getCollectionId, UnquotedSymbol, getExposedFunctions, getExtendName, PACKAGE_NAME, DEFAULT_FUNCTIONS } from './utils.js'
+
 const initialImportedFunctions = [
   'extendCollection',
   'defineCollection',
@@ -71,7 +72,7 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
         collectionSchema.exposedFunctions = getExposedFunctions(collectionNode[key])
         break
       case 'required':
-        collectionSchema.description[key] = collectionNode[key] as Record<string, boolean>
+        collectionSchema.description[key] = collectionNode[key]
         break
       case 'table':
       case 'filters':
