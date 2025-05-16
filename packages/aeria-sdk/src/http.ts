@@ -13,7 +13,6 @@ export const request = <TResponseType = unknown>(config: InstanceConfig, url: st
 
     if( auth?.token && !params.headers.authorization ) {
       switch( auth.token.type ) {
-        /* eslint-disable-next-line */
         case 'bearer': {
           params.headers.authorization = `Bearer ${auth.token.content}`
           break
