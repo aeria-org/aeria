@@ -9,10 +9,11 @@ import * as AST from './ast.js'
 const collectionHasProperty = async (collection: AST.CollectionNode, propName: string, options: Pick<CompilationOptions, 'languageServer'>) => {
   let hasProperty = propName in collection.properties
   if( !hasProperty ) {
-    if( options.languageServer ) {
-      return true
-    }
     if( collection.extends ) {
+      if( options.languageServer ) {
+        return true
+      }
+
       const { packageName, symbolName } = collection.extends
       const { [symbolName]: importedCollection } = await import(packageName)
 
