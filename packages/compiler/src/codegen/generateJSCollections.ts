@@ -66,9 +66,9 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
       case 'owned':
         collectionSchema.description[key] = collectionNode[key]
         break
-      case 'middlewares': 
+      case 'middlewares':
         collectionSchema.middlewares = {
-          [UnquotedSymbol]: `[ ${collectionNode[key].join(', ') } ]`
+          [UnquotedSymbol]: `[ ${collectionNode[key].join(', ') } ]`,
         }
         break
       case 'functions':
