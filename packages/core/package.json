@@ -22,14 +22,14 @@
   },
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./presets": {
+      "types": "./dist/presets/index.d.ts",
       "import": "./dist/presets/index.mjs",
-      "require": "./dist/presets/index.js",
-      "types": "./dist/presets/index.d.ts"
+      "require": "./dist/presets/index.js"
     },
     "./presets/*": "./dist/presets/*"
   },
