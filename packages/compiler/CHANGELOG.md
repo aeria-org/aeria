@@ -1,5 +1,15 @@
 # @aeriajs/compiler
 
+## 0.0.32
+
+### Patch Changes
+
+- c563210: Add support for conditional required fields
+- d7816ab: Add middlewares feature
+- Updated dependencies [c563210]
+  - @aeriajs/types@0.0.125
+  - @aeriajs/common@0.0.143
+
 ## 0.0.31
 
 ### Patch Changes
