@@ -1,4 +1,4 @@
-import type { Description } from '@aeriajs/types'
+import type { Collection } from '@aeriajs/types'
 import type * as AST from '../ast.js'
 import { unwrapNode, recursivelyUnwrapPropertyNodes, stringify, makeASTImports, resizeFirstChar, getCollectionId, UnquotedSymbol, getExposedFunctions, PACKAGE_NAME, DEFAULT_FUNCTIONS, type StringifyProperty } from './utils.js'
 
@@ -13,7 +13,7 @@ export const generateTSCollections = (ast: AST.CollectionNode[]): string => {
   let code = ''
   code += `import type { ${initialImportedTypes.join(', ')} } from '${PACKAGE_NAME}'\n` //Used types
   const importsResult = makeASTImports(ast)
-  code += importsResult.code + '\n\n'
+  code += importsResult.code.join('\n') + '\n\n'
   code += makeTSCollections(ast, importsResult.modifiedSymbols) + '\n'
   return code
 }
@@ -58,12 +58,14 @@ const makeTSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<st
 }
 
 const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
-  const collectionSchema: Record<string, unknown>
-    & { description: Partial<Description> } = {
-      description: {
-        $id: collectionId,
-      },
-    }
+  const collectionSchema: Omit<Collection, 'functions'> & { functions?: unknown } = {
+    item: {},
+    description: {
+      $id: collectionId,
+      properties: {},
+    },
+  }
+
 
   for (const key of Object.keys(collectionNode) as Array<keyof typeof collectionNode>) {
     if (collectionNode[key] === undefined) {

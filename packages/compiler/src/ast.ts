@@ -74,6 +74,7 @@ export type PropertyNode = NodeBase<'property'> & {
 export type CollectionNode = NodeBase<'collection'> & {
   name: string
   extends?: ExportSymbol
+  middlewares?: readonly string[]
   owned?: OwnershipMode
   icon?: Icon
   actions?: CollectionActions
@@ -83,12 +84,12 @@ export type CollectionNode = NodeBase<'collection'> & {
     accessCondition: AccessCondition
   }>
   required?: RequiredProperties
-  indexes?: string[]
+  indexes?: readonly string[]
   presets?: DescriptionPreset[]
-  form?: string[]
-  table?: string[]
-  tableMeta?: string[]
-  filters?: string[]
+  form?: readonly string[]
+  table?: readonly string[]
+  tableMeta?: readonly string[]
+  filters?: readonly string[]
   search?: SearchOptions<any>
   layout?: LayoutNode
   formLayout?: FormLayoutNode

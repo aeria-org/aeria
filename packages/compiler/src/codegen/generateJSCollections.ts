@@ -1,4 +1,4 @@
-import type { Description } from '@aeriajs/types'
+import type { Collection } from '@aeriajs/types'
 import type * as AST from '../ast.js'
 import { unwrapNode, recursivelyUnwrapPropertyNodes, stringify, makeASTImports, getCollectionId, UnquotedSymbol, getExposedFunctions, getExtendName, PACKAGE_NAME, DEFAULT_FUNCTIONS } from './utils.js'
 
@@ -12,7 +12,7 @@ export const generateJSCollections = (ast: AST.CollectionNode[]) => {
   const importsResult = makeASTImports(ast, {
     [PACKAGE_NAME]: new Set(initialImportedFunctions),
   })
-  javascriptCode += importsResult.code + '\n\n'
+  javascriptCode += importsResult.code.join('\n') + '\n\n'
   javascriptCode += makeJSCollections(ast, importsResult.modifiedSymbols) + '\n\n'
 
   return javascriptCode
@@ -46,12 +46,13 @@ const makeJSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<st
 }
 
 const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
-  const collectionSchema: Record<string, unknown>
-    & { description: Partial<Description> } = {
-      description: {
-        $id: collectionId,
-      },
-    }
+  const collectionSchema: Omit<Collection, 'middlewares'> & { middlewares?: unknown } = {
+    item: {},
+    description: {
+      $id: collectionId,
+      properties: {},
+    },
+  }
 
   for (const key of Object.keys(collectionNode) as Array<keyof typeof collectionNode>) {
     if (collectionNode[key] === undefined) {
@@ -64,6 +65,11 @@ const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
         break
       case 'owned':
         collectionSchema.description[key] = collectionNode[key]
+        break
+      case 'middlewares': 
+        collectionSchema.middlewares = {
+          [UnquotedSymbol]: `[ ${collectionNode[key].join(', ') } ]`
+        }
         break
       case 'functions':
         collectionSchema.functions = {

@@ -2,6 +2,7 @@ import type * as AST from '../ast.js'
 import type { Property } from '@aeriajs/types'
 
 export const PACKAGE_NAME = 'aeria'
+export const MIDDLEWARES_RUNTIME_PATH = '../../../dist/middlewares/index.js'
 
 export const DEFAULT_FUNCTIONS = [
   'count',
@@ -45,15 +46,20 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
       if (node.functions) {
         const functionsToImport = Object.keys(node.functions).filter((key) => DEFAULT_FUNCTIONS.includes(key))
         if (functionsToImport.length > 0) {
-          if (!(PACKAGE_NAME in imports)) {
-            imports[PACKAGE_NAME] = new Set()
-          }
-
+          imports[PACKAGE_NAME] ??= new Set()
           for (const key of functionsToImport) {
             imports[PACKAGE_NAME].add(key)
           }
         }
       }
+
+      if( node.middlewares ) {
+        imports[MIDDLEWARES_RUNTIME_PATH] ??= new Set()
+        for( const middleware of node.middlewares ) {
+          imports[MIDDLEWARES_RUNTIME_PATH].add(middleware)
+        }
+      }
+
     }
 
     return imports

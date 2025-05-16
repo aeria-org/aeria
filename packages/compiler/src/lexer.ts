@@ -32,6 +32,7 @@ export const COLLECTION_KEYWORDS = [
   'indexes',
   'individualActions',
   'layout',
+  'middlewares',
   'owned',
   'presets',
   'properties',

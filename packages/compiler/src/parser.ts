@@ -12,7 +12,7 @@ const ICON_NAMES = icons.map((icon) => icon.name)
 
 export const locationMap = new WeakMap<symbol, Location>()
 export const memoTable: {
-  roles?: string[]
+  roles?: readonly string[]
 } = {}
 
 type StrictToken<TTokenType extends TokenType, TValue> = undefined extends TValue
@@ -742,6 +742,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
       const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_KEYWORDS)
       try {
         switch( keyword ) {
+          case 'middlewares': {
+            node.middlewares = parseArrayBlock().value
+            break
+          }
           case 'owned': {
             if( match(TokenType.Boolean) ) {
               node.owned = consume(TokenType.Boolean).value
@@ -1370,7 +1374,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
           if( collection.name === 'User' ) {
             const { properties } = collection
             if( 'roles' in properties && 'items' in properties.roles.property && 'enum' in properties.roles.property.items ) {
-              memoTable.roles = properties.roles.property.items.enum as string[]
+              memoTable.roles = properties.roles.property.items.enum as readonly string[]
             }
           }
 
