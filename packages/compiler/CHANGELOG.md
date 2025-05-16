@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.34
+
+### Patch Changes
+
+- 7805b8c: Fix semantic errors missing on LSP
+
 ## 0.0.33
 
 ### Patch Changes
