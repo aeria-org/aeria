@@ -780,11 +780,9 @@ export const parse = (tokens: (Token | undefined)[]) => {
               switch( attributeName ) {
                 /* eslint-disable-next-line */
                 case 'if': {
-                  consume(TokenType.LeftParens)
                   const ifTerms: [string, symbol][] = []
                   array[identifier] = parseCondition(ifTerms)
                   node[AST.LOCATION_SYMBOL].requiredTerms = ifTerms
-                  consume(TokenType.RightParens)
                   break
                 }
               }
