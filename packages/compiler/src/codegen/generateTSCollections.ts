@@ -58,7 +58,8 @@ const makeTSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<st
 }
 
 const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
-  const collectionSchema: Omit<Collection,  'middlewares' | 'functions'> & { middlewares?: unknown, functions?: unknown } = {
+  const collectionSchema: Omit<Collection, 'middlewares' | 'functions'> & { middlewares?: unknown,
+    functions?: unknown } = {
     item: {},
     description: {
       $id: collectionId,
@@ -80,7 +81,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
         break
       case 'middlewares':
         collectionSchema.middlewares = {
-          [UnquotedSymbol]: "import('@aeriajs/types').CollectionMiddleware<unknown>[]",
+          [UnquotedSymbol]: 'import(\'@aeriajs/types\').CollectionMiddleware<unknown>[]',
         }
         break
       case 'functions':
