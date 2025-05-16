@@ -1,5 +1,12 @@
 # @aeriajs/compiler
 
+## 0.0.33
+
+### Patch Changes
+
+- 1f4859a: Fix collection middlewares TS codegen
+- e487169: Fix conditional require
+
 ## 0.0.32
 
 ### Patch Changes
