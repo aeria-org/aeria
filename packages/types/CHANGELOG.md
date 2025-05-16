@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.125
+
+### Patch Changes
+
+- c563210: Add support for conditional required fields
+
 ## 0.0.124
 
 ### Patch Changes
