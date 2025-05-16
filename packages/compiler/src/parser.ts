@@ -774,7 +774,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
           case 'required': {
             node.required = parseArrayBlockWithAttributes(['if'], (attributeName, array, identifier) => {
               switch( attributeName ) {
-                /* eslint-disable-next-line */ 
+                /* eslint-disable-next-line */
                 case 'if': {
                   consume(TokenType.LeftParens)
                   const ifTerms: [string, symbol][] = []
