@@ -1,5 +1,13 @@
 # @aeriajs/node-http
 
+## 0.0.173
+
+### Patch Changes
+
+- 307b7d9: Fix conditional exports order
+- Updated dependencies [307b7d9]
+  - @aeriajs/http@0.0.173
+
 ## 0.0.172
 
 ### Patch Changes

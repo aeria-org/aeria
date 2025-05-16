@@ -1,5 +1,11 @@
 # @aeriajs/entrypoint
 
+## 0.0.148
+
+### Patch Changes
+
+- 307b7d9: Fix conditional exports order
+
 ## 0.0.147
 
 ### Patch Changes

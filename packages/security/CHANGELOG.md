@@ -1,5 +1,13 @@
 # @aeriajs/security
 
+## 0.0.256
+
+### Patch Changes
+
+- 307b7d9: Fix conditional exports order
+- Updated dependencies [307b7d9]
+  - @aeriajs/core@0.0.256
+
 ## 0.0.255
 
 ### Patch Changes

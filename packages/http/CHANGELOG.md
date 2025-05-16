@@ -1,5 +1,14 @@
 # @aeriajs/http
 
+## 0.0.173
+
+### Patch Changes
+
+- 307b7d9: Fix conditional exports order
+- Updated dependencies [307b7d9]
+  - @aeriajs/entrypoint@0.0.148
+  - @aeriajs/validation@0.0.160
+
 ## 0.0.172
 
 ### Patch Changes
