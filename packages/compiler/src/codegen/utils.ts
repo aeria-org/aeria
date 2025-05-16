@@ -28,7 +28,7 @@ export const getExposedFunctions = (astFunctions: NonNullable<AST.CollectionNode
 /**
  * Obs: It will save and return any modified symbols to avoid name duplication later
 */
-export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, Set<string>>) => {
+export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, Set<string>>, options = { includeRuntimeOnlyImports: false }) => {
   const modifiedSymbols: Record<string, string> = {}
 
   const toImport = ast.reduce((imports, node) => {
@@ -53,10 +53,12 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
         }
       }
 
-      if( node.middlewares ) {
-        imports[MIDDLEWARES_RUNTIME_PATH] ??= new Set()
-        for( const middleware of node.middlewares ) {
-          imports[MIDDLEWARES_RUNTIME_PATH].add(middleware)
+      if( options.includeRuntimeOnlyImports ) {
+        if( node.middlewares ) {
+          imports[MIDDLEWARES_RUNTIME_PATH] ??= new Set()
+          for( const middleware of node.middlewares ) {
+            imports[MIDDLEWARES_RUNTIME_PATH].add(middleware)
+          }
         }
       }
 

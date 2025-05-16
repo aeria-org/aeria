@@ -11,7 +11,10 @@ export const generateJSCollections = (ast: AST.CollectionNode[]) => {
   let javascriptCode = ''
   const importsResult = makeASTImports(ast, {
     [PACKAGE_NAME]: new Set(initialImportedFunctions),
+  }, {
+    includeRuntimeOnlyImports: true,
   })
+
   javascriptCode += importsResult.code.join('\n') + '\n\n'
   javascriptCode += makeJSCollections(ast, importsResult.modifiedSymbols) + '\n\n'
 
