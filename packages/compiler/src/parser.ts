@@ -778,7 +778,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
           case 'required': {
             node.required = parseArrayBlockWithAttributes(['if'], (attributeName, array, identifier) => {
               switch( attributeName ) {
-                /* eslint-disable-next-line */
+
                 case 'if': {
                   const ifTerms: [string, symbol][] = []
                   array[identifier] = parseCondition(ifTerms)
@@ -887,7 +887,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
           const { value: macroName } = consume(TokenType.MacroName, ['include'])
 
           switch( macroName ) {
-            /* eslint-disable-next-line */
+
             case 'include': {
               const { value: functionSetName, location } = consume(TokenType.Identifier)
               const functionset = ast.functionsets.find((node) => node.name === functionSetName)
