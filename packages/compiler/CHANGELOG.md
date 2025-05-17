@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.35
+
+### Patch Changes
+
+- 8024dc6: Add semantic analsys to invalid `required` props
+
 ## 0.0.34
 
 ### Patch Changes
