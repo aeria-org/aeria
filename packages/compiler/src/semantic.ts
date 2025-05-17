@@ -57,8 +57,8 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
 
     for( const index in node[attributeName] ) {
       const propName = node[attributeName][index]
-      const symbol = node[AST.LOCATION_SYMBOL].arrays[attributeName]![index]
       if( !await collectionHasProperty(node, propName, options) ) {
+        const symbol = node[AST.LOCATION_SYMBOL].arrays[attributeName]![index]
         const location = locationMap.get(symbol)
 
         errors.push(new Diagnostic(`collection "${node.name}" hasn't such property "${propName}"`, location))
@@ -73,8 +73,8 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
 
     for( const index in node.property[attributeName] ) {
       const propName = node.property[attributeName][index]
-      const symbol = node.property[AST.LOCATION_SYMBOL]!.arrays[attributeName]![index]
       if( !(propName in node.property.properties) ) {
+        const symbol = node.property[AST.LOCATION_SYMBOL]!.arrays[attributeName]![index]
         const location = locationMap.get(symbol)
 
         errors.push(new Diagnostic(`object hasn't such property "${propName}"`, location))
@@ -125,6 +125,23 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
     await checkCollectionLocalProperties(node, 'form')
     await checkCollectionLocalProperties(node, 'table')
     await checkCollectionLocalProperties(node, 'tableMeta')
+
+    if( node.required ) {
+      const propNames = Array.isArray(node.required)
+        ? node.required
+        : Object.keys(node.required)
+
+      for( const index in propNames ) {
+        const propName = propNames[index]
+
+        if( !(propName in node.properties) ) {
+          const symbol = node[AST.LOCATION_SYMBOL].required![index]
+          const location = locationMap.get(symbol)
+
+          errors.push(new Diagnostic(`collection "${node.name}" hasn't such property "${propName}"`, location))
+        }
+      }
+    }
 
     for( const propName in node.properties ) {
       const subNode = node.properties[propName]

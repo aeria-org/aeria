@@ -97,6 +97,7 @@ export type CollectionNode = NodeBase<'collection'> & {
     arrays: {
       [P in ArrayProperties<CollectionNode>]?: symbol[]
     }
+    required?: symbol[]
     requiredTerms?: readonly [string, symbol][]
   }
 }

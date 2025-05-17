@@ -202,13 +202,18 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
   const parseArrayBlockWithAttributes = <TAllowedAttribute extends string>(allowedAttributes: readonly TAllowedAttribute[], cb: (attributeName: TAllowedAttribute, array: Record<string, unknown>, identifier: string) => unknown) => {
     const array: Record<string, Record<string, unknown> | boolean | null> = {}
+    const symbols: symbol[] = []
     let hasAttributes = false
 
     consume(TokenType.LeftBracket)
 
     while( !match(TokenType.RightBracket) ) {
-      const { value: identifier } = consume(TokenType.Identifier)
+      const { value: identifier, location } = consume(TokenType.Identifier)
       array[identifier] = true
+
+      const elemSymbol = Symbol()
+      symbols.push(elemSymbol)
+      locationMap.set(elemSymbol, location)
 
       if( match(TokenType.AttributeName) ) {
         hasAttributes = true
@@ -223,9 +228,14 @@ export const parse = (tokens: (Token | undefined)[]) => {
     }
 
     consume(TokenType.RightBracket)
-    return hasAttributes
+    const value = hasAttributes
       ? array
       : Object.keys(array)
+
+    return {
+      value,
+      symbols,
+    }
   }
 
   const parsePropertyAttributeValue = (attributeName: string, property: Property, location: Location) => {
@@ -776,7 +786,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
             break
           }
           case 'required': {
-            node.required = parseArrayBlockWithAttributes(['if'], (attributeName, array, identifier) => {
+            const { value, symbols } = parseArrayBlockWithAttributes(['if'], (attributeName, array, identifier) => {
               switch( attributeName ) {
 
                 case 'if': {
@@ -786,7 +796,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
                   break
                 }
               }
-            }) as RequiredProperties
+            })
+
+            node.required = value as RequiredProperties
+            node[AST.LOCATION_SYMBOL].required = symbols
             break
           }
           case 'presets': {
