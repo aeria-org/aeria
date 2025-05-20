@@ -91,21 +91,19 @@ Object.assign(user, {
               },
               content: {
                 type: 'string',
-              }
-            }
+              },
+            },
           },
-        }
+        },
       },
       response: [
         endpointErrorSchema({
-          httpStatus: [
-            HTTPStatus.Unauthorized,
-          ],
+          httpStatus: [HTTPStatus.Unauthorized],
           code: [
             ACError.AuthorizationError,
             AuthenticationError.InvalidCredentials,
             AuthenticationError.InactiveUser,
-          ]
+          ],
         }),
         resultSchema({
           type: 'object',
@@ -121,11 +119,11 @@ Object.assign(user, {
                 },
                 content: {
                   type: 'string',
-                }
+                },
               },
             },
           },
-        })
+        }),
       ],
     },
     editProfile: {
