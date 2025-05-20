@@ -900,7 +900,6 @@ export const parse = (tokens: (Token | undefined)[]) => {
           const { value: macroName } = consume(TokenType.MacroName, ['include'])
 
           switch( macroName ) {
-
             case 'include': {
               const { value: functionSetName, location } = consume(TokenType.Identifier)
               const functionset = ast.functionsets.find((node) => node.name === functionSetName)
