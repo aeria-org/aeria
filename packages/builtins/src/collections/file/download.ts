@@ -11,9 +11,7 @@ export const DownloadError = {
 export const downloadContract = defineContract({
   payload: {
     type: 'object',
-    required: [
-      'fileId',
-    ],
+    required: ['fileId'],
     properties: {
       fileId: {
         type: 'string',
