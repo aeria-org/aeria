@@ -56,6 +56,6 @@ export const file = defineCollection({
   },
   contracts: {
     download: downloadContract,
-  }
+  },
 })
 

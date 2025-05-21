@@ -1,7 +1,7 @@
 import type { Context, ContractToFunction } from '@aeriajs/types'
 import type { description } from './description.js'
 import { decodeToken, ObjectId } from '@aeriajs/core'
-import { Result, ACError, HTTPStatus, resultSchema, functionSchemas, endpointErrorSchema, defineContract, } from '@aeriajs/types'
+import { Result, ACError, HTTPStatus, resultSchema, functionSchemas, endpointErrorSchema, defineContract } from '@aeriajs/types'
 import * as bcrypt from 'bcryptjs'
 
 export const RedefinePasswordError = {
@@ -26,7 +26,7 @@ export const redefinePasswordContract = defineContract({
       token: {
         type: 'string',
       },
-    }
+    },
   },
   response: [
     functionSchemas.getError(),
@@ -43,14 +43,13 @@ export const redefinePasswordContract = defineContract({
         RedefinePasswordError.InvalidToken,
         RedefinePasswordError.UserNotFound,
         RedefinePasswordError.UserNotActive,
-      ]
+      ],
     }),
     resultSchema({
       type: 'object',
-      properties: {
-      }
-    })
-  ]
+      properties: {},
+    }),
+  ],
 })
 
 export const redefinePassword: ContractToFunction<typeof redefinePasswordContract, Context<typeof description>> = async (payload, context) => {

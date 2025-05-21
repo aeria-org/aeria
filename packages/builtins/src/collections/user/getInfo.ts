@@ -1,5 +1,5 @@
 import type { Context, ContractToFunction } from '@aeriajs/types'
-import { description } from './description.js'
+import { type description } from './description.js'
 import { Result, HTTPStatus, defineContract, resultSchema, endpointErrorSchema } from '@aeriajs/types'
 import { decodeToken, ObjectId } from '@aeriajs/core'
 
@@ -21,7 +21,7 @@ export const getInfoContract = defineContract({
       token: {
         type: 'string',
       },
-    }
+    },
   },
   response: [
     endpointErrorSchema({
@@ -34,7 +34,7 @@ export const getInfoContract = defineContract({
         ActivationError.InvalidLink,
         ActivationError.InvalidToken,
         ActivationError.UserNotFound,
-      ]
+      ],
     }),
     resultSchema({
       type: 'object',
@@ -52,9 +52,9 @@ export const getInfoContract = defineContract({
         active: {
           type: 'boolean',
         },
-      }
-    })
-  ]
+      },
+    }),
+  ],
 })
 
 export const getInfo: ContractToFunction<typeof getInfoContract, Context<typeof description>> = async (payload, context) => {

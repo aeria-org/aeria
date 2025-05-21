@@ -7,9 +7,7 @@ import { ActivationError } from './activate.js'
 export const getActivationLinkContract = defineContract({
   payload: {
     type: 'object',
-    required: [
-      'userId',
-    ],
+    required: ['userId'],
     properties: {
       userId: {
         type: 'string',
@@ -17,8 +15,8 @@ export const getActivationLinkContract = defineContract({
       },
       redirect: {
         type: 'string',
-      }
-    }
+      },
+    },
   },
   response: [
     functionSchemas.getError(),
@@ -30,17 +28,17 @@ export const getActivationLinkContract = defineContract({
       code: [
         ActivationError.InvalidLink,
         ActivationError.AlreadyActiveUser,
-      ]
+      ],
     }),
     resultSchema({
       type: 'object',
       properties: {
         url: {
           type: 'string',
-        }
-      }
-    })
-  ]
+        },
+      },
+    }),
+  ],
 })
 
 export const getActivationToken = async (userId: string, context: Context) => {
@@ -60,7 +58,7 @@ export const getActivationToken = async (userId: string, context: Context) => {
   return token
 }
 
-export const getActivationLink: ContractToFunction<typeof getActivationLinkContract, Context<typeof description>>  = async (payload, context) => {
+export const getActivationLink: ContractToFunction<typeof getActivationLinkContract, Context<typeof description>> = async (payload, context) => {
   if(!context.config.webPublicUrl){
     return context.error(HTTPStatus.BadRequest, {
       code: ActivationError.InvalidLink,

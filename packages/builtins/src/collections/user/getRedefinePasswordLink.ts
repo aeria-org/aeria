@@ -1,15 +1,13 @@
 import type { Context, ContractToFunction } from '@aeriajs/types'
 import type { description } from './description.js'
-import { Result, HTTPStatus, resultSchema, functionSchemas, endpointErrorSchema, defineContract, } from '@aeriajs/types'
+import { Result, HTTPStatus, resultSchema, functionSchemas, endpointErrorSchema, defineContract } from '@aeriajs/types'
 import { RedefinePasswordError } from './redefinePassword.js'
 import { getActivationToken } from './getActivationLink.js'
 
 export const getRedefinePasswordLinkContract = defineContract({
   payload: {
     type: 'object',
-    required: [
-      'userId',
-    ],
+    required: ['userId'],
     properties: {
       userId: {
         type: 'string',
@@ -17,28 +15,24 @@ export const getRedefinePasswordLinkContract = defineContract({
       },
       redirect: {
         type: 'string',
-      }
-    }
+      },
+    },
   },
   response: [
     functionSchemas.getError(),
     endpointErrorSchema({
-      httpStatus: [
-        HTTPStatus.Forbidden,
-      ],
-      code: [
-        RedefinePasswordError.UserNotActive,
-      ]
+      httpStatus: [HTTPStatus.Forbidden],
+      code: [RedefinePasswordError.UserNotActive],
     }),
     resultSchema({
       type: 'object',
       properties: {
         url: {
           type: 'string',
-        }
-      }
-    })
-  ]
+        },
+      },
+    }),
+  ],
 })
 
 export const getRedefinePasswordLink: ContractToFunction<typeof getRedefinePasswordLinkContract, Context<typeof description>> = async (payload, context) => {

@@ -2,7 +2,7 @@ import type { Context, ContractToFunction } from '@aeriajs/types'
 import { HTTPStatus, ACError, defineContract, endpointErrorSchema } from '@aeriajs/types'
 import { ObjectId } from '@aeriajs/core'
 import * as fs from 'node:fs'
-import { description } from './description.js'
+import { type description } from './description.js'
 
 export const DownloadError = {
   RangeNotSatisfiable: 'RANGE_NOT_SATISFIABLE',
@@ -13,7 +13,7 @@ export const downloadContract = defineContract({
     type: 'object',
     properties: {
       fileId: {
-        type: 'string'
+        type: 'string',
       },
       options: {
         type: 'array',
@@ -21,13 +21,13 @@ export const downloadContract = defineContract({
           enum: [
             'picture',
             'download',
-          ]
-        }
+          ],
+        },
       },
       noHeaders: {
-        type: 'boolean'
-      }
-    }
+        type: 'boolean',
+      },
+    },
   },
   response: [
     endpointErrorSchema({
@@ -38,7 +38,7 @@ export const downloadContract = defineContract({
       code: [
         ACError.ResourceNotFound,
         DownloadError.RangeNotSatisfiable,
-      ]
+      ],
     }),
     {
       type: 'object',

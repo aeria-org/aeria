@@ -25,7 +25,7 @@ export const activateContract = defineContract({
       token: {
         type: 'string',
       },
-    }
+    },
   },
   response: [
     endpointErrorSchema({
@@ -42,7 +42,7 @@ export const activateContract = defineContract({
         ActivationError.InvalidLink,
         ActivationError.InvalidToken,
         ActivationError.UserNotFound,
-      ]
+      ],
     }),
     resultSchema({
       type: 'object',
@@ -50,10 +50,10 @@ export const activateContract = defineContract({
         userId: {
           type: 'string',
           format: 'objectid',
-        }
-      }
-    })
-  ]
+        },
+      },
+    }),
+  ],
 })
 
 export const activate: ContractToFunction<typeof activateContract, Context<typeof description>> = async (payload, context) => {
