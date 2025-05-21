@@ -27,12 +27,12 @@ export const createAccountContract = defineContract({
         ACError.MalformedInput,
         ACError.OwnershipError,
         CreateAccountError.SignupDisallowed,
-      ]
+      ],
     }),
     resultSchema({
       $ref: 'user',
     }),
-  ]
+  ],
 })
 
 export const createAccount: ContractToFunction<typeof createAccountContract, Context<typeof description>> = async (payload, context) => {

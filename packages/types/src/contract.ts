@@ -1,5 +1,5 @@
 import type { Context } from './context.js'
-import type { InferProperties, PackReferences } from './schema.js'
+import type { InferProperties } from './schema.js'
 import type { Property } from './property.js'
 import type { UserRole } from './token.js'
 

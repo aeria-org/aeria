@@ -13,7 +13,7 @@ export const editProfileContract = defineContract({
       picture_file: {
         type: 'string',
         format: 'objectid',
-      }
+      },
     },
   },
   response: [

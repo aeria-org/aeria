@@ -80,11 +80,11 @@ export const authenticateContract = defineContract({
               type: 'array',
               items: {
                 type: 'string',
-              }
+              },
             },
             active: {
-              type: 'boolean'
-            }
+              type: 'boolean',
+            },
           },
         },
         token: {
@@ -105,7 +105,7 @@ export const authenticateContract = defineContract({
 
 export const authenticate = async (
   props: Parameters<ContractToFunction<typeof authenticateContract>>[0],
-  context: Context<typeof description>
+  context: Context<typeof description>,
 ): Promise<ReturnType<ContractToFunction<typeof authenticateContract>>> => {
   if( 'revalidate' in props ) {
     const { token } = props
@@ -119,23 +119,23 @@ export const authenticate = async (
       ? await decodeToken<Token>(token.content)
       : context.token
 
-      if( !decodedToken.sub ) {
-        return Result.result(await defaultSuccessfulAuthentication())
-      }
+    if( !decodedToken.sub ) {
+      return Result.result(await defaultSuccessfulAuthentication())
+    }
 
-      const { error, result: user } = await context.collections.user.functions.get({
-        filters: {
-          _id: decodedToken.sub,
-          active: true,
-        },
-        populate: ['picture_file'],
-      })
+    const { error, result: user } = await context.collections.user.functions.get({
+      filters: {
+        _id: decodedToken.sub,
+        active: true,
+      },
+      populate: ['picture_file'],
+    })
 
-      if( error ) {
-        throw new Error()
-      }
+    if( error ) {
+      throw new Error()
+    }
 
-      return Result.result(await successfulAuthentication(user, context))
+    return Result.result(await successfulAuthentication(user, context))
   }
 
   if( typeof props.email !== 'string' || props.password !== 'string' ) {

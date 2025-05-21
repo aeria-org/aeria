@@ -31,13 +31,13 @@ export const getCurrentUserContract = defineContract({
           type: 'array',
           items: {
             type: 'string',
-          }
+          },
         },
         active: {
-          type: 'boolean'
-        }
+          type: 'boolean',
+        },
       },
-    })
+    }),
   ],
 })
 

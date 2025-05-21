@@ -28,17 +28,17 @@ type TestType<T> = T & Record<string, unknown>
 export type InferProperty<T> = T extends TestType<{ format: 'date' | 'date-time' }>
   ? Date : T extends TestType<{ format: 'objectid' }>
     ? ObjectId : T extends TestType<{ enum: ReadonlyArray<infer K> }>
-    ? K : T extends TestType<{ type: 'string' }>
-      ? string : T extends TestType<{ type: 'number' | 'integer' }>
-        ? number : T extends TestType<{ type: 'boolean' }>
-          ? boolean : T extends TestType<{ properties: unknown }>
-            ? Schema<T & { timestamps: false }> :
-            T extends TestType<{ additionalProperties: true }>
-              ? any : T extends TestType<{ additionalProperties: infer K }>
-                ? { [P: string]: InferProperty<K> | undefined } : T extends TestType<{ items: infer K }>
-                  ? InferProperty<K>[] : T extends TestType<{ getter: (doc: unknown)=> infer K }>
-                    ? Awaited<K> : T extends TestType<{ const: infer K }>
-                      ? K : never
+      ? K : T extends TestType<{ type: 'string' }>
+        ? string : T extends TestType<{ type: 'number' | 'integer' }>
+          ? number : T extends TestType<{ type: 'boolean' }>
+            ? boolean : T extends TestType<{ properties: unknown }>
+              ? Schema<T & { timestamps: false }> :
+              T extends TestType<{ additionalProperties: true }>
+                ? any : T extends TestType<{ additionalProperties: infer K }>
+                  ? { [P: string]: InferProperty<K> | undefined } : T extends TestType<{ items: infer K }>
+                    ? InferProperty<K>[] : T extends TestType<{ getter: (doc: unknown)=> infer K }>
+                      ? Awaited<K> : T extends TestType<{ const: infer K }>
+                        ? K : never
 
 type ExtractRequiredPropNames<T> = T extends readonly (infer PropName)[]
   ? PropName
