@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.126
+
+### Patch Changes
+
+- 4a7c81f: Add missing contracts
+
 ## 0.0.125
 
 ### Patch Changes
