@@ -1,24 +1,59 @@
-import type { Context } from '@aeriajs/types'
+import type { Context, ContractToFunction } from '@aeriajs/types'
 import type { description } from './description.js'
 import { decodeToken, ObjectId } from '@aeriajs/core'
-import { Result, ACError, HTTPStatus } from '@aeriajs/types'
+import { Result, ACError, HTTPStatus, resultSchema, functionSchemas, endpointErrorSchema, defineContract, } from '@aeriajs/types'
 import * as bcrypt from 'bcryptjs'
 
-export const ActivationError = {
+export const RedefinePasswordError = {
   UserNotFound: 'USER_NOT_FOUND',
   UserNotActive: 'USER_NOT_ACTIVE',
   InvalidLink: 'INVALID_LINK',
   InvalidToken: 'INVALID_TOKEN',
 } as const
 
-export const redefinePassword = async (
+export const redefinePasswordContract = defineContract({
   payload: {
-    password?: string
-    userId?: string
-    token?: string
+    type: 'object',
+    required: [],
+    properties: {
+      userId: {
+        type: 'string',
+        format: 'objectid',
+      },
+      password: {
+        type: 'string',
+      },
+      token: {
+        type: 'string',
+      },
+    }
   },
-  context: Context<typeof description>,
-) => {
+  response: [
+    functionSchemas.getError(),
+    endpointErrorSchema({
+      httpStatus: [
+        HTTPStatus.NotFound,
+        HTTPStatus.Forbidden,
+        HTTPStatus.Unauthorized,
+        HTTPStatus.UnprocessableContent,
+      ],
+      code: [
+        ACError.MalformedInput,
+        RedefinePasswordError.InvalidLink,
+        RedefinePasswordError.InvalidToken,
+        RedefinePasswordError.UserNotFound,
+        RedefinePasswordError.UserNotActive,
+      ]
+    }),
+    resultSchema({
+      type: 'object',
+      properties: {
+      }
+    })
+  ]
+})
+
+export const redefinePassword: ContractToFunction<typeof redefinePasswordContract, Context<typeof description>> = async (payload, context) => {
   const {
     userId,
     token,
@@ -31,7 +66,7 @@ export const redefinePassword = async (
 
   if( !userId || !token ) {
     return context.error(HTTPStatus.NotFound, {
-      code: ActivationError.InvalidLink,
+      code: RedefinePasswordError.InvalidLink,
     })
   }
 
@@ -46,19 +81,19 @@ export const redefinePassword = async (
 
   if( !user ) {
     return context.error(HTTPStatus.NotFound, {
-      code: ActivationError.UserNotFound,
+      code: RedefinePasswordError.UserNotFound,
     })
   }
 
   if( !user.active ) {
     return context.error(HTTPStatus.Forbidden, {
-      code: ActivationError.UserNotActive,
+      code: RedefinePasswordError.UserNotActive,
     })
   }
   const decoded = await decodeToken(token, context.config.secret)
   if(!decoded){
     return context.error(HTTPStatus.Unauthorized, {
-      code: ActivationError.InvalidToken,
+      code: RedefinePasswordError.InvalidToken,
     })
   }
 

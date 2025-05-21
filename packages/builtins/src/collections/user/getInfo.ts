@@ -1,6 +1,6 @@
-import type { Context } from '@aeriajs/types'
-import type { description } from './description.js'
-import { Result, HTTPStatus } from '@aeriajs/types'
+import type { Context, ContractToFunction } from '@aeriajs/types'
+import { description } from './description.js'
+import { Result, HTTPStatus, defineContract, resultSchema, endpointErrorSchema } from '@aeriajs/types'
 import { decodeToken, ObjectId } from '@aeriajs/core'
 
 export const ActivationError = {
@@ -10,13 +10,54 @@ export const ActivationError = {
   InvalidToken: 'INVALID_TOKEN',
 } as const
 
-export const getInfo = async (
+export const getInfoContract = defineContract({
   payload: {
-    userId: string
-    token: string
+    type: 'object',
+    required: [],
+    properties: {
+      userId: {
+        type: 'string',
+      },
+      token: {
+        type: 'string',
+      },
+    }
   },
-  context: Context<typeof description>,
-) => {
+  response: [
+    endpointErrorSchema({
+      httpStatus: [
+        HTTPStatus.NotFound,
+        HTTPStatus.Unauthorized,
+        HTTPStatus.UnprocessableContent,
+      ],
+      code: [
+        ActivationError.InvalidLink,
+        ActivationError.InvalidToken,
+        ActivationError.UserNotFound,
+      ]
+    }),
+    resultSchema({
+      type: 'object',
+      required: [
+        'name',
+        'email',
+      ],
+      properties: {
+        name: {
+          type: 'string',
+        },
+        email: {
+          type: 'string',
+        },
+        active: {
+          type: 'boolean',
+        },
+      }
+    })
+  ]
+})
+
+export const getInfo: ContractToFunction<typeof getInfoContract, Context<typeof description>> = async (payload, context) => {
   const {
     userId,
     token,

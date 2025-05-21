@@ -1,11 +1,47 @@
-import type { Context } from '@aeriajs/types'
-import type { ObjectId } from '@aeriajs/core'
-import { Result, HTTPStatus } from '@aeriajs/types'
-import { ActivationError } from './redefinePassword.js'
+import type { Context, ContractToFunction } from '@aeriajs/types'
+import type { description } from './description.js'
+import { Result, HTTPStatus, resultSchema, functionSchemas, endpointErrorSchema, defineContract, } from '@aeriajs/types'
+import { RedefinePasswordError } from './redefinePassword.js'
 import { getActivationToken } from './getActivationLink.js'
 
-export const getRedefinePasswordLink = async (payload: { userId: ObjectId | string,
-  redirect?: string }, context: Context) => {
+export const getRedefinePasswordLinkContract = defineContract({
+  payload: {
+    type: 'object',
+    required: [
+      'userId',
+    ],
+    properties: {
+      userId: {
+        type: 'string',
+        format: 'objectid',
+      },
+      redirect: {
+        type: 'string',
+      }
+    }
+  },
+  response: [
+    functionSchemas.getError(),
+    endpointErrorSchema({
+      httpStatus: [
+        HTTPStatus.Forbidden,
+      ],
+      code: [
+        RedefinePasswordError.UserNotActive,
+      ]
+    }),
+    resultSchema({
+      type: 'object',
+      properties: {
+        url: {
+          type: 'string',
+        }
+      }
+    })
+  ]
+})
+
+export const getRedefinePasswordLink: ContractToFunction<typeof getRedefinePasswordLinkContract, Context<typeof description>> = async (payload, context) => {
   if(!context.config.webPublicUrl){
     throw new Error('config.webPublicUrl is not set')
   }
@@ -22,7 +58,7 @@ export const getRedefinePasswordLink = async (payload: { userId: ObjectId | stri
   }
   if( !user.active ) {
     return context.error(HTTPStatus.Forbidden, {
-      code: ActivationError.UserNotActive,
+      code: RedefinePasswordError.UserNotActive,
     })
   }
 

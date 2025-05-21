@@ -1,7 +1,7 @@
 import { defineCollection, get } from '@aeriajs/core'
 import { description } from './description.js'
 import { insert } from './insert.js'
-import { download } from './download.js'
+import { download, downloadContract } from './download.js'
 import { remove } from './remove.js'
 import { removeAll } from './removeAll.js'
 
@@ -54,5 +54,8 @@ export const file = defineCollection({
     remove: true,
     removeAll: true,
   },
+  contracts: {
+    download: downloadContract,
+  }
 })
 

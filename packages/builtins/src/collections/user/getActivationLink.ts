@@ -1,9 +1,49 @@
-import type { Context } from '@aeriajs/types'
-import { signToken, type ObjectId } from '@aeriajs/core'
-import { Result, HTTPStatus } from '@aeriajs/types'
+import type { Context, ContractToFunction } from '@aeriajs/types'
+import type { description } from './description.js'
+import { signToken } from '@aeriajs/core'
+import { Result, HTTPStatus, defineContract, resultSchema, endpointErrorSchema, functionSchemas } from '@aeriajs/types'
 import { ActivationError } from './activate.js'
 
-export const getActivationToken = async (strId: string, context: Context) => {
+export const getActivationLinkContract = defineContract({
+  payload: {
+    type: 'object',
+    required: [
+      'userId',
+    ],
+    properties: {
+      userId: {
+        type: 'string',
+        format: 'objectid',
+      },
+      redirect: {
+        type: 'string',
+      }
+    }
+  },
+  response: [
+    functionSchemas.getError(),
+    endpointErrorSchema({
+      httpStatus: [
+        HTTPStatus.BadRequest,
+        HTTPStatus.Forbidden,
+      ],
+      code: [
+        ActivationError.InvalidLink,
+        ActivationError.AlreadyActiveUser,
+      ]
+    }),
+    resultSchema({
+      type: 'object',
+      properties: {
+        url: {
+          type: 'string',
+        }
+      }
+    })
+  ]
+})
+
+export const getActivationToken = async (userId: string, context: Context) => {
   if( context.calledFunction === 'getActivationToken' ) {
     throw new Error('cannot be called externally')
   }
@@ -12,7 +52,7 @@ export const getActivationToken = async (strId: string, context: Context) => {
   }
 
   const token = await signToken({
-    data: strId,
+    data: userId,
   }, context.config.secret, {
     expiresIn: context.config.security.linkTokenExpiration,
   })
@@ -20,8 +60,7 @@ export const getActivationToken = async (strId: string, context: Context) => {
   return token
 }
 
-export const getActivationLink = async (payload: { userId: ObjectId | string,
-  redirect?: string }, context: Context) => {
+export const getActivationLink: ContractToFunction<typeof getActivationLinkContract, Context<typeof description>>  = async (payload, context) => {
   if(!context.config.webPublicUrl){
     return context.error(HTTPStatus.BadRequest, {
       code: ActivationError.InvalidLink,
@@ -37,6 +76,7 @@ export const getActivationLink = async (payload: { userId: ObjectId | string,
   if( error ) {
     return Result.error(error)
   }
+
   if( user.active ) {
     return context.error(HTTPStatus.Forbidden, {
       code: ActivationError.AlreadyActiveUser,
@@ -45,7 +85,6 @@ export const getActivationLink = async (payload: { userId: ObjectId | string,
 
   const activationToken = await getActivationToken(payload.userId.toString(), context)
 
-  //const url = `${context.config.webPublicUrl}/user/activation?step=password&u=${payload.userId.toString()}&t=${activationToken}`
   const url = new URL(`${context.config.webPublicUrl}/user/activation`)
   url.searchParams.set('u', payload.userId.toString())
   url.searchParams.set('t', activationToken)

@@ -1,7 +1,7 @@
-import type { Context } from '@aeriajs/types'
+import type { Context, ContractToFunction } from '@aeriajs/types'
 import type { description } from './description.js'
 import { decodeToken, ObjectId } from '@aeriajs/core'
-import { Result, ACError, HTTPStatus } from '@aeriajs/types'
+import { Result, ACError, HTTPStatus, defineContract, resultSchema, endpointErrorSchema } from '@aeriajs/types'
 import * as bcrypt from 'bcryptjs'
 
 export const ActivationError = {
@@ -11,14 +11,52 @@ export const ActivationError = {
   InvalidToken: 'INVALID_TOKEN',
 } as const
 
-export const activate = async (
-  payload:{
-    password?: string
-    userId?: string
-    token?: string
+export const activateContract = defineContract({
+  payload: {
+    type: 'object',
+    required: [],
+    properties: {
+      password: {
+        type: 'string',
+      },
+      userId: {
+        type: 'string',
+      },
+      token: {
+        type: 'string',
+      },
+    }
   },
-  context: Context<typeof description>,
-) => {
+  response: [
+    endpointErrorSchema({
+      httpStatus: [
+        HTTPStatus.NotFound,
+        HTTPStatus.Forbidden,
+        HTTPStatus.Unauthorized,
+        HTTPStatus.UnprocessableContent,
+      ],
+      code: [
+        ACError.ResourceNotFound,
+        ACError.MalformedInput,
+        ActivationError.AlreadyActiveUser,
+        ActivationError.InvalidLink,
+        ActivationError.InvalidToken,
+        ActivationError.UserNotFound,
+      ]
+    }),
+    resultSchema({
+      type: 'object',
+      properties: {
+        userId: {
+          type: 'string',
+          format: 'objectid',
+        }
+      }
+    })
+  ]
+})
+
+export const activate: ContractToFunction<typeof activateContract, Context<typeof description>> = async (payload, context) => {
   const {
     userId,
     token,

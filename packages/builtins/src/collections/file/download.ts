@@ -1,24 +1,53 @@
-import type { Context } from '@aeriajs/types'
-import type { description } from './description.js'
-import { HTTPStatus, ACError } from '@aeriajs/types'
+import type { Context, ContractToFunction } from '@aeriajs/types'
+import { HTTPStatus, ACError, defineContract, endpointErrorSchema } from '@aeriajs/types'
 import { ObjectId } from '@aeriajs/core'
 import * as fs from 'node:fs'
+import { description } from './description.js'
 
 export const DownloadError = {
   RangeNotSatisfiable: 'RANGE_NOT_SATISFIABLE',
 } as const
 
-export const download = async (
+export const downloadContract = defineContract({
   payload: {
-    fileId: string
-    options: readonly (
-      | 'picture'
-      | 'download'
-    )[]
-    noHeaders?: boolean
+    type: 'object',
+    properties: {
+      fileId: {
+        type: 'string'
+      },
+      options: {
+        type: 'array',
+        items: {
+          enum: [
+            'picture',
+            'download',
+          ]
+        }
+      },
+      noHeaders: {
+        type: 'boolean'
+      }
+    }
   },
-  context: Context<typeof description>,
-) => {
+  response: [
+    endpointErrorSchema({
+      httpStatus: [
+        HTTPStatus.NotFound,
+        HTTPStatus.RangeNotSatisfiable,
+      ],
+      code: [
+        ACError.ResourceNotFound,
+        DownloadError.RangeNotSatisfiable,
+      ]
+    }),
+    {
+      type: 'object',
+      additionalProperties: true,
+    },
+  ],
+})
+
+export const download: ContractToFunction<typeof downloadContract, Context<typeof description>> = async (payload, context) => {
   const { fileId, options = [] } = payload
   const file = await context.collection.model.findOne({
     _id: new ObjectId(fileId),

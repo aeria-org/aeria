@@ -2,14 +2,14 @@ import type { AccessCondition, Collection, Context } from '@aeriajs/types'
 import { defineCollection, get, getAll, remove, upload, removeFile } from '@aeriajs/core'
 import { description } from './description.js'
 import { authenticate, authenticateContract } from './authenticate.js'
-import { activate } from './activate.js'
+import { activate, activateContract } from './activate.js'
 import { insert } from './insert.js'
 import { createAccount, createAccountContract } from './createAccount.js'
-import { getInfo } from './getInfo.js'
+import { getInfo, getInfoContract } from './getInfo.js'
 import { getCurrentUser, getCurrentUserContract } from './getCurrentUser.js'
-import { getActivationLink } from './getActivationLink.js'
-import { redefinePassword } from './redefinePassword.js'
-import { getRedefinePasswordLink } from './getRedefinePasswordLink.js'
+import { getActivationLink, getActivationLinkContract } from './getActivationLink.js'
+import { redefinePassword, redefinePasswordContract } from './redefinePassword.js'
+import { getRedefinePasswordLink, getRedefinePasswordLinkContract } from './getRedefinePasswordLink.js'
 import { editProfile, editProfileContract } from './editProfile.js'
 
 const functions = {
@@ -67,10 +67,15 @@ export const user = defineCollection({
 Object.assign(user, {
   exposedFunctions,
   contracts: {
+    activate: activateContract,
     authenticate: authenticateContract,
     createAccount: createAccountContract,
     editProfile: editProfileContract,
+    getActivationLink: getActivationLinkContract,
     getCurrentUser: getCurrentUserContract,
+    getInfo: getInfoContract,
+    getRedefinePasswordLink: getRedefinePasswordLinkContract,
+    redefinePassword: redefinePasswordContract,
   },
 } satisfies Partial<Collection>)
 
