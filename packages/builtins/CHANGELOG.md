@@ -1,5 +1,19 @@
 # @aeriajs/builtins
 
+## 0.0.257
+
+### Patch Changes
+
+- 682b1ac: Add contract to `user.authenticate()`
+- 4a7c81f: Add missing contracts
+- 0101b23: Add missing contracts
+- Updated dependencies [4a7c81f]
+  - @aeriajs/types@0.0.126
+  - @aeriajs/core@0.0.257
+  - @aeriajs/common@0.0.144
+  - @aeriajs/entrypoint@0.0.149
+  - @aeriajs/validation@0.0.161
+
 ## 0.0.256
 
 ### Patch Changes
