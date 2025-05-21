@@ -1,9 +1,30 @@
-import type { description } from './description.js'
-import { HTTPStatus, ACError, type Context, type SchemaWithId, type PackReferences } from '@aeriajs/types'
+import type { Context, ContractToFunction } from '@aeriajs/types'
+import { HTTPStatus, ACError, defineContract, functionSchemas, resultSchema } from '@aeriajs/types'
 import { insert as originalInsert } from '@aeriajs/core'
 import * as bcrypt from 'bcryptjs'
+import { description } from './description.js'
 
-export const editProfile = async (payload: Partial<PackReferences<SchemaWithId<typeof description>>>, context: Context<typeof description>) => {
+export const editProfileContract = defineContract({
+  payload: {
+    type: 'object',
+    required: [],
+    properties: {
+      ...description.properties,
+      picture_file: {
+        type: 'string',
+        format: 'objectid',
+      }
+    },
+  },
+  response: [
+    functionSchemas.insertError(),
+    resultSchema({
+      $ref: 'user',
+    }),
+  ],
+})
+
+export const editProfile: ContractToFunction<typeof editProfileContract, Context<typeof description>> = async (payload, context)=> {
   const mutableProperties = context.config.security.mutableUserProperties
   if( !context.token.sub ){
     throw new Error

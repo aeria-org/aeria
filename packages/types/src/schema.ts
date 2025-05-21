@@ -26,7 +26,8 @@ type CaseTimestamped<
 type TestType<T> = T & Record<string, unknown>
 
 export type InferProperty<T> = T extends TestType<{ format: 'date' | 'date-time' }>
-  ? Date : T extends TestType<{ enum: ReadonlyArray<infer K> }>
+  ? Date : T extends TestType<{ format: 'objectid' }>
+    ? ObjectId : T extends TestType<{ enum: ReadonlyArray<infer K> }>
     ? K : T extends TestType<{ type: 'string' }>
       ? string : T extends TestType<{ type: 'number' | 'integer' }>
         ? number : T extends TestType<{ type: 'boolean' }>

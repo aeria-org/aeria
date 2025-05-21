@@ -1,18 +1,41 @@
-import type { Context, SchemaWithId, PackReferences } from '@aeriajs/types'
-import type { description } from './description.js'
-import { HTTPStatus, ACError } from '@aeriajs/types'
+import type { Context, ContractToFunction } from '@aeriajs/types'
+import { defineContract, HTTPStatus, ACError, functionSchemas, endpointErrorSchema, resultSchema } from '@aeriajs/types'
 import { validate } from '@aeriajs/validation'
 import * as bcrypt from 'bcryptjs'
 import { insert as originalInsert } from '@aeriajs/core'
+import { description } from './description.js'
 
 export const CreateAccountError = {
   SignupDisallowed: 'SIGNUP_DISALLOWED',
 } as const
 
-export const createAccount = async (
-  payload: Partial<PackReferences<SchemaWithId<typeof description>>> & Record<string, unknown>,
-  context: Context<typeof description>,
-) => {
+export const createAccountContract = defineContract({
+  payload: {
+    type: 'object',
+    required: [],
+    additionalProperties: true,
+    properties: description.properties,
+  },
+  response: [
+    functionSchemas.insertError(),
+    endpointErrorSchema({
+      httpStatus: [
+        HTTPStatus.Forbidden,
+        HTTPStatus.UnprocessableContent,
+      ],
+      code: [
+        ACError.MalformedInput,
+        ACError.OwnershipError,
+        CreateAccountError.SignupDisallowed,
+      ]
+    }),
+    resultSchema({
+      $ref: 'user',
+    }),
+  ]
+})
+
+export const createAccount: ContractToFunction<typeof createAccountContract, Context<typeof description>> = async (payload, context) => {
   const userCandidate = Object.assign({}, payload)
 
   if( !context.config.security.allowSignup ) {
