@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.258
+
+### Patch Changes
+
+- aaf206b: Fix `user.authenticate` bug
+  - @aeriajs/core@0.0.258
+
 ## 0.0.257
 
 ### Patch Changes
