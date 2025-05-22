@@ -47,7 +47,12 @@ export const redefinePasswordContract = defineContract({
     }),
     resultSchema({
       type: 'object',
-      properties: {},
+      properties: {
+        userId: {
+          type: 'string',
+          format: 'objectid',
+        }
+      },
     }),
   ],
 })

@@ -138,7 +138,7 @@ export const authenticate = async (
     return Result.result(await successfulAuthentication(user, context))
   }
 
-  if( typeof props.email !== 'string' || props.password !== 'string' ) {
+  if( typeof props.email !== 'string' || typeof props.password !== 'string' ) {
     return context.error(HTTPStatus.Unauthorized, {
       code: AuthenticationError.InvalidCredentials,
     })
