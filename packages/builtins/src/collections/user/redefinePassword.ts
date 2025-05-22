@@ -51,7 +51,7 @@ export const redefinePasswordContract = defineContract({
         userId: {
           type: 'string',
           format: 'objectid',
-        }
+        },
       },
     }),
   ],
