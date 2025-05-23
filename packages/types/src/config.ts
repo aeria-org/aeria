@@ -13,6 +13,7 @@ export type ServerOptions = {
   host?: string
   port?: number
   enableLogging?: boolean
+  noWarmup?: boolean
 }
 
 export type ApiConfig = {
@@ -22,7 +23,6 @@ export type ApiConfig = {
   publicUrl?: string
   webPublicUrl?: string
   defaultPaginationLimit?: number
-  noWarmup?: boolean
   server?: ServerOptions
   database?: {
     mongodbUrl?: string

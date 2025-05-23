@@ -109,7 +109,7 @@ export const init = (_options: InitOptions = {}) => {
         await options.setup(parentContext)
       }
 
-      if( !options.config.noWarmup ) {
+      if( !options.config.server!.noWarmup ) {
         await warmup()
       }
 
