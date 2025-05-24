@@ -1,4 +1,4 @@
-import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, Condition, FileProperty, FinalCondition, FinalOperator, JsonSchema, LayoutName, LayoutOptions, Property, RefProperty, RequiredProperties, SearchOptions, UserRole } from '@aeriajs/types'
+import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, Condition, FileProperty, FinalCondition, FinalOperator, JsonSchema, LayoutName, LayoutOptions, RefProperty, RequiredProperties, SearchOptions, UserRole } from '@aeriajs/types'
 import { TokenType, type Token, type Location } from './token.js'
 import { DESCRIPTION_PRESETS, LAYOUT_NAMES, PROPERTY_ARRAY_ELEMENTS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { icons } from '@phosphor-icons/core'

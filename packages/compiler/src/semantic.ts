@@ -114,7 +114,7 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
 
       if( node.property.constraints ) {
         for( const [name, symbol] of node.property[AST.LOCATION_SYMBOL]!.contraintTerms! ) {
-          if( !await collectionHasProperty(foreignCollection, name) ) {
+          if( !await collectionHasProperty(foreignCollection, name, options) ) {
             const location = locationMap.get(symbol)
             errors.push(new Diagnostic(`left operand "${name}" does not exist on collection "${foreignCollection.name}"`, location))
           }
