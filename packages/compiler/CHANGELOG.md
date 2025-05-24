@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.39
+
+### Patch Changes
+
+- bcb42d2: Constraints expressions
+
 ## 0.0.38
 
 ### Patch Changes
