@@ -242,6 +242,7 @@ const validate = async (value: unknown, ctx: PhaseContext) => {
     context: ctx.options.context,
     objectIdConstructor: ObjectId,
   })
+
   if( error ) {
     return Result.error({
       [ctx.propName]: error,
@@ -347,7 +348,10 @@ const recurseDeep = async (value: unknown, ctx: PhaseContext) => {
         isArray: true,
       })
 
-      items.push(result as ObjectId)
+      if( !isError(result) ) {
+        items.push(result as ObjectId)
+      }
+
     }
 
     return items

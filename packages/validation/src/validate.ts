@@ -273,7 +273,7 @@ export const validateRefs = async <TWhat>(
   if( '$ref' in property ) {
     if( options.checkObjectIds ) {
       if( !options.context || !options.objectIdConstructor ) {
-        throw new Error()
+        throw new Error
       }
 
       if( what === null ) {

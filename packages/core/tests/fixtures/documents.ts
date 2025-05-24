@@ -2,7 +2,7 @@ import type { PackReferences, Token } from '@aeriajs/types'
 import type { User } from '@aeriajs/builtins'
 import type { Person, Day, Project, Post, Comment, Featured } from './types.js'
 import { throwIfError } from '@aeriajs/common'
-import { createContext, insert, ObjectId } from '../../dist/index.js'
+import { createContext, insert } from '../../dist/index.js'
 import { dbPromise } from './database.js'
 
 const token: Token = {
@@ -109,7 +109,6 @@ export const documents = (async () => {
                 person1,
                 person2,
                 person3,
-                new ObjectId(),
               ],
             },
           ],
