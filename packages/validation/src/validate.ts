@@ -276,6 +276,10 @@ export const validateRefs = async <TWhat>(
         throw new Error()
       }
 
+      if( what === null ) {
+        return Result.result({})
+      }
+
       if( !isValidObjectId(String(what)) ) {
         return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
           expected: 'objectid',
