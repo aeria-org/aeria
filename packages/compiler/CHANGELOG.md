@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.37
+
+### Patch Changes
+
+- c014e4a: Add semantic check for constraints terms
+
 ## 0.0.36
 
 ### Patch Changes

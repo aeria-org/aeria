@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.162
+
+### Patch Changes
+
+- 420a932: Change function signature
+
 ## 0.0.161
 
 ### Patch Changes
