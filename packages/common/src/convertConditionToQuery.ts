@@ -80,4 +80,3 @@ export const convertConditionToQuery = (condition: Condition, subject?: Record<s
   }
 }
 
-

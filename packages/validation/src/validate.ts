@@ -291,7 +291,7 @@ export const validateRefs = async <TWhat>(
               _id: new options.objectIdConstructor(what),
             },
             convertConditionToQuery(property.constraints),
-          ]
+          ],
         }
       } else {
         query = {
