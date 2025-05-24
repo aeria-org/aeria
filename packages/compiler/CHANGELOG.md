@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.38
+
+### Patch Changes
+
+- a5a1e88: Fix LSP bug
+
 ## 0.0.37
 
 ### Patch Changes
