@@ -187,11 +187,7 @@ test('validateWithRefs() validates deep refs', async () => {
     breed: 'SRD',
   }
 
-  const options = {
-    descriptions: {
-      pet: petDescription,
-    },
-  }
+  const options = { descriptions: { pet: petDescription } }
 
   const { error: error1 } = await validateWithRefs(pet, property, options)
   const { error: error2 } = await validateWithRefs({ pet }, description, options)
