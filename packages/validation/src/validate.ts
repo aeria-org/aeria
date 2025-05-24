@@ -13,9 +13,11 @@ import { getCollection } from '@aeriajs/entrypoint'
 
 export type ValidateOptions = {
   tolerateExtraneous?: boolean
+  checkObjectIds?: boolean
   throwOnError?: boolean
   coerce?: boolean
   parentProperty?: Property | Description
+  descriptions?: Record<string, Description>
 }
 
 const isValidObjectId = (what: string) => {
@@ -267,14 +269,13 @@ export const validateProperty = <TWhat>(
 export const validateRefs = async <TWhat>(
   what: TWhat,
   property: Property | Description | undefined,
-  options?: ValidateOptions,
-  descriptions?: Record<string, Description>,
+  options: ValidateOptions = {},
 ): Promise<Result.Either<PropertyValidationError | ValidationError, unknown>> => {
   if( property ) {
     if( '$ref' in property ) {
       let description: Description
-      if( descriptions ) {
-        description = descriptions[property.$ref]
+      if( options.descriptions ) {
+        description = options.descriptions[property.$ref]
       } else {
         const collection = await getCollection(property.$ref)
         if( !collection ) {
@@ -297,7 +298,7 @@ export const validateRefs = async <TWhat>(
         throw new Error
       }
       for( const elem of what ) {
-        const { error } = await validateRefs(elem, property.items, options, descriptions)
+        const { error } = await validateRefs(elem, property.items, options)
         if( error ) {
           return Result.error(error)
         }
@@ -305,7 +306,7 @@ export const validateRefs = async <TWhat>(
     } else if( 'properties' in property ) {
       const details: Record<string, PropertyValidationError | ValidationError> = {}
       for( const propName in what ) {
-        const { error } = await validateRefs(what[propName], property.properties[propName], options, descriptions)
+        const { error } = await validateRefs(what[propName], property.properties[propName], options)
         if( error ) {
           details[propName] = error
         }
@@ -408,9 +409,8 @@ export const validateWithRefs = async <TWhat, const TJsonSchema extends Property
   what: TWhat | undefined,
   schema: TJsonSchema,
   options: ValidateOptions = {},
-  descriptions?: Record<string, Description>,
 ) => {
-  const { error: refsError } = await validateRefs(what, schema, options, descriptions)
+  const { error: refsError } = await validateRefs(what, schema, options)
   if( refsError ) {
     return Result.error(refsError)
   }
