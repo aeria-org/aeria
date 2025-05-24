@@ -238,7 +238,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
     }
   }
 
-  const parsePropertyAttributeValue = (attributeName: string, property: Property, location: Location) => {
+  const parsePropertyAttributeValue = (attributeName: string, property: AST.PropertyNode['property'], location: Location) => {
     const consumeBoolean = () => {
       if( match(TokenType.Boolean) ) {
         const { value } = consume(TokenType.Boolean)
@@ -308,6 +308,12 @@ export const parse = (tokens: (Token | undefined)[]) => {
         case 'populateDepth': {
           const { value } = consume(TokenType.Number)
           property[attributeName] = value
+          return
+        }
+        case 'constraints': {
+          const constraintTerms: [string, symbol][] = []
+          property[attributeName] = parseCondition(constraintTerms)
+          property[AST.LOCATION_SYMBOL]!.contraintTerms = constraintTerms
           return
         }
       }

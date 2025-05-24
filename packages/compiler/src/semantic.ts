@@ -6,7 +6,7 @@ import { locationMap } from './parser.js'
 import { Diagnostic } from './diagnostic.js'
 import * as AST from './ast.js'
 
-const collectionHasProperty = async (collection: AST.CollectionNode, propName: string, options: Pick<CompilationOptions, 'languageServer'>) => {
+const collectionHasProperty = async (collection: AST.CollectionNode, propName: string, options: Pick<CompilationOptions, 'languageServer'> = {}) => {
   let hasProperty = propName in collection.properties
   if( !hasProperty ) {
     if( collection.extends ) {
@@ -111,6 +111,16 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
       await checkCollectionForeignProperties(foreignCollection, node.property, 'indexes')
       await checkCollectionForeignProperties(foreignCollection, node.property, 'populate')
       await checkCollectionForeignProperties(foreignCollection, node.property, 'form')
+
+      if( node.property.constraints ) {
+        for( const [name, symbol] of node.property[AST.LOCATION_SYMBOL]!.contraintTerms! ) {
+          if( !await collectionHasProperty(foreignCollection, name) ) {
+            const location = locationMap.get(symbol)
+            errors.push(new Diagnostic(`left operand "${name}" does not exist on collection "${foreignCollection.name}"`, location))
+          }
+        }
+      }
+
     } else if( 'items' in node.property ) {
       await recurseProperty({
         kind: 'property',

@@ -65,6 +65,7 @@ export type PropertyNode = NodeBase<'property'> & {
       arrays: {
         [P in ArrayProperties<Extract<Property, { properties: unknown }>>]?: symbol[]
       }
+      contraintTerms?: [string, symbol][]
     }
   }
   nestedProperties?: Record<string, PropertyNode>
