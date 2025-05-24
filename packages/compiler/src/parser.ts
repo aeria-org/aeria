@@ -51,6 +51,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
   const errors: Diagnostic[] = []
 
   const advance = () => index++
+  const rollback = () => index--
 
   const next = () => {
     const token = tokens[index + 1]
@@ -312,8 +313,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
         }
         case 'constraints': {
           const constraintTerms: [string, symbol][] = []
+          rollback()
           property[attributeName] = parseCondition(constraintTerms)
           property[AST.LOCATION_SYMBOL]!.contraintTerms = constraintTerms
+          rollback()
           return
         }
       }
