@@ -4,7 +4,7 @@ import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
 import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
 import { throwIfError, pipe, isReference, getReferenceProperty, getValueFromPath, isError } from '@aeriajs/common'
-import { makeValidationError, validateProperty, validateWholeness } from '@aeriajs/validation'
+import { makeValidationError, validatePropertyWithRefs, validateWholeness } from '@aeriajs/validation'
 import { getCollection } from '@aeriajs/entrypoint'
 import { ObjectId } from 'mongodb'
 import { getCollectionAsset } from '../assets.js'
@@ -230,14 +230,18 @@ const getters = (value: unknown, ctx: PhaseContext) => {
   return value
 }
 
-const validate = (value: unknown, ctx: PhaseContext) => {
+const validate = async (value: unknown, ctx: PhaseContext) => {
   if( ctx.options.recurseDeep ) {
     if( 'properties' in ctx.property ) {
       return value
     }
   }
 
-  const { error } = validateProperty(value, ctx.property)
+  const { error } = await validatePropertyWithRefs(value, ctx.property, {
+    checkObjectIds: true,
+    context: ctx.options.context,
+    objectIdConstructor: ObjectId,
+  })
   if( error ) {
     return Result.error({
       [ctx.propName]: error,

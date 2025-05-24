@@ -1,13 +1,6 @@
-import type {
-  JsonSchema,
-  Property,
-  InferSchema,
-  Description,
-  PropertyValidationError,
-  ValidationError,
-} from '@aeriajs/types'
-
-import { getMissingProperties } from '@aeriajs/common'
+import type { JsonSchema, Property, InferSchema, Description, PropertyValidationError, ValidationError, CollectionModel } from '@aeriajs/types'
+import type { ObjectId } from 'mongodb'
+import { convertConditionToQuery, getMissingProperties } from '@aeriajs/common'
 import { Result, ValidationErrorCode, PropertyValidationErrorCode } from '@aeriajs/types'
 import { getCollection } from '@aeriajs/entrypoint'
 
@@ -18,6 +11,12 @@ export type ValidateOptions = {
   coerce?: boolean
   parentProperty?: Property | Description
   descriptions?: Record<string, Description>
+  objectIdConstructor?: new(arg: unknown) => ObjectId
+  context?: {
+    collections: Record<string, {
+      model: CollectionModel<Description>
+    }>
+  }
 }
 
 const isValidObjectId = (what: string) => {
@@ -268,56 +267,98 @@ export const validateProperty = <TWhat>(
 
 export const validateRefs = async <TWhat>(
   what: TWhat,
-  property: Property | Description | undefined,
+  property: Property | Description,
   options: ValidateOptions = {},
 ): Promise<Result.Either<PropertyValidationError | ValidationError, unknown>> => {
-  if( property ) {
-    if( '$ref' in property ) {
-      let description: Description
-      if( options.descriptions ) {
-        description = options.descriptions[property.$ref]
-      } else {
-        const collection = await getCollection(property.$ref)
-        if( !collection ) {
-          throw new Error
-        }
-
-        description = collection.description
+  if( '$ref' in property ) {
+    if( options.checkObjectIds ) {
+      if( !options.context || !options.objectIdConstructor ) {
+        throw new Error()
       }
 
-      if( typeof what !== 'object' ) {
+      if( !isValidObjectId(String(what)) ) {
         return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
-          expected: 'object',
+          expected: 'objectid',
           got: typeof what,
         }))
       }
 
-      return validate(what, description, options)
-    } else if( 'items' in property ) {
-      if( !Array.isArray(what) ) {
-        throw new Error
-      }
-      for( const elem of what ) {
-        const { error } = await validateRefs(elem, property.items, options)
-        if( error ) {
-          return Result.error(error)
+      let query: Record<string, unknown>
+      if( property.constraints ) {
+        query = {
+          $and: [
+            {
+              _id: new options.objectIdConstructor(what),
+            },
+            convertConditionToQuery(property.constraints),
+          ]
         }
-      }
-    } else if( 'properties' in property ) {
-      const details: Record<string, PropertyValidationError | ValidationError> = {}
-      for( const propName in what ) {
-        const { error } = await validateRefs(what[propName], property.properties[propName], options)
-        if( error ) {
-          details[propName] = error
+      } else {
+        query = {
+          _id: new options.objectIdConstructor(what),
         }
       }
 
-      if( Object.keys(details).length > 0 ) {
-        return Result.error(makeValidationError({
-          code: ValidationErrorCode.InvalidProperties,
-          details,
+      const exists = await options.context.collections[property.$ref].model.findOne(query, {
+        projection: {
+          _id: 1,
+        },
+      })
+
+      if( !exists ) {
+        return Result.error(makePropertyError(PropertyValidationErrorCode.ReferenceConstraint, {
+          expected: 'objectid',
+          got: 'invalid_objectid',
         }))
       }
+
+      return Result.result({})
+    }
+
+    let description: Description
+    if( options.descriptions ) {
+      description = options.descriptions[property.$ref]
+    } else {
+      const collection = await getCollection(property.$ref)
+      if( !collection ) {
+        throw new Error
+      }
+
+      description = collection.description
+    }
+
+    if( typeof what !== 'object' ) {
+      return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+        expected: 'object',
+        got: typeof what,
+      }))
+    }
+
+    return validate(what, description, options)
+  } else if( 'items' in property ) {
+    if( !Array.isArray(what) ) {
+      throw new Error
+    }
+    for( const elem of what ) {
+      const { error } = await validateRefs(elem, property.items, options)
+      if( error ) {
+        return Result.error(error)
+      }
+    }
+  } else if( 'properties' in property ) {
+    const details: Record<string, PropertyValidationError | ValidationError> = {}
+    for( const propName in what ) {
+      const { error } = await validateRefs(what[propName], property.properties[propName], options)
+      if( error ) {
+        details[propName] = error
+      }
+    }
+
+    if( Object.keys(details).length > 0 ) {
+      return Result.error(makeValidationError({
+        code: ValidationErrorCode.InvalidProperties,
+        details,
+      }))
     }
   }
 
@@ -416,6 +457,19 @@ export const validateWithRefs = async <TWhat, const TJsonSchema extends Property
   }
 
   return validate(what, schema, options)
+}
+
+export const validatePropertyWithRefs = async <TWhat>(
+  what: TWhat | undefined,
+  property: Property,
+  options: ValidateOptions = {},
+) => {
+  const { error: refsError } = await validateRefs(what, property, options)
+  if( refsError ) {
+    return Result.error(refsError)
+  }
+
+  return validateProperty(what, property, options)
 }
 
 export const validator = <const TJsonSchema extends Property | Description>(

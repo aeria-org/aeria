@@ -12,9 +12,10 @@ import type {
 } from '@aeriajs/types'
 
 import { Stream } from 'node:stream'
+import { ObjectId } from 'mongodb'
 import { Result, ACError, HTTPStatus, REQUEST_METHODS, STREAMED_RESPONSE } from '@aeriajs/types'
 import { pipe, isGranted, deepMerge, endpointError } from '@aeriajs/common'
-import { validate, type ValidateOptions } from '@aeriajs/validation'
+import { validateWithRefs, type ValidateOptions } from '@aeriajs/validation'
 import { getConfig } from '@aeriajs/entrypoint'
 import { safeJson } from './payload.js'
 
@@ -63,23 +64,23 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
   )=> ReturnType<typeof registerRoute>
 >
 
-const checkUnprocessable = (
+const checkUnprocessable = async (
   what: unknown,
   schema: Property | Property[],
   context: RouteContext,
   validateOptions: ValidateOptions = {},
 ) => {
-  let result: ReturnType<typeof validate>
+  let result: Awaited<ReturnType<typeof validateWithRefs>>
 
   if( Array.isArray(schema) ) {
     for( const property of schema ) {
-      result = validate(what, property, validateOptions)
+      result = await validateWithRefs(what, property, validateOptions)
       if( !result.error ) {
         break
       }
     }
   } else {
-    result = validate(what, schema, validateOptions)
+    result = await validateWithRefs(what, schema, validateOptions)
   }
 
   const { error, result: validated } = result!
@@ -187,15 +188,22 @@ export const registerRoute = async <TRouteContext extends RouteContext>(
       }
 
       if( 'payload' in contract && contract.payload ) {
-        const { error } = checkUnprocessable(context.request.payload, contract.payload, context)
+        const { error } = await checkUnprocessable(context.request.payload, contract.payload, context, {
+          checkObjectIds: true,
+          context,
+          objectIdConstructor: ObjectId,
+        })
         if( error ) {
           return Result.error(error)
         }
       }
 
       if( 'query' in contract && contract.query ) {
-        const { error, result: validated } = checkUnprocessable(context.request.query, contract.query, context, {
+        const { error, result: validated } = await checkUnprocessable(context.request.query, contract.query, context, {
+          checkObjectIds: true,
           coerce: true,
+          context,
+          objectIdConstructor: ObjectId,
         })
         if( error ) {
           return Result.error(error)

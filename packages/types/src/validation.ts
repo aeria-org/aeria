@@ -13,6 +13,7 @@ export const PropertyValidationErrorCode = {
   LessItemsExpected: 'LESS_ITEMS_EXPECTED',
   NumericConstraint: 'NUMERIC_CONSTRAINT',
   StringConstraint: 'STRING_CONSTRAINT',
+  ReferenceConstraint: 'REFERENCE_CONSTRAINT',
 } as const
 
 export const TraverseError = {
