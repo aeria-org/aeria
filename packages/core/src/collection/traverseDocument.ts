@@ -3,7 +3,7 @@ import type { Description, Property, ValidationError, RouteContext, ValidationEr
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
 import { Result, ACError, ValidationErrorCode, TraverseError } from '@aeriajs/types'
-import { throwIfError, pipe, isReference, getReferenceProperty, getValueFromPath, isError } from '@aeriajs/common'
+import { throwIfError, isReference, getReferenceProperty, getValueFromPath } from '@aeriajs/common'
 import { makeValidationError, validatePropertyWithRefs, validateWholeness } from '@aeriajs/validation'
 import { getCollection } from '@aeriajs/entrypoint'
 import { ObjectId } from 'mongodb'
@@ -41,7 +41,7 @@ export type TraverseOptions =
 
 export type TraverseNormalized = {
   description: Description
-  pipe: (value: unknown, phaseContext: PhaseContext)=> unknown
+  pipe: (value: unknown, phaseContext: PhaseContext)=> Promise<Result.Either<unknown, unknown>>
 }
 
 export type ValidTempFile =
@@ -97,7 +97,7 @@ const cleanupReferences = async (value: unknown, ctx: PhaseContext) => {
     const refProperty = getReferenceProperty(ctx.property)
     if( refProperty && (refProperty.$ref === 'file' || refProperty.inline) ) {
       if( ctx.isArray && !Array.isArray(value) ) {
-        return value
+        return Result.result(value)
       }
 
       const context = ctx.options.context!
@@ -116,7 +116,7 @@ const cleanupReferences = async (value: unknown, ctx: PhaseContext) => {
 
       let referenceIds = getValueFromPath<(ObjectId | null)[] | ObjectId | undefined>(doc, ctx.propPath)
       if( !referenceIds ) {
-        return value
+        return Result.result(value)
       }
 
       if( Array.isArray(referenceIds) ) {
@@ -127,7 +127,7 @@ const cleanupReferences = async (value: unknown, ctx: PhaseContext) => {
         referenceIds = referenceIds.filter((oldId) => !(value as ObjectId[]).some((valueId) => valueId.equals(oldId)))
       } else {
         if( referenceIds.equals(value as ObjectId) ) {
-          return value
+          return Result.result(value)
         }
       }
 
@@ -142,28 +142,28 @@ const cleanupReferences = async (value: unknown, ctx: PhaseContext) => {
     }
   }
 
-  return value
+  return Result.result(value)
 }
 
-const autoCast = (value: unknown, ctx: Omit<PhaseContext, 'options'> & { options: (TraverseOptions & TraverseNormalized) | {} }): unknown => {
+const autoCast = (value: unknown, ctx: Omit<PhaseContext, 'options'> & { options: (TraverseOptions & TraverseNormalized) | {} }): Result.Either<unknown, unknown> => {
   switch( typeof value ) {
     case 'boolean': {
-      return !!value
+      return Result.result(!!value)
     }
 
     case 'string': {
       if( isReference(ctx.property) ) {
-        return ObjectId.isValid(value)
+        return Result.result(ObjectId.isValid(value)
           ? new ObjectId(value)
-          : value
+          : value)
       }
 
       if( 'format' in ctx.property ) {
         if( ctx.property.format === 'date' || ctx.property.format === 'date-time' ) {
           const timestamp = Date.parse(value)
-          return !Number.isNaN(timestamp)
+          return Result.result(!Number.isNaN(timestamp)
             ? new Date(timestamp)
-            : null
+            : null)
         }
       }
       break
@@ -171,12 +171,12 @@ const autoCast = (value: unknown, ctx: Omit<PhaseContext, 'options'> & { options
 
     case 'number': {
       if( 'type' in ctx.property && ctx.property.type === 'integer' ) {
-        return parseInt(value.toString())
+        return Result.result(parseInt(value.toString()))
       }
 
       if( 'format' in ctx.property ) {
         if( ctx.property.format === 'date' || ctx.property.format === 'date-time' ) {
-          return new Date(value)
+          return Result.result(new Date(value))
         }
       }
       break
@@ -184,12 +184,12 @@ const autoCast = (value: unknown, ctx: Omit<PhaseContext, 'options'> & { options
 
     case 'object': {
       if( !value || value instanceof ObjectId ) {
-        return value
+        return Result.result(value)
       }
 
       if( !('description' in ctx.options) || !ctx.options.recurseDeep ) {
         if( Array.isArray(value) ) {
-          return value.map((v) => autoCast(v, ctx))
+          return Result.result(value.map((v) => throwIfError(autoCast(v, ctx))))
         }
 
         if( Object.keys(value).length > 0 ) {
@@ -203,37 +203,37 @@ const autoCast = (value: unknown, ctx: Omit<PhaseContext, 'options'> & { options
               continue
             }
 
-            entries[k] = autoCast(v, {
+            entries[k] = throwIfError(autoCast(v, {
               ...ctx,
               property: subProperty,
-            })
+            }))
           }
 
-          return entries
+          return Result.result(entries)
         }
       }
 
     }
   }
 
-  return value
+  return Result.result(value)
 }
 
-const getters = (value: unknown, ctx: PhaseContext) => {
+const getters = async (value: unknown, ctx: PhaseContext) => {
   if( 'getter' in ctx.property ) {
     if( !ctx.options.context ) {
       throw new Error
     }
-    return ctx.property.getter(ctx.target as WithId<unknown>, ctx.options.context)
+    return Result.result(await ctx.property.getter(ctx.target as WithId<unknown>, ctx.options.context))
   }
 
-  return value
+  return Result.result(value)
 }
 
 const validate = async (value: unknown, ctx: PhaseContext) => {
   if( ctx.options.recurseDeep ) {
     if( 'properties' in ctx.property ) {
-      return value
+      return Result.result(value)
     }
   }
 
@@ -249,7 +249,7 @@ const validate = async (value: unknown, ctx: PhaseContext) => {
     })
   }
 
-  return value
+  return Result.result(value)
 }
 
 const isValidTempFile = (value: unknown): value is ValidTempFile => {
@@ -273,7 +273,7 @@ const isMissingPropertyError = (error: object): error is ValidationErrorMissingP
 
 const moveFiles = async (value: unknown, ctx: PhaseContext) => {
   if( !('$ref' in ctx.property) || ctx.property.$ref !== 'file' ) {
-    return value
+    return Result.result(value)
   }
 
   const tempFileCollection = await getCollection('tempFile')
@@ -286,11 +286,11 @@ const moveFiles = async (value: unknown, ctx: PhaseContext) => {
   }
 
   if( !value ) {
-    return null
+    return Result.result(null)
   }
 
   if( value instanceof ObjectId ) {
-    return value
+    return Result.result(value)
   }
 
   if( !ctx.options.context ) {
@@ -311,12 +311,12 @@ const moveFiles = async (value: unknown, ctx: PhaseContext) => {
   await fs.rename(tempFile.absolute_path, newFile.absolute_path)
 
   const file = await ctx.options.context.collections.file.model.insertOne(newFile)
-  return file.insertedId
+  return Result.result(file.insertedId)
 }
 
 const recurseDeep = async (value: unknown, ctx: PhaseContext) => {
   if( !value ) {
-    return value
+    return Result.result(value)
   }
 
   if( 'properties' in ctx.property ) {
@@ -327,37 +327,32 @@ const recurseDeep = async (value: unknown, ctx: PhaseContext) => {
       }
     }
 
-    const { error, result } = await recurse(value as Record<string, unknown>, ctx)
-    if( error ) {
-      return Result.error(error)
-    }
-
-    return result
+    return recurse(value as Record<string, unknown>, ctx)
   }
 
   if( 'items' in ctx.property ) {
     if( !Array.isArray(value) ) {
-      return value
+      return Result.result(value)
     }
 
     const items: ObjectId[] = []
     for( const item of value ) {
-      const result = await ctx.options.pipe(item, {
+      const { error, result } = await ctx.options.pipe(item, {
         ...ctx,
         property: ctx.property.items,
         isArray: true,
       })
 
-      if( !isError(result) ) {
+      if( !error ) {
         items.push(result as ObjectId)
       }
 
     }
 
-    return items
+    return Result.result(items)
   }
 
-  return value
+  return Result.result(value)
 }
 
 const recurse = async <TRecursionTarget extends Record<string, unknown>>(
@@ -391,14 +386,14 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
     if( propName === '_id' ) {
       if( value ) {
         if( ctx.options.autoCast ) {
-          entries[propName] = autoCast(value, {
+          entries[propName] = throwIfError(autoCast(value, {
             ...ctx,
             target,
             propName,
             property: {
               $ref: '',
             },
-          })
+          }))
         } else {
           entries[propName] = value
         }
@@ -518,7 +513,7 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
         }
       }
 
-      entries[propName] = await ctx.options.pipe(value, {
+      const { error, result } = await ctx.options.pipe(value, {
         ...ctx,
         target,
         propName,
@@ -527,6 +522,10 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
           : propName,
         property,
       })
+
+      if( !error ) {
+        entries[propName] = result
+      }
     }
   }
 
@@ -546,7 +545,7 @@ export const traverseDocument = async <TWhat>(
   const options = Object.assign({
     description,
   }, _options) as TraverseOptions & TraverseNormalized
-  const functions: ((value: unknown, ctx: PhaseContext)=> unknown)[] = []
+  const functions: ((value: unknown, ctx: PhaseContext)=> Result.Either<unknown, unknown> | Promise<Result.Either<unknown, unknown>>)[] = []
 
   if( !options.validate && Object.keys(whatCopy).length === 0 ) {
     return Result.result(whatCopy)
@@ -587,37 +586,34 @@ export const traverseDocument = async <TWhat>(
     traverseError: typeof TraverseError[keyof typeof TraverseError] | undefined,
     validationError: Record<string, ValidationError> | ValidationErrorMissingProperties | undefined
 
-  const mutateTarget = <TValue, TReturn>(fn: (value: TValue, ctx: PhaseContext)=> TReturn | Promise<TReturn>) => {
-    return async (value: TValue, ctx: PhaseContext) => {
-      const result = await fn(value, ctx)
-      ctx.target[ctx.propName] = result
-
-      return result
-    }
-  }
-
-  options.pipe = pipe(functions.map(mutateTarget), {
-    returnFirst: (value) => {
-      if( isError(value) ) {
-        const error = value.error as NonNullable<
+  options.pipe = async (initialValue: unknown, ctx: PhaseContext) => {
+    let value = initialValue
+    for( const fn of functions ) {
+      const { error, result } = await fn(value, ctx)
+      if( error ) {
+        const narrowedError = error as NonNullable<
           | typeof traverseError
           | typeof validationError
         >
 
-        switch( error ) {
+        switch( narrowedError ) {
           case TraverseError.InvalidDocumentId:
           case TraverseError.InvalidTempfile:
-            traverseError = error
+            traverseError = narrowedError
             break
           default: {
-            validationError = error
+            validationError = narrowedError
           }
         }
 
-        return value
+        return Result.error(error)
       }
-    },
-  })
+
+      value = ctx.target[ctx.propName] = result
+    }
+
+    return Result.result(value)
+  }
 
   const { error, result } = await recurse(whatCopy, {
     root: whatCopy,
