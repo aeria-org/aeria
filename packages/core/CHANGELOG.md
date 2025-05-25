@@ -1,5 +1,20 @@
 # @aeriajs/api
 
+## 0.0.260
+
+### Patch Changes
+
+- b3fc687: Runtime validation of ref constraints
+- 6061d32: Refactor `traverseDocument()`
+- Updated dependencies [b3fc687]
+  - @aeriajs/validation@0.0.163
+  - @aeriajs/common@0.0.145
+  - @aeriajs/types@0.0.127
+  - @aeriajs/http@0.0.176
+  - @aeriajs/builtins@0.0.260
+  - @aeriajs/entrypoint@0.0.150
+  - @aeriajs/security@0.0.260
+
 ## 0.0.259
 
 ### Patch Changes
