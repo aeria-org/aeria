@@ -1,12 +1,16 @@
 import { init, createRouter, resultSchema, functionSchemas, ACError, Result, unpaginatedGetAll } from 'aeria'
-export * as collections from './collections/index.js'
+export * as collections from './collections.js'
 
 const router = createRouter()
 
-router.GET('/hello-world', (context) => {
-  return context.collections.person.functions.hello({
+router.GET('/hello-world', async (context) => {
+  const result = await context.collections.person.functions.hello({
     name: 'Terry',
   })
+
+  // @ts-expect-error
+  result.invalid
+  return result
 }, {
   roles: [
     'root',

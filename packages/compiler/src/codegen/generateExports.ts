@@ -7,7 +7,7 @@ type SymbolToExport = {
   extend: string
 }
 
-export const generateExports = (ast: AST.ProgramNode, hasContracts = false) => {
+export const generateExports = (ast: AST.ProgramNode, options = { hasContracts: false }) => {
   const symbolsToExport = Object.values(ast.collections.reduce<Record<string, SymbolToExport>>((symbols, node) => {
     const id = getCollectionId(node.name)
     symbols[id] = {
@@ -38,23 +38,23 @@ export const generateExports = (ast: AST.ProgramNode, hasContracts = false) => {
       dts: `export { ${symbolsToExport.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
     },
     main: {
-      js: (hasContracts
-        ? 'export * as contracts from \'./contracts/index.js\'\n'
+      js: (options.hasContracts
+        ? "export * as contracts from './contracts/index.js'\n"
         : '') +
-        'export * as collections from \'./collections/index.js\'\n' +
+        "export * as collections from './collections/index.js'\n" +
         `export { ${symbolsToExport.map((symbol) => symbol.extend).join(', ')} } from './collections/collections.js'`,
-      dts: (hasContracts
-        ? 'export * as contracts from \'./contracts/index.js\'\n'
+      dts: (options.hasContracts
+        ? "export * as contracts from './contracts/index.js'\n"
         : '') +
-        'export * as collections from \'./collections/index.js\'\n' +
+        "export * as collections from './collections/index.js'\n" +
         `export { ${symbolsToExport.map((symbol) => `${symbol.extend}, ${symbol.schema}`).join(', ')} } from './collections/collections.js'`,
     },
   }
 
-  if (hasContracts) {
+  if (options.hasContracts) {
     exports.contracts = {
-      js: 'export * from \'./contracts.js\'',
-      dts: 'export * from \'./contracts.js\'',
+      js: "export * from './contracts.js'",
+      dts: "export * from './contracts.js'",
     }
   }
 

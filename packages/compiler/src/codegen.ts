@@ -48,7 +48,7 @@ const generateFileMap = async (fileTree: FileTree, outDir = '.') => {
 
 export const generateCode = async (ast: AST.ProgramNode, options: CompilationOptions) => {
   const contracts = generateContracts(ast.contracts)
-  const exports = generateExports(ast, Boolean(contracts))
+  const exports = generateExports(ast, { hasContracts: !!contracts })
 
   const fileTree: FileTree = {
     ['collections']: {
