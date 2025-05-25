@@ -1,5 +1,15 @@
 # @aeriajs/validation
 
+## 0.0.163
+
+### Patch Changes
+
+- b3fc687: Runtime validation of ref constraints
+- Updated dependencies [b3fc687]
+  - @aeriajs/common@0.0.145
+  - @aeriajs/types@0.0.127
+  - @aeriajs/entrypoint@0.0.150
+
 ## 0.0.162
 
 ### Patch Changes
