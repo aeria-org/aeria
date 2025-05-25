@@ -4,7 +4,6 @@ import { extendPersonCollection } from '../.aeria/out/collections/collections.js
 export const person = extendPersonCollection({
   functions: {
     hello: (obj: { name: string }) => {
-      obj.name
       return {
         message: `Hello, ${obj.name}`,
       }
