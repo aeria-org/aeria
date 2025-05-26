@@ -29,7 +29,6 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
       }
 
       const fn = async (payload: unknown) => {
-        console.log(interceptors)
         const method = key
         const requestConfig = {
           requestTransformer: interceptors.request,
