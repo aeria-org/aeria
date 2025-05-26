@@ -9,25 +9,5 @@ export const person = extendPersonCollection({
       }
     },
   },
-  contracts: {
-    hello: {
-      payload: {
-        type: 'object',
-        properties: {
-          name: {
-            type: 'string',
-          },
-        },
-      },
-      response: {
-        type: 'object',
-        properties: {
-          message: {
-            type: 'string',
-          },
-        },
-      },
-    },
-  },
 })
 
