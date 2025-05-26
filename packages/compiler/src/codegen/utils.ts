@@ -16,14 +16,12 @@ export const DEFAULT_FUNCTIONS = [
   'upload',
 ]
 
-
 export const UnquotedSymbol = Symbol('unquoted')
 export const ArraySymbol = Symbol('array')
 
 export type StringifyProperty = unknown | {
   [UnquotedSymbol]: string
 }
-
 
 export const getExposedFunctions = (astFunctions: NonNullable<AST.CollectionNode['functions']>) => {
   return Object.fromEntries(Object.entries(astFunctions).map(([key, value]) => [
