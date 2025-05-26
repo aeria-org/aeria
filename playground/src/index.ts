@@ -9,16 +9,13 @@ router.GET('/hello-world', async (context) => {
     name: 'Terry',
   })
 
+
   // @ts-expect-error
   result.invalid
+  context.token.sub
+
   return result
-}, {
-  roles: [
-    'root',
-    'manager',
-    'customer',
-  ],
-})
+}, contracts.HelloWorld)
 
 router.GET('/get-people', async (context) => {
   const { error, result: person } = await context.collections.person.functions.insert({

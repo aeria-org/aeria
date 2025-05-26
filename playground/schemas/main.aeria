@@ -3,6 +3,7 @@ collection TempFile extends aeria.tempFile {}
 collection User extends aeria.user {
   properties {
     roles []enum @values([
+      "root",
       "customer",
       "manager",
     ])
@@ -37,6 +38,14 @@ collection Person {
     get
     getAll
     insert
+  }
+}
+
+contract HelloWorld {
+  roles {
+    root
+    manager
+    customer
   }
 }
 
