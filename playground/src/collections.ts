@@ -1,5 +1,5 @@
-export * from '../.aeria/out/collections/index.js'
 import { extendPersonCollection } from '../.aeria/out/collections/collections.js'
+export * from '../.aeria/out/collections/index.js'
 
 export const person = extendPersonCollection({
   functions: {
