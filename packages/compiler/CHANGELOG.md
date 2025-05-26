@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.41
+
+### Patch Changes
+
+- 7b3e2a3: Allow arrays as right operands in conditions
+
 ## 0.0.40
 
 ### Patch Changes
