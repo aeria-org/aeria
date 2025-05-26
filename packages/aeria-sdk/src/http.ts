@@ -1,10 +1,10 @@
 import type { InstanceConfig } from './types.js'
-import { request as originalRequest, defaultRequestTransformer, type RequestConfig } from '@aeriajs/common'
+import { request as originalRequest, type RequestConfig } from '@aeriajs/common'
 import { getStorage } from './storage.js'
 
 export const request = <TResponseType = unknown>(config: InstanceConfig, url: string, payload?: unknown, _requestConfig?: RequestConfig) => {
   const requestConfig = Object.assign({}, _requestConfig)
-  requestConfig.requestTransformer ??= async (url, payload, _params) => {
+  requestConfig.requestTransformer ??= async (url, payload, _params, next) => {
     const params = Object.assign({
       headers: {},
     }, _params)
@@ -20,7 +20,7 @@ export const request = <TResponseType = unknown>(config: InstanceConfig, url: st
       }
     }
 
-    return defaultRequestTransformer(url, payload, params)
+    return next(url, payload, params)
   }
 
   return originalRequest<TResponseType>(url, payload, requestConfig)

@@ -4,18 +4,23 @@ export type RequestParams = Omit<RequestInit, 'headers'> & {
 
 export type RequestConfig = {
   params?: RequestParams
-  requestTransformer?: (...args: Parameters<typeof defaultRequestTransformer>)=> Promise<{
-    url: string
-    params: RequestParams
-  }>
-  responseTransformer?: typeof defaultResponseTransformer
+  requestTransformer?: RequestTransformer
+  responseTransformer?: ResponseTransformer
 }
 
-export const defaultRequestTransformer = async (url: string, payload: unknown, params: RequestParams) => {
-  const request: {
-    url: string
-    params: RequestParams
-  } = {
+type OmitLastParameter<TFunction> = TFunction extends (...args: [...infer Tail, infer _Head]) => infer Return
+  ? (...args: Tail) => Return
+  : never
+
+export type RequestTransformer = (url: string, payload: unknown, params: RequestParams, next: (url: string, payload: unknown, params: RequestParams) => ReturnType<RequestTransformer>) => Promise<{
+  url: string
+  params: RequestParams
+}>
+
+export type ResponseTransformer = (response: Awaited<ReturnType<typeof fetch>>, next: (response: Awaited<ReturnType<typeof fetch>>) => ReturnType<ResponseTransformer>) => Promise<Awaited<ReturnType<typeof fetch>>>
+
+export const defaultRequestTransformer: OmitLastParameter<RequestTransformer> = async (url, payload, params) => {
+  const request = {
     url,
     params,
   }
@@ -33,7 +38,7 @@ export const defaultRequestTransformer = async (url: string, payload: unknown, p
   return request
 }
 
-export const defaultResponseTransformer = async (response: Awaited<ReturnType<typeof fetch>>) => {
+export const defaultResponseTransformer: OmitLastParameter<ResponseTransformer> = async (response) => {
   const result = response as Awaited<ReturnType<typeof fetch>> & {
     data: unknown
   }
@@ -53,24 +58,32 @@ export const request = async <TResponseType = unknown>(
   config: RequestConfig = {},
 ) => {
   const {
-    requestTransformer = defaultRequestTransformer,
-    responseTransformer = defaultResponseTransformer,
-    params = {
-      method: payload
-        ? 'POST'
-        : 'GET',
-      headers: payload
-        ? {
-          'content-type': 'application/json',
-        }
-        : {},
-    },
+    requestTransformer = (url, payload, params, next) => next(url, payload, params), 
+    responseTransformer = (response, next) => next(response),
   } = config
 
-  const transformedRequest = await requestTransformer(url, payload, params)
+  let params: RequestParams
+  if( config.params ) {
+    params = config.params
+  } else {
+    if( payload ) {
+      params = {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        }
+      }
+    } else {
+      params = {
+        method: 'GET',
+      }
+    }
+  }
+
+  const transformedRequest = await requestTransformer(url, payload, params, defaultRequestTransformer)
 
   const response = await fetch(transformedRequest.url, transformedRequest.params)
-  const transformedResponse = await responseTransformer(response)
+  const transformedResponse = await responseTransformer(response, defaultResponseTransformer)
 
   return transformedResponse as typeof transformedResponse & {
     data: TResponseType

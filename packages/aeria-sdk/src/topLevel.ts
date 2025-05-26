@@ -1,4 +1,4 @@
-import type { RequestConfig } from '@aeriajs/common'
+import type { RequestConfig, RequestTransformer, ResponseTransformer } from '@aeriajs/common'
 import type { InstanceConfig } from './types.js'
 import { request } from './http.js'
 import { publicUrl } from './utils.js'
@@ -8,6 +8,13 @@ export type TopLevelObject = {
     POST: (...args: unknown[])=> Promise<string>
   }
 }
+
+export type InstanceContext = {
+  request?: RequestTransformer
+  response?: ResponseTransformer
+}
+
+export const interceptors: InstanceContext = {}
 
 const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
   config: InstanceConfig,
@@ -22,8 +29,11 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
       }
 
       const fn = async (payload: unknown) => {
+        console.log(interceptors)
         const method = key
         const requestConfig = {
+          requestTransformer: interceptors.request,
+          responseTransformer: interceptors.response,
           params: {
             method,
             headers: {} as Record<string, string>,
