@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.42
+
+### Patch Changes
+
+- 9f0737b: Fix compiler errors
+
 ## 0.0.41
 
 ### Patch Changes
