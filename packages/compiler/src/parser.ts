@@ -1359,7 +1359,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
     if( match(TokenType.LeftParens) ) {
       term2 = parseCondition(symbols)
     } else if( match(TokenType.LeftSquareBracket) ) {
-      term2 = parseArray([TokenType.QuotedString, TokenType.Number]).value
+      term2 = parseArray([
+        TokenType.QuotedString,
+        TokenType.Number,
+      ]).value
     } else {
       term2 = current().value
       advance()
