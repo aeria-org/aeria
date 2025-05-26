@@ -58,7 +58,7 @@ export const request = async <TResponseType = unknown>(
   config: RequestConfig = {},
 ) => {
   const {
-    requestTransformer = (url, payload, params, next) => next(url, payload, params), 
+    requestTransformer = (url, payload, params, next) => next(url, payload, params),
     responseTransformer = (response, next) => next(response),
   } = config
 
@@ -71,7 +71,7 @@ export const request = async <TResponseType = unknown>(
         method: 'POST',
         headers: {
           'content-type': 'application/json',
-        }
+        },
       }
     } else {
       params = {
