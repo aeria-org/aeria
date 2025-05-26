@@ -1,5 +1,6 @@
 import { init, createRouter, resultSchema, functionSchemas, ACError, Result, unpaginatedGetAll } from 'aeria'
 export * as collections from './collections.js'
+import { contracts } from '../.aeria/out/index.js'
 
 const router = createRouter()
 
@@ -49,27 +50,10 @@ router.GET('/get-people', async (context) => {
     return Result.error(getAllError)
   }
 
-  return Result.result(people)
-}, {
-  payload: {
-    type: 'object',
-    properties: {
-      name: {
-        type: 'string',
-      },
-    },
-  },
-  response: [
-    functionSchemas.insertError(),
-    functionSchemas.getAllError(),
-    resultSchema({
-      type: 'array',
-      items: {
-        $ref: 'person',
-      },
-    }),
-  ],
-})
+  return Result.result({
+    data: people,
+  })
+}, contracts.GetPeople)
 
 export default init({
   router,

@@ -40,3 +40,23 @@ collection Person {
   }
 }
 
+contract GetPeople {
+  payload {
+    properties {
+      name str
+    }
+  }
+  response
+    | Error {
+      properties {
+        httpStatus int
+        code str
+      }
+    }
+    | Result {
+      properties {
+        data []Person
+      }
+    }
+}
+
