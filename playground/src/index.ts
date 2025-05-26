@@ -9,7 +9,6 @@ router.GET('/hello-world', async (context) => {
     name: 'Terry',
   })
 
-
   // @ts-expect-error
   result.invalid
   context.token.sub
