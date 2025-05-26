@@ -16,7 +16,14 @@ export const DEFAULT_FUNCTIONS = [
   'upload',
 ]
 
+
+export const UnquotedSymbol = Symbol('unquoted')
 export const ArraySymbol = Symbol('array')
+
+export type StringifyProperty = unknown | {
+  [UnquotedSymbol]: string
+}
+
 
 export const getExposedFunctions = (astFunctions: NonNullable<AST.CollectionNode['functions']>) => {
   return Object.fromEntries(Object.entries(astFunctions).map(([key, value]) => [
@@ -25,9 +32,6 @@ export const getExposedFunctions = (astFunctions: NonNullable<AST.CollectionNode
   ]))
 }
 
-/**
- * Obs: It will save and return any modified symbols to avoid name duplication later
-*/
 export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, Set<string>>, options = {
   includeRuntimeOnlyImports: false,
 }) => {
@@ -135,7 +139,6 @@ export const unwrapPropertyNode = ({ property, nestedProperties, nestedAdditiona
   return unwrappedProperty
 }
 
-/** Transforms the AST properties to the format of aeria schema properties */
 export const recursivelyUnwrapPropertyNodes = <
   TProperties extends Record<string, AST.PropertyNode | AST.PropertyNode[]>,
   TReturnType = TProperties[keyof TProperties] extends Array<unknown> ? Record<string, Property[]> : Record<string, Property>,
@@ -151,15 +154,8 @@ export const recursivelyUnwrapPropertyNodes = <
   }, {}) as TReturnType
 }
 
-export const UnquotedSymbol = Symbol('unquoted')
-/** Serves to know if the value must be unquoted on strinfigy function */
-export type StringifyProperty = unknown | {
-  [UnquotedSymbol]: string,
-}
-
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object'
 
-/** Assure if specific fields needs to be between quotes or not */
 export const stringify = (value: StringifyProperty, parents: (symbol | string)[] = []): string => {
   if (Array.isArray(value)) {
     let arrayString = '[\n'
@@ -205,7 +201,6 @@ const checkQuotes = (parents: (symbol | string)[], value: StringifyProperty) => 
   return stringify(value, parents)
 }
 
-/** Used to make the id and the schema name of the collection */
 export const resizeFirstChar = (text: string, capitalize: boolean): string => {
   if (capitalize === true) {
     return text.charAt(0).toUpperCase() + text.slice(1)

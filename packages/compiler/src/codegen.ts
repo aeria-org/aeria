@@ -8,20 +8,6 @@ type FileTree = {
   [P: string]: string | FileTree
 }
 
-/**
- * Maps the path tree into a object with the full paths
- * {
- *  folderX: {
- *    folderY: {
- *      file: ...
- *    }
- *  }
- * }
- * turns into
- * {
- *  ['outDir/folderX/folderY/file']: ...
- * }
- */
 const generateFileMap = async (fileTree: FileTree, outDir = '.') => {
   const mappedPaths: Record<string, string> = {}
 

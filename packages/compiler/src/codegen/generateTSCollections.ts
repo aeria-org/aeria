@@ -18,7 +18,6 @@ export const generateTSCollections = (ast: AST.CollectionNode[]): string => {
   return code
 }
 
-/** Creates the code exporting the collection type, declaration, schema and extend for each collection and returns them in a string */
 const makeTSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<string, string>) => {
   const collectionCodes: Record<string, string> = {}
 
@@ -122,7 +121,6 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
   return stringify(collectionSchema)
 }
 
-/** Turns each function to 'typeof functioName' if it's from aeria or not */
 const makeTSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
   return Object.keys(functions).reduce<Record<string, StringifyProperty>>((acc, key) => {
     acc[key] = {
