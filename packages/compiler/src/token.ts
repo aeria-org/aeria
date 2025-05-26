@@ -32,6 +32,7 @@ export type TypeMap = {
 }
 
 export type Location = {
+  file: string
   index: number
   line: number
   start: number

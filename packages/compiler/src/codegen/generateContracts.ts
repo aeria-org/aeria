@@ -3,18 +3,17 @@ import type { ContractWithRoles, Property } from '@aeriajs/types'
 import { errorSchema, resultSchema } from '@aeriajs/types'
 import { recursivelyUnwrapPropertyNodes, unwrapPropertyNode, stringify, UnquotedSymbol, type StringifyProperty } from './utils.js'
 
-export const generateContracts = (ast: AST.Node[]) => {
-  const contractNodes = ast.filter((node) => node.kind === 'contract')
-  if (contractNodes.length === 0) {
+export const generateContracts = (ast: AST.ProgramNode) => {
+  if (ast.contracts.length === 0) {
     return false
   }
   return {
-    js: makeJSContractsCode(contractNodes),
-    dts: makeTSContractsCode(contractNodes),
+    js: makeJSContractsCode(ast),
+    dts: makeTSContractsCode(ast),
   }
 }
 
-const makeJSContractsCode = (contractAst: AST.ContractNode[]) => {
+const makeJSContractsCode = (ast: AST.ProgramNode) => {
   const imports = new Set<string>(['defineContract'])
 
   const getCodeForResponse = (responseProperty: AST.PropertyNode) => {
@@ -32,8 +31,8 @@ const makeJSContractsCode = (contractAst: AST.ContractNode[]) => {
     return `${modifierSymbol}(${stringify(unwrapPropertyNode(propertyNode))})`
   }
 
-  const declarations = contractAst.map((contractNode) => {
-    const { name, kind, roles, response, ...contractProperty } = contractNode
+  const declarations = ast.contracts.map((node) => {
+    const { name, kind, roles, response, ...contractProperty } = node
 
     let responseString: string | undefined
     if (response) {
@@ -81,9 +80,9 @@ const getResponseSchema = (response: AST.PropertyNode) => {
     errorSchema(responseSchema)
 }
 
-const makeTSContractsCode = (contractAst: AST.ContractNode[]) => {
-  return contractAst.map((contractNode) => {
-    const { name, kind, roles, ...contractSchema } = contractNode
+const makeTSContractsCode = (ast: AST.ProgramNode) => {
+  return ast.contracts.map((node) => {
+    const { name, kind, roles, ...contractSchema } = node
 
     let responseSchema: Property | Property[] | null = null
     if (contractSchema.response) {
@@ -102,7 +101,7 @@ const makeTSContractsCode = (contractAst: AST.ContractNode[]) => {
       contractProperties.roles = roles
     }
 
-    return `export declare const ${contractNode.name}: ${
+    return `export declare const ${node.name}: ${
       stringify(contractProperties)
     }`
   }).join('\n\n')

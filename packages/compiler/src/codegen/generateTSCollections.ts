@@ -9,19 +9,19 @@ const initialImportedTypes = [
   'Context',
 ]
 
-export const generateTSCollections = (ast: AST.CollectionNode[]): string => {
+export const generateTSCollections = (ast: AST.ProgramNode): string => {
   let code = ''
   code += `import type { ${initialImportedTypes.join(', ')} } from '${PACKAGE_NAME}'\n` //Used types
-  const importsResult = makeASTImports(ast)
+  const importsResult = makeASTImports(ast.collections)
   code += importsResult.code.join('\n') + '\n\n'
   code += makeTSCollections(ast, importsResult.modifiedSymbols) + '\n'
   return code
 }
 
-const makeTSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<string, string>) => {
+const makeTSCollections = (ast: AST.ProgramNode, modifiedSymbols: Record<string, string>) => {
   const collectionCodes: Record<string, string> = {}
 
-  for (const collectionNode of ast) {
+  for (const collectionNode of ast.collections) {
     const id = getCollectionId(collectionNode.name) // CollectionName -> collectionName
     const schemaName = resizeFirstChar(collectionNode.name, true) // collectionName -> CollectionName
     const typeName = id + 'Collection' // Pet -> petCollection

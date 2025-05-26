@@ -730,7 +730,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
     }
   }
 
-  const parseCollection = (ast: AST.ProgramNode): AST.CollectionNode => {
+  const parseCollection = (): AST.CollectionNode => {
     consume(TokenType.Keyword, 'collection')
     const { value: name } = consume(TokenType.Identifier)
 
@@ -786,7 +786,9 @@ export const parse = (tokens: (Token | undefined)[]) => {
             break
           }
           case 'functions': {
-            node[keyword] = parseFunctionsBlock(ast)
+            const { functions, functionSets } = parseFunctionsBlock()
+            node.functions = functions
+            node.functionSets = functionSets
             break
           }
           case 'individualActions':
@@ -899,10 +901,12 @@ export const parse = (tokens: (Token | undefined)[]) => {
     return node
   }
 
-  const parseFunctionsBlock = (ast: AST.ProgramNode) => {
+  const parseFunctionsBlock = (): Required<Pick<AST.CollectionNode, 'functions' | 'functionSets'>> => {
     consume(TokenType.LeftBracket)
 
     const functions: AST.CollectionNode['functions'] = {}
+    const functionSets: [string, symbol][] = []
+
     while( !match(TokenType.RightBracket) ) {
       try {
         if( match(TokenType.MacroName) ) {
@@ -911,17 +915,17 @@ export const parse = (tokens: (Token | undefined)[]) => {
           switch( macroName ) {
             case 'include': {
               const { value: functionSetName, location } = consume(TokenType.Identifier)
-              const functionset = ast.functionsets.find((node) => node.name === functionSetName)
 
-              if( !functionset ) {
-                throw new Diagnostic(`functionset "${functionSetName}" not found`, location)
-              }
+              const functionSetSymbol = Symbol()
+              locationMap.set(functionSetSymbol, location)
+              functionSets.push([
+                functionSetName,
+                functionSetSymbol,
+              ])
 
-              Object.assign(functions, functionset.functions)
               consume(TokenType.RightParens)
               break
             }
-
           }
 
           continue
@@ -966,16 +970,21 @@ export const parse = (tokens: (Token | undefined)[]) => {
     }
 
     consume(TokenType.RightBracket)
-    return functions
+    return {
+      functions,
+      functionSets,
+    }
   }
 
-  const parseFunctionSet = (ast: AST.ProgramNode): AST.FunctionSetNode => {
+  const parseFunctionSet = (): AST.FunctionSetNode => {
     consume(TokenType.Keyword, 'functionset')
     const { value: name } = consume(TokenType.Identifier)
+    const { functions, functionSets } = parseFunctionsBlock()
     const node: AST.FunctionSetNode = {
       kind: 'functionset',
       name,
-      functions: parseFunctionsBlock(ast),
+      functions,
+      functionSets,
     }
 
     return node
@@ -1394,7 +1403,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
     try {
       switch( declType ) {
         case 'collection': {
-          const collection = parseCollection(ast)
+          const collection = parseCollection()
           if( collection.name === 'User' ) {
             const { properties } = collection
             if( 'roles' in properties && 'items' in properties.roles.property && 'enum' in properties.roles.property.items ) {
@@ -1410,7 +1419,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
           break
         }
         case 'functionset': {
-          ast.functionsets.push(parseFunctionSet(ast))
+          ast.functionsets.push(parseFunctionSet())
           break
         }
         default:

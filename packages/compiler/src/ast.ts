@@ -84,6 +84,7 @@ export type CollectionNode = NodeBase<'collection'> & {
   functions?: Record<string, {
     accessCondition: AccessCondition
   }>
+  functionSets?: [string, symbol][]
   required?: RequiredProperties
   indexes?: readonly string[]
   presets?: DescriptionPreset[]
@@ -119,6 +120,7 @@ export type FunctionSetNode = NodeBase<'functionset'> & {
     accessCondition: AccessCondition,
     fromFunctionSet?: true
   }>
+  functionSets: [string, symbol][]
 }
 
 export type ProgramNode = NodeBase<'program'> & {

@@ -1,21 +1,44 @@
+import type * as AST from './ast.js'
 import type { CompilationOptions, CompilationResult } from './types.js'
 import type { Token } from './token.js'
 import { Diagnostic } from './diagnostic.js'
 import { tokenize } from './lexer.js'
-import { parse } from './parser.js'
+import { parse, locationMap } from './parser.js'
 import { analyze } from './semantic.js'
 import { generateCode } from './codegen.js'
 import * as fs from 'node:fs'
 
 export const GLOB_PATTERN = '**/*.aeria'
 
+export const postflight = (ast: AST.ProgramNode) => {
+  const errors: Diagnostic[] = []
+
+  for( const node of ast.collections ) {
+    if( node.functionSets?.length ) {
+      for( const [functionSetName, locationSymbol] of node.functionSets ) {
+        const functionSet = ast.functionsets.find(({ name }) => name === functionSetName)
+        if( !functionSet ) {
+          const location = locationMap.get(locationSymbol)
+          errors.push(new Diagnostic(`invalid function set "${functionSetName}"`, location))
+          continue
+        }
+
+        Object.assign(node.functions!, functionSet.functions)
+      }
+    }
+  }
+
+  return {
+    errors,
+  }
+}
+
 export const parseAndCheck = async (sources: Record<string, string>, options: Pick<CompilationOptions, 'languageServer'> = {}): Promise<CompilationResult> => {
   const errors: CompilationResult['errors'] = []
 
   const allTokens: Token[] = []
   for (const fileName in sources) {
-    Diagnostic.currentFile = fileName
-    const { errors: lexerErrors, tokens } = tokenize(sources[fileName])
+    const { errors: lexerErrors, tokens } = tokenize(sources[fileName], fileName)
 
     if (lexerErrors.length > 0) {
       errors.push(...lexerErrors)
@@ -26,8 +49,9 @@ export const parseAndCheck = async (sources: Record<string, string>, options: Pi
 
   const { errors: parserErrors, ast } = parse(allTokens)
   const { errors: semanticErrors } = await analyze(ast, options)
+  const { errors: postflightErrors } = postflight(ast)
 
-  errors.push(...parserErrors.concat(semanticErrors))
+  errors.push(...parserErrors.concat(semanticErrors, postflightErrors))
   return {
     success: errors.length === 0,
     errors,

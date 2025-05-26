@@ -267,7 +267,7 @@ const TOKENS: TokenConfig[] = [
   },
 ]
 
-export const tokenize = function (rawInput: string) {
+export const tokenize = function (rawInput: string, fileLocation: string) {
   const input = rawInput.replace(/\r\n/g, '\n')
 
   let
@@ -318,6 +318,7 @@ export const tokenize = function (rawInput: string) {
       if( value ) {
         let tokenValue: Token['value'] | undefined
         const location: Location = {
+          file: fileLocation,
           index: index += value.length,
           line,
           end: end += value.length,
@@ -427,6 +428,7 @@ export const tokenize = function (rawInput: string) {
     if( !hasMatch ) {
       index += input.slice(index).search(/[ \t\n\{\}\(\)\[\]]/)
       errors.push(new Diagnostic('unexpected token', {
+        file: fileLocation,
         index,
         line,
         start,

@@ -1,6 +1,7 @@
 import type { Location } from './token.js'
 
 const emptyLocation: Location = {
+  file: '',
   index: 0,
   line: 0,
   start: 0,
@@ -8,9 +9,7 @@ const emptyLocation: Location = {
 }
 
 export class Diagnostic extends Error {
-  static currentFile: string | undefined
-
-  constructor(public message: string, public location: Location = emptyLocation, public fileLocation = Diagnostic.currentFile) {
+  constructor(public message: string, public location = emptyLocation) {
     super()
 
     if( process.env.NODE_ENV === 'debug' ) {

@@ -7,9 +7,9 @@ const initialImportedFunctions = [
   'defineCollection',
 ]
 
-export const generateJSCollections = (ast: AST.CollectionNode[]) => {
+export const generateJSCollections = (ast: AST.ProgramNode) => {
   let javascriptCode = ''
-  const importsResult = makeASTImports(ast, {
+  const importsResult = makeASTImports(ast.collections, {
     [PACKAGE_NAME]: new Set(initialImportedFunctions),
   }, {
     includeRuntimeOnlyImports: true,
@@ -21,10 +21,10 @@ export const generateJSCollections = (ast: AST.CollectionNode[]) => {
   return javascriptCode
 }
 
-const makeJSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<string, string>) => {
+const makeJSCollections = (ast: AST.ProgramNode, modifiedSymbols: Record<string, string>) => {
   const collectionCodes: Record<string, string> = {}
 
-  for (const collectionNode of ast) {
+  for (const collectionNode of ast.collections) {
     const id = getCollectionId(collectionNode.name) // CollectionName -> collectionName
     const extendCollectionName = getExtendName(collectionNode.name)
 
@@ -32,8 +32,8 @@ const makeJSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<st
       `export const ${id} = ${collectionNode.extends
         ? `extendCollection(${id in modifiedSymbols
           ? modifiedSymbols[id]
-          : id}, ${makeJSCollectionSchema(collectionNode, id)})`
-        : `defineCollection(${makeJSCollectionSchema(collectionNode, id)})`}`
+          : id}, ${makeJSCollectionSchema(ast, collectionNode, id)})`
+        : `defineCollection(${makeJSCollectionSchema(ast, collectionNode, id)})`}`
 
     const collectionDeclaration =
       `export const ${extendCollectionName} = (collection) => extendCollection(${id}, collection)`
@@ -48,7 +48,7 @@ const makeJSCollections = (ast: AST.CollectionNode[], modifiedSymbols: Record<st
   return Object.values(collectionCodes).join('\n\n')
 }
 
-const makeJSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId: string) => {
+const makeJSCollectionSchema = (ast: AST.ProgramNode, collectionNode: AST.CollectionNode, collectionId: string) => {
   const collectionSchema: Omit<Collection, 'middlewares'> & { middlewares?: unknown } = {
     item: {},
     description: {

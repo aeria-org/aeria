@@ -33,15 +33,15 @@ const generateFileMap = async (fileTree: FileTree, outDir = '.') => {
 }
 
 export const generateCode = async (ast: AST.ProgramNode, options: CompilationOptions) => {
-  const contracts = generateContracts(ast.contracts)
+  const contracts = generateContracts(ast)
   const exports = generateExports(ast, {
     hasContracts: !!contracts,
   })
 
   const fileTree: FileTree = {
     ['collections']: {
-      ['collections.d.ts']: generateTSCollections(ast.collections),
-      ['collections.js']: generateJSCollections(ast.collections),
+      ['collections.d.ts']: generateTSCollections(ast),
+      ['collections.js']: generateJSCollections(ast),
       ['index.d.ts']: exports.collections.dts,
       ['index.js']: exports.collections.js,
     },

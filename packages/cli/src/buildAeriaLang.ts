@@ -9,7 +9,7 @@ export const buildAeriaLangPhase = async () => {
   })
 
   if( !result.success ) {
-    return Result.error(result.errors.map((error) => `\n${error.fileLocation}:${error.location.line} at column (${error.location.start}-${error.location.end}) - ${error.message}`).join(' | '))
+    return Result.error(result.errors.map((error) => `\n${error.location.file}:${error.location.line} at column (${error.location.start}-${error.location.end}) - ${error.message}`).join(' | '))
   }
 
   if( !('emittedFiles' in result) ) {
