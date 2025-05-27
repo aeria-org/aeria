@@ -4,10 +4,10 @@ import { getStorage } from './storage.js'
 
 export const request = <TResponseType = unknown>(config: InstanceConfig, url: string, payload?: unknown, _requestConfig?: RequestConfig) => {
   const requestConfig = Object.assign({}, _requestConfig)
-  requestConfig.requestTransformer ??= async (url, payload, _params, next) => {
+  requestConfig.requestTransformer ??= async (context, next) => {
     const params = Object.assign({
       headers: {},
-    }, _params)
+    }, context.params)
 
     const auth = getStorage(config).get('auth')
 
@@ -21,7 +21,10 @@ export const request = <TResponseType = unknown>(config: InstanceConfig, url: st
       }
     }
 
-    return next(url, payload, params)
+    return next({
+      ...context,
+      params,
+    })
   }
 
   return originalRequest<TResponseType>(url, payload, requestConfig)

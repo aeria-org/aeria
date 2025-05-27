@@ -12,44 +12,46 @@ type OmitLastParameter<TFunction> = TFunction extends (...args: [...infer Tail, 
   ? (...args: Tail) => Return
   : never
 
-export type RequestTransformer = (url: string, payload: unknown, params: RequestParams, next: (url: string, payload: unknown, params: RequestParams) => ReturnType<RequestTransformer>) => Promise<{
+type RequestTransformerContext = {
   url: string
+  payload: unknown
   params: RequestParams
-}>
+}
 
-export type ResponseTransformer = (response: Awaited<ReturnType<typeof fetch>>, next: (response: Awaited<ReturnType<typeof fetch>>) => ReturnType<ResponseTransformer>) => Promise<Awaited<ReturnType<typeof fetch>>>
+type ResponseTransformerContext = {
+  response: Awaited<ReturnType<typeof fetch>>
+}
 
-export const defaultRequestTransformer: OmitLastParameter<RequestTransformer> = async (url, payload, params) => {
-  const request = {
-    url,
-    params,
-  }
+export type RequestTransformer = (context: RequestTransformerContext, next: (context: RequestTransformerContext) => ReturnType<RequestTransformer>) => Promise<RequestTransformerContext>
 
-  if( payload ) {
-    if( params.method === 'GET' || params.method === 'HEAD' ) {
-      request.url += `?${new URLSearchParams(payload as ConstructorParameters<typeof URLSearchParams>[0])}`
+export type ResponseTransformer = (context: ResponseTransformerContext, next: (context: ResponseTransformerContext) => ReturnType<ResponseTransformer>) => Promise<ResponseTransformerContext>
+
+export const defaultRequestTransformer: OmitLastParameter<RequestTransformer> = async (context) => {
+  if( context.payload ) {
+    if( context.params.method === 'GET' || context.params.method === 'HEAD' ) {
+      context.url += `?${new URLSearchParams(context.payload as ConstructorParameters<typeof URLSearchParams>[0])}`
     } else {
-      request.params.body = params.headers?.['content-type']?.startsWith('application/json')
-        ? JSON.stringify(payload)
-        : payload as Buffer
+      context.params.body = context.params.headers?.['content-type']?.startsWith('application/json')
+        ? JSON.stringify(context.payload)
+        : context.payload as Buffer
     }
   }
 
-  return request
+  return context
 }
 
-export const defaultResponseTransformer: OmitLastParameter<ResponseTransformer> = async (response) => {
-  const result = response as Awaited<ReturnType<typeof fetch>> & {
+export const defaultResponseTransformer: OmitLastParameter<ResponseTransformer> = async (context) => {
+  const result = context.response as Awaited<ReturnType<typeof fetch>> & {
     data: unknown
   }
 
-  result.data = await response.text()
-
-  if( response.headers.get('content-type')?.startsWith('application/json') ) {
+  result.data = await context.response.text()
+  if( context.response.headers.get('content-type')?.startsWith('application/json') ) {
     result.data = JSON.parse(String(result.data))
   }
 
-  return result
+  context.response = result
+  return context
 }
 
 export const request = async <TResponseType = unknown>(
@@ -58,8 +60,8 @@ export const request = async <TResponseType = unknown>(
   config: RequestConfig = {},
 ) => {
   const {
-    requestTransformer = (url, payload, params, next) => next(url, payload, params),
-    responseTransformer = (response, next) => next(response),
+    requestTransformer = (context, next) => next(context),
+    responseTransformer = (context, next) => next(context),
   } = config
 
   let params: RequestParams
@@ -80,10 +82,14 @@ export const request = async <TResponseType = unknown>(
     }
   }
 
-  const transformedRequest = await requestTransformer(url, payload, params, defaultRequestTransformer)
+  const transformedRequest = await requestTransformer({
+    url,
+    payload,
+    params,
+  }, defaultRequestTransformer)
 
   const response = await fetch(transformedRequest.url, transformedRequest.params)
-  const transformedResponse = await responseTransformer(response, defaultResponseTransformer)
+  const transformedResponse = await responseTransformer({ response }, defaultResponseTransformer)
 
   return transformedResponse as typeof transformedResponse & {
     data: TResponseType
