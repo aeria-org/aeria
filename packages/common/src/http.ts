@@ -89,7 +89,7 @@ export const request = async <TResponseType = unknown>(
   }, defaultRequestTransformer)
 
   const response = await fetch(transformedRequest.url, transformedRequest.params)
-  const transformedResponse = await responseTransformer({
+  const { response: transformedResponse } = await responseTransformer({
     response,
   }, defaultResponseTransformer)
 
