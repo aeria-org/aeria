@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/common",
-  "version": "0.0.146",
+  "version": "0.0.147",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

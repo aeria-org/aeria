@@ -1,5 +1,13 @@
 # aeria-sdk
 
+## 0.0.187
+
+### Patch Changes
+
+- 8f28613: Change transformers signature
+- Updated dependencies [8f28613]
+  - @aeriajs/common@0.0.147
+
 ## 0.0.186
 
 ### Patch Changes
