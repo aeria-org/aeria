@@ -1,5 +1,12 @@
 # @aeriajs/compiler
 
+## 0.0.43
+
+### Patch Changes
+
+- Updated dependencies [f952791]
+  - @aeriajs/common@0.0.146
+
 ## 0.0.42
 
 ### Patch Changes

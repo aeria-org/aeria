@@ -1,5 +1,13 @@
 # aeria-sdk
 
+## 0.0.186
+
+### Patch Changes
+
+- f952791: Add interceptors
+- Updated dependencies [f952791]
+  - @aeriajs/common@0.0.146
+
 ## 0.0.185
 
 ### Patch Changes

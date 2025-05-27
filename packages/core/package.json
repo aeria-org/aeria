@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/core",
-  "version": "0.0.260",
+  "version": "0.0.261",
   "description": "",
   "main": "dist/index.js",
   "aeriaMain": "tests/fixtures/aeriaMain.js",
@@ -53,13 +53,13 @@
     "mongodb-memory-server": "^10.1.4"
   },
   "peerDependencies": {
-    "@aeriajs/builtins": "^0.0.260",
-    "@aeriajs/common": "^0.0.145",
-    "@aeriajs/entrypoint": "^0.0.150",
-    "@aeriajs/http": "^0.0.176",
-    "@aeriajs/security": "^0.0.260",
+    "@aeriajs/builtins": "^0.0.261",
+    "@aeriajs/common": "^0.0.146",
+    "@aeriajs/entrypoint": "^0.0.151",
+    "@aeriajs/http": "^0.0.177",
+    "@aeriajs/security": "^0.0.261",
     "@aeriajs/types": "^0.0.127",
-    "@aeriajs/validation": "^0.0.163"
+    "@aeriajs/validation": "^0.0.164"
   },
   "dependencies": {
     "mongodb": "^6.16.0",
