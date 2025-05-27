@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.148
+
+### Patch Changes
+
+- ab79e3a: Hotfix release
+
 ## 0.0.147
 
 ### Patch Changes

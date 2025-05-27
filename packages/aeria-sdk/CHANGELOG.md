@@ -1,5 +1,12 @@
 # aeria-sdk
 
+## 0.0.188
+
+### Patch Changes
+
+- Updated dependencies [ab79e3a]
+  - @aeriajs/common@0.0.148
+
 ## 0.0.187
 
 ### Patch Changes
