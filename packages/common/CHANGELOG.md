@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.149
+
+### Patch Changes
+
+- c0c1e85: Interceptors bug
+
 ## 0.0.148
 
 ### Patch Changes
