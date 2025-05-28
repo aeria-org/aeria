@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.189
+
+### Patch Changes
+
+- 243b531: Export `createInstance()`
+
 ## 0.0.188
 
 ### Patch Changes
