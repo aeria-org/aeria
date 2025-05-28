@@ -74,7 +74,7 @@ declare module 'aeria-sdk' {
       ? Methods[keyof Methods]
       : never
 
-  type Endpoints = {
+  export type Api = {
     [Route in keyof MirrorRouter]: Route extends \`/\${infer Coll}/\${infer Fn}\`
       ? Coll extends keyof Collections
         ? Fn extends keyof CollectionFunctionsSDK
@@ -86,13 +86,13 @@ declare module 'aeria-sdk' {
           : InferEndpoint<Route>
         : InferEndpoint<Route>
       : InferEndpoint<Route>
-  } extends infer Endpoints
-    ? UnionToIntersection<Endpoints[keyof Endpoints]>
+  } extends infer Api
+    ? UnionToIntersection<Api[keyof Api]>
     : never
 
   type TopLevelAeria = 
-    & ((bearerToken?: string) => TopLevelObject & Endpoints)
-    & TopLevelObject & Endpoints
+    & ((bearerToken?: string) => TopLevelObject & Api)
+    & TopLevelObject & Api
 
   const topLevelAeria: TopLevelAeria
 

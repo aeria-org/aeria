@@ -25,6 +25,11 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
   bearerToken?: string,
   parent?: string,
 ) => {
+  const {
+    request: requestTransformer = interceptors.request,
+    response: responseTransformer = interceptors.response,
+  } = instanceContext.interceptors
+
   return new Proxy(_target as TTarget & TopLevelObject, {
     get: (target, key) => {
       if( typeof key === 'symbol' ) {
@@ -34,8 +39,8 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
       const fn = async (payload: unknown) => {
         const method = key
         const requestConfig = {
-          requestTransformer: interceptors.request,
-          responseTransformer: interceptors.response,
+          requestTransformer,
+          responseTransformer,
           params: {
             method,
             headers: {} as Record<string, string>,
