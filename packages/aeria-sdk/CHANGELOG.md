@@ -1,5 +1,13 @@
 # aeria-sdk
 
+## 0.0.190
+
+### Patch Changes
+
+- c0c1e85: Interceptors bug
+- Updated dependencies [c0c1e85]
+  - @aeriajs/common@0.0.149
+
 ## 0.0.189
 
 ### Patch Changes
