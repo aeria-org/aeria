@@ -1,5 +1,5 @@
 import type { InstanceConfig } from './types.js'
-import { request as originalRequest, RequestTransformerContext, RequestTransformerNext, type RequestConfig } from '@aeriajs/common'
+import { request as originalRequest, type RequestTransformerContext, type RequestTransformerNext, type RequestConfig } from '@aeriajs/common'
 import { getStorage } from './storage.js'
 
 const sdkRequestTransformer = (config: InstanceConfig, next: RequestTransformerNext) => (context: RequestTransformerContext) => {
