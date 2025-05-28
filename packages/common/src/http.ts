@@ -12,19 +12,23 @@ type OmitLastParameter<TFunction> = TFunction extends (...args: [...infer Tail, 
   ? (...args: Tail) => Return
   : never
 
-type RequestTransformerContext = {
+export type RequestTransformerContext = {
   url: string
   payload: unknown
   params: RequestParams
 }
 
-type ResponseTransformerContext = {
+export type ResponseTransformerContext = {
   response: Awaited<ReturnType<typeof fetch>>
 }
 
-export type RequestTransformer = (context: RequestTransformerContext, next: (context: RequestTransformerContext) => ReturnType<RequestTransformer>) => Promise<RequestTransformerContext>
+export type RequestTransformerNext = (context: RequestTransformerContext) => ReturnType<RequestTransformer>
 
-export type ResponseTransformer = (context: ResponseTransformerContext, next: (context: ResponseTransformerContext) => ReturnType<ResponseTransformer>) => Promise<ResponseTransformerContext>
+export type ResponseTransformerNext = (context: ResponseTransformerContext) => ReturnType<ResponseTransformer>
+
+export type RequestTransformer = (context: RequestTransformerContext, next: RequestTransformerNext) => Promise<RequestTransformerContext>
+
+export type ResponseTransformer = (context: ResponseTransformerContext, next: ResponseTransformerNext) => Promise<ResponseTransformerContext>
 
 export const defaultRequestTransformer: OmitLastParameter<RequestTransformer> = async (context) => {
   if( context.payload ) {
