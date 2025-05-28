@@ -8,10 +8,6 @@ export type RequestConfig = {
   responseTransformer?: ResponseTransformer
 }
 
-type OmitLastParameter<TFunction> = TFunction extends (...args: [...infer Tail, infer _Head]) => infer Return
-  ? (...args: Tail) => Return
-  : never
-
 export type RequestTransformerContext = {
   url: string
   payload: unknown
@@ -23,14 +19,11 @@ export type ResponseTransformerContext = {
 }
 
 export type RequestTransformerNext = (context: RequestTransformerContext) => ReturnType<RequestTransformer>
-
 export type ResponseTransformerNext = (context: ResponseTransformerContext) => ReturnType<ResponseTransformer>
-
 export type RequestTransformer = (context: RequestTransformerContext, next: RequestTransformerNext) => Promise<RequestTransformerContext>
-
 export type ResponseTransformer = (context: ResponseTransformerContext, next: ResponseTransformerNext) => Promise<ResponseTransformerContext>
 
-export const defaultRequestTransformer: OmitLastParameter<RequestTransformer> = async (context) => {
+export const defaultRequestTransformer: RequestTransformerNext = async (context) => {
   if( context.payload ) {
     if( context.params.method === 'GET' || context.params.method === 'HEAD' ) {
       context.url += `?${new URLSearchParams(context.payload as ConstructorParameters<typeof URLSearchParams>[0])}`
@@ -44,7 +37,7 @@ export const defaultRequestTransformer: OmitLastParameter<RequestTransformer> = 
   return context
 }
 
-export const defaultResponseTransformer: OmitLastParameter<ResponseTransformer> = async (context) => {
+export const defaultResponseTransformer: ResponseTransformerNext = async (context) => {
   const result = context.response as Awaited<ReturnType<typeof fetch>> & {
     data: unknown
   }
