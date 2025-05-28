@@ -73,7 +73,9 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
   })
 }
 
-export const createInstance = <T = TopLevelObject>(config: InstanceConfig, instanceContext = { interceptors }) => {
+export const createInstance = <T = TopLevelObject>(config: InstanceConfig, instanceContext = {
+  interceptors,
+}) => {
   const fn = (bearerToken?: string) => {
     return proxify(config, {}, instanceContext, bearerToken) as T
   }
