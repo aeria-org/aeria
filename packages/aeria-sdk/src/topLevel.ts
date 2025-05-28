@@ -10,15 +10,18 @@ export type TopLevelObject = {
 }
 
 export type InstanceContext = {
-  request?: RequestTransformer
-  response?: ResponseTransformer
+  interceptors: {
+    request?: RequestTransformer
+    response?: ResponseTransformer
+  }
 }
 
-export const interceptors: InstanceContext = {}
+export const interceptors: InstanceContext['interceptors'] = {}
 
 const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
   config: InstanceConfig,
   _target: TTarget,
+  instanceContext: InstanceContext,
   bearerToken?: string,
   parent?: string,
 ) => {
@@ -65,16 +68,16 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
         ? `${parent}/${key}`
         : key
 
-      return proxify(config, fn, bearerToken, path)
+      return proxify(config, fn, instanceContext, bearerToken, path)
     },
   })
 }
 
-export const topLevel = (config: InstanceConfig) => {
-  const fn = (bearerToken?: string): TopLevelObject => {
-    return proxify(config, {}, bearerToken)
+export const createInstance = <T = TopLevelObject>(config: InstanceConfig, instanceContext = { interceptors }) => {
+  const fn = (bearerToken?: string) => {
+    return proxify(config, {}, instanceContext, bearerToken) as T
   }
 
-  return proxify(config, fn)
+  return proxify(config, fn, instanceContext)
 }
 

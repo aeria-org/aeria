@@ -3,7 +3,7 @@ import { deserialize } from '@aeriajs/common'
 import * as path from 'node:path'
 import { writeFile } from 'node:fs/promises'
 import { createRequire } from 'module'
-import { topLevel } from './topLevel.js'
+import { createInstance } from './topLevel.js'
 import { publicUrl } from './utils.js'
 
 const DTS_FILENAME = 'aeria-sdk.d.ts'
@@ -105,7 +105,7 @@ declare module 'aeria-sdk' {
 
 export const runtimeCjs = (config: InstanceConfig) =>
   `const config = ${JSON.stringify(config)}
-const aeria = require('./topLevel.js').topLevel(config)
+const aeria = require('./topLevel.js').createInstance(config)
 exports.config = config
 exports.url = '${publicUrl(config)}'
 exports.aeria = aeria
@@ -115,12 +115,12 @@ exports.default = aeria
 \n`
 
 export const runtimeEsm = (config: InstanceConfig) =>
-  `import { topLevel } from './topLevel.mjs'
+  `import { createInstance } from './topLevel.mjs'
 import { getStorage } from './storage.mjs'
 import { uploader } from './upload.mjs'
 export const config = ${JSON.stringify(config)}
 export const url = '${publicUrl(config)}'
-export const aeria = topLevel(config)
+export const aeria = createInstance(config)
 export const storage = getStorage(config)
 export const upload = uploader(config)
 export default aeria
@@ -161,7 +161,7 @@ export const writeMirrorFiles = async (mirror: MirrorObject, config: InstanceCon
 }
 
 export const mirrorRemotely = async (config: InstanceConfig) => {
-  const aeria = topLevel(config)
+  const aeria = createInstance(config)
 
   const mirror = deserialize<MirrorObject>(await aeria().describe.POST({
     router: true,

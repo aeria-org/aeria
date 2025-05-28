@@ -49,6 +49,11 @@
       "types": "./dist/mirror.d.ts",
       "import": "./dist/mirror.mjs",
       "require": "./dist/mirror.js"
+    },
+    "./topLevel": {
+      "types": "./dist/topLevel.d.ts",
+      "import": "./dist/topLevel.mjs",
+      "require": "./dist/topLevel.js"
     }
   },
   "devDependencies": {
