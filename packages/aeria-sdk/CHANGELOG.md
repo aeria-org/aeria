@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.191
+
+### Patch Changes
+
+- a08241b: Fix bugs
+
 ## 0.0.190
 
 ### Patch Changes
