@@ -3,7 +3,7 @@ import { deserialize } from '@aeriajs/common'
 import * as path from 'node:path'
 import { writeFile } from 'node:fs/promises'
 import { createRequire } from 'module'
-import { createInstance } from './topLevel.js'
+import { createInstance, TopLevelObject } from './topLevel.js'
 import { publicUrl } from './utils.js'
 
 const DTS_FILENAME = 'aeria-sdk.d.ts'
@@ -161,8 +161,7 @@ export const writeMirrorFiles = async (mirror: MirrorObject, config: InstanceCon
 }
 
 export const mirrorRemotely = async (config: InstanceConfig) => {
-  const aeria = createInstance(config)
-
+  const aeria = createInstance<TopLevelObject>(config)
   const mirror = deserialize<MirrorObject>(await aeria().describe.POST({
     router: true,
   }))

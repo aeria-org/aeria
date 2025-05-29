@@ -1,9 +1,14 @@
 import type { RequestConfig, RequestTransformer, ResponseTransformer } from '@aeriajs/common'
+import type { RequestMethod } from '@aeriajs/types'
 import type { InstanceConfig } from './types.js'
 import { request } from './http.js'
 import { publicUrl } from './utils.js'
 
-export type TopLevelObject = {
+export type ApiPrototype = 
+  | { [node: string]: ApiPrototype }
+  | Record<RequestMethod, (payload: unknown) => Promise<unknown>>
+
+export type TopLevelObject = ApiPrototype & {
   describe: {
     POST: (...args: unknown[])=> Promise<string>
   }
@@ -30,7 +35,7 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
     response: responseTransformer = interceptors.response,
   } = instanceContext.interceptors
 
-  return new Proxy(_target as TTarget & TopLevelObject, {
+  return new Proxy(_target as TTarget & ApiPrototype, {
     get: (target, key) => {
       if( typeof key === 'symbol' ) {
         return target[key as keyof typeof target]
@@ -78,13 +83,14 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
   })
 }
 
-export const createInstance = <T = TopLevelObject>(config: InstanceConfig, instanceContext = {
+export const createInstance = <TApiPrototype extends ApiPrototype>(config: InstanceConfig, instanceContext = {
   interceptors,
 }) => {
   const fn = (bearerToken?: string) => {
-    return proxify(config, {}, instanceContext, bearerToken) as T
+    return proxify(config, {}, instanceContext, bearerToken) as TApiPrototype
   }
 
   return proxify(config, fn, instanceContext)
 }
+
 
