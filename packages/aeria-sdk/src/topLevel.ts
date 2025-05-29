@@ -4,7 +4,7 @@ import type { InstanceConfig } from './types.js'
 import { request } from './http.js'
 import { publicUrl } from './utils.js'
 
-export type ApiPrototype = 
+export type ApiPrototype =
   | { [node: string]: ApiPrototype }
   | Record<RequestMethod, (payload: unknown) => Promise<unknown>>
 
@@ -92,5 +92,4 @@ export const createInstance = <TApiPrototype extends ApiPrototype>(config: Insta
 
   return proxify(config, fn, instanceContext)
 }
-
 

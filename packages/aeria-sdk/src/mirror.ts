@@ -3,7 +3,7 @@ import { deserialize } from '@aeriajs/common'
 import * as path from 'node:path'
 import { writeFile } from 'node:fs/promises'
 import { createRequire } from 'module'
-import { createInstance, TopLevelObject } from './topLevel.js'
+import { createInstance, type TopLevelObject } from './topLevel.js'
 import { publicUrl } from './utils.js'
 
 const DTS_FILENAME = 'aeria-sdk.d.ts'
