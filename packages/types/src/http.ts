@@ -100,8 +100,8 @@ export type EndpointFunction<
     : TRoutePayload extends undefined
       ? <T = TRouteResponse>()=> Promise<WithACErrors<T>>
       : <T = TRouteResponse>(payload: TRoutePayload)=> Promise<WithACErrors<T>>
-) extends infer Function
-  ? Record<TRouteMethod, Function>
+) extends infer InferredFunction
+  ? Record<TRouteMethod, InferredFunction>
   : never
 
 export type MakeEndpoint<
