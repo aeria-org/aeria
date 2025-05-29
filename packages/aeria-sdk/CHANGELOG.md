@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.192
+
+### Patch Changes
+
+- 002f912: Refactor `createInstance()` typing
+
 ## 0.0.191
 
 ### Patch Changes
