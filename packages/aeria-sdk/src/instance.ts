@@ -8,7 +8,7 @@ export const interceptors: InstanceContext['interceptors'] = {}
 const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
   config: InstanceConfig,
   _target: TTarget,
-  instanceContext: InstanceContext,
+  context: InstanceContext,
   bearerToken?: string,
   segment?: string,
 ) => {
@@ -26,8 +26,13 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
         ? `${segment}/${key}`
         : key
 
-      const fn = call()(key, uri, config, instanceContext)
-      return proxify(config, fn, instanceContext, bearerToken, newUri)
+      const fn = call()(key, uri, {
+        config,
+        context,
+        bearerToken,
+      })
+
+      return proxify(config, fn, context, bearerToken, newUri)
     },
   })
 }
@@ -35,12 +40,13 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
 export const call = <TApiSchema extends ApiSchema>() => <TRoute extends keyof TApiSchema, TRouteMethod extends keyof TApiSchema[TRoute]>(
   method: TRouteMethod & string,
   route: TRoute & string,
-  config: InstanceConfig,
-  context: InstanceContext = {
-    interceptors,
-  },
-  bearerToken?: string,
+  params: {
+    config: InstanceConfig
+    context?: InstanceContext
+    bearerToken?: string
+  }
 ) => {
+  const { context = { interceptors } } = params
   const {
     request: requestTransformer = interceptors.request,
     response: responseTransformer = interceptors.response,
@@ -64,11 +70,11 @@ export const call = <TApiSchema extends ApiSchema>() => <TRoute extends keyof TA
       }
     }
 
-    if( bearerToken ) {
-      requestConfig.params.headers.authorization = `Bearer ${bearerToken}`
+    if( params.bearerToken ) {
+      requestConfig.params.headers.authorization = `Bearer ${params.bearerToken}`
     }
 
-    const { data } = await request(config, `${publicUrl(config)}/${route}`, payload, requestConfig)
+    const { data } = await request(params.config, `${publicUrl(params.config)}/${route}`, payload, requestConfig)
     return data
   }
 
