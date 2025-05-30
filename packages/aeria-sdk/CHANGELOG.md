@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.194
+
+### Patch Changes
+
+- 73ea187: Refactor API
+
 ## 0.0.193
 
 ### Patch Changes
