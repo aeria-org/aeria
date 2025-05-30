@@ -44,9 +44,13 @@ export const call = <TApiSchema extends ApiSchema>() => <TRoute extends keyof TA
     config: InstanceConfig
     context?: InstanceContext
     bearerToken?: string
-  }
+  },
 ) => {
-  const { context = { interceptors } } = params
+  const {
+    context = {
+      interceptors,
+    },
+  } = params
   const {
     request: requestTransformer = interceptors.request,
     response: responseTransformer = interceptors.response,
