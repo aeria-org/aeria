@@ -78,7 +78,7 @@ export const call = <TApiSchema extends ApiSchema>() => <TRoute extends keyof TA
       requestConfig.params.headers.authorization = `Bearer ${params.bearerToken}`
     }
 
-    const { data } = await request(params.config, `${publicUrl(params.config)}/${route}`, payload, requestConfig)
+    const { data } = await request(params.config, `${publicUrl(params.config)}${route}`, payload, requestConfig)
     return data
   }
 
