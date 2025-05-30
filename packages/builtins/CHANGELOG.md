@@ -1,5 +1,17 @@
 # @aeriajs/builtins
 
+## 0.0.265
+
+### Patch Changes
+
+- 8f4c50b: Fix aeria sdk mirror
+- Updated dependencies [8f4c50b]
+  - @aeriajs/types@0.0.128
+  - @aeriajs/core@0.0.265
+  - @aeriajs/common@0.0.150
+  - @aeriajs/entrypoint@0.0.155
+  - @aeriajs/validation@0.0.168
+
 ## 0.0.264
 
 ### Patch Changes
