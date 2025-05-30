@@ -124,9 +124,9 @@ import { getStorage } from './storage.mjs'
 import { uploader } from './upload.mjs'
 export const instanceConfig = ${JSON.stringify(config)}
 export const url = '${publicUrl(config)}'
-export const aeria = createInstance(config)
-export const storage = getStorage(config)
-export const upload = uploader(config)
+export const aeria = createInstance(instanceConfig)
+export const storage = getStorage(instanceConfig)
+export const upload = uploader(instanceConfig)
 export default aeria
 \n`
 
