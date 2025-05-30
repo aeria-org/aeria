@@ -3,7 +3,7 @@ import { deserialize } from '@aeriajs/common'
 import * as path from 'node:path'
 import { writeFile } from 'node:fs/promises'
 import { createRequire } from 'module'
-import { createInstance, type TopLevelObject } from './topLevel.js'
+import { createInstance, type TopLevelObject } from './instance.js'
 import { publicUrl } from './utils.js'
 
 const DTS_FILENAME = 'aeria-sdk.d.ts'
@@ -24,7 +24,6 @@ const mirrorDts = (mirrorObj: MirrorObject, config: InstanceConfig) => {
   InferProperties,
   SchemaWithId,
   PackReferences,
-  MakeEndpoint,
   RequestMethod,
   CollectionFunctionsSDK
 
@@ -32,7 +31,7 @@ const mirrorDts = (mirrorObj: MirrorObject, config: InstanceConfig) => {
 
 declare type MirrorDescriptions = ${JSON.stringify(descriptions, null, 2)}\n
 
-declare type MirrorRouter = ${JSON.stringify(router, null, 2)}\n
+declare type MirrorApiSchema = ${JSON.stringify(router, null, 2)}\n
 
 ${
   config.integrated
@@ -46,28 +45,28 @@ ${
 }\n`
 }
 declare module 'aeria-sdk' {
-  import { TopLevelObject } from 'aeria-sdk'
+  import { TopLevelObject, MakeEndpoint } from 'aeria-sdk'
 
   type UnionToIntersection<T> = (T extends unknown ? ((x: T) => 0) : never) extends ((x: infer R) => 0)
     ? R
     : never
 
-  type InferEndpoint<Route extends keyof MirrorRouter> = {
-    [Method in keyof MirrorRouter[Route]]: Method extends RequestMethod
-      ? MirrorRouter[Route][Method] extends infer Contract
+  type InferEndpoints<TApiSchema extends ApiSchema, TRoute extends keyof TApiSchema> = {
+    [Method in keyof TApiSchema[TRoute]]: Method extends RequestMethod
+      ? TApiSchema[TRoute][Method] extends infer Contract
         ? Contract extends
         | { response: infer RouteResponse }
         | { payload: infer RoutePayload  }
         | { query: infer RoutePayload  }
           ? MakeEndpoint<
-            Route,
+            TRoute,
             Method,
             InferProperties<RouteResponse>,
             RoutePayload extends {}
               ? PackReferences<InferProperty<RoutePayload>>
               : undefined
           >
-          : MakeEndpoint<Route, Method>
+          : MakeEndpoint<TRoute, Method>
         : never
       : never
     } extends infer Methods
@@ -75,7 +74,7 @@ declare module 'aeria-sdk' {
       : never
 
   export type Api = {
-    [Route in keyof MirrorRouter]: Route extends \`/\${infer Coll}/\${infer Fn}\`
+    [Route in keyof MirrorApiSchema]: Route extends \`/\${infer Coll}/\${infer Fn}\`
       ? Coll extends keyof Collections
         ? Fn extends keyof CollectionFunctionsSDK
           ? Record<Coll, Record<
@@ -83,9 +82,9 @@ declare module 'aeria-sdk' {
               POST: CollectionFunctionsSDK<MirrorDescriptions[Coll]>[Fn]
             }
             >>
-          : InferEndpoint<Route>
-        : InferEndpoint<Route>
-      : InferEndpoint<Route>
+          : InferEndpoints<Route>
+        : InferEndpoints<Route>
+      : InferEndpoints<Route>
   } extends infer Api
     ? UnionToIntersection<Api[keyof Api]>
     : never
@@ -96,6 +95,11 @@ declare module 'aeria-sdk' {
 
   const topLevelAeria: TopLevelAeria
 
+  export {
+    MirrorDescriptions,
+    MirrorApiSchema,
+  }
+
   export const url: string
   export const aeria: TopLevelAeria
   export default topLevelAeria
@@ -105,7 +109,7 @@ declare module 'aeria-sdk' {
 
 export const runtimeCjs = (config: InstanceConfig) =>
   `const config = ${JSON.stringify(config)}
-const aeria = require('./topLevel.js').createInstance(config)
+const aeria = require('./instance.js').createInstance(config)
 exports.config = config
 exports.url = '${publicUrl(config)}'
 exports.aeria = aeria
@@ -115,7 +119,7 @@ exports.default = aeria
 \n`
 
 export const runtimeEsm = (config: InstanceConfig) =>
-  `import { createInstance } from './topLevel.mjs'
+  `import { createInstance } from './instance.mjs'
 import { getStorage } from './storage.mjs'
 import { uploader } from './upload.mjs'
 export const config = ${JSON.stringify(config)}

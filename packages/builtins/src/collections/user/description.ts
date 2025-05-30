@@ -29,6 +29,7 @@ export const description = defineDescription({
       minLength: 1,
     },
     given_name: {
+      type: 'getter',
       getter: (doc: object) => {
         if( 'name' in doc && typeof doc.name === 'string' ) {
           return doc.name.split(' ')[0]
@@ -36,6 +37,7 @@ export const description = defineDescription({
       },
     },
     family_name: {
+      type: 'getter',
       getter: (doc: object) => {
         if( 'name' in doc && typeof doc.name === 'string' ) {
           return doc.name.split(' ')[1]
@@ -72,6 +74,7 @@ export const description = defineDescription({
       accept: ['image/*'],
     },
     picture: {
+      type: 'getter',
       getter: (doc: object) => {
         if( 'picture_file' in doc && doc.picture_file && typeof doc.picture_file === 'object' && '_id' in doc.picture_file && doc.picture_file._id instanceof ObjectId ) {
           return getFileLink(doc.picture_file._id)

@@ -38,7 +38,8 @@ export type InferProperty<T> = T extends TestType<{ format: 'date' | 'date-time'
                   ? { [P: string]: InferProperty<K> | undefined } : T extends TestType<{ items: infer K }>
                     ? InferProperty<K>[] : T extends TestType<{ getter: (doc: unknown)=> infer K }>
                       ? Awaited<K> : T extends TestType<{ const: infer K }>
-                        ? K : never
+                        ? K : T extends TestType<{ isConstUndefined: true }>
+                          ? undefined : never
 
 type ExtractRequiredPropNames<T> = T extends readonly (infer PropName)[]
   ? PropName

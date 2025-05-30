@@ -11,6 +11,7 @@ export const errorSchema = <const TError extends Property>(error: TError) => {
       error,
       result: {
         const: undefined,
+        isConstUndefined: true,
       },
     },
   } as const
@@ -27,6 +28,7 @@ export const resultSchema = <const TResult extends Property>(result: TResult) =>
       },
       error: {
         const: undefined,
+        isConstUndefined: true,
       },
       result,
     },
@@ -50,6 +52,7 @@ export const endpointErrorSchema = <
       },
       result: {
         const: undefined,
+        isConstUndefined: true,
       },
       error: {
         type: 'object',
@@ -86,6 +89,7 @@ export const genericEndpointErrorSchema = () => {
       },
       result: {
         const: undefined,
+        isConstUndefined: true,
       },
       error: {
         type: 'object',

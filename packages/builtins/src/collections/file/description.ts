@@ -46,6 +46,7 @@ export const description = defineDescription({
       type: 'boolean',
     },
     link: {
+      type: 'getter',
       getter: async (doc: object) => {
         if( '_id' in doc && 'last_modified' in doc && doc._id instanceof ObjectId ) {
           return `${await getFileLink(doc._id)}/${timestamp(doc.last_modified)}`
@@ -53,6 +54,7 @@ export const description = defineDescription({
       },
     },
     download_link: {
+      type: 'getter',
       getter: async (doc: object) => {
         if( '_id' in doc && 'last_modified' in doc && doc._id instanceof ObjectId ) {
           return `${await getFileLink(doc._id)}/download/${timestamp(doc.last_modified)}`

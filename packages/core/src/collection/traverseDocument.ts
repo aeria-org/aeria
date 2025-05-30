@@ -224,6 +224,9 @@ const getters = async (value: unknown, ctx: PhaseContext) => {
     if( !ctx.options.context ) {
       throw new Error
     }
+    if( !ctx.property.getter ) {
+      return Result.result(undefined)
+    }
     return Result.result(await ctx.property.getter(ctx.target as WithId<unknown>, ctx.options.context))
   }
 

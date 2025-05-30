@@ -152,7 +152,9 @@ export const recursivelyUnwrapPropertyNodes = <
   }, {}) as TReturnType
 }
 
-const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object'
+const isRecord = (value: unknown): value is Record<string, unknown> => {
+  return !!(value && typeof value === 'object')
+}
 
 export const stringify = (value: StringifyProperty, parents: (symbol | string)[] = []): string => {
   if (Array.isArray(value)) {
@@ -177,7 +179,7 @@ export const stringify = (value: StringifyProperty, parents: (symbol | string)[]
       : `"${String(value)}"`
   }
 
-  const objectString: string = Object.keys(value).map((key) => {
+  const objectString = Object.keys(value).map((key) => {
     const currentParents = [
       ...parents,
       key,

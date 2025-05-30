@@ -140,12 +140,18 @@ export type BooleanProperty = {
 }
 
 export type GetterProperty = {
-  getter: (document: unknown & { _id: ObjectId }, context: RouteContext)=> unknown
+  type: 'getter'
+  getter?: (document: unknown & { _id: ObjectId }, context: RouteContext)=> unknown
   requires?: string[]
 }
 
 export type ConstProperty = {
-  const: string | number | boolean | undefined | null
+  const: string | number | boolean | null
+}
+
+export type ConstUndefinedProperty = {
+  const?: undefined
+  isConstUndefined: true
 }
 
 export type MixedProperty =
@@ -159,6 +165,7 @@ export type MixedProperty =
   | BooleanProperty
   | GetterProperty
   | ConstProperty
+  | ConstUndefinedProperty
 
 export type NonCircularMixedProperty =
   | NonCircularRefProperty
@@ -171,6 +178,7 @@ export type NonCircularMixedProperty =
   | BooleanProperty
   | GetterProperty
   | ConstProperty
+  | ConstUndefinedProperty
 
 export type PropertyBase = {
   description?: string
