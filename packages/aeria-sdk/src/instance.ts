@@ -19,11 +19,11 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
       }
 
       const uri = segment
-        ? segment
-        : key
+        ? `/${segment}`
+        : `/${key}`
 
-      const newUri = segment
-        ? `${segment}/${key}`
+      const nextSegment = segment
+        ? `${uri}/${key}`
         : key
 
       const fn = call()(key, uri, {
@@ -32,7 +32,7 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
         bearerToken,
       })
 
-      return proxify(config, fn, context, bearerToken, newUri)
+      return proxify(config, fn, context, bearerToken, nextSegment)
     },
   })
 }
