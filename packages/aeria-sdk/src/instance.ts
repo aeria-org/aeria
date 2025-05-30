@@ -1,44 +1,7 @@
-import type { RequestConfig, RequestTransformer, ResponseTransformer } from '@aeriajs/common'
-import type { ContractWithRoles, RequestMethod, InferEndpointFunction, InferEndpointFromContract } from '@aeriajs/types'
-import type { InstanceConfig } from './types.js'
+import type { RequestConfig } from '@aeriajs/common'
+import type { InstanceConfig, InstanceContext, ApiPrototype, ApiSchema, InferEndpointFromContract } from './types.js'
 import { request } from './http.js'
 import { publicUrl } from './utils.js'
-
-export type ApiPrototype =
-  | { [node: string]: ApiPrototype }
-  | Record<RequestMethod, (payload: unknown) => Promise<unknown>>
-
-export type TopLevelObject = ApiPrototype & {
-  describe: {
-    POST: (...args: unknown[])=> Promise<string>
-  }
-}
-
-export type ApiSchema = {
-  [route: string]: {
-    [method: RequestMethod]: ContractWithRoles
-  }
-}
-
-export type MakeEndpoint<
-  TRoute extends string,
-  TRouteMethod extends RequestMethod,
-  TRouteResponse = unknown,
-  TRoutePayload = null,
-> = TRoute extends `/${infer RouteTail}`
-  ? MakeEndpoint<RouteTail, TRouteMethod, TRouteResponse, TRoutePayload>
-  : TRoute extends `${infer Route}/${infer RouteTail}`
-    ? Record<Route, MakeEndpoint<RouteTail, TRouteMethod, TRouteResponse, TRoutePayload>>
-    : TRoute extends `(${string}`
-      ? Record<string, Record<TRouteMethod, InferEndpointFunction<TRouteResponse, TRoutePayload>>>
-      : Record<TRoute, Record<TRouteMethod, InferEndpointFunction<TRouteResponse, TRoutePayload>>>
-
-export type InstanceContext = {
-  interceptors: {
-    request?: RequestTransformer
-    response?: ResponseTransformer
-  }
-}
 
 export const interceptors: InstanceContext['interceptors'] = {}
 

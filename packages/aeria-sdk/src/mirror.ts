@@ -1,9 +1,9 @@
-import type { InstanceConfig } from './types.js'
+import type { InstanceConfig, AeriaInstance } from './types.js'
 import { deserialize } from '@aeriajs/common'
 import * as path from 'node:path'
 import { writeFile } from 'node:fs/promises'
 import { createRequire } from 'module'
-import { createInstance, type TopLevelObject } from './instance.js'
+import { createInstance } from './instance.js'
 import { publicUrl } from './utils.js'
 
 const DTS_FILENAME = 'aeria-sdk.d.ts'
@@ -45,7 +45,7 @@ ${
 }\n`
 }
 declare module 'aeria-sdk' {
-  import { TopLevelObject, MakeEndpoint } from 'aeria-sdk'
+  import { AeriaInstance, MakeEndpoint } from 'aeria-sdk'
 
   type UnionToIntersection<T> = (T extends unknown ? ((x: T) => 0) : never) extends ((x: infer R) => 0)
     ? R
@@ -90,8 +90,8 @@ declare module 'aeria-sdk' {
     : never
 
   type TopLevelAeria = 
-    & ((bearerToken?: string) => TopLevelObject & Api)
-    & TopLevelObject & Api
+    & ((bearerToken?: string) => AeriaInstance & Api)
+    & AeriaInstance & Api
 
   const topLevelAeria: TopLevelAeria
 
@@ -165,7 +165,7 @@ export const writeMirrorFiles = async (mirror: MirrorObject, config: InstanceCon
 }
 
 export const mirrorRemotely = async (config: InstanceConfig) => {
-  const aeria = createInstance<TopLevelObject>(config)
+  const aeria = createInstance<AeriaInstance>(config)
   const mirror = deserialize<MirrorObject>(await aeria().describe.POST({
     router: true,
   }))
