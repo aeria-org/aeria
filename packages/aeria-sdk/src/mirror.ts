@@ -45,13 +45,13 @@ ${
 }\n`
 }
 declare module 'aeria-sdk' {
-  import { AeriaInstance, MakeEndpoint } from 'aeria-sdk'
+  import { AeriaInstance, MakeEndpoint, ApiSchema } from 'aeria-sdk'
 
   type UnionToIntersection<T> = (T extends unknown ? ((x: T) => 0) : never) extends ((x: infer R) => 0)
     ? R
     : never
 
-  type InferEndpoints<TApiSchema extends ApiSchema, TRoute extends keyof TApiSchema> = {
+  type InferEndpoints<TApiSchema extends ApiSchema, TRoute extends keyof TApiSchema & string> = {
     [Method in keyof TApiSchema[TRoute]]: Method extends RequestMethod
       ? TApiSchema[TRoute][Method] extends infer Contract
         ? Contract extends
@@ -82,9 +82,9 @@ declare module 'aeria-sdk' {
               POST: CollectionFunctionsSDK<MirrorDescriptions[Coll]>[Fn]
             }
             >>
-          : InferEndpoints<Route>
-        : InferEndpoints<Route>
-      : InferEndpoints<Route>
+          : InferEndpoints<MirrorApiSchema, Route>
+        : InferEndpoints<MirrorApiSchema, Route>
+      : InferEndpoints<MirrorApiSchema, Route>
   } extends infer Api
     ? UnionToIntersection<Api[keyof Api]>
     : never
