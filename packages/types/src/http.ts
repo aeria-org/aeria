@@ -3,8 +3,8 @@ import type { Result, ExtractError, ExtractResult } from './result.js'
 import type { EndpointError } from './endpointError.js'
 import type { ACError } from './accessControl.js'
 import type { RateLimitingError } from './security.js'
-import {Contract} from './contract.js'
-import {InferProperties, InferProperty, PackReferences} from './schema.js'
+import { type Contract } from './contract.js'
+import { type InferProperties, type InferProperty, type PackReferences } from './schema.js'
 
 export const REQUEST_METHODS = [
   'GET',
@@ -98,17 +98,17 @@ export type InferEndpointFunction<TRouteResponse, TRoutePayload> = TRoutePayload
     ? <T = TRouteResponse>()=> Promise<WithACErrors<T>>
     : <T = TRouteResponse>(payload: TRoutePayload)=> Promise<WithACErrors<T>>
 
-export type InferEndpointFromContract<TContract extends Contract> =  TContract extends
+export type InferEndpointFromContract<TContract extends Contract> = TContract extends
   | { response: infer RouteResponse }
-  | { payload: infer RoutePayload  }
-  | { query: infer RoutePayload  }
-    ? InferEndpointFunction<
-      RouteResponse extends {}
-        ? InferProperties<RouteResponse>
-        : unknown,
-      RoutePayload extends {}
-        ? PackReferences<InferProperty<RoutePayload>>
-        : undefined
-    >
-    : never
+  | { payload: infer RoutePayload }
+  | { query: infer RoutePayload }
+  ? InferEndpointFunction<
+    RouteResponse extends {}
+      ? InferProperties<RouteResponse>
+      : unknown,
+    RoutePayload extends {}
+      ? PackReferences<InferProperty<RoutePayload>>
+      : undefined
+  >
+  : never
 

@@ -73,7 +73,9 @@ export const call = <TApiSchema extends ApiSchema>() => <TRoute extends keyof TA
   method: TRouteMethod & string,
   route: TRoute & string,
   config: InstanceConfig,
-  context: InstanceContext = { interceptors },
+  context: InstanceContext = {
+    interceptors,
+  },
   bearerToken?: string,
 ) => {
   const {
