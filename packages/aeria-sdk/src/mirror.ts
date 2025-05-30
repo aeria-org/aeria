@@ -110,7 +110,7 @@ declare module 'aeria-sdk' {
 export const runtimeCjs = (config: InstanceConfig) =>
   `const config = ${JSON.stringify(config)}
 const aeria = require('./instance.js').createInstance(config)
-exports.config = config
+exports.instanceConfig = config
 exports.url = '${publicUrl(config)}'
 exports.aeria = aeria
 exports.storage = require('./storage.js').getStorage(config)
@@ -122,7 +122,7 @@ export const runtimeEsm = (config: InstanceConfig) =>
   `import { createInstance } from './instance.mjs'
 import { getStorage } from './storage.mjs'
 import { uploader } from './upload.mjs'
-export const config = ${JSON.stringify(config)}
+export const instanceConfig = ${JSON.stringify(config)}
 export const url = '${publicUrl(config)}'
 export const aeria = createInstance(config)
 export const storage = getStorage(config)
