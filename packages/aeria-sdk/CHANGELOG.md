@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.197
+
+### Patch Changes
+
+- 59d93a1: Fix `call()`
+
 ## 0.0.196
 
 ### Patch Changes
