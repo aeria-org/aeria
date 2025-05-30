@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.196
+
+### Patch Changes
+
+- 8977899: Fix runtime file
+
 ## 0.0.195
 
 ### Patch Changes
