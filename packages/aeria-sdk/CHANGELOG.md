@@ -1,5 +1,14 @@
 # aeria-sdk
 
+## 0.0.193
+
+### Patch Changes
+
+- 8f4c50b: Fix aeria sdk mirror
+- Updated dependencies [8f4c50b]
+  - @aeriajs/types@0.0.128
+  - @aeriajs/common@0.0.150
+
 ## 0.0.192
 
 ### Patch Changes
