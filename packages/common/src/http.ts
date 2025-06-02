@@ -57,8 +57,8 @@ export const request = async <TResponseType = unknown>(
   config: RequestConfig = {},
 ) => {
   const {
-    requestTransformer = (context, next) => next(context),
-    responseTransformer = (context, next) => next(context),
+    requestTransformer,
+    responseTransformer,
   } = config
 
   let params: RequestParams
@@ -79,18 +79,31 @@ export const request = async <TResponseType = unknown>(
     }
   }
 
-  const transformedRequest = await requestTransformer({
+  let transformedRequest: RequestTransformerContext = {
     url,
     payload,
     params,
-  }, defaultRequestTransformer)
+  }
+
+  if( requestTransformer ) {
+    transformedRequest = await requestTransformer(transformedRequest, defaultRequestTransformer)
+  } else {
+    transformedRequest = await defaultRequestTransformer(transformedRequest)
+  }
 
   const response = await fetch(transformedRequest.url, transformedRequest.params)
-  const { response: transformedResponse } = await responseTransformer({
+  let transformedResponse: ResponseTransformerContext = {
     response,
-  }, defaultResponseTransformer)
+  }
 
-  return transformedResponse as typeof transformedResponse & {
+  if( responseTransformer ) {
+    transformedResponse = await responseTransformer(transformedResponse, defaultResponseTransformer)
+  } else {
+    transformedResponse = await defaultResponseTransformer(transformedResponse)
+  }
+
+
+  return transformedResponse.response as typeof transformedResponse['response'] & {
     data: TResponseType
   }
 }
