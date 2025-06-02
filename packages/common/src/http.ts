@@ -102,7 +102,6 @@ export const request = async <TResponseType = unknown>(
     transformedResponse = await defaultResponseTransformer(transformedResponse)
   }
 
-
   return transformedResponse.response as typeof transformedResponse['response'] & {
     data: TResponseType
   }
