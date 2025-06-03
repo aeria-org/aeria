@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.200
+
+### Patch Changes
+
+- da585d3: Fix `call()` typing
+
 ## 0.0.199
 
 ### Patch Changes
