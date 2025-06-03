@@ -22,6 +22,7 @@ export const authenticate = (config: InstanceConfig) => async (payload: Authenti
   const { error, result } = response.data
   if( result ) {
     getStorage(config).set('auth', result)
+    return Result.result(result)
   }
 
   return Result.error(error)
