@@ -2,6 +2,7 @@ import type { RequestConfig } from '@aeriajs/common'
 import type { InstanceConfig, InstanceContext, ApiPrototype, ApiSchema, InferEndpointFromContract } from './types.js'
 import { request } from './http.js'
 import { publicUrl } from './utils.js'
+import {CollectionFunctionsSDK, Description, JsonSchema} from '@aeriajs/types'
 
 export const interceptors: InstanceContext['interceptors'] = {}
 
@@ -37,7 +38,7 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
   })
 }
 
-export const call = <TApiSchema extends ApiSchema>() => <TRoute extends keyof TApiSchema, TRouteMethod extends keyof TApiSchema[TRoute]>(
+export const call = <TApiSchema extends ApiSchema, TDescriptions extends Record<string, Description> = Record<string, Description>>() => <TRoute extends keyof TApiSchema, TRouteMethod extends keyof TApiSchema[TRoute]>(
   method: TRouteMethod & string,
   route: TRoute & string,
   params: {
@@ -82,7 +83,13 @@ export const call = <TApiSchema extends ApiSchema>() => <TRoute extends keyof TA
     return data
   }
 
-  return fn as InferEndpointFromContract<TApiSchema[TRoute][TRouteMethod]>
+  return fn as TApiSchema[TRoute][TRouteMethod] extends { builtin: true }
+    ? TRoute extends `/${infer InferredCollection}/${infer InferredEndpoint}`
+      ? InferredEndpoint extends keyof CollectionFunctionsSDK<JsonSchema>
+        ? CollectionFunctionsSDK<TDescriptions[InferredCollection]>[InferredEndpoint]
+        : never
+      : never
+    : InferEndpointFromContract<TApiSchema[TRoute][TRouteMethod]>
 }
 
 export const createInstance = <TApiPrototype extends ApiPrototype>(config: InstanceConfig, instanceContext = {
