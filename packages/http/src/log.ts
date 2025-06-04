@@ -18,7 +18,10 @@ export const logResponse = (response: GenericResponse) => {
   const now = new Date()
   let line = `[${styleText([statusColor], statusCode.toString())}] `
   line += `[${now.toLocaleString()}] `
-  line += styleText([ 'bold', methodColor, ], method) + ' '
+  line += styleText([
+    'bold',
+    methodColor,
+  ], method) + ' '
   line += url
 
   console.log(line)

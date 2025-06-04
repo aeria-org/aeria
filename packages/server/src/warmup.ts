@@ -41,9 +41,14 @@ const colorizedRoute = async (
     }
   }
 
-  let line = styleText([ 'bold', color, ], method) + '\t'
+  let line = styleText([
+    'bold',
+    color,
+  ], method) + '\t'
   line += hasContractLine
-  line += styleText(['grey'], ` ${config.baseUrl === '/' ? '' : config.baseUrl!}`)
+  line += styleText(['grey'], ` ${config.baseUrl === '/'
+    ? ''
+    : config.baseUrl!}`)
   line += styleText(['bold'], endpointUri)
   line += rolesLine
 
