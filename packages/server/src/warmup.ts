@@ -1,7 +1,7 @@
-import type { ContractWithRoles, RouteUri } from '@aeriajs/types'
-import { escape, AnsiColor, METHOD_COLORS } from '@aeriajs/common'
+import { METHOD_COLORS, type ContractWithRoles, type RouteUri } from '@aeriajs/types'
 import { getEndpoints } from '@aeriajs/core'
 import { getConfig, getAvailableRoles } from '@aeriajs/entrypoint'
+import { styleText } from 'node:util'
 
 const colorizedRoute = async (
   method: string,
@@ -10,12 +10,12 @@ const colorizedRoute = async (
 ) => {
   const config = await getConfig()
   const color = method in METHOD_COLORS
-    ? METHOD_COLORS[method]
-    : AnsiColor.White
+    ? METHOD_COLORS[method as keyof typeof METHOD_COLORS]
+    : 'white'
 
   let
     rolesLine = '',
-    hasContractLine = escape(AnsiColor.Yellow, 'x')
+    hasContractLine = styleText(['yellow'], 'x')
 
   if( endpoint ) {
     if( 'roles' in endpoint ) {
@@ -34,23 +34,17 @@ const colorizedRoute = async (
         return endpoint.roles
       })()
 
-      rolesLine = ` ${escape('[90m', `[${roles.join('|')}]`)}`
+      rolesLine = ` ${styleText(['grey'], `[${roles.join('|')}]`)}`
     }
     if( 'response' in endpoint || endpoint.builtin ) {
-      hasContractLine = escape(AnsiColor.Green, '✓')
+      hasContractLine = styleText(['green'], '✓')
     }
   }
 
-  let line = escape([
-    '[1m',
-    color,
-  ], method) + '\t'
-
+  let line = styleText([ 'bold', color, ], method) + '\t'
   line += hasContractLine
-  line += escape('[90m', ` ${config.baseUrl === '/'
-    ? ''
-    : config.baseUrl!}`)
-  line += escape('[1m', endpointUri)
+  line += styleText(['grey'], ` ${config.baseUrl === '/' ? '' : config.baseUrl!}`)
+  line += styleText(['bold'], endpointUri)
   line += rolesLine
 
   return line

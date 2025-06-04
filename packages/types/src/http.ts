@@ -14,7 +14,14 @@ export const REQUEST_METHODS = [
   'PATCH',
   'TRACE',
   'SEARCH',
-] as const
+]
+
+export const METHOD_COLORS = {
+  GET: 'green',
+  PUT: 'blue',
+  POST: 'white',
+  DELETE: 'red',
+} as const satisfies Record<RequestMethod, string>
 
 export const HTTPStatus = {
   Ok: 200,
