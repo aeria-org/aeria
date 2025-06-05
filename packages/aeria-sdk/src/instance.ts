@@ -24,7 +24,7 @@ const proxify = <TTarget extends Function | Record<string | symbol, unknown>>(
         : `/${key}`
 
       const nextSegment = segment
-        ? `${uri}/${key}`
+        ? `${segment}/${key}`
         : key
 
       const fn = call()(key, uri, {
