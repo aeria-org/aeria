@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.129
+
+### Patch Changes
+
+- b5158f5: Bump release
+
 ## 0.0.128
 
 ### Patch Changes
