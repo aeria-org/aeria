@@ -1,5 +1,13 @@
 # @aeriajs/common
 
+## 0.0.151
+
+### Patch Changes
+
+- b5158f5: Bump release
+- Updated dependencies [b5158f5]
+  - @aeriajs/types@0.0.129
+
 ## 0.0.150
 
 ### Patch Changes

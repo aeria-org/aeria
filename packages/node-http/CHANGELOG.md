@@ -1,5 +1,14 @@
 # @aeriajs/node-http
 
+## 0.0.182
+
+### Patch Changes
+
+- b5158f5: Bump release
+- Updated dependencies [b5158f5]
+  - @aeriajs/common@0.0.151
+  - @aeriajs/http@0.0.182
+
 ## 0.0.181
 
 ### Patch Changes
