@@ -6,9 +6,9 @@
 [Documentation](https://aeria.land/aeria/) |
 [How to Contribute](.github/CONTRIBUTING.md)
 
-Aeria is a minimalistic framework designed to streamline CRUD-based applications with a type-safe, developer-friendly experience. It ships a thin **MongoDB** abstraction layer and a Prisma-like DSL that serves model definition with support for nested objects, arrays, references, upload fields, and more, making it ideal for applications with complex data structures and relational logic. On top of that a HTTP routing API with very simple bindings is provided to build business logic.
+Aeria is a framework designed to streamline CRUD-based applications with a type-safe, developer-friendly experience. It ships a thin **MongoDB** abstraction layer and a DSL that serves model definition with support for nested objects, arrays, references, upload fields, and more, making it ideal for applications with complex data structures and relational logic. On top of that a HTTP routing API with very simple bindings is provided to build business logic.
 
-The project was created to offer a more cohesive and straightforward way to create data-centric applications using document databases compared to alternatives like Express/Mongoose.
+The project was created to offer a more cohesive and straightforward way to create data-centric applications using MongoDB compared to alternatives like Express/Mongoose.
 
 ### Quickstart
 
@@ -31,7 +31,9 @@ The project was created to offer a more cohesive and straightforward way to crea
 #### Is Aeria a programming language?
 
 Some common concern people have when being presented to something like Aeria is: "Am I going to learn a whole new language just to use that thing?".
-Aeria has a very flat learning curve because it is not a fully-fledged programming language. It has only two main concepts: **collections** and **contracts**. Learning the whole thing can be done in half an hour or even less. You probably won't have a hard time guessing what the code below does:
+Aeria has a very flat learning curve because it is not a fully-fledged programming language. It has only two main concepts: **collections** and **contracts**. Learning the whole thing can be done in half an hour or even less.
+
+You probably won't have a hard time guessing what the code below does:
 
 ```aeria
 collection Person {
@@ -78,7 +80,11 @@ contract GetPersonBySlug {
 
 #### Why should I consider using it?
 
-Aeria brings a lot of benefits when you need to prototype a MVP fast and then scale to a bigger project. The most obvious one being, the amount of code (and thus time) needed to bring up a feature is dramatically smaller compared to conventional approaches, thanks to the DSL and builtins that the framework offers. Along with that, it ships a ready-to-use extensible dashboard and a 1:1 typed SDK. It is also [a lot faster than Mongoose and Prisma when dealing with references](https://github.com/aeria-org/benchmark). To sum it up: if your database pick is MongoDB and you are going for building a project fast and you care about type-safety, Aeria is the right pick for you.
+Aeria brings a lot of benefits when you need to prototype a MVP fast and then scale to a more robust project. The most obvious one being, the amount of code (and thus time) needed to bring up a feature is dramatically smaller compared to conventional approaches, thanks to the DSL and builtins that the framework offers.
+
+Along with that, it ships a ready-to-use extensible dashboard and a 1:1 typed SDK. It is also [a lot faster than Mongoose and Prisma when dealing with references](https://github.com/aeria-org/benchmark).
+
+To sum it up: if your database pick is MongoDB and you are going for building a project fast and you care about type-safety, Aeria is the right pick for you.
 
 ### Community
 
