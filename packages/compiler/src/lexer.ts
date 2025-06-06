@@ -40,6 +40,7 @@ export const COLLECTION_KEYWORDS = [
   'search',
   'table',
   'tableMeta',
+  'writable',
 ] as const
 
 export const COLLECTION_ACTIONS_KEYWORDS = [

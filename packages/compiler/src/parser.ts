@@ -519,23 +519,20 @@ export const parse = (tokens: (Token | undefined)[]) => {
       }
 
       while( !match(TokenType.RightBracket) ) {
-        const { value: keyword, location } = current()
+        const { value: keyword, location } = consume(TokenType.Keyword, lexer.COLLECTION_KEYWORDS)
         switch( keyword ) {
           case 'writable':
           case 'required': {
-            consume(TokenType.Keyword)
             const { value, symbols } = parseArrayBlock()
             property[keyword] = value
             property[AST.LOCATION_SYMBOL]!.arrays[keyword] = symbols
             break
           }
           case 'properties': {
-            consume(TokenType.Keyword)
             nestedProperties = parsePropertiesBlock(options)
             break
           }
           case 'additionalProperties': {
-            consume(TokenType.Keyword)
             if( match(TokenType.Boolean) ) {
               nestedAdditionalProperties = consume(TokenType.Boolean).value
             } else {
@@ -830,7 +827,9 @@ export const parse = (tokens: (Token | undefined)[]) => {
             break
           }
           case 'search': {
-            node[keyword] = parseSearchBlock()
+            const { options, indexesSymbols } = parseSearchBlock()
+            node[keyword] = options
+            node[AST.LOCATION_SYMBOL].searchIndexes = indexesSymbols
             break
           }
           case 'layout': {
@@ -1105,12 +1104,20 @@ export const parse = (tokens: (Token | undefined)[]) => {
     return actions
   }
 
-  const parseSearchBlock = (): SearchOptions => {
+  const parseSearchBlock = () => {
     const searchSlots: Partial<SearchOptions> = {}
     const { location } = consume(TokenType.LeftBracket)
+    let indexesSymbols: symbol[] | undefined
+
     while( !match(TokenType.RightBracket) ) {
       const { value: keyword } = consume(TokenType.Keyword, lexer.COLLECTION_SEARCH_KEYWORDS)
       switch( keyword ) {
+        case 'indexes': {
+          const { value, symbols } = parseArrayBlock()
+          searchSlots[keyword] = value
+          indexesSymbols = symbols
+          break
+        }
         case 'placeholder': {
           const { value } = consume(TokenType.QuotedString)
           searchSlots[keyword] = value
@@ -1118,11 +1125,6 @@ export const parse = (tokens: (Token | undefined)[]) => {
         }
         case 'exactMatches': {
           const { value } = consume(TokenType.Boolean)
-          searchSlots[keyword] = value
-          break
-        }
-        case 'indexes': {
-          const { value } = parseArrayBlock()
           searchSlots[keyword] = value
           break
         }
@@ -1136,9 +1138,14 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
     consume(TokenType.RightBracket)
 
-    return {
+    const options: SearchOptions = {
       ...searchSlots,
       indexes,
+    }
+
+    return {
+      options,
+      indexesSymbols,
     }
   }
 

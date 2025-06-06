@@ -92,7 +92,7 @@ export type CollectionNode = NodeBase<'collection'> & {
   table?: readonly string[]
   tableMeta?: readonly string[]
   filters?: readonly string[]
-  search?: SearchOptions<any>
+  search?: SearchOptions
   layout?: LayoutNode
   formLayout?: FormLayoutNode
   [LOCATION_SYMBOL]: {
@@ -101,6 +101,7 @@ export type CollectionNode = NodeBase<'collection'> & {
     }
     required?: symbol[]
     requiredTerms?: readonly [string, symbol][]
+    searchIndexes?: symbol[]
   }
 }
 

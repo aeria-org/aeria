@@ -208,6 +208,16 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
         }
       }
     }
+
+    if( node.search ) {
+      for( const [i, symbol] of node[AST.LOCATION_SYMBOL].searchIndexes!.entries() ) {
+        const propName = node.search.indexes[i]
+        if( !(propName in node.properties) ) {
+          const location = locationMap.get(symbol)
+          errors.push(new Diagnostic(`invalid property "${propName}"`, location))
+        }
+      }
+    }
   }
 
   for( const node of ast.contracts ) {
