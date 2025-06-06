@@ -1,5 +1,5 @@
 ![Banner](.github/assets/banner.png)
-<small>Art made by [@Tortoddy100](https://x.com/Tortoddy100)</small>
+>A framework to prototype webapps fast so you can touch grass
 
 [![npm](https://img.shields.io/npm/v/aeria.svg)](https://npmjs.com/package/aeria) ![https://github.com/aeria-org/aeria/actions/workflows/ci.yaml](https://github.com/aeria-org/aeria/actions/workflows/ci.yaml/badge.svg)
 
