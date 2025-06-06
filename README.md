@@ -30,7 +30,7 @@ The project was created to offer a more cohesive and straightforward way to crea
 
 #### Is Aeria a programming language?
 
-Some common concern people have when being presented to something like Aeria is: "Am I going to learn a whole new language just to use that thing?".
+A common concern people have when being introduced to something like Aeria is: "Am I going to learn a whole new language just to use that thing?".
 Aeria has a very flat learning curve because it is not a fully-fledged programming language. It has only two main concepts: **collections** and **contracts**. Learning the whole thing can be done in half an hour or even less.
 
 You probably won't have a hard time guessing what the code below does:
