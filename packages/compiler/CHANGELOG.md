@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.49
+
+### Patch Changes
+
+- ab16425: Add semantic analysis to `search.indexes`
+
 ## 0.0.48
 
 ### Patch Changes
