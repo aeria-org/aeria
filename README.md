@@ -6,7 +6,7 @@
 [Documentation](https://aeria.land/aeria/) |
 [How to Contribute](.github/CONTRIBUTING.md)
 
-Aeria is a framework designed to streamline CRUD-based applications with a type-safe, developer-friendly experience. It ships a thin **MongoDB** abstraction layer and a DSL that serves model definition with support for nested objects, arrays, references, upload fields, and more, making it ideal for applications with complex data structures and relational logic. On top of that a HTTP routing API with very simple bindings is provided to build business logic.
+Aeria is a framework designed to streamline CRUD-based applications with a type-safe, developer-friendly experience. It includes a lightweight **MongoDB** abstraction layer and a DSL for model definition supporting nested objects, arrays, references, upload fields, and more, making it ideal for applications with complex data structures and relational logic. Additionally, a HTTP routing API with very simple bindings is provided to build business logic.
 
 The project was created to offer a more cohesive and straightforward way to create data-centric applications using MongoDB compared to alternatives like Express/Mongoose.
 
@@ -80,7 +80,7 @@ contract GetPersonBySlug {
 
 #### Why should I consider using it?
 
-Aeria brings a lot of benefits when you need to prototype a MVP fast and then scale to a more robust project. The most obvious one being, the amount of code (and thus time) needed to bring up a feature is dramatically smaller compared to conventional approaches, thanks to the DSL and builtins that the framework offers.
+Aeria brings a lot of benefits when you need to prototype an MVP fast and then scale to a more robust project. The most obvious is that the amount of code -- and thus time -- needed to implement a feature is dramatically reduced compared to conventional approaches, thanks to the DSL and builtins that the framework offers.
 
 Along with that, it ships a ready-to-use extensible dashboard and a 1:1 typed SDK. It is also [a lot faster than Mongoose and Prisma when dealing with references](https://github.com/aeria-org/benchmark).
 
