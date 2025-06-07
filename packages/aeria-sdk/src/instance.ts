@@ -1,8 +1,8 @@
+import type { CollectionFunctionsSDK, Description, JsonSchema } from '@aeriajs/types'
 import type { RequestConfig } from '@aeriajs/common'
 import type { InstanceConfig, InstanceContext, ApiPrototype, ApiSchema, InferEndpointFromContract } from './types.js'
 import { request } from './http.js'
 import { publicUrl } from './utils.js'
-import { type CollectionFunctionsSDK, type Description, type JsonSchema } from '@aeriajs/types'
 
 export const interceptors: InstanceContext['interceptors'] = {}
 
