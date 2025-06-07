@@ -15,7 +15,7 @@ export type RequestTransformerContext = {
 }
 
 export type ResponseTransformerContext = {
-  response: Awaited<ReturnType<typeof fetch>>
+  response: Response
 }
 
 export type RequestTransformerNext = (context: RequestTransformerContext) => ReturnType<RequestTransformer>
@@ -38,7 +38,7 @@ export const defaultRequestTransformer: RequestTransformerNext = async (context)
 }
 
 export const defaultResponseTransformer: ResponseTransformerNext = async (context) => {
-  const result = context.response as Awaited<ReturnType<typeof fetch>> & {
+  const result = context.response as Response & {
     data: unknown
   }
 
