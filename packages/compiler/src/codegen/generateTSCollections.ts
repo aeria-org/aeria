@@ -126,7 +126,7 @@ const makeTSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>
     acc[key] = {
       [UnquotedSymbol]: DEFAULT_FUNCTIONS.includes(key)
         ? `typeof ${key}`
-        : '() => never',
+        : 'unknown',
     }
     return acc
   }, {})
