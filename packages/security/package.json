@@ -35,12 +35,12 @@
     "@aeriajs/core": "link:../core",
     "@aeriajs/common": "link:../common",
     "@aeriajs/types": "link:../types",
-    "mongodb": "^6.16.0"
+    "mongodb": "^6.17.0"
   },
   "peerDependencies": {
     "@aeriajs/core": "^0.0.266",
     "@aeriajs/common": "^0.0.151",
     "@aeriajs/types": "^0.0.129",
-    "mongodb": "^6.16.0"
+    "mongodb": "^6.17.0"
   }
 }
