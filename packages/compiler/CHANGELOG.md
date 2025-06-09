@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.50
+
+### Patch Changes
+
+- 0423d45: Broken type in TS codegen
+
 ## 0.0.49
 
 ### Patch Changes
