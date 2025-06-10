@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.51
+
+### Patch Changes
+
+- 5333e11: Fix contracts semantic analysis
+
 ## 0.0.50
 
 ### Patch Changes
