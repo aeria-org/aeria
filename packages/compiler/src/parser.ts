@@ -1,11 +1,12 @@
 import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, Condition, FileProperty, FinalCondition, FinalOperator, JsonSchema, LayoutName, LayoutOptions, RefProperty, RequiredProperties, SearchOptions, UserRole } from '@aeriajs/types'
-import { TokenType, type Token, type Location } from './token.js'
 import { DESCRIPTION_PRESETS, LAYOUT_NAMES, PROPERTY_ARRAY_ELEMENTS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { icons } from '@phosphor-icons/core'
-import { Diagnostic } from './diagnostic.js'
 import * as AST from './ast.js'
 import * as guards from './guards.js'
 import * as lexer from './lexer.js'
+import { TokenType, type Token, type Location } from './token.js'
+import { Diagnostic } from './diagnostic.js'
+import { DEFAULT_EXPORT_SYMBOLS } from './utils.js'
 
 const MAX_ERROR_MESSAGE_ITEMS = 20
 const ICON_NAMES = icons.map((icon) => icon.name)
@@ -13,7 +14,10 @@ const ICON_NAMES = icons.map((icon) => icon.name)
 export const locationMap = new WeakMap<symbol, Location>()
 export const memoTable: {
   roles?: readonly string[]
-} = {}
+  defaultExportSymbols?: Record<string, string>
+} = {
+  defaultExportSymbols: DEFAULT_EXPORT_SYMBOLS,
+}
 
 type StrictToken<TTokenType extends TokenType, TValue> = undefined extends TValue
   ? Token<TTokenType>
@@ -748,6 +752,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
       const { value: symbolName } = consume(TokenType.Identifier)
       node.extends = {
         packageName,
+        importPath: packageName,
         symbolName: symbolName[0].toLowerCase() + symbolName.slice(1),
       }
     }
@@ -900,10 +905,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
     return node
   }
 
-  const parseFunctionsBlock = (): Required<Pick<AST.CollectionNode, 'functions' | 'functionSets'>> => {
+  const parseFunctionsBlock = (options: { collectionName?: string } = {}): Required<Pick<AST.CollectionNode, 'functions' | 'functionSets'>> => {
     consume(TokenType.LeftBracket)
 
-    const functions: AST.CollectionNode['functions'] = {}
+    const functions: AST.CollectionNode['functions'] = []
     const functionSets: [string, symbol][] = []
 
     while( !match(TokenType.RightBracket) ) {
@@ -930,25 +935,56 @@ export const parse = (tokens: (Token | undefined)[]) => {
           continue
         }
 
-        const { value: functionName } = consume(TokenType.Identifier)
-        functions[functionName] = {
-          accessCondition: false,
+        let functionNode: AST.FunctionNode
+        if( current().type === TokenType.Identifier && next().type === TokenType.Dot ) {
+          const { value: packageName } = consume(TokenType.Identifier)
+          consume(TokenType.Dot)
+
+          const { value: symbolName } = consume(TokenType.Identifier)
+
+          functionNode = {
+            kind: 'function',
+            name: symbolName,
+            exportSymbol: {
+              packageName,
+              importPath: packageName,
+              symbolName,
+            }
+          }
+
+        } else {
+          const { value: functionName } = consume(TokenType.Identifier)
+
+          let exportSymbol: AST.ExportSymbol | undefined
+          if( memoTable.defaultExportSymbols && functionName in memoTable.defaultExportSymbols ) {
+            const packageName = memoTable.defaultExportSymbols[functionName]
+            exportSymbol = {
+              packageName,
+              importPath: packageName,
+              symbolName: functionName,
+            }
+          }
+
+          functionNode = {
+            kind: 'function',
+            name: functionName,
+            exportSymbol,
+          }
+
         }
+
+        functions.push(functionNode)
 
         while( match(TokenType.AttributeName, 'expose') ) {
           consume(TokenType.AttributeName, 'expose')
           if( match(TokenType.LeftParens) ) {
             consume(TokenType.LeftParens)
-            functions[functionName] = {
-              accessCondition: parseAccessCondition(),
-            }
+            functionNode.accessCondition = parseAccessCondition()
 
             consume(TokenType.RightParens)
 
           } else {
-            functions[functionName] = {
-              accessCondition: true,
-            }
+            functionNode.accessCondition = true
           }
         }
       } catch( err ) {

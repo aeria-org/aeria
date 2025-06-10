@@ -17,16 +17,19 @@ export const PropertyType = {
 export const PropertyModifiers: Record<'Error' | 'Result', ExportSymbol> = {
   Error: {
     packageName: 'aeria',
+    importPath: 'aeria',
     symbolName: 'errorSchema',
   },
   Result: {
     packageName: 'aeria',
+    importPath: 'aeria',
     symbolName: 'resultSchema',
   },
 }
 
 export type ExportSymbol = {
   packageName: string
+  importPath: string
   symbolName: string
 }
 
@@ -72,6 +75,18 @@ export type PropertyNode = NodeBase<'property'> & {
   nestedAdditionalProperties?: PropertyNode | boolean
 }
 
+export type FunctionNode = NodeBase<'function'> & {
+  name: string
+  exportSymbol?: ExportSymbol
+  accessCondition?: AccessCondition
+}
+
+export type FunctionSetNode = NodeBase<'functionset'> & {
+  name: string
+  functions: FunctionNode[]
+  functionSets: [string, symbol][]
+}
+
 export type CollectionNode = NodeBase<'collection'> & {
   name: string
   extends?: ExportSymbol
@@ -81,9 +96,7 @@ export type CollectionNode = NodeBase<'collection'> & {
   actions?: CollectionActions
   individualActions?: CollectionActions
   properties: Record<string, PropertyNode>
-  functions?: Record<string, {
-    accessCondition: AccessCondition
-  }>
+  functions?: FunctionNode[]
   functionSets?: [string, symbol][]
   required?: RequiredProperties
   indexes?: readonly string[]
@@ -113,15 +126,6 @@ export type ContractNode = NodeBase<'contract'> & {
   response?:
     | PropertyNode
     | PropertyNode[]
-}
-
-export type FunctionSetNode = NodeBase<'functionset'> & {
-  name: string
-  functions: Record<string, {
-    accessCondition: AccessCondition,
-    fromFunctionSet?: true
-  }>
-  functionSets: [string, symbol][]
 }
 
 export type ProgramNode = NodeBase<'program'> & {

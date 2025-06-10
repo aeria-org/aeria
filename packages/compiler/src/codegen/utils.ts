@@ -4,18 +4,6 @@ import type { Property } from '@aeriajs/types'
 export const PACKAGE_NAME = 'aeria'
 export const MIDDLEWARES_RUNTIME_PATH = '../../../dist/middlewares/index.js'
 
-export const DEFAULT_FUNCTIONS = [
-  'count',
-  'get',
-  'getAll',
-  'insert',
-  'remove',
-  'removeAll',
-  'removeFile',
-  'unpaginatedGetAll',
-  'upload',
-]
-
 export const UnquotedSymbol = Symbol('unquoted')
 export const ArraySymbol = Symbol('array')
 
@@ -30,29 +18,27 @@ export const getExposedFunctions = (astFunctions: NonNullable<AST.CollectionNode
   ]))
 }
 
-export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, Set<string>>, options = {
+export const makeASTImports = (ast: AST.Node[], initialImports: Record<string, Set<string>> = {}, options = {
   includeRuntimeOnlyImports: false,
 }) => {
   const modifiedSymbols: Record<string, string> = {}
 
   const toImport = ast.reduce((imports, node) => {
     if (node.kind === 'collection') {
-      if (node.extends?.packageName) {
-        if (!(node.extends.packageName in imports)) {
-          imports[node.extends.packageName] = new Set()
-        }
-
-        const modifiedSymbol = `original${resizeFirstChar(node.extends.symbolName, true)}`
+      if (node.extends) {
+        const modifiedSymbol = `${node.extends.packageName}${resizeFirstChar(node.extends.symbolName, true)}`
         modifiedSymbols[node.extends.symbolName] = modifiedSymbol
-        imports[node.extends.packageName].add(`${node.extends.symbolName} as ${modifiedSymbol}`)
+
+        imports[node.extends.importPath] ??= new Set()
+        imports[node.extends.importPath].add(`${node.extends.symbolName} as ${modifiedSymbol}`)
       }
 
       if (node.functions) {
-        const functionsToImport = Object.keys(node.functions).filter((key) => DEFAULT_FUNCTIONS.includes(key))
-        if (functionsToImport.length > 0) {
-          imports[PACKAGE_NAME] ??= new Set()
-          for (const key of functionsToImport) {
-            imports[PACKAGE_NAME].add(key)
+        for( const functionNode of node.functions ) {
+          if( functionNode.exportSymbol ) {
+            const { importPath, symbolName } = functionNode.exportSymbol
+            imports[importPath] ??= new Set()
+            imports[importPath].add(symbolName)
           }
         }
       }
@@ -69,7 +55,7 @@ export const makeASTImports = (ast: AST.Node[], initialImports?: Record<string, 
     }
 
     return imports
-  }, initialImports ?? {})
+  }, initialImports)
 
   return {
     code: Object.keys(toImport).map((key) => `import { ${Array.from(toImport[key]).join(', ')} } from '${key}'`),

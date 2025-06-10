@@ -1,6 +1,6 @@
 import type { Collection } from '@aeriajs/types'
 import type * as AST from '../ast.js'
-import { unwrapNode, recursivelyUnwrapPropertyNodes, stringify, makeASTImports, resizeFirstChar, getCollectionId, UnquotedSymbol, getExposedFunctions, PACKAGE_NAME, DEFAULT_FUNCTIONS, type StringifyProperty } from './utils.js'
+import { unwrapNode, recursivelyUnwrapPropertyNodes, stringify, makeASTImports, resizeFirstChar, getCollectionId, UnquotedSymbol, getExposedFunctions, PACKAGE_NAME, type StringifyProperty } from './utils.js'
 
 const initialImportedTypes = [
   'Collection',
@@ -121,13 +121,15 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
   return stringify(collectionSchema)
 }
 
-const makeTSFunctions = (functions: NonNullable<AST.CollectionNode['functions']>) => {
-  return Object.keys(functions).reduce<Record<string, StringifyProperty>>((acc, key) => {
-    acc[key] = {
-      [UnquotedSymbol]: DEFAULT_FUNCTIONS.includes(key)
-        ? `typeof ${key}`
-        : 'unknown',
-    }
-    return acc
-  }, {})
+const makeTSFunctions = (functionNodes: AST.FunctionNode[]) => {
+  const funs: Record<string, StringifyProperty> = {}
+
+  for( const functionNode of functionNodes ) {
+    funs[functionNode.name] = functionNode.exportSymbol
+      ? `typeof import('${functionNode.exportSymbol.importPath}').${functionNode.exportSymbol.symbolName}`
+      : 'unknown'
+  }
+
+  return funs
 }
+

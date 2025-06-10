@@ -14,8 +14,8 @@ const collectionHasProperty = async (collection: AST.CollectionNode, propName: s
         return true
       }
 
-      const { packageName, symbolName } = collection.extends
-      const { [symbolName]: importedCollection } = await import(packageName)
+      const { importPath, symbolName } = collection.extends
+      const { [symbolName]: importedCollection } = await import(importPath)
 
       if( !isValidCollection(importedCollection) ) {
         throw new Error
