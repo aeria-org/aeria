@@ -33,7 +33,7 @@ export type RouteGroupOptions = {
   base?: RouteUri
 }
 
-type TypedContext<TContractWithRoles extends ContractWithRoles> = Omit<RouteContext<TContractWithRoles['roles']>, 'request'> & {
+type NarrowedContext<TContractWithRoles extends ContractWithRoles> = Omit<RouteContext<TContractWithRoles['roles']>, 'request'> & {
   request: Omit<RouteContext['request'], 'payload' | 'query'> & {
     payload: TContractWithRoles extends { payload: infer Payload }
       ? PackReferences<InferProperties<Payload>>
@@ -55,7 +55,7 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
           : never
         : unknown
     ) extends infer Response
-      ? (context: TypedContext<TContractWithRoles>)=> Response
+      ? (context: NarrowedContext<TContractWithRoles>)=> Response
       : never,
   >(
     exp: RouteUri,
@@ -278,7 +278,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
         ? InferProperties<Response>
         : unknown
     ) extends infer Response
-      ? (context: TypedContext<TContractWithRoles>)=> Response
+      ? (context: NarrowedContext<TContractWithRoles>)=> Response
       : never,
   >(
     method: RequestMethod | RequestMethod[],
@@ -293,7 +293,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
 
     routes.push((_, context, groupOptions) => {
       return registerRoute(
-        context as TypedContext<TContractWithRoles>,
+        context as NarrowedContext<TContractWithRoles>,
         method,
         exp,
         cb,
