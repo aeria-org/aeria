@@ -905,7 +905,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
     return node
   }
 
-  const parseFunctionsBlock = (options: { collectionName?: string } = {}): Required<Pick<AST.CollectionNode, 'functions' | 'functionSets'>> => {
+  const parseFunctionsBlock = (): Required<Pick<AST.CollectionNode, 'functions' | 'functionSets'>> => {
     consume(TokenType.LeftBracket)
 
     const functions: AST.CollectionNode['functions'] = []
@@ -949,7 +949,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
               packageName,
               importPath: packageName,
               symbolName,
-            }
+            },
           }
 
         } else {
