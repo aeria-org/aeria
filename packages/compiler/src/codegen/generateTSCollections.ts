@@ -127,8 +127,8 @@ const makeTSFunctions = (functionNodes: AST.FunctionNode[]) => {
   for( const functionNode of functionNodes ) {
     funs[functionNode.name] = {
       [UnquotedSymbol]: functionNode.exportSymbol
-      ? `typeof import('${functionNode.exportSymbol.importPath}').${functionNode.exportSymbol.symbolName}`
-      : 'unknown'
+        ? `typeof import('${functionNode.exportSymbol.importPath}').${functionNode.exportSymbol.symbolName}`
+        : 'unknown',
     }
   }
 
