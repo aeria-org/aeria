@@ -99,6 +99,20 @@ export const getAvailableRoles = async () => {
   const collections = await getCollections()
   const availableRoles = []
 
+  if( 'user' in collections ) {
+    const collection = typeof collections.user === 'function'
+      ? collections.user()
+      : collections.user
+
+    if(
+      'roles' in collection.description.properties
+      && 'items' in collection.description.properties.roles
+      && 'enum' in collection.description.properties.roles.items
+    ) {
+      availableRoles.push(...collection.description.properties.roles.items.enum)
+    }
+  }
+
   for( const collectionName in collections ) {
     const candidate = collections[collectionName]
     const collection = typeof candidate === 'function'
