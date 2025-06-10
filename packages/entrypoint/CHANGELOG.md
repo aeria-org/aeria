@@ -1,5 +1,11 @@
 # @aeriajs/entrypoint
 
+## 0.0.157
+
+### Patch Changes
+
+- 83f7c5f: Fix not all roles being caught by `getAvailableRoles()`
+
 ## 0.0.156
 
 ### Patch Changes
