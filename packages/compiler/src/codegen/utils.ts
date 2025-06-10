@@ -11,10 +11,10 @@ export type StringifyProperty = unknown | {
   [UnquotedSymbol]: string
 }
 
-export const getExposedFunctions = (astFunctions: NonNullable<AST.CollectionNode['functions']>) => {
-  return Object.fromEntries(Object.entries(astFunctions).map(([key, value]) => [
-    key,
-    value.accessCondition,
+export const getExposedFunctions = (functionNodes: AST.FunctionNode[]) => {
+  return Object.fromEntries(functionNodes.map((node) => [
+    node.name,
+    node.accessCondition,
   ]))
 }
 

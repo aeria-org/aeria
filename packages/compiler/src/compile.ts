@@ -23,7 +23,7 @@ export const postflight = (ast: AST.ProgramNode) => {
           continue
         }
 
-        Object.assign(node.functions!, functionSet.functions)
+        node.functions!.push(...functionSet.functions)
       }
     }
   }

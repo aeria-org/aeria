@@ -240,6 +240,10 @@ const validate = async (value: unknown, ctx: PhaseContext) => {
     }
   }
 
+  if( '$ref' in ctx.property && ctx.property.$ref === 'file' ) {
+    return Result.result(value)
+  }
+
   const { error } = await validatePropertyWithRefs(value, ctx.property, {
     checkObjectIds: true,
     context: ctx.options.context,
