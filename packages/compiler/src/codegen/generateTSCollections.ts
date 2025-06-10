@@ -125,9 +125,11 @@ const makeTSFunctions = (functionNodes: AST.FunctionNode[]) => {
   const funs: Record<string, StringifyProperty> = {}
 
   for( const functionNode of functionNodes ) {
-    funs[functionNode.name] = functionNode.exportSymbol
+    funs[functionNode.name] = {
+      [UnquotedSymbol]: functionNode.exportSymbol
       ? `typeof import('${functionNode.exportSymbol.importPath}').${functionNode.exportSymbol.symbolName}`
       : 'unknown'
+    }
   }
 
   return funs
