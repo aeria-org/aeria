@@ -73,9 +73,11 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
 
     for( const index in node.property[attributeName] ) {
       const propName = node.property[attributeName][index]
-      if( !(propName in node.property.properties) ) {
+      if( !(propName in node.nestedProperties!) ) {
         const symbol = node.property[AST.LOCATION_SYMBOL]!.arrays[attributeName]![index]
         const location = locationMap.get(symbol)
+
+        console.log(JSON.stringify(node))
 
         errors.push(new Diagnostic(`object hasn't such property "${propName}"`, location))
       }
