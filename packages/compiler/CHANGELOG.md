@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.52
+
+### Patch Changes
+
+- 8a8fec9: Release
+
 ## 0.0.51
 
 ### Patch Changes
