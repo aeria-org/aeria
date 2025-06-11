@@ -89,17 +89,17 @@ export const createContext = async <TContextOptions extends ContextOptions>(_opt
   }
 
   let
-    request: GenericRequest,
-    response: GenericResponse,
+    request = options.request,
+    response = options.response,
     inherited = !!options.inherited
 
   if( parentContext ) {
-    request = parentContext.request
-    response = parentContext.response
+    request ??= parentContext.request
+    response ??= parentContext.response
     inherited ||= parentContext.inherited
   } else {
-    request = {} as GenericRequest
-    response = {} as GenericResponse
+    request ??= {} as GenericRequest
+    response ??= {} as GenericResponse
   }
 
   const context: Context | RouteContext = {

@@ -76,6 +76,8 @@ export type ContextOptions = {
   token?: Token
   inherited?: boolean
   calledFunction?: string
+  request?: GenericRequest
+  response?: GenericResponse
 }
 
 export type RouteContext<TAccessCondition extends AccessCondition = false> = {

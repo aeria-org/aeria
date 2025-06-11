@@ -133,6 +133,8 @@ export const init = (_options: InitOptions = {}) => {
           const context = await createContext({
             parentContext,
             token,
+            request,
+            response,
           })
 
           if( options.callback ) {
