@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.270
+
+### Patch Changes
+
+- 9c8b477: Fix `context.request` and `context.response` not being accessible
+- Updated dependencies [9c8b477]
+  - @aeriajs/types@0.0.130
+  - @aeriajs/builtins@0.0.270
+  - @aeriajs/common@0.0.152
+  - @aeriajs/entrypoint@0.0.158
+  - @aeriajs/http@0.0.186
+  - @aeriajs/security@0.0.270
+  - @aeriajs/validation@0.0.171
+
 ## 0.0.269
 
 ### Patch Changes

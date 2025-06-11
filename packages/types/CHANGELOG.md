@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.130
+
+### Patch Changes
+
+- 9c8b477: Fix `context.request` and `context.response` not being accessible
+
 ## 0.0.129
 
 ### Patch Changes
