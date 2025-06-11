@@ -1,6 +1,7 @@
 import type { GenericRequest } from '@aeriajs/types'
 import { expect, test, assert } from 'vitest'
 import { matches } from '../src/index.js'
+import { createDummyRequest, dummyContext, dummyResponse, router1, router2 } from './fixtures/router.js'
 
 test('matches patterns correctly', async () => {
   const req = {
@@ -51,5 +52,18 @@ test('matches patterns with fragments correctly', async () => {
   expect(shouldMatch2.fragments[0]).toBe('123')
   expect(shouldntMatch1).toBeFalsy()
   expect(shouldntMatch2).toBeFalsy()
+})
+
+test('executes a route correctly', async () => {
+  expect(await router1.handle(createDummyRequest('GET', '/hello'), dummyResponse, dummyContext)).toContain('got a GET request')
+  expect(await router1.handle(createDummyRequest('POST', '/hello'), dummyResponse, dummyContext)).toContain('got a POST request')
+  expect(await router1.handle(createDummyRequest('GET', '/not-found'), dummyResponse, dummyContext)).toBeUndefined()
+})
+
+test('finds grouped routes correctly', async () => {
+  expect(await router2.handle(createDummyRequest('GET', '/router1/hello'), dummyResponse, dummyContext)).toContain('got a GET request')
+  expect(await router2.handle(createDummyRequest('POST', '/router1/hello'), dummyResponse, dummyContext)).toContain('got a POST request')
+  expect(await router2.handle(createDummyRequest('GET', '/router1/not-found'), dummyResponse, dummyContext)).toBeUndefined()
+  expect(await router2.handle(createDummyRequest('GET', '/hello'), dummyResponse, dummyContext)).toBeUndefined()
 })
 
