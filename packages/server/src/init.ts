@@ -101,6 +101,10 @@ export const init = (_options: InitOptions = {}) => {
   return {
     options,
     listen: async () => {
+      if( !options.config.server ) {
+        throw new Error
+      }
+
       const parentContext = await createContext({
         config: options.config as ApiConfig,
       })
@@ -109,13 +113,13 @@ export const init = (_options: InitOptions = {}) => {
         await options.setup(parentContext)
       }
 
-      if( !options.config.server!.noWarmup ) {
+      if( !options.config.server.noWarmup ) {
         await warmup()
       }
 
       const apiRouter = registerRoutes()
 
-      const server = registerServer(options.config.server!, async (request, response) => {
+      const server = registerServer(options.config.server, async (request, response) => {
         if( cors(request, response) === null ) {
           return
         }
@@ -131,11 +135,6 @@ export const init = (_options: InitOptions = {}) => {
             token,
           })
 
-          Object.assign(context, {
-            request,
-            response,
-          })
-
           if( options.callback ) {
             const result = await options.callback(context)
             if( result !== undefined ) {
@@ -144,13 +143,13 @@ export const init = (_options: InitOptions = {}) => {
           }
 
           if( options.router ) {
-            const result = await options.router.install(context)
+            const result = await options.router.handle(request, response, context)
             if( result !== undefined ) {
               return result
             }
           }
 
-          return apiRouter.install(context)
+          return apiRouter.handle(request, response, context)
         })
       })
 

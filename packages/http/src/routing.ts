@@ -305,7 +305,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
 
   const group = <
     TRouter extends {
-      install: (context: RouteContext, options?: RouterOptions)=> unknown
+      handle: (request: GenericRequest, response: GenericResponse, context: RouteContext, options?: RouterOptions)=> unknown
       routesMeta: typeof routesMeta
     },
   >(exp: RouteUri, router: TRouter, middleware?: (context: RouteContext)=> unknown) => {
@@ -342,7 +342,7 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
           }
         }
 
-        return router.install(context, newOptions)
+        return router.handle(context.request, context.response, context, newOptions)
       }
     })
   }
@@ -360,21 +360,19 @@ export const createRouter = (options: Partial<RouterOptions> = {}) => {
     routes,
     routesMeta,
     group,
-    install: async (_context: RouteContext, _options?: RouterOptions) => {
-      return {} as ReturnType<typeof routerPipe>
+    handle: async (request: GenericRequest, response: GenericResponse, context: RouteContext, options?: RouterOptions) => {
+      context.request = request
+      context.response = response
+
+      const result = await routerPipe(undefined, context, options)
+      if( exhaust && result === undefined ) {
+        return context.error(HTTPStatus.NotFound, {
+          code: ACError.ResourceNotFound,
+          message: 'Not found',
+        })
+      }
+      return result
     },
-  }
-
-  router.install = async (context: RouteContext, options?: RouterOptions) => {
-    const result = await routerPipe(undefined, context, options)
-    if( exhaust && result === undefined ) {
-      return context.error(HTTPStatus.NotFound, {
-        code: ACError.ResourceNotFound,
-        message: 'Not found',
-      })
-    }
-
-    return result
   }
 
   return new Proxy(router as ProxiedRouter<typeof router>, {
