@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.203
+
+### Patch Changes
+
+- f00fdf9: Allow `null` instead of contract in ApiSchema
+
 ## 0.0.202
 
 ### Patch Changes
