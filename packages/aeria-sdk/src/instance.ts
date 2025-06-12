@@ -1,4 +1,4 @@
-import type { CollectionFunctionsSDK, Description, JsonSchema } from '@aeriajs/types'
+import type { CollectionFunctionsSDK, ContractWithRoles, Description, JsonSchema } from '@aeriajs/types'
 import type { RequestConfig } from '@aeriajs/common'
 import type { InstanceConfig, InstanceContext, ApiPrototype, ApiSchema, InferEndpointFromContract } from './types.js'
 import { request } from './http.js'
@@ -89,7 +89,9 @@ export const call = <TApiSchema extends ApiSchema, TDescriptions extends Record<
         ? CollectionFunctionsSDK<TDescriptions[InferredCollection]>[InferredEndpoint]
         : never
       : never
-    : InferEndpointFromContract<TApiSchema[TRoute][TRouteMethod]>
+    : TApiSchema[TRoute][TRouteMethod] extends ContractWithRoles
+      ? InferEndpointFromContract<TApiSchema[TRoute][TRouteMethod]>
+      : (...args: unknown[]) => Promise<unknown>
 }
 
 export const createInstance = <TApiPrototype extends ApiPrototype>(config: InstanceConfig, instanceContext = {

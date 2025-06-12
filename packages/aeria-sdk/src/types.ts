@@ -28,7 +28,7 @@ export type ApiPrototype =
 
 export type ApiSchema = {
   [route: string]: {
-    [method: RequestMethod]: ContractWithRoles
+    [method: RequestMethod]: ContractWithRoles | null
   }
 }
 
