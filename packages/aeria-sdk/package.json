@@ -1,6 +1,6 @@
 {
   "name": "aeria-sdk",
-  "version": "0.0.202",
+  "version": "0.0.203",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
