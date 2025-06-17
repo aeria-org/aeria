@@ -47,7 +47,7 @@
     "@aeriajs/security": "link:../security",
     "@aeriajs/types": "link:../types",
     "@aeriajs/validation": "link:../validation",
-    "@types/jsonwebtoken": "^9.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.17.0",
     "mongodb-memory-server": "^10.1.4"
