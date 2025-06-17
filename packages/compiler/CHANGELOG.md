@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.54
+
+### Patch Changes
+
+- ce1356d: Add missing attributes
+
 ## 0.0.53
 
 ### Patch Changes
