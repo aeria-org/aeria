@@ -40,6 +40,7 @@ export const COLLECTION_KEYWORDS = [
   'search',
   'table',
   'tableMeta',
+  'unique',
   'writable',
 ] as const
 

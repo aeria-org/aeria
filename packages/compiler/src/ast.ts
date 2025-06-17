@@ -104,6 +104,7 @@ export type CollectionNode = NodeBase<'collection'> & {
   form?: readonly string[]
   table?: readonly string[]
   tableMeta?: readonly string[]
+  unique?: readonly string[]
   filters?: readonly string[]
   search?: SearchOptions
   layout?: LayoutNode
