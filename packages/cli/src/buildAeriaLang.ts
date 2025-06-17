@@ -11,9 +11,7 @@ export const buildAeriaLangPhase = async () => {
     encoding: 'utf-8',
   }))
 
-  const {
-    outDir = OUT_DIR,
-  } = packageJson.aeria || {}
+  const { outDir = OUT_DIR } = packageJson.aeria || {}
 
   const result = await compileFromFiles({
     outDir,
@@ -27,7 +25,10 @@ export const buildAeriaLangPhase = async () => {
       message += ':'
       message += styleText('bold', error.location.line.toString())
       message += `:${error.location.start} - `
-      message += styleText(['bold', 'red'], 'error')
+      message += styleText([
+        'bold',
+        'red',
+      ], 'error')
       message += `: ${error.message}`
 
       errors.push(message)
