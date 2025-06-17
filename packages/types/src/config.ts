@@ -62,3 +62,7 @@ export type ApiConfig = {
   )=> unknown | Promise<unknown>
 }
 
+export type StaticConfig = {
+  outDir?: string
+}
+

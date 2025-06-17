@@ -16,7 +16,7 @@ export const logResponse = (response: GenericResponse) => {
     : 'white'
 
   const now = new Date()
-  let line = `[${styleText([statusColor], statusCode.toString())}] `
+  let line = `[${styleText(statusColor, statusCode.toString())}] `
   line += `[${now.toLocaleString()}] `
   line += styleText([
     'bold',

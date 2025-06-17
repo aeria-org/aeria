@@ -15,7 +15,7 @@ const colorizedRoute = async (
 
   let
     rolesLine = '',
-    hasContractLine = styleText(['yellow'], 'x')
+    hasContractLine = styleText('yellow', 'x')
 
   if( endpoint ) {
     if( 'roles' in endpoint ) {
@@ -34,10 +34,10 @@ const colorizedRoute = async (
         return endpoint.roles
       })()
 
-      rolesLine = ` ${styleText(['grey'], `[${roles.join('|')}]`)}`
+      rolesLine = ` ${styleText('grey', `[${roles.join('|')}]`)}`
     }
     if( 'response' in endpoint || endpoint.builtin ) {
-      hasContractLine = styleText(['green'], '✓')
+      hasContractLine = styleText('green', '✓')
     }
   }
 
@@ -46,10 +46,10 @@ const colorizedRoute = async (
     color,
   ], method) + '\t'
   line += hasContractLine
-  line += styleText(['grey'], ` ${config.baseUrl === '/'
+  line += styleText('grey', ` ${config.baseUrl === '/'
     ? ''
     : config.baseUrl!}`)
-  line += styleText(['bold'], endpointUri)
+  line += styleText('bold', endpointUri)
   line += rolesLine
 
   return line
