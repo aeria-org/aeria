@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/compiler",
-  "version": "0.0.54",
+  "version": "0.0.55",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -30,8 +30,8 @@
     "dist"
   ],
   "peerDependencies": {
-    "@aeriajs/common": "^0.0.152",
-    "@aeriajs/types": "^0.0.130"
+    "@aeriajs/common": "^0.0.153",
+    "@aeriajs/types": "^0.0.131"
   },
   "devDependencies": {
     "@aeriajs/common": "link:../common",
