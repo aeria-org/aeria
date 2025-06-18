@@ -157,7 +157,7 @@ export const init = (_options: InitOptions = {}) => {
         })
       })
 
-      if( !options.config.database?.noDatabase ) {
+      if( !config.database?.noDatabase ) {
         await getDatabase()
       }
 
