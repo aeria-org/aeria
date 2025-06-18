@@ -1,6 +1,6 @@
 {
   "name": "@aeriajs/entrypoint",
-  "version": "0.0.159",
+  "version": "0.0.160",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -36,7 +36,7 @@
     "@aeriajs/types": "link:../types"
   },
   "peerDependencies": {
-    "@aeriajs/common": "^0.0.153",
-    "@aeriajs/types": "^0.0.131"
+    "@aeriajs/common": "^0.0.154",
+    "@aeriajs/types": "^0.0.132"
   }
 }

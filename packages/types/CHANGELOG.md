@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.132
+
+### Patch Changes
+
+- d2e4515: Add `options.config.cors` option
+
 ## 0.0.131
 
 ### Patch Changes
