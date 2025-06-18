@@ -1084,7 +1084,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
             break
           }
           case 'requires': {
-            const { value } = parseArray([TokenType.Identifier])
+            const { value } = parseArrayBlock()
             baseSlots[keyword] = value
             break
           }
