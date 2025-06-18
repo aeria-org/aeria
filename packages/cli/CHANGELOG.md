@@ -1,5 +1,19 @@
 # aeria-build
 
+## 0.0.247
+
+### Patch Changes
+
+- 094616c: Refactor coloring and add configurable `outDir` option
+- Updated dependencies [094616c]
+- Updated dependencies [d3a1423]
+  - @aeriajs/types@0.0.131
+  - @aeriajs/compiler@0.0.55
+  - @aeriajs/builtins@0.0.271
+  - @aeriajs/common@0.0.153
+  - @aeriajs/core@0.0.271
+  - @aeriajs/entrypoint@0.0.159
+
 ## 0.0.246
 
 ### Patch Changes

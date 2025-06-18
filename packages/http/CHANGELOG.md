@@ -1,5 +1,16 @@
 # @aeriajs/http
 
+## 0.0.187
+
+### Patch Changes
+
+- 094616c: Refactor coloring and add configurable `outDir` option
+- Updated dependencies [094616c]
+  - @aeriajs/types@0.0.131
+  - @aeriajs/common@0.0.153
+  - @aeriajs/entrypoint@0.0.159
+  - @aeriajs/validation@0.0.172
+
 ## 0.0.186
 
 ### Patch Changes

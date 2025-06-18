@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.131
+
+### Patch Changes
+
+- 094616c: Refactor coloring and add configurable `outDir` option
+
 ## 0.0.130
 
 ### Patch Changes
