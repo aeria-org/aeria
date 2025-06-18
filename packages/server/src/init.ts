@@ -8,7 +8,7 @@ import { DEFAULT_API_CONFIG } from './constants.js'
 import { warmup } from './warmup.js'
 import { registerRoutes } from './routes.js'
 
-type DeepPartial<T> = T extends object
+type DeepPartial<T> = T extends Record<string, unknown>
   ? {
     [P in keyof T]?: DeepPartial<T[P]>
   }
@@ -96,32 +96,34 @@ export const init = (_options: InitOptions = {}) => {
     config: {},
   }, _options)
 
-  Object.assign(options.config, deepMerge(DEFAULT_API_CONFIG, options.config))
+  const config: ApiConfig = Object.assign(options.config, deepMerge(DEFAULT_API_CONFIG, options.config))
 
   return {
     options,
     listen: async () => {
-      if( !options.config.server ) {
+      if( !config.server ) {
         throw new Error
       }
 
       const parentContext = await createContext({
-        config: options.config as ApiConfig,
+        config,
       })
 
       if( options.setup ) {
         await options.setup(parentContext)
       }
 
-      if( !options.config.server.noWarmup ) {
+      if( !config.server.noWarmup ) {
         await warmup()
       }
 
       const apiRouter = registerRoutes()
 
-      const server = registerServer(options.config.server, async (request, response) => {
-        if( cors(request, response) === null ) {
-          return
+      const server = registerServer(config.server, async (request, response) => {
+        if( config.server && config.server.cors ) {
+          if( cors(request, response, config.server.cors) === null ) {
+            return
+          }
         }
 
         await wrapRouteExecution(response, async () => {

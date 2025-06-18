@@ -5,6 +5,22 @@ export const DEFAULT_API_CONFIG = {
   defaultPaginationLimit: 10,
   server: {
     port: 3000,
+    cors: {
+      allowOrigin: ['*'],
+      allowMethods: ['*'],
+      allowHeaders: [
+        'Accept',
+        'Accept-Version',
+        'Authorization',
+        'Content-Length',
+        'Content-MD5',
+        'Content-Type',
+        'Date',
+        'X-Api-Version',
+        'X-Stream-Request',
+      ],
+      maxAge: '2592000',
+    }
   },
   security: {
     tokenExpiration: 36000,
@@ -19,5 +35,5 @@ export const DEFAULT_API_CONFIG = {
     ],
     revalidateToken: true,
   },
-
 } satisfies ApiConfig
+

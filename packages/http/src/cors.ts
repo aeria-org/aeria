@@ -1,23 +1,18 @@
-import type { GenericRequest, GenericResponse } from '@aeriajs/types'
+import type { GenericRequest, GenericResponse, CorsConfig } from '@aeriajs/types'
 
-export const cors = (req: GenericRequest, res: GenericResponse) => {
-  const allowedHeaders = [
-    'Accept',
-    'Accept-Version',
-    'Authorization',
-    'Content-Length',
-    'Content-MD5',
-    'Content-Type',
-    'Date',
-    'X-Api-Version',
-    'X-Stream-Request',
-  ]
+export const cors = (req: GenericRequest, res: GenericResponse, config: CorsConfig) => {
+  const {
+    allowOrigin = [],
+    allowMethods = [],
+    allowHeaders = [],
+    maxAge,
+  } = config
 
   const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': '*',
-    'Access-Control-Allow-Headers': allowedHeaders.join(','),
-    'Access-Control-Max-Age': '2592000',
+    'Access-Control-Allow-Origin': allowOrigin.join(','),
+    'Access-Control-Allow-Methods': allowMethods.join(','),
+    'Access-Control-Allow-Headers': allowHeaders.join(','),
+    'Access-Control-Max-Age': maxAge,
   }
 
   if( req.method === 'OPTIONS' ) {

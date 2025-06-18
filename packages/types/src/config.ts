@@ -9,11 +9,19 @@ export type RolesHierarchy = Record<
   readonly UserRole[] | boolean
 >
 
+export type CorsConfig = {
+  allowOrigin?: readonly string[]
+  allowMethods?: readonly string[]
+  allowHeaders?: readonly string[]
+  maxAge: string
+}
+
 export type ServerOptions = {
   host?: string
   port?: number
   enableLogging?: boolean
   noWarmup?: boolean
+  cors?: CorsConfig | null
 }
 
 export type ApiConfig = {
