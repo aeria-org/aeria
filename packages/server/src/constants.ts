@@ -20,7 +20,7 @@ export const DEFAULT_API_CONFIG = {
         'X-Stream-Request',
       ],
       maxAge: '2592000',
-    }
+    },
   },
   security: {
     tokenExpiration: 36000,
