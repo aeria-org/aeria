@@ -1,5 +1,20 @@
 # @aeriajs/server
 
+## 0.0.274
+
+### Patch Changes
+
+- d2e4515: Add `options.config.cors` option
+- Updated dependencies [d2e4515]
+  - @aeriajs/server@0.0.274
+  - @aeriajs/types@0.0.132
+  - @aeriajs/http@0.0.188
+  - @aeriajs/builtins@0.0.272
+  - @aeriajs/common@0.0.154
+  - @aeriajs/core@0.0.272
+  - @aeriajs/entrypoint@0.0.160
+  - @aeriajs/node-http@0.0.188
+
 ## 0.0.273
 
 ### Patch Changes
