@@ -39,7 +39,7 @@ ${
     : `declare global {
   type Collections = {
     [K in keyof MirrorDescriptions]: {
-      item: SchemaWithId<MirrorDescriptions[K]>
+      item: SchemaWithId<MirrorDescriptions[K], { useObjectIds: false }>
     }
   }
 }\n`
@@ -61,9 +61,9 @@ declare module 'aeria-sdk' {
           ? MakeEndpoint<
             TRoute,
             Method,
-            InferProperties<RouteResponse>,
+            InferProperties<RouteResponse, { useObjectIds: false }>,
             RoutePayload extends {}
-              ? PackReferences<InferProperty<RoutePayload>>
+              ? PackReferences<InferProperty<RoutePayload, { useObjectIds: false }>>
               : undefined
           >
           : MakeEndpoint<TRoute, Method>

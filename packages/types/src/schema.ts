@@ -25,18 +25,23 @@ type CaseTimestamped<
 
 type TestType<T> = T & Record<string, unknown>
 
-export type InferProperty<T> = T extends TestType<{ format: 'date' | 'date-time' }>
+type SchemaOptions = {
+  readonly keepTempIds?: boolean
+  readonly useObjectIds?: boolean
+}
+
+export type InferProperty<T, TSchemaOptions extends SchemaOptions = {}> = T extends TestType<{ format: 'date' | 'date-time' }>
   ? Date : T extends TestType<{ format: 'objectid' }>
-    ? ObjectId : T extends TestType<{ enum: ReadonlyArray<infer K> }>
+    ? TSchemaOptions extends { useObjectIds: false } ? string : ObjectId : T extends TestType<{ enum: ReadonlyArray<infer K> }>
       ? K : T extends TestType<{ type: 'string' }>
         ? string : T extends TestType<{ type: 'number' | 'integer' }>
           ? number : T extends TestType<{ type: 'boolean' }>
             ? boolean : T extends TestType<{ properties: unknown }>
-              ? Schema<T & { timestamps: false }> :
+              ? Schema<T & { timestamps: false }, TSchemaOptions> :
               T extends TestType<{ additionalProperties: true }>
                 ? any : T extends TestType<{ additionalProperties: infer K }>
-                  ? { [P: string]: InferProperty<K> | undefined } : T extends TestType<{ items: infer K }>
-                    ? InferProperty<K>[] : T extends TestType<{ getter: (doc: unknown)=> infer K }>
+                  ? { [P: string]: InferProperty<K, TSchemaOptions> | undefined } : T extends TestType<{ items: infer K }>
+                    ? InferProperty<K, TSchemaOptions>[] : T extends TestType<{ getter: (doc: unknown)=> infer K }>
                       ? Awaited<K> : T extends TestType<{ const: infer K }>
                         ? K : T extends TestType<{ isConstUndefined: true }>
                           ? undefined : never
@@ -53,10 +58,6 @@ type ExtractRequiredPropNames<T> = T extends readonly (infer PropName)[]
         : never
       ]: never
     }
-
-type SchemaOptions = {
-  readonly keepTempIds?: boolean
-}
 
 export type InferSchema<TSchema, TSchemaOptions extends SchemaOptions = {}> = MergeReferences<TSchema, TSchemaOptions> extends infer MappedTypes
   ? TSchema extends { required: readonly[] }
@@ -78,10 +79,12 @@ export type Schema<TSchema, TSchemaOptions extends SchemaOptions = {}> = CaseTim
   >>
 
 export type SchemaWithId<TSchema, TSchemaOptions extends SchemaOptions = {}> = Schema<TSchema, TSchemaOptions> & {
-  _id: ObjectId
+  _id: TSchemaOptions extends { useObjectIds: false }
+    ? string
+    : ObjectId
 }
 
-export type InferProperties<TSchema> = (TSchema extends readonly unknown[]
+export type InferProperties<TSchema, TSchemaOptions extends SchemaOptions = {}> = (TSchema extends readonly unknown[]
   ? TSchema extends readonly (infer SchemaOption)[]
     ? SchemaOption extends unknown
       ? SchemaOption
@@ -96,18 +99,18 @@ export type InferProperties<TSchema> = (TSchema extends readonly unknown[]
         ? Collections[K]['item'][]
         : Collections[K]['item']
       : never
-    : InferProperty<InferredSchema>
+    : InferProperty<InferredSchema, TSchemaOptions>
   : never
 
 export type PackReferences<T> = {
   [P in keyof T]: PackReferencesAux<T[P]>
 }
 
-export type FilterReadonlyProperties<TProperties> = {
+export type FilterReadonlyProperties<TProperties, TSchemaOptions extends SchemaOptions = {}> = {
   [P in keyof TProperties as TProperties[P] extends { readOnly: true }
     ? P
     : never
-  ]: InferProperty<TProperties[P]>
+  ]: InferProperty<TProperties[P], TSchemaOptions>
 }
 
 type MapReferences<TSchema, TSchemaOptions extends SchemaOptions> = TSchema extends { properties: infer Properties }
@@ -156,15 +159,15 @@ type PackReferencesAux<T> = T extends (...args: unknown[])=> unknown
           ? PackReferencesAux<T[number]>[]
           : T
 
-type CombineProperties<TSchema> = TSchema extends { properties: infer Properties }
-  ? FilterReadonlyProperties<Properties> extends infer ReadonlyProperties
+type CombineProperties<TSchema, TSchemaOptions extends SchemaOptions> = TSchema extends { properties: infer Properties }
+  ? FilterReadonlyProperties<Properties, TSchemaOptions> extends infer ReadonlyProperties
     ? Readonly<ReadonlyProperties> & {
-      [P in Exclude<keyof Properties, keyof ReadonlyProperties>]: InferProperty<Properties[P]>
+      [P in Exclude<keyof Properties, keyof ReadonlyProperties>]: InferProperty<Properties[P], TSchemaOptions>
     }
     : never
   : never
 
-type MergeReferences<TSchema, TSchemaOptions extends SchemaOptions> = CombineProperties<TSchema> extends infer CombinedProperties
+type MergeReferences<TSchema, TSchemaOptions extends SchemaOptions> = CombineProperties<TSchema, TSchemaOptions> extends infer CombinedProperties
   ? MapReferences<TSchema, TSchemaOptions> extends infer MappedReferences
     ? MappedReferences & Omit<CombinedProperties, keyof MappedReferences>
     : never
