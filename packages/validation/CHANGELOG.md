@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.175
+
+### Patch Changes
+
+- 7838958: Coerce ObjectIds on runtime
+
 ## 0.0.174
 
 ### Patch Changes

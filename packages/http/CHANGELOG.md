@@ -1,5 +1,13 @@
 # @aeriajs/http
 
+## 0.0.190
+
+### Patch Changes
+
+- 7838958: Coerce ObjectIds on runtime
+- Updated dependencies [7838958]
+  - @aeriajs/validation@0.0.175
+
 ## 0.0.189
 
 ### Patch Changes
