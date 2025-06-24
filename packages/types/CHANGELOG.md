@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.133
+
+### Patch Changes
+
+- c7c4877: Use `string` instead of `ObjectId` in `aeria-sdk`
+
 ## 0.0.132
 
 ### Patch Changes
