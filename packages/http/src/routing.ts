@@ -190,6 +190,7 @@ export const registerRoute = async <TRouteContext extends RouteContext>(
       if( 'payload' in contract && contract.payload ) {
         const { error } = await checkUnprocessable(context.request.payload, contract.payload, context, {
           checkObjectIds: true,
+          coerceObjectIds: true,
           context,
           objectIdConstructor: ObjectId,
         })

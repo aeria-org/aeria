@@ -9,6 +9,7 @@ export type ValidateOptions = {
   checkObjectIds?: boolean
   throwOnError?: boolean
   coerce?: boolean
+  coerceObjectIds?: boolean
   parentProperty?: Property | Description
   descriptions?: Record<string, Description>
   objectIdConstructor?: new(arg: unknown) => ObjectId
@@ -30,6 +31,8 @@ const getPropertyType = (property: Property) => {
         case 'date':
         case 'date-time':
           return 'datetime'
+        case 'objectid':
+          return 'object'
       }
     }
 
@@ -140,6 +143,12 @@ export const validateProperty = <TWhat>(
       }
       if( expectedType === 'datetime' && typeof what === 'string' ) {
         return Result.result(new Date(what))
+      }
+    }
+
+    if( (options.coerce || options.coerceObjectIds) && options.objectIdConstructor ) {
+      if( ('$ref' in property || 'format' in property && property.format === 'objectid') && typeof what === 'string' ) {
+        return Result.result(new options.objectIdConstructor(what))
       }
     }
 
