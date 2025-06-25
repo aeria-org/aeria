@@ -91,6 +91,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
         collectionSchema.description[key] = collectionNode[key]
         break
       case 'table':
+      case 'tableMeta':
       case 'filters':
       case 'indexes':
       case 'form':
