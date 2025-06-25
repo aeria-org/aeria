@@ -1,5 +1,11 @@
 # aeria
 
+## 0.0.320
+
+### Patch Changes
+
+- @aeriajs/cli@0.0.251
+
 ## 0.0.319
 
 ### Patch Changes

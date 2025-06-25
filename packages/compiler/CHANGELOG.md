@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.58
+
+### Patch Changes
+
+- f5b528d: Add `tableMeta` in codegen
+
 ## 0.0.57
 
 ### Patch Changes
