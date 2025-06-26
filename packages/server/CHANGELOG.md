@@ -1,5 +1,21 @@
 # @aeriajs/server
 
+## 0.0.277
+
+### Patch Changes
+
+- 767d133: Add `console.trace` for errors
+- Updated dependencies [767d133]
+- Updated dependencies [767d133]
+  - @aeriajs/types@0.0.134
+  - @aeriajs/server@0.0.277
+  - @aeriajs/builtins@0.0.275
+  - @aeriajs/common@0.0.156
+  - @aeriajs/core@0.0.275
+  - @aeriajs/entrypoint@0.0.162
+  - @aeriajs/http@0.0.191
+  - @aeriajs/node-http@0.0.191
+
 ## 0.0.276
 
 ### Patch Changes
