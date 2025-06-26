@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.134
+
+### Patch Changes
+
+- 767d133: Fix SDK functions typing
+
 ## 0.0.133
 
 ### Patch Changes
