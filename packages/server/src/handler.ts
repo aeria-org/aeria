@@ -25,9 +25,7 @@ export const safeHandle = (fn: (context: RouteContext)=> Promise<unknown>, conte
       return context.config.errorHandler(context, error)
     }
 
-    if( process.env.NODE_ENV !== 'production' ) {
-      console.trace(error)
-    }
+    console.trace(error)
 
     if( context.request.headers['sec-fetch-mode'] === 'cors' ) {
       return Result.error({

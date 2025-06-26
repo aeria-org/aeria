@@ -1,4 +1,4 @@
-import type { FilterOperators, StrictFilter as Filter, WithId, ObjectId } from 'mongodb'
+import type { FilterOperators, StrictFilter as Filter, ObjectId } from 'mongodb'
 import type { Result, ExtractError } from './result.js'
 import type { EndpointError } from './endpointError.js'
 import type { SchemaWithId, InferSchema, PackReferences } from './schema.js'
@@ -88,19 +88,23 @@ export type Projection<TDocument> =
       : string[]
     : never
 
-export type QuerySort<TDocument> = Partial<Record<keyof WithId<TDocument>, 1 | -1>>
+export type WithStringId<TDocument> = TDocument & {
+  _id: ObjectId | string
+}
 
-export type CountPayload<TDocument extends WithId<unknown>> = {
+export type QuerySort<TDocument> = Partial<Record<keyof WithStringId<TDocument>, 1 | -1>>
+
+export type CountPayload<TDocument extends WithStringId<unknown>> = {
   filters?: Filters<TDocument>
 }
 
-export type GetPayload<TDocument extends WithId<unknown>> = {
+export type GetPayload<TDocument extends WithStringId<unknown>> = {
   filters: Filters<TDocument>
   project?: Projection<TDocument>
   populate?: (keyof TDocument)[]
 }
 
-export type GetAllPayload<TDocument extends WithId<unknown>> = {
+export type GetAllPayload<TDocument extends WithStringId<unknown>> = {
   filters?: Filters<TDocument>
   project?: Projection<TDocument>
   offset?: number
@@ -109,12 +113,12 @@ export type GetAllPayload<TDocument extends WithId<unknown>> = {
   populate?: (keyof TDocument)[]
 }
 
-export type InsertPayload<TDocument extends WithId<unknown>> = {
+export type InsertPayload<TDocument extends WithStringId<unknown>> = {
   what: What<TDocument>
   project?: Projection<TDocument>
 }
 
-export type RemovePayload<TDocument extends WithId<unknown>> = {
+export type RemovePayload<TDocument extends WithStringId<unknown>> = {
   filters: Filters<TDocument>
 }
 
@@ -155,7 +159,7 @@ export type GetAllReturnType<TDocument> = Result.Either<ExtractError<Unpaginated
 }>
 
 export type CollectionFunctions<TSchema extends JsonSchema = JsonSchema> = SchemaWithId<TSchema> extends infer InferredDocument
-  ? InferredDocument extends WithId<unknown>
+  ? InferredDocument extends WithStringId<unknown>
     ? {
       count: (payload: CountPayload<InferredDocument>)=> Promise<CountReturnType>
       get: (payload: GetPayload<InferredDocument>)=> Promise<GetReturnType<InferredDocument>>
@@ -170,8 +174,8 @@ export type CollectionFunctions<TSchema extends JsonSchema = JsonSchema> = Schem
     : never
   : never
 
-export type CollectionFunctionsSDK<TSchema extends JsonSchema = JsonSchema> = SchemaWithId<TSchema> extends infer InferredDocument
-  ? InferredDocument extends WithId<unknown>
+export type CollectionFunctionsSDK<TSchema extends JsonSchema = JsonSchema> = SchemaWithId<TSchema, { useObjectIds: false }> extends infer InferredDocument
+  ? InferredDocument extends WithStringId<unknown>
     ? {
       count: (payload: CountPayload<InferredDocument>)=> Promise<WithACErrors<CountReturnType>>
       get: (payload: GetPayload<InferredDocument>)=> Promise<WithACErrors<GetReturnType<InferredDocument>>>
