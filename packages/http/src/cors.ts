@@ -1,6 +1,6 @@
 import type { GenericRequest, GenericResponse, CorsConfig } from '@aeriajs/types'
 
-export const cors = (req: GenericRequest, res: GenericResponse, config: CorsConfig) => {
+export const cors = async (req: GenericRequest, res: GenericResponse, config: CorsConfig) => {
   const {
     allowOrigin = [],
     allowMethods = [],

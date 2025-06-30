@@ -1,8 +1,9 @@
 import type { RouteContext } from './context.js'
-import type { RouteUri } from './http.js'
+import type { GenericRequest, GenericResponse, RouteUri } from './http.js'
 import type { RateLimitingParams } from './security.js'
 import type { CollectionItem } from './collection.js'
-import type { UserRole } from './token.js'
+import type { Token, UserRole } from './token.js'
+import type { Result } from './result.js'
 
 export type RolesHierarchy = Record<
   UserRole,
@@ -16,12 +17,18 @@ export type CorsConfig = {
   maxAge: string
 }
 
+export type GetTokenFunction = (request: GenericRequest, context: RouteContext) => Promise<Result.Either<unknown, Token>>
+
 export type ServerOptions = {
   host?: string
   port?: number
   enableLogging?: boolean
   noWarmup?: boolean
-  cors?: CorsConfig | null
+  cors?: 
+    | null
+    | CorsConfig
+    | ((req: GenericRequest, res: GenericResponse, config: CorsConfig) => Promise<null | undefined>)
+  getToken?: GetTokenFunction
 }
 
 export type ApiConfig = {

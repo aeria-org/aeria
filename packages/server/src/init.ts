@@ -1,12 +1,13 @@
-import type { RouteContext, Collection, GenericRequest, ApiConfig, Token, AuthenticatedToken, NonCircularJsonSchema } from '@aeriajs/types'
-import { Result, ACError, HTTPStatus } from '@aeriajs/types'
-import { endpointError, throwIfError, deepMerge } from '@aeriajs/common'
+import type { RouteContext, Collection, ApiConfig, NonCircularJsonSchema, Token } from '@aeriajs/types'
+import { ACError, HTTPStatus, Result } from '@aeriajs/types'
+import { deepMerge, endpointError } from '@aeriajs/common'
 import { cors, wrapRouteExecution, type createRouter } from '@aeriajs/http'
 import { registerServer } from '@aeriajs/node-http'
-import { createContext, getDatabase, getDatabaseCollection, decodeToken, traverseDocument, ObjectId } from '@aeriajs/core'
+import { createContext, getDatabase } from '@aeriajs/core'
 import { DEFAULT_API_CONFIG } from './constants.js'
 import { warmup } from './warmup.js'
 import { registerRoutes } from './routes.js'
+import { getToken } from './getToken.js'
 
 type DeepPartial<T> = T extends Record<string, unknown>
   ? {
@@ -27,68 +28,6 @@ export type InitOptions = {
   collections?: Record<string, Omit<Collection, 'item'> & {
     description: NonCircularJsonSchema
   }>
-}
-
-const authenticationGuard = (decodedToken: Token): decodedToken is AuthenticatedToken => {
-  decodedToken.authenticated = true
-  return true
-}
-
-export const getToken = async (request: GenericRequest, context: RouteContext) => {
-  if( !request.headers.authorization ) {
-    return Result.result({
-      authenticated: false,
-      sub: null,
-    } satisfies Token)
-  }
-
-  try {
-    const decodedToken: Token = await decodeToken(typeof request.headers.authorization === 'string'
-      ? request.headers.authorization.split('Bearer ').at(-1)!
-      : '')
-
-    if( authenticationGuard(decodedToken) ) {
-      if( typeof decodedToken.sub === 'string' ) {
-        decodedToken.sub = new ObjectId(decodedToken.sub)
-        Object.assign(decodedToken.userinfo, throwIfError(await traverseDocument(decodedToken.userinfo, context.collections.user.description, {
-          autoCast: true,
-        })))
-
-        if( context.config.security.revalidateToken ) {
-          const userCollection = getDatabaseCollection<{ roles: readonly string[] }>('user')
-          const user = await userCollection.findOne({
-            _id: decodedToken.sub,
-            active: true,
-          }, {
-            projection: {
-              roles: 1,
-            },
-          })
-
-          if( !user ) {
-            return Result.error(ACError.InvalidToken)
-          }
-
-          const rolesMatch = decodedToken.roles.every((role) => user.roles.includes(role))
-          if( !rolesMatch ) {
-            return Result.error(ACError.InvalidToken)
-          }
-        }
-      }
-    }
-
-    return Result.result(decodedToken)
-
-  } catch( err ) {
-    if( process.env.NODE_ENV === 'development' ) {
-      console.trace(err)
-    }
-
-    return endpointError({
-      httpStatus: HTTPStatus.Unauthorized,
-      code: ACError.AuthenticationError,
-    })
-  }
 }
 
 export const init = (_options: InitOptions = {}) => {
@@ -121,15 +60,45 @@ export const init = (_options: InitOptions = {}) => {
 
       const server = registerServer(config.server, async (request, response) => {
         if( config.server && config.server.cors ) {
-          if( cors(request, response, config.server.cors) === null ) {
+          let result: null | undefined
+          switch( typeof config.server.cors ) {
+            case 'function': {
+              result = await config.server.cors(request, response, DEFAULT_API_CONFIG.server.cors)
+              break
+            }
+            case 'object': {
+              result = await cors(request, response, config.server.cors)
+              break
+            }
+          }
+
+          if( result === null ) {
             return
           }
         }
 
         await wrapRouteExecution(response, async () => {
-          const { error, result: token } = await getToken(request, parentContext)
-          if( error ) {
-            return Result.error(error)
+          const getTokenFn = config.server?.getToken
+            ? config.server.getToken
+            : getToken
+
+          let token: Token
+          try {
+            const { error, result } = await getTokenFn(request, parentContext)
+            if( error ) {
+              return Result.error(error)
+            }
+
+            token = result!
+          } catch( err ) {
+            if( process.env.NODE_ENV === 'development' ) {
+              console.trace(err)
+            }
+
+            return endpointError({
+              httpStatus: HTTPStatus.Unauthorized,
+              code: ACError.AuthenticationError,
+            })
           }
 
           const context = await createContext({
