@@ -19,6 +19,8 @@ export type CorsConfig = {
 
 export type GetTokenFunction = (request: GenericRequest, context: RouteContext) => Promise<Result.Either<unknown, Token>>
 
+export type CorsFunction = (req: GenericRequest, res: GenericResponse, config: CorsConfig) => Promise<null | undefined>
+
 export type ServerOptions = {
   host?: string
   port?: number
@@ -27,7 +29,7 @@ export type ServerOptions = {
   cors?:
     | null
     | CorsConfig
-    | ((req: GenericRequest, res: GenericResponse, config: CorsConfig) => Promise<null | undefined>)
+    | CorsFunction
   getToken?: GetTokenFunction
 }
 
