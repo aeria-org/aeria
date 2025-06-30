@@ -24,7 +24,7 @@ export type ServerOptions = {
   port?: number
   enableLogging?: boolean
   noWarmup?: boolean
-  cors?: 
+  cors?:
     | null
     | CorsConfig
     | ((req: GenericRequest, res: GenericResponse, config: CorsConfig) => Promise<null | undefined>)
