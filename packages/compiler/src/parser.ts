@@ -142,12 +142,20 @@ export const parse = (tokens: (Token | undefined)[]) => {
   }
 
   const parseArray = <TTokenType extends TokenType>(types: TTokenType[]) => {
-    const { location: openingLocation } = consume(TokenType.LeftSquareBracket)
-
     const array: unknown[] = []
     const symbols: symbol[] = []
-    let type: TokenType | undefined
 
+    const { location: openingLocation } = consume(TokenType.LeftSquareBracket)
+
+    if( match(TokenType.RightSquareBracket) ) {
+      consume(TokenType.RightSquareBracket)
+      return {
+        value: [],
+        symbols: [],
+      }
+    }
+
+    let type: TokenType | undefined
     for( const typeCandidate of types ) {
       if( match(typeCandidate) ) {
         type = typeCandidate
