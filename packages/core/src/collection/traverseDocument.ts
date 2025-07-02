@@ -159,11 +159,14 @@ const autoCast = (value: unknown, ctx: Omit<PhaseContext, 'options'> & { options
       }
 
       if( 'format' in ctx.property ) {
-        if( ctx.property.format === 'date' || ctx.property.format === 'date-time' ) {
-          const timestamp = Date.parse(value)
-          return Result.result(!Number.isNaN(timestamp)
-            ? new Date(timestamp)
-            : null)
+        switch( ctx.property.format ) {
+          case 'date':
+          case 'date-time': {
+            const timestamp = Date.parse(value)
+            return Result.result(!Number.isNaN(timestamp)
+              ? new Date(timestamp)
+              : null)
+          }
         }
       }
       break
