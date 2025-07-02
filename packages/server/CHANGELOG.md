@@ -1,5 +1,21 @@
 # @aeriajs/server
 
+## 0.0.278
+
+### Patch Changes
+
+- 6e3b89f: Allow passing a custom `getToken()` function
+- Updated dependencies [6e3b89f]
+- Updated dependencies [6e3b89f]
+  - @aeriajs/server@0.0.278
+  - @aeriajs/types@0.0.135
+  - @aeriajs/http@0.0.192
+  - @aeriajs/builtins@0.0.276
+  - @aeriajs/common@0.0.157
+  - @aeriajs/core@0.0.276
+  - @aeriajs/entrypoint@0.0.163
+  - @aeriajs/node-http@0.0.192
+
 ## 0.0.277
 
 ### Patch Changes
