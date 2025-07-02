@@ -1,5 +1,14 @@
 # @aeriajs/compiler
 
+## 0.0.60
+
+### Patch Changes
+
+- d3b5548: Fix contract codegen bug
+- Updated dependencies [6e3b89f]
+  - @aeriajs/types@0.0.135
+  - @aeriajs/common@0.0.157
+
 ## 0.0.59
 
 ### Patch Changes

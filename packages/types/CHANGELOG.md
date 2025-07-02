@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.135
+
+### Patch Changes
+
+- 6e3b89f: Allow passing custom `getToken()` and `cors()` functions
+
 ## 0.0.134
 
 ### Patch Changes

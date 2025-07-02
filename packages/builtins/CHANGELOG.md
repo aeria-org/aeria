@@ -1,5 +1,16 @@
 # @aeriajs/builtins
 
+## 0.0.276
+
+### Patch Changes
+
+- Updated dependencies [6e3b89f]
+  - @aeriajs/types@0.0.135
+  - @aeriajs/common@0.0.157
+  - @aeriajs/core@0.0.276
+  - @aeriajs/entrypoint@0.0.163
+  - @aeriajs/validation@0.0.177
+
 ## 0.0.275
 
 ### Patch Changes
