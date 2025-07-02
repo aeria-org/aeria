@@ -36,11 +36,11 @@ export const generateExports = (ast: AST.ProgramNode, options = {
     return symbols
   }, {}))
 
-  let indexJs = 
+  let indexJs =
     'export * as collections from \'./collections/index.js\'\n' +
     `export { ${symbolsToExport.map((symbol) => symbol.extend).join(', ')} } from './collections/collections.js'\n`
 
-  let indexDts = 
+  let indexDts =
     'export * as collections from \'./collections/index.js\'\n' +
     `export { ${symbolsToExport.map((symbol) => `${symbol.extend}, ${symbol.schema}`).join(', ')} } from './collections/collections.js'\n`
 
