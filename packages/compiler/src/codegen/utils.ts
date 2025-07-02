@@ -159,24 +159,33 @@ export const stringify = (value: StringifyProperty, parents: (symbol | string)[]
     return arrayString + `${'\t'.repeat(parents.length)}]`
   }
 
-  if (!isRecord(value)) {
-    return typeof value === 'number' || typeof value === 'boolean' || !value
-      ? String(value)
-      : `"${String(value)}"`
+  if( isRecord(value) ) {
+    const objectString = Object.keys(value).map((key) => {
+      const currentParents = [
+        ...parents,
+        key,
+      ]
+
+      const indentation = '\t'.repeat(currentParents.length)
+      return `${indentation}${key}: ${checkQuotes(currentParents, value[key])}`
+    }).join(',\n')
+
+    return `{\n${objectString}\n${'\t'.repeat(parents.length)}}`
   }
 
-  const objectString = Object.keys(value).map((key) => {
-    const currentParents = [
-      ...parents,
-      key,
-    ]
-
-    const prefix = '\t'.repeat(currentParents.length)
-
-    return `${prefix}${key}: ${checkQuotes(currentParents, value[key])}`
-  }).join(',\n')
-
-  return `{\n${objectString}\n${'\t'.repeat(parents.length)}}`
+  switch( typeof value ) {
+    case 'undefined':
+    case 'number':
+    case 'boolean': {
+      return String(value)
+    }
+    default: {
+      if( value === null ) {
+        return String(value)
+      }
+      return `"${String(value)}"`
+    }
+  }
 }
 
 const checkQuotes = (parents: (symbol | string)[], value: StringifyProperty) => {

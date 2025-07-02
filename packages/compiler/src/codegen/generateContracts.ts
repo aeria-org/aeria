@@ -47,7 +47,7 @@ const makeJSContractsCode = (ast: AST.ProgramNode) => {
 
         responseString = stringify(responseArray)
       } else {
-        responseString = stringify(getCodeForResponse(response))
+        responseString = getCodeForResponse(response)
       }
     }
 

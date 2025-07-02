@@ -10,16 +10,15 @@ export type RolesHierarchy = Record<
   readonly UserRole[] | boolean
 >
 
+export type GetTokenFunction = (request: GenericRequest, context: RouteContext) => Promise<Result.Either<unknown, Token>>
+export type CorsFunction = (req: GenericRequest, res: GenericResponse, config: CorsConfig) => Promise<null | undefined>
+
 export type CorsConfig = {
   allowOrigin?: readonly string[]
   allowMethods?: readonly string[]
   allowHeaders?: readonly string[]
   maxAge: string
 }
-
-export type GetTokenFunction = (request: GenericRequest, context: RouteContext) => Promise<Result.Either<unknown, Token>>
-
-export type CorsFunction = (req: GenericRequest, res: GenericResponse, config: CorsConfig) => Promise<null | undefined>
 
 export type ServerOptions = {
   host?: string

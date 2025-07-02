@@ -45,8 +45,8 @@ export const generateCode = async (ast: AST.ProgramNode, options: CompilationOpt
       ['index.d.ts']: exports.collections.dts,
       ['index.js']: exports.collections.js,
     },
-    ['index.d.ts']: exports.main.dts,
-    ['index.js']: exports.main.js,
+    ['index.d.ts']: exports.index.dts,
+    ['index.js']: exports.index.js,
   }
 
   if (contracts) {

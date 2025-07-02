@@ -124,12 +124,7 @@ export const activate: ContractToFunction<typeof activateContract, Context<typeo
     })
 
   }
-  // if( context.request.method === 'GET' ) {
-  //   return context.response.writeHead(302, {
-  //     location: '/user/activation',
-  //   }).end()
-  // }
-  //
+
   return Result.result({
     userId: user._id,
   })

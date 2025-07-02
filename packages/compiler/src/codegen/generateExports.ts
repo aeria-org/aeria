@@ -7,6 +7,21 @@ type SymbolToExport = {
   extend: string
 }
 
+type Exports = {
+  index: {
+    js: string
+    dts: string
+  }
+  collections: {
+    js: string
+    dts: string
+  }
+  contracts?: {
+    js: string
+    dts: string
+  }
+}
+
 export const generateExports = (ast: AST.ProgramNode, options = {
   hasContracts: false,
 }) => {
@@ -21,35 +36,27 @@ export const generateExports = (ast: AST.ProgramNode, options = {
     return symbols
   }, {}))
 
-  const exports: {
-    main: {
-      js: string
-      dts: string
-    },
-    collections: {
-      js: string
-      dts: string
-    },
-    contracts?: {
-      js: string
-      dts: string
-    },
-  } = {
+  let indexJs = 
+    'export * as collections from \'./collections/index.js\'\n' +
+    `export { ${symbolsToExport.map((symbol) => symbol.extend).join(', ')} } from './collections/collections.js'\n`
+
+  let indexDts = 
+    'export * as collections from \'./collections/index.js\'\n' +
+    `export { ${symbolsToExport.map((symbol) => `${symbol.extend}, ${symbol.schema}`).join(', ')} } from './collections/collections.js'\n`
+
+  if( options.hasContracts ) {
+    indexJs += 'export * as contracts from \'./contracts/index.js\'\n'
+    indexDts += 'export * as contracts from \'./contracts/index.js\'\n'
+  }
+
+  const exports: Exports = {
     collections: {
       js: `export { ${symbolsToExport.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
       dts: `export { ${symbolsToExport.map((symbol) => `${symbol.id}`).join(', ')} } from './collections.js'`,
     },
-    main: {
-      js: (options.hasContracts
-        ? 'export * as contracts from \'./contracts/index.js\'\n'
-        : '') +
-        'export * as collections from \'./collections/index.js\'\n' +
-        `export { ${symbolsToExport.map((symbol) => symbol.extend).join(', ')} } from './collections/collections.js'`,
-      dts: (options.hasContracts
-        ? 'export * as contracts from \'./contracts/index.js\'\n'
-        : '') +
-        'export * as collections from \'./collections/index.js\'\n' +
-        `export { ${symbolsToExport.map((symbol) => `${symbol.extend}, ${symbol.schema}`).join(', ')} } from './collections/collections.js'`,
+    index: {
+      js: indexJs,
+      dts: indexDts,
     },
   }
 
