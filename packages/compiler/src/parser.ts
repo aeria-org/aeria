@@ -747,7 +747,9 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
     if( match(TokenType.Keyword, 'extends') ) {
       consume(TokenType.Keyword)
-      const { value: packageName } = consume(TokenType.Identifier)
+      const { value: packageName } = match(TokenType.QuotedString)
+        ? consume(TokenType.QuotedString)
+        : consume(TokenType.Identifier)
       consume(TokenType.Dot)
 
       const { value: symbolName } = consume(TokenType.Identifier)
@@ -939,7 +941,9 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
         let functionNode: AST.FunctionNode
         if( current().type === TokenType.Identifier && next().type === TokenType.Dot ) {
-          const { value: packageName } = consume(TokenType.Identifier)
+          const { value: packageName } = match(TokenType.QuotedString)
+            ? consume(TokenType.QuotedString)
+            : consume(TokenType.Identifier)
           consume(TokenType.Dot)
 
           const { value: symbolName } = consume(TokenType.Identifier)
