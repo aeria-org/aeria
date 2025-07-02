@@ -1,5 +1,12 @@
 # @aeriajs/compiler
 
+## 0.0.61
+
+### Patch Changes
+
+- b0c9877: Fix empty arrays not being allowed
+- 67cd0cd: Allow quoted strings for package names
+
 ## 0.0.60
 
 ### Patch Changes
