@@ -9,4 +9,4 @@ export const upload = {} as ReturnType<typeof uploader>
 export const storage = {} as ReturnType<typeof getStorage>
 export default aeria
 
-throw new Error('Runtime files weren\'t generated. Run the "aeria-sdk" script first.')
+throw new Error("Runtime files weren't generated. Run the \"aeria-sdk\" script first.")

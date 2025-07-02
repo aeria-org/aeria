@@ -37,16 +37,16 @@ export const generateExports = (ast: AST.ProgramNode, options = {
   }, {}))
 
   let indexJs =
-    'export * as collections from \'./collections/index.js\'\n' +
+    "export * as collections from './collections/index.js'\n" +
     `export { ${symbolsToExport.map((symbol) => symbol.extend).join(', ')} } from './collections/collections.js'\n`
 
   let indexDts =
-    'export * as collections from \'./collections/index.js\'\n' +
+    "export * as collections from './collections/index.js'\n" +
     `export { ${symbolsToExport.map((symbol) => `${symbol.extend}, ${symbol.schema}`).join(', ')} } from './collections/collections.js'\n`
 
   if( options.hasContracts ) {
-    indexJs += 'export * as contracts from \'./contracts/index.js\'\n'
-    indexDts += 'export * as contracts from \'./contracts/index.js\'\n'
+    indexJs += "export * as contracts from './contracts/index.js'\n"
+    indexDts += "export * as contracts from './contracts/index.js'\n"
   }
 
   const exports: Exports = {
@@ -62,8 +62,8 @@ export const generateExports = (ast: AST.ProgramNode, options = {
 
   if (options.hasContracts) {
     exports.contracts = {
-      js: 'export * from \'./contracts.js\'',
-      dts: 'export * from \'./contracts.js\'',
+      js: "export * from './contracts.js'",
+      dts: "export * from './contracts.js'",
     }
   }
 

@@ -57,8 +57,8 @@ importers:
         specifier: ^19.8.0
         version: 19.8.1
       '@eslint-aeria/config':
-        specifier: ~0.0.6
-        version: 0.0.6(@stylistic/eslint-plugin@2.13.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(@typescript-eslint/parser@7.18.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))
+        specifier: ~0.0.7
+        version: 0.0.7(@stylistic/eslint-plugin@2.13.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(@typescript-eslint/parser@7.18.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))
       '@types/node':
         specifier: ^24.0.7
         version: 24.0.7
@@ -685,8 +685,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@eslint-aeria/config@0.0.6':
-    resolution: {integrity: sha512-5Onxm65F774tUwauju3u33xTgQs42YbsqVgb4OIiQGheY/0GdbzrRDjAJBdIRQr9Y8TMU684wWC6xFZrLF38oQ==}
+  '@eslint-aeria/config@0.0.7':
+    resolution: {integrity: sha512-8n5FU4yimaitsDFDoQwxyrwqPJRFAidReYKT7pQGIuJgcx5RxgKI8QT9JlIDyrJRgbfbKx733BNRN/hqD/yHjg==}
     peerDependencies:
       '@stylistic/eslint-plugin': ^2.1.0
       '@typescript-eslint/eslint-plugin': ^7.12.0
@@ -2599,7 +2599,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.5':
     optional: true
 
-  '@eslint-aeria/config@0.0.6(@stylistic/eslint-plugin@2.13.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(@typescript-eslint/parser@7.18.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))':
+  '@eslint-aeria/config@0.0.7(@stylistic/eslint-plugin@2.13.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(@typescript-eslint/parser@7.18.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))':
     dependencies:
       '@stylistic/eslint-plugin': 2.13.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3)
       '@typescript-eslint/eslint-plugin': 7.18.0(@typescript-eslint/parser@7.18.0(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3)

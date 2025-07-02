@@ -80,7 +80,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
         break
       case 'middlewares':
         collectionSchema.middlewares = {
-          [UnquotedSymbol]: 'import(\'@aeriajs/types\').CollectionMiddleware<unknown>[]',
+          [UnquotedSymbol]: "import('@aeriajs/types').CollectionMiddleware<unknown>[]",
         }
         break
       case 'functions':
