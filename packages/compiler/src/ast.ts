@@ -11,6 +11,7 @@ export const PropertyType = {
   enum: 'enum',
   date: 'string',
   datetime: 'string',
+  objectid: 'string',
   const: 'const',
 } as const
 

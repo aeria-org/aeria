@@ -590,6 +590,13 @@ export const parse = (tokens: (Token | undefined)[]) => {
             }
             break
           }
+          case 'objectid': {
+            property = {
+              type: 'string',
+              format: 'objectid',
+            }
+            break
+          }
           default:
             property = {
               type: AST.PropertyType[identifier],
