@@ -161,23 +161,41 @@ export const validateProperty = <TWhat>(
   if( 'type' in property ) {
     switch( property.type ) {
       case 'string': {
-        if( typeof what !== 'string' ) {
-          return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
-            expected: expectedType,
-            got: actualType,
-          }))
+        switch( property.format ) {
+          case 'objectid': {
+            if( !options.objectIdConstructor ) {
+              throw new Error
+            }
+
+            if( !(what instanceof options.objectIdConstructor) ) {
+              return Result.error(makePropertyError(PropertyValidationErrorCode.StringConstraint, {
+                expected: 'objectid',
+                got: 'invalid_objectid',
+              }))
+            }
+
+            break
+          }
+          default: {
+            if( typeof what !== 'string' ) {
+              return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+                expected: expectedType,
+                got: actualType,
+              }))
+            }
+
+            if(
+              (typeof property.minLength === 'number' && property.minLength > what.length)
+              || (typeof property.maxLength === 'number' && property.maxLength < what.length)
+            ) {
+              return Result.error(makePropertyError(PropertyValidationErrorCode.StringConstraint, {
+                expected: 'string',
+                got: 'invalid_string',
+              }))
+            }
+          }
         }
 
-        if(
-          (property.format === 'objectid' && !isValidObjectId(what))
-          || (typeof property.minLength === 'number' && property.minLength > what.length)
-          || (typeof property.maxLength === 'number' && property.maxLength < what.length)
-        ) {
-          return Result.error(makePropertyError(PropertyValidationErrorCode.StringConstraint, {
-            expected: 'string',
-            got: 'invalid_string',
-          }))
-        }
         break
       }
       case 'integer': {
