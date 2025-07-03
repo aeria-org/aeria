@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.178
+
+### Patch Changes
+
+- 31f38fa: Fix objectid validation
+
 ## 0.0.177
 
 ### Patch Changes

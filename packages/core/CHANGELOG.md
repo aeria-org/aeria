@@ -1,5 +1,16 @@
 # @aeriajs/api
 
+## 0.0.277
+
+### Patch Changes
+
+- 31f38fa: Fix objectid validation
+- Updated dependencies [31f38fa]
+  - @aeriajs/validation@0.0.178
+  - @aeriajs/builtins@0.0.277
+  - @aeriajs/http@0.0.193
+  - @aeriajs/security@0.0.277
+
 ## 0.0.276
 
 ### Patch Changes

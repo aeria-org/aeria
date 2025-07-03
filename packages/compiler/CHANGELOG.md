@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.62
+
+### Patch Changes
+
+- 5f4d0e0: Add `objectid` type
+
 ## 0.0.61
 
 ### Patch Changes
