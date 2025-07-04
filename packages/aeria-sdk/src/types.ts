@@ -50,10 +50,14 @@ export type InferEndpointFromContract<TContract extends Contract> = TContract ex
   | { query: infer RoutePayload }
   ? InferEndpointFunction<
     RouteResponse extends {}
-      ? InferProperties<RouteResponse>
+      ? InferProperties<RouteResponse, {
+        useObjectIds: false,
+      }>
       : unknown,
     RoutePayload extends {}
-      ? PackReferences<InferProperty<RoutePayload>>
+      ? PackReferences<InferProperty<RoutePayload, {
+        useObjectIds: false,
+      }>>
       : undefined
   >
   : never
