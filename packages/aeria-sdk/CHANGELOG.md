@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.209
+
+### Patch Changes
+
+- d78f04a: Fix `InferEndpointFunction<T>`
+
 ## 0.0.208
 
 ### Patch Changes
