@@ -1,10 +1,10 @@
 {
   "name": "@aeriajs/core",
+  "type": "module",
   "version": "0.0.277",
   "description": "",
   "main": "dist/index.js",
   "aeriaMain": "tests/fixtures/aeriaMain.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public"
@@ -14,21 +14,17 @@
     "test:typecheck": "tsc -p tsconfig.test.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "pnpm build:cjs && pnpm build:esm",
-    "build:cjs": "tsc",
-    "build:esm": "esbuild './src/**/*.ts' --outdir=dist --out-extension:.js=.mjs && pnpm build:esm-transform",
-    "build:esm-transform": "pnpm -w esm-transform $PWD/dist",
+    "build": "tsc",
     "postinstall": "node dist/__scripts__/postinstall.js || true"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js"
     },
     "./presets": {
       "types": "./dist/presets/index.d.ts",
-      "import": "./dist/presets/index.mjs",
+      "import": "./dist/presets/index.js",
       "require": "./dist/presets/index.js"
     },
     "./presets/*": "./dist/presets/*"

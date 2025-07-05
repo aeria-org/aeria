@@ -1,9 +1,9 @@
 {
   "name": "@aeriajs/builtins-icons",
+  "type": "module",
   "version": "0.0.9",
   "description": "## Installation",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public"
@@ -14,8 +14,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js"
     }
   },
   "files": [

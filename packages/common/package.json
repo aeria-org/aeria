@@ -1,9 +1,9 @@
 {
   "name": "@aeriajs/common",
+  "type": "module",
   "version": "0.0.157",
   "description": "",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "publishConfig": {
     "access": "public"
@@ -13,10 +13,7 @@
     "test:typecheck": "tsc -p tsconfig.test.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "pnpm build:cjs && pnpm build:esm",
-    "build:cjs": "tsc",
-    "build:esm": "esbuild './src/**/*.ts' --outdir=dist --out-extension:.js=.mjs && pnpm build:esm-transform",
-    "build:esm-transform": "pnpm -w esm-transform $PWD/dist"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -27,13 +24,11 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js"
     },
     "./either": {
       "types": "./dist/either.d.ts",
-      "import": "./dist/either.mjs",
-      "require": "./dist/either.js"
+      "import": "./dist/either.js"
     }
   },
   "devDependencies": {

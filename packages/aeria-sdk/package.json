@@ -1,18 +1,15 @@
 {
   "name": "aeria-sdk",
+  "type": "module",
   "version": "0.0.209",
   "description": "",
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo skipping",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "pnpm build:cjs && pnpm build:esm",
-    "build:cjs": "tsc",
-    "build:esm": "esbuild './src/**/*.ts' --outdir=dist --out-extension:.js=.mjs && pnpm build:esm-transform",
-    "build:esm-transform": "pnpm -w esm-transform $PWD/dist"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -30,30 +27,24 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "webpack": "./dist/index.js",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "import": "./dist/index.js"
     },
     "./next": "./dist/index.js",
     "./config": {
       "types": "./dist/config.d.ts",
-      "import": "./dist/config.mjs",
-      "require": "./dist/config.js"
+      "import": "./dist/config.js"
     },
     "./http": {
       "types": "./dist/http.d.ts",
-      "import": "./dist/http.mjs",
-      "require": "./dist/http.js"
+      "import": "./dist/http.js"
     },
     "./mirror": {
       "types": "./dist/mirror.d.ts",
-      "import": "./dist/mirror.mjs",
-      "require": "./dist/mirror.js"
+      "import": "./dist/mirror.js"
     },
     "./topLevel": {
       "types": "./dist/topLevel.d.ts",
-      "import": "./dist/topLevel.mjs",
-      "require": "./dist/topLevel.js"
+      "import": "./dist/topLevel.js"
     }
   },
   "devDependencies": {

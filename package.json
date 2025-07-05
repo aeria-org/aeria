@@ -12,7 +12,6 @@
     "build:cjs": "./scripts/build-cjs.sh",
     "preinstall": "unlink node_modules/@aeriajs || true",
     "postinstall": "husky; rm -rf packages/*/node_modules/@aeriajs",
-    "esm-transform": "./scripts/transform-import-extensions.ts",
     "write-icons": "NODE_PATH=./playground/node_modules ./scripts/compile-builtins-icons.ts"
   },
   "devDependencies": {
@@ -36,7 +35,6 @@
     "@types/node": "^24.0.7",
     "aeria": "link:packages/aeria",
     "aeria-sdk": "link:packages/aeria-sdk",
-    "esbuild": "^0.25.5",
     "eslint": "^9.30.1",
     "husky": "^9.0.11",
     "typescript": "^5.8.3",
