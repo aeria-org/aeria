@@ -16,7 +16,7 @@
         "../types/dist/*"
       ],
       "mongodb": [
-        "./node_modules/mongodb"
+        "./node_modules/mongodb/mongodb.d.ts"
       ]
     }
   },

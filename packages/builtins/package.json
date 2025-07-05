@@ -12,7 +12,7 @@
     "test": "echo skipping",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "tsc && pnpm write-icons",
+    "build": "tsc",
     "write-icons": "pnpm -w write-icons"
   },
   "keywords": [],
