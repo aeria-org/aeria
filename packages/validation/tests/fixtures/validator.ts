@@ -1,4 +1,4 @@
-import { validator } from '../../dist'
+import { validator } from '../../dist/index.js'
 
 export const personCandidate = {
   name: 'Terry',
