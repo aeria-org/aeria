@@ -24,11 +24,7 @@ export const getEntrypointPath = async () => {
 }
 
 export const getEntrypoint = async () => {
-  const entrypoint = await import(await getEntrypointPath())
-
-  return entrypoint.default.default
-    ? entrypoint.default
-    : entrypoint
+  return import(await getEntrypointPath())
 }
 
 const internalGetCollections = async (): Promise<Record<string, Collection | (()=> Collection)>> => {
