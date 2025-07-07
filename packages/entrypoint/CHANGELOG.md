@@ -1,5 +1,11 @@
 # @aeriajs/entrypoint
 
+## 0.0.165
+
+### Patch Changes
+
+- e3ef519: Remove useless code
+
 ## 0.0.164
 
 ### Patch Changes

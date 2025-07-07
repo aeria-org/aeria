@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.211
+
+### Patch Changes
+
+- 5a5c19c: Fix bin/index.js to conform with ESM
+
 ## 0.0.210
 
 ### Patch Changes
