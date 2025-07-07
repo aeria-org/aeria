@@ -379,6 +379,10 @@ export const validateRefs = async <TWhat>(
   } else if( 'properties' in property ) {
     const details: Record<string, PropertyValidationError | ValidationError> = {}
     for( const propName in what ) {
+      if( !(propName in property.properties) ) {
+        continue
+      }
+
       const { error } = await validateRefs(what[propName], property.properties[propName], options)
       if( error ) {
         details[propName] = error
