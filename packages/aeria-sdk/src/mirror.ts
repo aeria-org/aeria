@@ -107,21 +107,10 @@ declare module 'aeria-sdk' {
 \n`
 }
 
-export const runtimeCjs = (config: InstanceConfig) =>
-  `const config = ${JSON.stringify(config)}
-const aeria = require('./instance.js').createInstance(config)
-exports.instanceConfig = config
-exports.url = '${publicUrl(config)}'
-exports.aeria = aeria
-exports.storage = require('./storage.js').getStorage(config)
-exports.upload = require('./upload.js').uploader(config)
-exports.default = aeria
-\n`
-
-export const runtimeEsm = (config: InstanceConfig) =>
-  `import { createInstance } from './instance.mjs'
-import { getStorage } from './storage.mjs'
-import { uploader } from './upload.mjs'
+export const runtimeContent = (config: InstanceConfig) =>
+  `import { createInstance } from './instance.js'
+import { getStorage } from './storage.js'
+import { uploader } from './upload.js'
 export const instanceConfig = ${JSON.stringify(config)}
 export const url = '${publicUrl(config)}'
 export const aeria = createInstance(instanceConfig)
@@ -135,8 +124,7 @@ export const writeMirrorFiles = async (mirror: MirrorObject, config: InstanceCon
     .map((mirrorPath) => path.join(process.cwd(), mirrorPath))
 
   const dts = mirrorDts(mirror, config)
-  const cjs = runtimeCjs(config)
-  const esm = runtimeEsm(config)
+  const js = runtimeContent(config)
 
   for( const mirrorPath of mirrorPaths ) {
     const syntheticRequire = createRequire(path.join(path.dirname(path.resolve(mirrorPath)), 'node_modules'))
@@ -156,11 +144,7 @@ export const writeMirrorFiles = async (mirror: MirrorObject, config: InstanceCon
     await writeFile(path.join(runtimeBase, [
       'runtime',
       'js',
-    ].join('.')), cjs)
-    await writeFile(path.join(runtimeBase, [
-      'runtime',
-      'mjs',
-    ].join('.')), esm)
+    ].join('.')), js)
   }
 }
 

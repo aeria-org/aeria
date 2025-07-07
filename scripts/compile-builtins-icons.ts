@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import path from 'node:path'
-import { extractIcons, iconsEsmContent, iconsCjsContent, iconsDtsContent } from '../packages/cli/dist/index.js'
+import { extractIcons, iconsJsContent, iconsDtsContent } from '../packages/cli/dist/index.js'
 import * as fs from 'node:fs/promises'
 import * as presets from '../packages/core/dist/presets/index.js'
 import * as collections from '../packages/builtins/dist/collections/index.js'
@@ -25,8 +25,7 @@ const main = async () => {
   }
 
   const uniqueIcons = Array.from(new Set(icons))
-  await fs.writeFile(path.join(DIST_PATH, 'index.mjs'), iconsEsmContent(uniqueIcons))
-  await fs.writeFile(path.join(DIST_PATH, 'index.js'), iconsCjsContent(uniqueIcons))
+  await fs.writeFile(path.join(DIST_PATH, 'index.js'), iconsJsContent(uniqueIcons))
   await fs.writeFile(path.join(DIST_PATH, 'index.d.ts'), iconsDtsContent(uniqueIcons))
 }
 

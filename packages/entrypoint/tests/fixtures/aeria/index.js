@@ -1,6 +1,6 @@
 // @ts-check
-import { init } from '../../../../../server/dist/index.mjs'
-import { createRouter } from '../../../../../http/dist/index.mjs'
+import { init } from '../../../../server/dist/index.js'
+import { createRouter } from '../../../../http/dist/index.js'
 
 const router = createRouter()
 

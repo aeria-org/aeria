@@ -1,8 +1,6 @@
 import type { Collection, ApiConfig } from '@aeriajs/types'
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
-import { dynamicImport } from '@aeriajs/common'
-
 let collectionsMemo: Awaited<ReturnType<typeof internalGetCollections>> | undefined
 let availableRolesMemo: string[] | undefined
 const collectionMemo: Record<string, Collection | undefined> = {}
@@ -26,7 +24,8 @@ export const getEntrypointPath = async () => {
 }
 
 export const getEntrypoint = async () => {
-  const entrypoint = await dynamicImport(await getEntrypointPath())
+  const entrypoint = await import(await getEntrypointPath())
+
   return entrypoint.default.default
     ? entrypoint.default
     : entrypoint

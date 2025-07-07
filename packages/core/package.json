@@ -20,12 +20,11 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "default": "./dist/index.js"
     },
     "./presets": {
       "types": "./dist/presets/index.d.ts",
-      "import": "./dist/presets/index.js",
-      "require": "./dist/presets/index.js"
+      "default": "./dist/presets/index.js"
     },
     "./presets/*": "./dist/presets/*"
   },

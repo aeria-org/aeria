@@ -1,7 +1,7 @@
 // @ts-check
-const { init, user, file, tempFile, get, insert, remove, removeAll } = require('aeria')
+import { init, user, file, tempFile, get, insert, remove, removeAll } from 'aeria'
 
-exports.default = init({
+export default init({
   collections: {
     user,
     file,

@@ -27,24 +27,24 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "default": "./dist/index.js"
     },
     "./next": "./dist/index.js",
     "./config": {
       "types": "./dist/config.d.ts",
-      "import": "./dist/config.js"
+      "default": "./dist/config.js"
     },
     "./http": {
       "types": "./dist/http.d.ts",
-      "import": "./dist/http.js"
+      "default": "./dist/http.js"
     },
     "./mirror": {
       "types": "./dist/mirror.d.ts",
-      "import": "./dist/mirror.js"
+      "default": "./dist/mirror.js"
     },
     "./topLevel": {
       "types": "./dist/topLevel.d.ts",
-      "import": "./dist/topLevel.js"
+      "default": "./dist/topLevel.js"
     }
   },
   "devDependencies": {

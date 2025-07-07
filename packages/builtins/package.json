@@ -21,15 +21,15 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "default": "./dist/index.js"
     },
     "./collections": {
       "types": "./dist/collections/index.d.ts",
-      "import": "./dist/collections/index.js"
+      "default": "./dist/collections/index.js"
     },
     "./icons": {
       "types": "./dist/icons.d.ts",
-      "import": "./dist/icons.js"
+      "default": "./dist/icons.js"
     },
     "./*": "./dist/*"
   },

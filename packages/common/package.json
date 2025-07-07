@@ -24,11 +24,11 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "default": "./dist/index.js"
     },
     "./either": {
       "types": "./dist/either.d.ts",
-      "import": "./dist/either.js"
+      "default": "./dist/either.js"
     }
   },
   "devDependencies": {

@@ -19,13 +19,8 @@ export const extractIcons = (target: unknown): string[] => {
   return foundIcons
 }
 
-export const iconsEsmContent = (icons: string[]) => {
+export const iconsJsContent = (icons: string[]) => {
   const content = `export const icons = ${JSON.stringify(icons)};\n`
-  return content
-}
-
-export const iconsCjsContent = (icons: string[]) => {
-  const content = `exports.icons = ${JSON.stringify(icons)};\n`
   return content
 }
 
