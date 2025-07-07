@@ -11,7 +11,7 @@ const { values: opts } = parseArgs({
   },
 })
 
-const main = async () => {
+export const main = async () => {
   const config = await getConfig()
   if( opts.dev ) {
     config.environment = 'development'
@@ -19,6 +19,4 @@ const main = async () => {
 
   mirrorRemotely(config)
 }
-
-main()
 
