@@ -1,5 +1,18 @@
 # aeria-build
 
+## 0.0.256
+
+### Patch Changes
+
+- 70cf4fd: Deprecate CJS
+- Updated dependencies [70cf4fd]
+  - @aeriajs/builtins@0.0.278
+  - @aeriajs/common@0.0.158
+  - @aeriajs/compiler@0.0.63
+  - @aeriajs/core@0.0.278
+  - @aeriajs/entrypoint@0.0.164
+  - @aeriajs/types@0.0.136
+
 ## 0.0.255
 
 ### Patch Changes

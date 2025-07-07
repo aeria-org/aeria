@@ -1,5 +1,13 @@
 # @aeriajs/common
 
+## 0.0.158
+
+### Patch Changes
+
+- 70cf4fd: Deprecate CJS
+- Updated dependencies [70cf4fd]
+  - @aeriajs/types@0.0.136
+
 ## 0.0.157
 
 ### Patch Changes

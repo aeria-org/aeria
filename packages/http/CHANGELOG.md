@@ -1,5 +1,17 @@
 # @aeriajs/http
 
+## 0.0.194
+
+### Patch Changes
+
+- 70cf4fd: Deprecate CJS
+- Updated dependencies [70cf4fd]
+- Updated dependencies [70cf4fd]
+  - @aeriajs/validation@0.0.179
+  - @aeriajs/common@0.0.158
+  - @aeriajs/entrypoint@0.0.164
+  - @aeriajs/types@0.0.136
+
 ## 0.0.193
 
 ### Patch Changes
