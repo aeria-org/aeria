@@ -1,5 +1,14 @@
 # @aeriajs/node-http
 
+## 0.0.194
+
+### Patch Changes
+
+- 70cf4fd: Deprecate CJS
+- Updated dependencies [70cf4fd]
+  - @aeriajs/common@0.0.158
+  - @aeriajs/http@0.0.194
+
 ## 0.0.193
 
 ### Patch Changes

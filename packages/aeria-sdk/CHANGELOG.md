@@ -1,5 +1,14 @@
 # aeria-sdk
 
+## 0.0.210
+
+### Patch Changes
+
+- 70cf4fd: Deprecate CJS
+- Updated dependencies [70cf4fd]
+  - @aeriajs/common@0.0.158
+  - @aeriajs/types@0.0.136
+
 ## 0.0.209
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
   "name": "@aeriajs/types",
   "type": "module",
-  "version": "0.0.135",
+  "version": "0.0.136",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,5 +1,11 @@
 # @aeriajs/builtins-icons
 
+## 0.0.10
+
+### Patch Changes
+
+- 70cf4fd: Deprecate CJS
+
 ## 0.0.9
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
   "name": "@aeriajs/builtins-icons",
   "type": "module",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "## Installation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -1,5 +1,16 @@
 # @aeriajs/validation
 
+## 0.0.179
+
+### Patch Changes
+
+- 70cf4fd: Fix `validateRefs()` bug
+- 70cf4fd: Deprecate CJS
+- Updated dependencies [70cf4fd]
+  - @aeriajs/common@0.0.158
+  - @aeriajs/entrypoint@0.0.164
+  - @aeriajs/types@0.0.136
+
 ## 0.0.178
 
 ### Patch Changes
