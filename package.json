@@ -32,7 +32,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.0",
     "@eslint-aeria/config": "~0.0.7",
-    "@types/node": "^24.0.7",
+    "@types/node": "^24.0.10",
     "aeria": "link:packages/aeria",
     "aeria-sdk": "link:packages/aeria-sdk",
     "eslint": "^9.30.1",
