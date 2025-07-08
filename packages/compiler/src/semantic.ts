@@ -6,8 +6,12 @@ import { locationMap } from './parser.js'
 import { Diagnostic } from './diagnostic.js'
 import * as AST from './ast.js'
 
+const containsPropertyWithId = (propName: string, properties: Record<string, unknown>) => {
+  return propName === '_id' || propName in properties
+}
+
 const collectionHasProperty = async (collection: AST.CollectionNode, propName: string, options: Pick<CompilationOptions, 'languageServer'> = {}) => {
-  let hasProperty = propName in collection.properties
+  let hasProperty = containsPropertyWithId(propName, collection.properties)
   if( !hasProperty ) {
     if( collection.extends ) {
       if( options.languageServer ) {
@@ -21,7 +25,7 @@ const collectionHasProperty = async (collection: AST.CollectionNode, propName: s
         throw new Error
       }
 
-      hasProperty = propName in importedCollection.description.properties
+      hasProperty = containsPropertyWithId(propName, importedCollection.description.properties)
     }
   }
 
@@ -76,8 +80,6 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
       if( !(propName in node.nestedProperties!) ) {
         const symbol = node.property[AST.LOCATION_SYMBOL]!.arrays[attributeName]![index]
         const location = locationMap.get(symbol)
-
-        console.log(JSON.stringify(node))
 
         errors.push(new Diagnostic(`object hasn't such property "${propName}"`, location))
       }
@@ -146,7 +148,7 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
       for( const index in propNames ) {
         const propName = propNames[index]
 
-        if( !(propName in node.properties) ) {
+        if( !containsPropertyWithId(propName, node.properties) ) {
           const symbol = node[AST.LOCATION_SYMBOL].required![index]
           const location = locationMap.get(symbol)
 
@@ -162,7 +164,7 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
 
     if( node[AST.LOCATION_SYMBOL].requiredTerms ) {
       for( const [name, symbol] of node[AST.LOCATION_SYMBOL].requiredTerms ) {
-        if( !(name in node.properties) ) {
+        if( !containsPropertyWithId(name, node.properties) ) {
           const location = locationMap.get(symbol)
           errors.push(new Diagnostic(`invalid left operand "${name}"`, location))
         }
@@ -176,13 +178,13 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
 
           if( Array.isArray(option) ) {
             for( const [i, propName] of option.entries() ) {
-              if( !(propName in node.properties) ) {
+              if( !containsPropertyWithId(propName, node.properties) ) {
                 const location = locationMap.get((value as symbol[])[i])
                 errors.push(new Diagnostic(`invalid property "${propName}"`, location))
               }
             }
           } else {
-            if( !(option as string in node.properties) ) {
+            if( !containsPropertyWithId(option as string, node.properties) ) {
               const location = locationMap.get(value as symbol)
               errors.push(new Diagnostic(`invalid property "${option}"`, location))
             }
@@ -194,7 +196,7 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
     if( node.formLayout ) {
       if( node.formLayout.fields ) {
         for( const [name, value] of Object.entries(node.formLayout[AST.LOCATION_SYMBOL].fields) ) {
-          if( !(name in node.properties) ) {
+          if( !containsPropertyWithId(name, node.properties) ) {
             const location = locationMap.get(value.name)
             errors.push(new Diagnostic(`invalid property "${name}"`, location))
           }
@@ -203,7 +205,7 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
 
       if( node.formLayout[AST.LOCATION_SYMBOL].terms ) {
         for( const [name, symbol] of node.formLayout[AST.LOCATION_SYMBOL].terms ) {
-          if( !(name in node.properties) ) {
+          if( !containsPropertyWithId(name, node.properties) ) {
             const location = locationMap.get(symbol)
             errors.push(new Diagnostic(`invalid left operand "${name}"`, location))
           }
@@ -214,7 +216,7 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
     if( node.search ) {
       for( const [i, symbol] of node[AST.LOCATION_SYMBOL].searchIndexes!.entries() ) {
         const propName = node.search.indexes[i]
-        if( !(propName in node.properties) ) {
+        if( !containsPropertyWithId(propName, node.properties) ) {
           const location = locationMap.get(symbol)
           errors.push(new Diagnostic(`invalid property "${propName}"`, location))
         }
