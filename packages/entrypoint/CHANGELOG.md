@@ -1,5 +1,11 @@
 # @aeriajs/entrypoint
 
+## 0.0.166
+
+### Patch Changes
+
+- 4c1a97e: Fix ESM imports
+
 ## 0.0.165
 
 ### Patch Changes
