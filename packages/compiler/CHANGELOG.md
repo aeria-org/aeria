@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.64
+
+### Patch Changes
+
+- 7d8e34b: Id property missing in semantic analysis
+
 ## 0.0.63
 
 ### Patch Changes

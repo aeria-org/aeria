@@ -1,5 +1,18 @@
 # @aeriajs/server
 
+## 0.0.282
+
+### Patch Changes
+
+- 4c1a97e: Fix ESM imports
+- Updated dependencies [4c1a97e]
+  - @aeriajs/entrypoint@0.0.166
+  - @aeriajs/server@0.0.282
+  - @aeriajs/builtins@0.0.280
+  - @aeriajs/core@0.0.280
+  - @aeriajs/http@0.0.196
+  - @aeriajs/node-http@0.0.196
+
 ## 0.0.281
 
 ### Patch Changes
