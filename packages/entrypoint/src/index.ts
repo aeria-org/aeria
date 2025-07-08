@@ -1,8 +1,11 @@
 import type { Collection, ApiConfig } from '@aeriajs/types'
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
+import { pathToFileURL } from 'node:url'
+
 let collectionsMemo: Awaited<ReturnType<typeof internalGetCollections>> | undefined
 let availableRolesMemo: string[] | undefined
+
 const collectionMemo: Record<string, Collection | undefined> = {}
 
 const DEFAULT_CONFIG: ApiConfig = {
@@ -24,7 +27,8 @@ export const getEntrypointPath = async () => {
 }
 
 export const getEntrypoint = async () => {
-  return import(await getEntrypointPath())
+  const path = await getEntrypointPath()
+  return import(pathToFileURL(path.replace(/\\/g, '\\\\')).href)
 }
 
 const internalGetCollections = async (): Promise<Record<string, Collection | (()=> Collection)>> => {
