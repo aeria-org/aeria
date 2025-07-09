@@ -1,9 +1,9 @@
 import type { init } from './init.js'
-import { pathToFileURL } from 'node:url'
+import { dynamicImport } from '@aeriajs/common'
 
 export const loader = async () => {
   const path = process.argv[1]
-  const entrypoint = await import(pathToFileURL(path.replace(/\\/g, '\\\\')).href)
+  const entrypoint = await dynamicImport(path)
   const entrypointMain: ReturnType<typeof init> = entrypoint.default
 
   entrypointMain.listen()

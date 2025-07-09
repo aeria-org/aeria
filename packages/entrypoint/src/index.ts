@@ -1,7 +1,7 @@
 import type { Collection, ApiConfig } from '@aeriajs/types'
 import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
-import { pathToFileURL } from 'node:url'
+import {dynamicImport} from '@aeriajs/common'
 
 let collectionsMemo: Awaited<ReturnType<typeof internalGetCollections>> | undefined
 let availableRolesMemo: string[] | undefined
@@ -28,7 +28,7 @@ export const getEntrypointPath = async () => {
 
 export const getEntrypoint = async () => {
   const path = await getEntrypointPath()
-  return import(pathToFileURL(path.replace(/\\/g, '\\\\')).href)
+  return dynamicImport(path)
 }
 
 const internalGetCollections = async (): Promise<Record<string, Collection | (()=> Collection)>> => {
