@@ -1,5 +1,5 @@
 import type { ArrayProperty, CollectionAction, CollectionActionEvent, CollectionActionFunction, CollectionActionRoute, CollectionActions, Condition, FileProperty, FinalCondition, FinalOperator, JsonSchema, LayoutName, LayoutOptions, RefProperty, RequiredProperties, SearchOptions, UserRole } from '@aeriajs/types'
-import { DESCRIPTION_PRESETS, LAYOUT_NAMES, PROPERTY_ARRAY_ELEMENTS, PROPERTY_FORMATS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
+import { DESCRIPTION_PRESETS, LAYOUT_NAMES, PROPERTY_ARRAY_ELEMENTS, PROPERTY_INPUT_ELEMENTS, PROPERTY_INPUT_TYPES } from '@aeriajs/types'
 import { icons } from '@phosphor-icons/core'
 import * as AST from './ast.js'
 import * as guards from './guards.js'
@@ -349,11 +349,6 @@ export const parse = (tokens: (Token | undefined)[]) => {
       switch( property.type ) {
         case 'string': {
           switch( attributeName ) {
-            case 'format': {
-              const { value } = consume(TokenType.QuotedString, PROPERTY_FORMATS)
-              property[attributeName] = value
-              return
-            }
             case 'mask': {
               if( match(TokenType.LeftSquareBracket) ) {
                 property[attributeName] = parseArray([TokenType.QuotedString]).value
