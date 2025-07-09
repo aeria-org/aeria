@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.65
+
+### Patch Changes
+
+- 0524947: Deprecate `@format`
+
 ## 0.0.64
 
 ### Patch Changes
