@@ -1,5 +1,13 @@
 # @aeriajs/entrypoint
 
+## 0.0.167
+
+### Patch Changes
+
+- 45f8e14: Add `dynamicImport()` back
+- Updated dependencies [45f8e14]
+  - @aeriajs/common@0.0.159
+
 ## 0.0.166
 
 ### Patch Changes

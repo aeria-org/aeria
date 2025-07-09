@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.159
+
+### Patch Changes
+
+- 45f8e14: Add `dynamicImport()` back
+
 ## 0.0.158
 
 ### Patch Changes
