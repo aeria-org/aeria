@@ -1,8 +1,14 @@
-import { pathToFileURL } from 'node:url'
-import * as path from 'node:path'
+export const dynamicImport = async (path: string) => {
+  try {
+    return require(path)
+  } catch( err ) {
+  }
 
-export const dynamicImport = (importPath: string) => {
-  const fixedPath = importPath.split(path.sep).join('/')
-  return import(pathToFileURL(fixedPath).href)
+  const fn = new Function(`return (async () => {
+      const { pathToFileURL } = await import('url')
+      return import(pathToFileURL('${path.replace(/\\/g, '\\\\')}'))
+    })()`)
+
+  return fn()
 }
 
