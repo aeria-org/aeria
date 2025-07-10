@@ -1,7 +1,7 @@
 {
   "name": "@aeriajs/http",
   "type": "module",
-  "version": "0.0.197",
+  "version": "0.0.198",
   "description": "## Installation",
   "main": "dist/index.js",
   "aeriaMain": "tests/fixtures/aeriaMain.js",
@@ -35,10 +35,10 @@
     "mongodb": "^6.17.0"
   },
   "peerDependencies": {
-    "@aeriajs/common": "^0.0.159",
-    "@aeriajs/entrypoint": "^0.0.167",
+    "@aeriajs/common": "^0.0.160",
+    "@aeriajs/entrypoint": "^0.0.168",
     "@aeriajs/types": "^0.0.136",
-    "@aeriajs/validation": "^0.0.182",
+    "@aeriajs/validation": "^0.0.183",
     "mongodb": "^6.17.0"
   }
 }

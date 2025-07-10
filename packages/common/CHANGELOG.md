@@ -1,5 +1,13 @@
 # @aeriajs/common
 
+## 0.0.160
+
+### Patch Changes
+
+- 07d0296: Isomorphic `dynamicImport()`
+- 013d4d5: Remove `require()` from `dynamicImport()`
+- 55d615d: Revert to old `dynamicImport()`'
+
 ## 0.0.159
 
 ### Patch Changes
