@@ -1,5 +1,5 @@
 // @ts-check
-import { init, user, file, tempFile, get, insert, remove, removeAll } from 'aeria'
+import { init, user, file, tempFile, get, insert, remove } from 'aeria'
 
 export default init({
   collections: {
