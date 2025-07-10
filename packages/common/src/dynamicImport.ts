@@ -1,14 +1,13 @@
-export const dynamicImport = async (path: string) => {
+export const dynamicImport = async (importPath: string) => {
   try {
-    return require(path)
+    return require(importPath)
   } catch( err ) {
   }
 
-  const fn = new Function(`return (async () => {
-      const { pathToFileURL } = await import('url')
-      return import(pathToFileURL('${path.replace(/\\/g, '\\\\')}'))
-    })()`)
+  const { pathToFileURL } = await import('node:url')
+  const { sep } = await import('node:path')
 
-  return fn()
+  const fixedPath = importPath.split(sep).join('/')
+  return import(pathToFileURL(fixedPath).href)
 }
 
