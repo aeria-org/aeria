@@ -28,7 +28,7 @@ const makeJSFunctions = async (collectionNode: AST.CollectionNode) => {
       const module = await import(collectionNode.extends.importPath)
       const collection = module[collectionNode.extends.symbolName] as Collection
 
-      if( collection.functions && collection.functions[functionNode.name] ) {
+      if( collection.functions && typeof collection.functions[functionNode.name] === 'function' ) {
         continue
       }
     }

@@ -39,7 +39,7 @@ const makeTSCollections = (ast: AST.ProgramNode, aliasedSymbols: Record<string, 
   for (const collectionNode of ast.collections) {
     const id = getCollectionId(collectionNode.name)
     const schemaName = transformSymbolName(collectionNode.name, {
-      capitalize: true
+      capitalize: true,
     })
     const typeName = `${id}Collection`
 

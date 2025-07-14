@@ -30,7 +30,9 @@ export const generateExports = (ast: AST.ProgramNode, options = {
     const id = getCollectionId(node.name)
     symbols[id] = {
       id,
-      schema: transformSymbolName(node.name, { capitalize: true }),
+      schema: transformSymbolName(node.name, {
+        capitalize: true,
+      }),
       extend: getExtendName(node.name),
     }
 
