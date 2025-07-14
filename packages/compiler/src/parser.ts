@@ -6,7 +6,7 @@ import * as guards from './guards.js'
 import * as lexer from './lexer.js'
 import { TokenType, type Token, type Location } from './token.js'
 import { Diagnostic } from './diagnostic.js'
-import { DEFAULT_EXPORT_SYMBOLS } from './utils.js'
+import { DEFAULT_EXPORT_SYMBOLS, transformSymbolName } from './utils.js'
 
 const MAX_ERROR_MESSAGE_ITEMS = 20
 const ICON_NAMES = icons.map((icon) => icon.name)
@@ -767,6 +767,9 @@ export const parse = (tokens: (Token | undefined)[]) => {
         packageName,
         importPath: packageName,
         symbolName: symbolName[0].toLowerCase() + symbolName.slice(1),
+        aliasedSymbolName: `${packageName}${transformSymbolName(symbolName, {
+          capitalize: true,
+        })}`,
       }
     }
 

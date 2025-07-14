@@ -1,6 +1,7 @@
 import type { Collection } from '@aeriajs/types'
 import type * as AST from '../ast.js'
-import { unwrapNode, recursivelyUnwrapPropertyNodes, stringify, makeASTImports, resizeFirstChar, getCollectionId, UnquotedSymbol, getExposedFunctions, PACKAGE_NAME, type StringifyProperty } from './utils.js'
+import { transformSymbolName } from '../utils.js'
+import { unwrapNode, recursivelyUnwrapPropertyNodes, stringify, makeASTImports, getCollectionId, UnquotedSymbol, getExposedFunctions, PACKAGE_NAME, type StringifyProperty } from './utils.js'
 
 const initialImportedTypes = [
   'Collection',
@@ -9,25 +10,41 @@ const initialImportedTypes = [
   'Context',
 ]
 
-export const generateTSCollections = (ast: AST.ProgramNode): string => {
+const makeTSFunctions = (collectionNode: AST.CollectionNode) => {
+  const funs: Record<string, StringifyProperty> = {}
+
+  for( const functionNode of collectionNode.functions! ) {
+    funs[functionNode.name] = {
+      [UnquotedSymbol]: functionNode.exportSymbol
+        ? `typeof import('${functionNode.exportSymbol.importPath}').${functionNode.exportSymbol.symbolName}`
+        : 'unknown',
+    }
+  }
+
+  return funs
+}
+
+export const generateTSCollections = async (ast: AST.ProgramNode) => {
   let code = ''
   code += `import type { ${initialImportedTypes.join(', ')} } from '${PACKAGE_NAME}'\n` //Used types
   const importsResult = makeASTImports(ast.collections)
   code += importsResult.code.join('\n') + '\n\n'
-  code += makeTSCollections(ast, importsResult.modifiedSymbols) + '\n'
+  code += makeTSCollections(ast, importsResult.aliasedSymbols) + '\n'
   return code
 }
 
-const makeTSCollections = (ast: AST.ProgramNode, modifiedSymbols: Record<string, string>) => {
+const makeTSCollections = (ast: AST.ProgramNode, aliasedSymbols: Record<string, string>) => {
   const collectionCodes: Record<string, string> = {}
 
   for (const collectionNode of ast.collections) {
-    const id = getCollectionId(collectionNode.name) // CollectionName -> collectionName
-    const schemaName = resizeFirstChar(collectionNode.name, true) // collectionName -> CollectionName
-    const typeName = id + 'Collection' // Pet -> petCollection
+    const id = getCollectionId(collectionNode.name)
+    const schemaName = transformSymbolName(collectionNode.name, {
+      capitalize: true
+    })
+    const typeName = `${id}Collection`
 
-    const collectionType = `export declare type ${typeName} = ${id in modifiedSymbols
-      ? `ExtendCollection<typeof ${modifiedSymbols[id]}, ${makeTSCollectionSchema(collectionNode, id)}>`
+    const collectionType = `export declare type ${typeName} = ${id in aliasedSymbols
+      ? `ExtendCollection<typeof ${aliasedSymbols[id]}, ${makeTSCollectionSchema(collectionNode, id)}>`
       : makeTSCollectionSchema(collectionNode, id)
     }`
 
@@ -84,7 +101,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
         }
         break
       case 'functions':
-        collectionSchema.functions = makeTSFunctions(collectionNode[key])
+        collectionSchema.functions = makeTSFunctions(collectionNode)
         collectionSchema.exposedFunctions = getExposedFunctions(collectionNode[key])
         break
       case 'required':
@@ -120,19 +137,5 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
   }
 
   return stringify(collectionSchema)
-}
-
-const makeTSFunctions = (functionNodes: AST.FunctionNode[]) => {
-  const funs: Record<string, StringifyProperty> = {}
-
-  for( const functionNode of functionNodes ) {
-    funs[functionNode.name] = {
-      [UnquotedSymbol]: functionNode.exportSymbol
-        ? `typeof import('${functionNode.exportSymbol.importPath}').${functionNode.exportSymbol.symbolName}`
-        : 'unknown',
-    }
-  }
-
-  return funs
 }
 

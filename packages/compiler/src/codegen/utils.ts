@@ -1,5 +1,6 @@
 import type * as AST from '../ast.js'
 import type { Property } from '@aeriajs/types'
+import { transformSymbolName } from '../utils.js'
 
 export const PACKAGE_NAME = 'aeria'
 export const MIDDLEWARES_RUNTIME_PATH = '../../../dist/middlewares/index.js'
@@ -21,16 +22,18 @@ export const getExposedFunctions = (functionNodes: AST.FunctionNode[]) => {
 export const makeASTImports = (ast: AST.Node[], initialImports: Record<string, Set<string>> = {}, options = {
   includeRuntimeOnlyImports: false,
 }) => {
-  const modifiedSymbols: Record<string, string> = {}
+  const aliasedSymbols: Record<string, string> = {}
 
   const toImport = ast.reduce((imports, node) => {
     if (node.kind === 'collection') {
       if (node.extends) {
-        const modifiedSymbol = `${node.extends.packageName}${resizeFirstChar(node.extends.symbolName, true)}`
-        modifiedSymbols[node.extends.symbolName] = modifiedSymbol
+        const aliasedSymbol = `${node.extends.packageName}${transformSymbolName(node.extends.symbolName, {
+          capitalize: true,
+        })}`
+        aliasedSymbols[node.extends.symbolName] = aliasedSymbol
 
         imports[node.extends.importPath] ??= new Set()
-        imports[node.extends.importPath].add(`${node.extends.symbolName} as ${modifiedSymbol}`)
+        imports[node.extends.importPath].add(`${node.extends.symbolName} as ${aliasedSymbol}`)
       }
 
       if (node.functions) {
@@ -59,7 +62,7 @@ export const makeASTImports = (ast: AST.Node[], initialImports: Record<string, S
 
   return {
     code: Object.keys(toImport).map((key) => `import { ${Array.from(toImport[key]).join(', ')} } from '${key}'`),
-    modifiedSymbols,
+    aliasedSymbols,
   }
 }
 
@@ -196,15 +199,9 @@ const checkQuotes = (parents: (symbol | string)[], value: StringifyProperty) => 
   return stringify(value, parents)
 }
 
-export const resizeFirstChar = (text: string, capitalize: boolean): string => {
-  if (capitalize === true) {
-    return text.charAt(0).toUpperCase() + text.slice(1)
-  }
+export const getCollectionId = (name: string) => transformSymbolName(name)
 
-  return text.charAt(0).toLowerCase() + text.slice(1)
-}
-
-export const getCollectionId = (name: string) => resizeFirstChar(name, false)
-
-export const getExtendName = (name: string) => `extend${resizeFirstChar(name, true)}Collection`
+export const getExtendName = (name: string) => `extend${transformSymbolName(name, {
+  capitalize: true,
+})}Collection`
 

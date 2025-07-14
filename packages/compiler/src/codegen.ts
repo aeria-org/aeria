@@ -40,8 +40,8 @@ export const generateCode = async (ast: AST.ProgramNode, options: CompilationOpt
 
   const fileTree: FileTree = {
     ['collections']: {
-      ['collections.d.ts']: generateTSCollections(ast),
-      ['collections.js']: generateJSCollections(ast),
+      ['collections.d.ts']: await generateTSCollections(ast),
+      ['collections.js']: await generateJSCollections(ast),
       ['index.d.ts']: exports.collections.dts,
       ['index.js']: exports.collections.js,
     },

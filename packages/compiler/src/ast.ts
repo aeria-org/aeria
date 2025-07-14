@@ -32,6 +32,7 @@ export type ExportSymbol = {
   packageName: string
   importPath: string
   symbolName: string
+  aliasedSymbolName?: string
 }
 
 export type NodeBase<TType> = {

@@ -1,5 +1,6 @@
 import type * as AST from '../ast.js'
-import { resizeFirstChar, getExtendName, getCollectionId } from './utils.js'
+import { transformSymbolName } from '../utils.js'
+import { getExtendName, getCollectionId } from './utils.js'
 
 type SymbolToExport = {
   id: string
@@ -29,7 +30,7 @@ export const generateExports = (ast: AST.ProgramNode, options = {
     const id = getCollectionId(node.name)
     symbols[id] = {
       id,
-      schema: resizeFirstChar(node.name, true),
+      schema: transformSymbolName(node.name, { capitalize: true }),
       extend: getExtendName(node.name),
     }
 

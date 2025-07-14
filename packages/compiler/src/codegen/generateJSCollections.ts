@@ -7,7 +7,7 @@ const initialImportedFunctions = [
   'defineCollection',
 ]
 
-export const generateJSCollections = (ast: AST.ProgramNode) => {
+export const generateJSCollections = async (ast: AST.ProgramNode) => {
   let javascriptCode = ''
   const importsResult = makeASTImports(ast.collections, {
     [PACKAGE_NAME]: new Set(initialImportedFunctions),
@@ -16,24 +16,46 @@ export const generateJSCollections = (ast: AST.ProgramNode) => {
   })
 
   javascriptCode += importsResult.code.join('\n') + '\n\n'
-  javascriptCode += makeJSCollections(ast, importsResult.modifiedSymbols) + '\n\n'
+  javascriptCode += await makeJSCollections(ast, importsResult.aliasedSymbols) + '\n\n'
 
   return javascriptCode
 }
 
-const makeJSCollections = (ast: AST.ProgramNode, modifiedSymbols: Record<string, string>) => {
+const makeJSFunctions = async (collectionNode: AST.CollectionNode) => {
+  let output = ''
+  for( const functionNode of collectionNode.functions! ) {
+    if( collectionNode.extends ) {
+      const module = await import(collectionNode.extends.importPath)
+      const collection = module[collectionNode.extends.symbolName] as Collection
+
+      if( collection.functions && collection.functions[functionNode.name] ) {
+        continue
+      }
+    }
+
+    output += functionNode.exportSymbol
+      ? functionNode.exportSymbol.symbolName
+      : `${functionNode.name}: () => { throw new Error('Function not implemented') }`
+
+    output += ', '
+  }
+
+  return output
+}
+
+const makeJSCollections = async (ast: AST.ProgramNode, aliasedSymbols: Record<string, string>) => {
   const collectionCodes: Record<string, string> = {}
 
   for (const collectionNode of ast.collections) {
-    const id = getCollectionId(collectionNode.name) // CollectionName -> collectionName
+    const id = getCollectionId(collectionNode.name)
     const extendCollectionName = getExtendName(collectionNode.name)
 
     const collectionDefinition =
       `export const ${id} = ${collectionNode.extends
-        ? `extendCollection(${id in modifiedSymbols
-          ? modifiedSymbols[id]
-          : id}, ${makeJSCollectionSchema(ast, collectionNode, id)})`
-        : `defineCollection(${makeJSCollectionSchema(ast, collectionNode, id)})`}`
+        ? `extendCollection(${id in aliasedSymbols
+          ? aliasedSymbols[id]
+          : id}, ${await makeJSCollectionSchema(ast, collectionNode, id)})`
+        : `defineCollection(${await makeJSCollectionSchema(ast, collectionNode, id)})`}`
 
     const collectionDeclaration =
       `export const ${extendCollectionName} = (collection) => extendCollection(${id}, collection)`
@@ -48,7 +70,7 @@ const makeJSCollections = (ast: AST.ProgramNode, modifiedSymbols: Record<string,
   return Object.values(collectionCodes).join('\n\n')
 }
 
-const makeJSCollectionSchema = (ast: AST.ProgramNode, collectionNode: AST.CollectionNode, collectionId: string) => {
+const makeJSCollectionSchema = async (ast: AST.ProgramNode, collectionNode: AST.CollectionNode, collectionId: string) => {
   const collectionSchema: Omit<Collection, 'middlewares'> & { middlewares?: unknown } = {
     item: {},
     description: {
@@ -76,7 +98,7 @@ const makeJSCollectionSchema = (ast: AST.ProgramNode, collectionNode: AST.Collec
         break
       case 'functions':
         collectionSchema.functions = {
-          [UnquotedSymbol]: `{ ${makeJSFunctions(collectionNode[key])} }`,
+          [UnquotedSymbol]: `{ ${await makeJSFunctions(collectionNode)} }`,
         }
         collectionSchema.exposedFunctions = getExposedFunctions(collectionNode[key])
         break
@@ -113,18 +135,5 @@ const makeJSCollectionSchema = (ast: AST.ProgramNode, collectionNode: AST.Collec
   }
 
   return stringify(collectionSchema)
-}
-
-const makeJSFunctions = (functionNodes: AST.FunctionNode[]) => {
-  let output = ''
-  for( const functionNode of functionNodes ) {
-    output += functionNode.exportSymbol
-      ? functionNode.exportSymbol.symbolName
-      : `${functionNode.name}: () => { throw new Error('Function not implemented') }`
-
-    output += ', '
-  }
-
-  return output
 }
 

@@ -18,3 +18,11 @@ export const DEFAULT_EXPORT_SYMBOLS = {
   upload: 'aeria',
 }
 
+export const transformSymbolName = (symbolName: string, options = { capitalize: false }): string => {
+  if (options.capitalize === true) {
+    return symbolName.charAt(0).toUpperCase() + symbolName.slice(1)
+  }
+
+  return symbolName.charAt(0).toLowerCase() + symbolName.slice(1)
+}
+
