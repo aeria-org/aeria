@@ -1,5 +1,12 @@
 # create-aeria-app
 
+## 0.0.62
+
+### Patch Changes
+
+- 4259840: First release
+- a55cca7: Test release
+
 ## 0.0.61
 
 ### Patch Changes
