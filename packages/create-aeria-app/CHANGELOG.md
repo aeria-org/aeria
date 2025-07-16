@@ -1,5 +1,11 @@
 # create-aeria-app
 
+## 0.0.63
+
+### Patch Changes
+
+- 14ec3ff: Fix failed release
+
 ## 0.0.62
 
 ### Patch Changes
