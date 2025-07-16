@@ -9,7 +9,6 @@
   "scripts": {
     "test": "NODE_PATH=../../playground/node_modules pnpm -r test",
     "build": "./scripts/build.sh && pnpm write-icons",
-    "build:cjs": "./scripts/build-cjs.sh",
     "preinstall": "unlink node_modules/@aeriajs || true",
     "postinstall": "husky; rm -rf packages/*/node_modules/@aeriajs",
     "write-icons": "NODE_PATH=./playground/node_modules ./scripts/compile-builtins-icons.ts"
