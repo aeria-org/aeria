@@ -15,5 +15,7 @@ pnpm --filter='./packages/types' build \
   && pnpm --filter='./packages/compiler' build \
   && pnpm --filter='./packages/aeria-sdk' build \
   && pnpm --filter='./packages/cli' build \
-  && pnpm --filter='./packages/aeria' build
+  && pnpm --filter='./packages/aeria' build \
+  && pnpm --filter='./packages/create-aeria-app' build \
+  && pnpm --filter='./packages/aeria-populate' build
 
