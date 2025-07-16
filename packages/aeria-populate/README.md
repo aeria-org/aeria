@@ -15,7 +15,7 @@ npx aeria-populate -c "content/**/*.md"
 
 ## Frontmatter format
 
-```
+```md
 ---
 collection: person
 unique: slug
