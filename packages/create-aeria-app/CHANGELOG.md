@@ -1,5 +1,11 @@
 # create-aeria-app
 
+## 0.0.64
+
+### Patch Changes
+
+- be3b8d7: Fix CJS-related issues
+
 ## 0.0.63
 
 ### Patch Changes
