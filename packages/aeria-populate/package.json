@@ -1,0 +1,35 @@
+{
+  "name": "aeria-populate",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "",
+  "license": "ISC",
+  "scripts": {
+    "test": "echo skipping",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "aeria-populate": "bin/index.js"
+  },
+  "files": [
+    "bin",
+    "dist"
+  ],
+  "devDependencies": {
+    "aeria": "file:../aeria"
+  },
+  "peerDependencies": {
+    "aeria": "^0.0.331"
+  },
+  "dependencies": {
+    "marked": "^16.0.0",
+    "yaml": "^2.8.0"
+  }
+}
