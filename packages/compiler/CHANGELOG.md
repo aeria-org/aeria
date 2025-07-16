@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.68
+
+### Patch Changes
+
+- 34890f8: Refactor collections codegen
+
 ## 0.0.67
 
 ### Patch Changes
