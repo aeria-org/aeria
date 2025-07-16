@@ -12,6 +12,7 @@ import {
   $,
   LogLevel,
   log,
+  getPackageJson,
 } from './util.js'
 import { TEMPLATES } from './templates.js'
 import { printBanner } from './banner.js'
@@ -67,7 +68,7 @@ const checkPackageVersion = async () => {
   const {
     name: packageName,
     version: packageVersion,
-  } = require('../package.json')
+  } = await getPackageJson()
 
   const remoteVersion = await $([
     'npm',

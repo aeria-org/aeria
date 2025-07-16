@@ -1,4 +1,6 @@
+import * as fs from 'node:fs'
 import { spawn } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 
 export type ResultTuple =
   | [string | string[]]
@@ -8,6 +10,17 @@ export const error = (value: string | string[]): ResultTuple => [value]
 export const success = (value: string | string[]): ResultTuple => [, value]
 export const isError = (tuple: ResultTuple) => !!tuple[0]
 export const unwrap = (tuple: ResultTuple) => tuple[0] || tuple[1]
+
+export const getPackageJson = async () => {
+  const file = await fs.promises.readFile(fileURLToPath(import.meta.resolve('../package.json')), {
+    encoding: 'utf-8',
+  })
+
+  return JSON.parse(file) as {
+    name: string
+    version: string
+  }
+}
 
 export const $ = async (
   cmd: readonly string[],
