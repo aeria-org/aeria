@@ -5,6 +5,9 @@ on:
     branches:
       - master
       - develop
+    paths:
+      - 'playground/**/*'
+      - 'packages/**/*'
 
 permissions:
   contents: write
@@ -13,7 +16,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: Setup pnpm
