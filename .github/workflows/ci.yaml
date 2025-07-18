@@ -6,8 +6,8 @@ on:
       - master
       - develop
     paths:
-      - 'playground/**/*'
       - 'packages/**/*'
+      - 'playground/**/*'
 
 permissions:
   contents: write
