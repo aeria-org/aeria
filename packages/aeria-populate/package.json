@@ -29,7 +29,7 @@
     "aeria": "^0.0.331"
   },
   "dependencies": {
-    "marked": "^16.0.0",
+    "marked": "^16.1.1",
     "yaml": "^2.8.0"
   }
 }
