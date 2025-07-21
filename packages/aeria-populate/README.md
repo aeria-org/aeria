@@ -3,6 +3,7 @@
 ## Usage
 
 - `-c`: will compile Markdown to HTML before inserting
+- `-d`: will drop matching collections before inserting
 
 ```sh
 # when --env-file is applicable

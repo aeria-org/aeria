@@ -18,6 +18,10 @@ const { positionals, values: opts } = parseArgs({
       type: 'boolean',
       short: 'c',
     },
+    dropCollections: {
+      type: 'boolean',
+      short: 'd',
+    },
   },
 })
 
@@ -39,12 +43,7 @@ const isValidFrontmatterObject = (value: unknown): value is FrontmatterObject =>
   )
 }
 
-const work = async (text: string) => {
-  const { db } = await dbPromise
-  if( !db ) {
-    throw new Error()
-  }
-
+const parseMarkdown = async (text: string) => {
   const [, frontmatterString, ...splitContent] = text.split('---')
   let content = splitContent.join('---').trim()
   if( opts.compileMarkdown ) {
@@ -55,6 +54,20 @@ const work = async (text: string) => {
   if( !isValidFrontmatterObject(frontmatter) ) {
     throw new Error('invalid frontmatter')
   }
+
+  return {
+    frontmatter,
+    content,
+  }
+}
+
+const work = async (text: string) => {
+  const { db } = await dbPromise
+  if( !db ) {
+    throw new Error()
+  }
+
+  const { frontmatter, content } = await parseMarkdown(text)
 
   const context = await createContext({
     collectionName: frontmatter.collection,
@@ -100,10 +113,35 @@ export const main = async () => {
     process.exit(1)
   }
 
-  const files = fs.promises.glob(pattern)
-  let failed = 0, sucessful = 0
+  const { client, db } = await dbPromise
+  if( !db ) {
+    throw new Error()
+  }
 
-  for await ( const file of files ) {
+  let failed = 0, sucessful = 0, dropped = 0
+  const files = await Array.fromAsync(fs.promises.glob(pattern))
+  const collections: string[] = []
+
+  for ( const file of files ) {
+    const content = await fs.promises.readFile(file, {
+      encoding: 'utf-8',
+    })
+
+    const { frontmatter } = await parseMarkdown(content)
+    collections.push(frontmatter.collection)
+  }
+
+  if( opts.dropCollections ) {
+    for( const collection of collections ) {
+      if( (await db.listCollections().toArray()).some((subject) => collection === subject.name) ) {
+        await db.collection(collection).drop()
+        console.log(styleText(['green'], '✓'), 'dropped collection', styleText(['bold'], collection))
+        dropped++
+      }
+    }
+  }
+
+  for ( const file of files ) {
     const content = await fs.promises.readFile(file, {
       encoding: 'utf-8',
     })
@@ -134,10 +172,10 @@ export const main = async () => {
     }
   }
 
+  console.log(dropped, 'dropped collections:', collections.map((collection) => styleText(['bold'], collection)).join(', '))
   console.log(sucessful, 'documents imported sucessfully')
   console.log(failed, 'failed to import')
 
-  const { client } = await dbPromise
   await client.close()
 
   if( failed ) {
