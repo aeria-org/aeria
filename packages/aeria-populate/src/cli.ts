@@ -127,12 +127,12 @@ const visitFile = async (file: string) => {
       ? `update ${uniqueName} into collection`
       : `add ${uniqueName} to collection`
 
-      console.log(styleText(['red'], 'x'), "couldn't", actionText, collectionName)
-      console.log(inspect(error, {
-        depth: null,
-      }))
+    console.log(styleText(['red'], 'x'), "couldn't", actionText, collectionName)
+    console.log(inspect(error, {
+      depth: null,
+    }))
 
-      failed++
+    failed++
 
   } else {
     const actionText = existing
@@ -215,7 +215,6 @@ export const main = async () => {
       process.exit(1)
     }
   }
-
 
   await client.close()
 }
