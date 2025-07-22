@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.69
+
+### Patch Changes
+
+- 2206dbf: Add `@validationMessage` attribute
+
 ## 0.0.68
 
 ### Patch Changes
