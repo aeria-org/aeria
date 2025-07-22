@@ -27,6 +27,7 @@ export type PropertyValidationError = {
   details?: {
     expected: unknown
     got: unknown
+    message?: string
   }
 }
 

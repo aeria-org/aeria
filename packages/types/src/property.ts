@@ -195,6 +195,7 @@ export type PropertyBase = {
   hidden?: boolean
 
   isTimestamp?: boolean
+  validationMessage?: string
 }
 
 export type Property = PropertyBase & MixedProperty

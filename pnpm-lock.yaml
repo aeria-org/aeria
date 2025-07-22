@@ -119,6 +119,9 @@ importers:
 
   packages/aeria-populate:
     dependencies:
+      chokidar:
+        specifier: ^4.0.3
+        version: 4.0.3
       marked:
         specifier: ^16.0.0
         version: 16.1.1

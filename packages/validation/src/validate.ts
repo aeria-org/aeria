@@ -56,7 +56,7 @@ const getPropertyType = (property: Property) => {
   }
 }
 
-const makePropertyError = <
+const makePropertyValidationError = <
   TCode extends typeof PropertyValidationErrorCode[keyof typeof PropertyValidationErrorCode],
   TDetails extends PropertyValidationError['details'],
 >(type: TCode, details?: TDetails) => {
@@ -87,7 +87,7 @@ export const validateProperty = <TWhat>(
       return Result.result(undefined)
     }
 
-    return Result.error(makePropertyError(PropertyValidationErrorCode.Extraneous))
+    return Result.error(makePropertyValidationError(PropertyValidationErrorCode.Extraneous))
   }
 
   if( what === null || what === undefined ) {
@@ -117,9 +117,10 @@ export const validateProperty = <TWhat>(
           if( isValidObjectId(what) ) {
             return Result.result(what)
           }
-          return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+          return Result.error(makePropertyValidationError(PropertyValidationErrorCode.Unmatching, {
             expected: expectedType,
             got: actualType,
+            message: property.validationMessage,
           }))
         }
       }
@@ -152,9 +153,10 @@ export const validateProperty = <TWhat>(
       }
     }
 
-    return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+    return Result.error(makePropertyValidationError(PropertyValidationErrorCode.Unmatching, {
       expected: expectedType,
       got: actualType,
+      message: property.validationMessage,
     }))
   }
 
@@ -168,9 +170,10 @@ export const validateProperty = <TWhat>(
             }
 
             if( !(what instanceof options.objectIdConstructor) ) {
-              return Result.error(makePropertyError(PropertyValidationErrorCode.StringConstraint, {
+              return Result.error(makePropertyValidationError(PropertyValidationErrorCode.StringConstraint, {
                 expected: 'objectid',
                 got: 'invalid_objectid',
+                message: property.validationMessage,
               }))
             }
 
@@ -178,9 +181,10 @@ export const validateProperty = <TWhat>(
           }
           default: {
             if( typeof what !== 'string' ) {
-              return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+              return Result.error(makePropertyValidationError(PropertyValidationErrorCode.Unmatching, {
                 expected: expectedType,
                 got: actualType,
+                message: property.validationMessage,
               }))
             }
 
@@ -188,9 +192,10 @@ export const validateProperty = <TWhat>(
               (typeof property.minLength === 'number' && property.minLength > what.length)
               || (typeof property.maxLength === 'number' && property.maxLength < what.length)
             ) {
-              return Result.error(makePropertyError(PropertyValidationErrorCode.StringConstraint, {
+              return Result.error(makePropertyValidationError(PropertyValidationErrorCode.StringConstraint, {
                 expected: 'string',
                 got: 'invalid_string',
+                message: property.validationMessage,
               }))
             }
           }
@@ -200,17 +205,19 @@ export const validateProperty = <TWhat>(
       }
       case 'integer': {
         if( !Number.isInteger(what) ) {
-          return Result.error(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
+          return Result.error(makePropertyValidationError(PropertyValidationErrorCode.NumericConstraint, {
             expected: 'integer',
             got: 'invalid_number',
+            message: property.validationMessage,
           }))
         }
       }
       case 'number': {
         if( typeof what !== 'number' ) {
-          return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+          return Result.error(makePropertyValidationError(PropertyValidationErrorCode.Unmatching, {
             expected: expectedType,
             got: actualType,
+            message: property.validationMessage,
           }))
         }
 
@@ -220,9 +227,10 @@ export const validateProperty = <TWhat>(
         || (typeof property.exclusiveMaximum === 'number' && property.exclusiveMaximum <= what)
         || (typeof property.exclusiveMinimum === 'number' && property.exclusiveMinimum >= what)
         ) {
-          return Result.error(makePropertyError(PropertyValidationErrorCode.NumericConstraint, {
+          return Result.error(makePropertyValidationError(PropertyValidationErrorCode.NumericConstraint, {
             expected: 'number',
             got: 'invalid_number',
+            message: property.validationMessage,
           }))
         }
         break
@@ -239,21 +247,22 @@ export const validateProperty = <TWhat>(
       }
       case 'array': {
         if( !Array.isArray(what) ) {
-          return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+          return Result.error(makePropertyValidationError(PropertyValidationErrorCode.Unmatching, {
             expected: expectedType,
             got: actualType,
+            message: property.validationMessage,
           }))
         }
 
         if( property.minItems ) {
           if( what.length < property.minItems ) {
-            return Result.error(makePropertyError(PropertyValidationErrorCode.MoreItemsExpected))
+            return Result.error(makePropertyValidationError(PropertyValidationErrorCode.MoreItemsExpected))
           }
         }
 
         if( property.maxItems ) {
           if( what.length > property.maxItems ) {
-            return Result.error(makePropertyError(PropertyValidationErrorCode.LessItemsExpected))
+            return Result.error(makePropertyValidationError(PropertyValidationErrorCode.LessItemsExpected))
           }
         }
 
@@ -275,16 +284,18 @@ export const validateProperty = <TWhat>(
     }
   } else if( 'enum' in property ) {
     if( !property.enum.includes(what) ) {
-      return Result.error(makePropertyError(PropertyValidationErrorCode.ExtraneousElement, {
+      return Result.error(makePropertyValidationError(PropertyValidationErrorCode.ExtraneousElement, {
         expected: property.enum,
         got: what,
+        message: property.validationMessage,
       }))
     }
   } else if( 'const' in property ) {
     if( what !== property.const ) {
-      return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+      return Result.error(makePropertyValidationError(PropertyValidationErrorCode.Unmatching, {
         expected: property.const,
         got: what,
+        message: property.validationMessage,
       }))
     }
   }
@@ -308,9 +319,10 @@ export const validateRefs = async <TWhat>(
       }
 
       if( !isValidObjectId(String(what)) ) {
-        return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+        return Result.error(makePropertyValidationError(PropertyValidationErrorCode.Unmatching, {
           expected: 'objectid',
           got: typeof what,
+          message: property.validationMessage,
         }))
       }
 
@@ -337,9 +349,10 @@ export const validateRefs = async <TWhat>(
       })
 
       if( !exists ) {
-        return Result.error(makePropertyError(PropertyValidationErrorCode.ReferenceConstraint, {
+        return Result.error(makePropertyValidationError(PropertyValidationErrorCode.ReferenceConstraint, {
           expected: 'objectid',
           got: 'invalid_objectid',
+          message: property.validationMessage,
         }))
       }
 
@@ -359,9 +372,10 @@ export const validateRefs = async <TWhat>(
     }
 
     if( typeof what !== 'object' ) {
-      return Result.error(makePropertyError(PropertyValidationErrorCode.Unmatching, {
+      return Result.error(makePropertyValidationError(PropertyValidationErrorCode.Unmatching, {
         expected: 'object',
         got: typeof what,
+        message: property.validationMessage,
       }))
     }
 
