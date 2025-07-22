@@ -1,5 +1,12 @@
 # aeria-populate
 
+## 0.0.4
+
+### Patch Changes
+
+- cb9c2e4: Add `--watch`
+  - aeria@0.0.332
+
 ## 0.0.3
 
 ### Patch Changes
