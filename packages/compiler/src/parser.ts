@@ -293,7 +293,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         return
       }
       case 'hint':
-      case 'description': 
+      case 'description':
       case 'validationMessage': {
         const { value } = consume(TokenType.QuotedString)
         property[attributeName] = value
