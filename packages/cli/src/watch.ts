@@ -71,6 +71,38 @@ export const spawnApi = async () => {
 }
 
 export const watch = async (options: CompileOptions = {}) => {
+  const handleChange = async (path: string) => {
+    if( runningApi ) {
+      runningApi.kill()
+
+      if( !runningApi.killed && runningApi.exitCode === null ) {
+        await new Promise<void>((resolve) => {
+          runningApi!.on('exit', () => {
+            resolve()
+          })
+        })
+      }
+    }
+
+    console.clear()
+    log('info', `change detected in file: ${path}`)
+    log('info', 'compiling...')
+
+    const compilationResult = await compileOnChanges(transpileCtx)
+    if( compilationResult.success ) {
+      runningApi = await spawnApi()
+
+      if( compilationWorker ) {
+        compilationWorker.send({})
+      }
+
+      fork(fileURLToPath(import.meta.resolve('./watchWorker.js')), {
+        env: await processEnv(),
+        detached: true,
+      })
+    }
+  }
+
   const tsConfig = await getUserTsconfig()
   const transpileCtx = !options.useTsc
     ? await transpile.init({
@@ -131,36 +163,13 @@ export const watch = async (options: CompileOptions = {}) => {
     '.env',
   ])
 
-  srcWatcher.on('change', async (filePath) => {
-    if( runningApi ) {
-      runningApi.kill()
-
-      if( !runningApi.killed && runningApi.exitCode === null ) {
-        await new Promise<void>((resolve) => {
-          runningApi!.on('exit', () => {
-            resolve()
-          })
-        })
-      }
+  let timeout: ReturnType<typeof setTimeout> | undefined
+  srcWatcher.on('change', (path) => {
+    if( timeout ) {
+      clearTimeout(timeout)
     }
 
-    console.clear()
-    log('info', `change detected in file: ${filePath}`)
-    log('info', 'compiling...')
-
-    const compilationResult = await compileOnChanges(transpileCtx)
-    if( compilationResult.success ) {
-      runningApi = await spawnApi()
-
-      if( compilationWorker ) {
-        compilationWorker.send({})
-      }
-
-      fork(fileURLToPath(import.meta.resolve('./watchWorker.js')), {
-        env: await processEnv(),
-        detached: true,
-      })
-    }
+    timeout = setTimeout(() => handleChange(path), 100)
   })
 }
 
