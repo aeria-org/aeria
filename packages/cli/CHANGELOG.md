@@ -1,5 +1,11 @@
 # aeria-build
 
+## 0.0.264
+
+### Patch Changes
+
+- c934d42: Implement debounce in watch mode
+
 ## 0.0.263
 
 ### Patch Changes
