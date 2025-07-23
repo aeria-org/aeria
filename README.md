@@ -12,7 +12,7 @@ The project was created to offer a more cohesive and straightforward way to crea
 
 ### Quickstart
 
->$ npm create -y aeria-app hello-world
+>$ npm create -y aeria-app@latest hello-world
 
 ### Features
 
