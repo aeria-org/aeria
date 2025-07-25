@@ -4,7 +4,7 @@
 
 - `-c --compileMarkdown`: will compile Markdown to HTML before inserting
 - `-d --dropCollections`: will drop matching collections before inserting
-- `-w --watch`: watch mode (can not be used together with `--drop-collections`)
+- `-w --watch`: watch mode (can not be used together with `--dropCollections`)
 
 ```sh
 # when --env-file is applicable
