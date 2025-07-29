@@ -84,7 +84,7 @@ const makeTSContractsCode = (ast: AST.ProgramNode) => {
   return ast.contracts.map((node) => {
     const { name, kind, roles, ...contractSchema } = node
 
-    let responseSchema: Property | Property[] | null = null
+    let responseSchema: Property | Property[] | undefined
     if (contractSchema.response) {
       if (Array.isArray(contractSchema.response)) {
         responseSchema = contractSchema.response.map(getResponseSchema)
