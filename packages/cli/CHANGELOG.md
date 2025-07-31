@@ -1,5 +1,12 @@
 # aeria-build
 
+## 0.0.265
+
+### Patch Changes
+
+- @aeriajs/builtins@0.0.283
+- @aeriajs/core@0.0.283
+
 ## 0.0.264
 
 ### Patch Changes
