@@ -1,5 +1,13 @@
 # @aeriajs/http
 
+## 0.0.199
+
+### Patch Changes
+
+- 03e7e3a: Fix payload type coercion
+- Updated dependencies [03e7e3a]
+  - @aeriajs/validation@0.0.184
+
 ## 0.0.198
 
 ### Patch Changes
