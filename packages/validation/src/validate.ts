@@ -111,21 +111,6 @@ export const validateProperty = <TWhat>(
       return Result.result(what)
     }
 
-    if( '$ref' in property ) {
-      switch( typeof what ) {
-        case 'string': {
-          if( isValidObjectId(what) ) {
-            return Result.result(what)
-          }
-          return Result.error(makePropertyValidationError(PropertyValidationErrorCode.Unmatching, {
-            expected: expectedType,
-            got: actualType,
-            message: property.validationMessage,
-          }))
-        }
-      }
-    }
-
     if( options.coerce ) {
       if( expectedType === 'number' && typeof what === 'string' ) {
         const coerced = parseFloat(what)
@@ -150,6 +135,22 @@ export const validateProperty = <TWhat>(
     if( (options.coerce || options.coerceObjectIds) && options.objectIdConstructor ) {
       if( ('$ref' in property || 'format' in property && property.format === 'objectid') && typeof what === 'string' ) {
         return Result.result(new options.objectIdConstructor(what))
+      }
+    }
+
+    if( '$ref' in property ) {
+      switch( typeof what ) {
+        case 'string': {
+          if( !isValidObjectId(what) ) {
+            return Result.error(makePropertyValidationError(PropertyValidationErrorCode.Unmatching, {
+              expected: expectedType,
+              got: actualType,
+              message: property.validationMessage,
+            }))
+          }
+
+          return Result.result(what)
+        }
       }
     }
 
@@ -267,8 +268,9 @@ export const validateProperty = <TWhat>(
         }
 
         let i = 0
+        const validatedArray = []
         for( const elem of what ) {
-          const { error } = validateProperty(elem, property.items, options)
+          const { error, result: validated } = validateProperty(elem, property.items, options)
           if( error ) {
             if( 'code' in error ) {
               continue
@@ -279,7 +281,10 @@ export const validateProperty = <TWhat>(
           }
 
           i++
+          validatedArray.push(validated)
         }
+
+        return Result.result(validatedArray)
       }
     }
   } else if( 'enum' in property ) {
