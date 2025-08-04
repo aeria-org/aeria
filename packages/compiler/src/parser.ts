@@ -892,6 +892,10 @@ export const parse = (tokens: (Token | undefined)[]) => {
     while( !match(TokenType.RightBracket) ) {
       const { value: keyword } = consume(TokenType.Keyword, lexer.CONTRACT_KEYWORDS)
       switch( keyword ) {
+        case 'streamed': {
+          node.streamed = consume(TokenType.Boolean).value
+          break
+        }
         case 'roles': {
           node.roles = parseAccessCondition({
             arrayBlock: true,

@@ -93,6 +93,7 @@ export const COLLECTION_FORM_LAYOUT_KEYWORDS = [
 ] as const
 
 export const CONTRACT_KEYWORDS = [
+  'streamed',
   'roles',
   'payload',
   'query',

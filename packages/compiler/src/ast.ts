@@ -123,6 +123,7 @@ export type CollectionNode = NodeBase<'collection'> & {
 
 export type ContractNode = NodeBase<'contract'> & {
   name: string
+  streamed?: boolean
   roles?: AccessCondition
   query?: PropertyNode
   payload?: PropertyNode
