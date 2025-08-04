@@ -1,5 +1,8 @@
 export {
   Result,
+  CollectionItem,
+  CollectionItemWithId,
+  PackReferences,
 } from '@aeriajs/types'
 export {
   throwIfError,

@@ -86,27 +86,30 @@ const getResponseSchema = (response: AST.PropertyNode) => {
 
 const makeTSContractsCode = (ast: AST.ProgramNode) => {
   return ast.contracts.map((node) => {
-    const { name, kind, roles, ...contractSchema } = node
+    const { name, kind, streamed, roles, ...contractProperty } = node
 
     let responseSchema: Property | Property[] | undefined
-    if( contractSchema.response ) {
-      if(Array.isArray(contractSchema.response)) {
-        responseSchema = contractSchema.response.map(getResponseSchema)
+    if( contractProperty.response ) {
+      if(Array.isArray(contractProperty.response)) {
+        responseSchema = contractProperty.response.map(getResponseSchema)
       } else {
-        responseSchema = getResponseSchema(contractSchema.response)
+        responseSchema = getResponseSchema(contractProperty.response)
       }
     }
 
-    const contractProperties: ContractWithRoles = recursivelyUnwrapPropertyNodes(contractSchema)
+    const contractSchema: ContractWithRoles = recursivelyUnwrapPropertyNodes(contractProperty)
     if( responseSchema ) {
-      contractProperties.response = responseSchema
+      contractSchema.response = responseSchema
     }
-    if( roles ) {
-      contractProperties.roles = roles
+    if( streamed !== undefined ) {
+      contractSchema.streamed = streamed
+    }
+    if( roles !== undefined ){
+      contractSchema.roles = roles
     }
 
     return `export declare const ${node.name}: ${
-      stringify(contractProperties)
+      stringify(contractSchema)
     }`
   }).join('\n\n')
 }
