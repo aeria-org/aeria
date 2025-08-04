@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.214
+
+### Patch Changes
+
+- f72c763: Re-export types from `@aeriajs/types`'
+
 ## 0.0.213
 
 ### Patch Changes
