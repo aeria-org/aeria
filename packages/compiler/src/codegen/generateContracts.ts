@@ -4,7 +4,7 @@ import { errorSchema, resultSchema } from '@aeriajs/types'
 import { recursivelyUnwrapPropertyNodes, unwrapPropertyNode, stringify, UnquotedSymbol, type StringifyProperty } from './utils.js'
 
 export const generateContracts = (ast: AST.ProgramNode) => {
-  if (ast.contracts.length === 0) {
+  if( ast.contracts.length === 0 ) {
     return false
   }
   return {
@@ -18,13 +18,13 @@ const makeJSContractsCode = (ast: AST.ProgramNode) => {
 
   const getCodeForResponse = (responseProperty: AST.PropertyNode) => {
     const { kind, modifier, ...propertyNode } = responseProperty
-    if (!modifier) {
+    if( !modifier ) {
       return stringify(unwrapPropertyNode(propertyNode))
     }
     const modifierSymbol = responseProperty.modifier === 'Result'
       ? 'resultSchema'
       : 'errorSchema'
-    if (!imports.has(modifierSymbol)) {
+    if( !imports.has(modifierSymbol) ) {
       imports.add(modifierSymbol)
     }
 
@@ -32,12 +32,12 @@ const makeJSContractsCode = (ast: AST.ProgramNode) => {
   }
 
   const declarations = ast.contracts.map((node) => {
-    const { name, kind, roles, response, ...contractProperty } = node
+    const { name, kind, streamed, roles, response, ...contractProperty } = node
 
     let responseString: string | undefined
-    if (response) {
+    if( response ) {
       responseString = ''
-      if (Array.isArray(response)) {
+      if( Array.isArray(response) ) {
         const responseArray: StringifyProperty[] = []
         for (const responseElement of response) {
           responseArray.push({
@@ -52,12 +52,16 @@ const makeJSContractsCode = (ast: AST.ProgramNode) => {
     }
 
     const contractSchema: Record<keyof ContractWithRoles, unknown> = recursivelyUnwrapPropertyNodes(contractProperty)
-    if (responseString) {
+    if( responseString ) {
       contractSchema.response = {
         [UnquotedSymbol]: responseString,
       }
     }
-    if (roles) {
+
+    if( streamed !== undefined ) {
+      contractSchema.streamed = streamed
+    }
+    if( roles !== undefined ){
       contractSchema.roles = roles
     }
 
@@ -71,7 +75,7 @@ const makeJSContractsCode = (ast: AST.ProgramNode) => {
 
 const getResponseSchema = (response: AST.PropertyNode) => {
   const responseSchema = unwrapPropertyNode(response)
-  if (!response.modifier) {
+  if( !response.modifier ) {
     return responseSchema
   }
 
@@ -85,8 +89,8 @@ const makeTSContractsCode = (ast: AST.ProgramNode) => {
     const { name, kind, roles, ...contractSchema } = node
 
     let responseSchema: Property | Property[] | undefined
-    if (contractSchema.response) {
-      if (Array.isArray(contractSchema.response)) {
+    if( contractSchema.response ) {
+      if(Array.isArray(contractSchema.response)) {
         responseSchema = contractSchema.response.map(getResponseSchema)
       } else {
         responseSchema = getResponseSchema(contractSchema.response)
@@ -94,10 +98,10 @@ const makeTSContractsCode = (ast: AST.ProgramNode) => {
     }
 
     const contractProperties: ContractWithRoles = recursivelyUnwrapPropertyNodes(contractSchema)
-    if (responseSchema) {
+    if( responseSchema ) {
       contractProperties.response = responseSchema
     }
-    if (roles) {
+    if( roles ) {
       contractProperties.roles = roles
     }
 

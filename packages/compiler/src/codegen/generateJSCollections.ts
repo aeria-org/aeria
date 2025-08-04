@@ -80,7 +80,7 @@ const makeJSCollectionSchema = async (ast: AST.ProgramNode, collectionNode: AST.
   }
 
   for (const key of Object.keys(collectionNode) as Array<keyof typeof collectionNode>) {
-    if (collectionNode[key] === undefined) {
+    if( collectionNode[key] === undefined ) {
       continue
     }
 

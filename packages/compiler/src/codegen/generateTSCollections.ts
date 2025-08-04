@@ -84,7 +84,7 @@ const makeTSCollectionSchema = (collectionNode: AST.CollectionNode, collectionId
   }
 
   for (const key of Object.keys(collectionNode) as Array<keyof typeof collectionNode>) {
-    if (collectionNode[key] === undefined) {
+    if( collectionNode[key] === undefined ) {
       continue
     }
 

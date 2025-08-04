@@ -63,7 +63,7 @@ export const generateExports = (ast: AST.ProgramNode, options = {
     },
   }
 
-  if (options.hasContracts) {
+  if( options.hasContracts ) {
     exports.contracts = {
       js: "export * from './contracts.js'",
       dts: "export * from './contracts.js'",
