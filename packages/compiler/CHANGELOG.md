@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.70
+
+### Patch Changes
+
+- 3a0e852: Add `streamed` to contract syntax
+
 ## 0.0.69
 
 ### Patch Changes
