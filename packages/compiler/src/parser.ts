@@ -497,7 +497,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
       }
       consume(TokenType.RightSquareBracket)
 
-      const { property: items, nestedProperties } = parsePropertyType(options)
+      const { property: items, nestedProperties, nestedAdditionalProperties } = parsePropertyType(options)
       property = {
         ...arrayProperty,
         items,
@@ -509,6 +509,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         kind: 'property',
         property,
         nestedProperties,
+        nestedAdditionalProperties,
       }
     }
 
