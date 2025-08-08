@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.71
+
+### Patch Changes
+
+- 7900526: Fix parser bug
+
 ## 0.0.70
 
 ### Patch Changes
