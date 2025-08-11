@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.137
+
+### Patch Changes
+
+- 966b6b7: Refactor `init()` types
+
 ## 0.0.136
 
 ### Patch Changes
