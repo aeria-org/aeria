@@ -38,7 +38,7 @@ export const createAccountContract = defineContract({
 export const createAccount: ContractToFunction<typeof createAccountContract, Context<typeof description>> = async (payload, context) => {
   const userCandidate = Object.assign({}, payload)
 
-  if( !context.config.security.allowSignup ) {
+  if( !context.config.security.signup ) {
     return context.error(HTTPStatus.Forbidden, {
       code: CreateAccountError.SignupDisallowed,
     })
@@ -70,11 +70,7 @@ export const createAccount: ContractToFunction<typeof createAccountContract, Con
     })
   }
 
-  let roles: readonly string[] = [], defaults = {}
-  if( context.config.security.signupDefaults ) {
-    ({ roles = [], ...defaults } = context.config.security.signupDefaults)
-  }
-
+  const { roles, ...defaults } = context.config.security.signup
   if( user.password ) {
     user.password = await bcrypt.hash(user.password, 10)
   }

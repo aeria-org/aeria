@@ -58,10 +58,9 @@ export type ApiConfig = {
     linkTokenExpiration?: number | undefined
     logSuccessfulAuthentications?: boolean
     authenticationRateLimiting?: RateLimitingParams | null
-    allowSignup?: boolean
     mutableUserProperties: (keyof CollectionItem<'user'>)[]
-    signupDefaults?: {
-      roles?: readonly UserRole[]
+    signup?: {
+      roles: readonly UserRole[]
       active?: boolean
     }
     paginationLimit?: number
