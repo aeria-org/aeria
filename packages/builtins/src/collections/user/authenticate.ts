@@ -116,7 +116,7 @@ export const authenticate = async (
     }
 
     const decodedToken = token
-      ? await decodeToken<Token>(token.content)
+      ? throwIfError(await decodeToken<Token>(token.content))
       : context.token
 
     if( !decodedToken.sub ) {

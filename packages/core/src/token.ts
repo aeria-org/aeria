@@ -1,5 +1,6 @@
-import type { SignOptions } from 'jsonwebtoken'
+import type { SignOptions, VerifyErrors } from 'jsonwebtoken'
 import { getConfig } from '@aeriajs/entrypoint'
+import { Result } from '@aeriajs/types'
 import jwt from 'jsonwebtoken'
 
 const getTokenConfig = async () => {
@@ -28,11 +29,21 @@ export const signToken = async ({ iat, exp, ...payload }: Record<string, unknown
     }
   }
 
-  return jwt.sign(payload, secret || tokenConfig.secret, tokenOptions)
+  try {
+    const result = jwt.sign(payload, secret || tokenConfig.secret, tokenOptions)
+    return Result.result(result)
+  } catch( err ) {
+    return Result.error(err as VerifyErrors)
+  }
 }
 
 export const decodeToken = async <TToken>(token: string, secret?: string) => {
   const tokenConfig = await getTokenConfig()
-  return jwt.verify(token, secret || tokenConfig.secret) as TToken
+  try {
+    const result = jwt.verify(token, secret || tokenConfig.secret) as TToken
+    return Result.result(result)
+  } catch( err ) {
+    return Result.error(err as VerifyErrors)
+  }
 }
 

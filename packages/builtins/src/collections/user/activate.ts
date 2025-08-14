@@ -92,8 +92,8 @@ export const activate: ContractToFunction<typeof activateContract, Context<typeo
       code: ActivationError.AlreadyActiveUser,
     })
   }
-  const decoded = await decodeToken(token, context.config.secret)
-  if(!decoded){
+  const { error } = await decodeToken(token, context.config.secret)
+  if( error ){
     return context.error(HTTPStatus.Unauthorized, {
       code: ActivationError.InvalidToken,
     })

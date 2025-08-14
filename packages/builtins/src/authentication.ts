@@ -1,5 +1,6 @@
 import type { RouteContext, SchemaWithId, TokenRecipient, AuthenticatedToken, UserRole } from '@aeriajs/types'
 import type { description } from './collections/user/description.js'
+import { throwIfError } from '@aeriajs/common'
 import { signToken } from '@aeriajs/core'
 
 type User = SchemaWithId<typeof description>
@@ -55,7 +56,7 @@ export const successfulAuthentication = async <TUser extends TokenableUser>(user
     tokenContent.userinfo = userinfo
   }
 
-  const token = await signToken(tokenContent)
+  const token = throwIfError(await signToken(tokenContent))
 
   return {
     user,
@@ -67,11 +68,11 @@ export const successfulAuthentication = async <TUser extends TokenableUser>(user
 }
 
 export const defaultSuccessfulAuthentication = async () => {
-  const token = await signToken({
+  const token = throwIfError(await signToken({
     sub: null,
     roles: ['root'],
     userinfo: {},
-  } satisfies Omit<AuthenticatedToken, 'authenticated'>)
+  } satisfies Omit<AuthenticatedToken, 'authenticated'>))
 
   return {
     user: {
