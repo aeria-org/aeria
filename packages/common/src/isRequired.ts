@@ -5,7 +5,7 @@ export const isRequired = (propName: string, required: NonNullable<JsonSchema['r
   if( Array.isArray(required) ) {
     return required.includes(propName)
   }
-  
+
   if( !(propName in required) ) {
     return false
   }
