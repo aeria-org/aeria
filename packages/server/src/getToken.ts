@@ -16,13 +16,13 @@ export const getToken: GetTokenFunction = async (request, context) => {
     })
   }
 
-  const { error, result: decodedToken }= await decodeToken<Token>(typeof request.headers.authorization === 'string'
+  const { error, result: decodedToken } = await decodeToken<Token>(typeof request.headers.authorization === 'string'
     ? request.headers.authorization.split('Bearer ').at(-1)!
     : '')
 
-    if( error ) {
-      return Result.error(error)
-    }
+  if( error ) {
+    return Result.error(error)
+  }
 
   if( authenticationGuard(decodedToken) ) {
     if( typeof decodedToken.sub === 'string' ) {
