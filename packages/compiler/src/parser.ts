@@ -299,8 +299,11 @@ export const parse = (tokens: (Token | undefined)[]) => {
         property[attributeName] = value
         return
       }
-      case 'hidden':
       case 'readOnly':
+      case 'focus':
+      case 'noForm':
+      case 'noLabel':
+      case 'hidden':
       case 'translate': {
         property[attributeName] = consumeBoolean()
         return
