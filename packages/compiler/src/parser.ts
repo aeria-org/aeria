@@ -300,6 +300,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
         return
       }
       case 'hidden':
+      case 'readOnly':
       case 'translate': {
         property[attributeName] = consumeBoolean()
         return
