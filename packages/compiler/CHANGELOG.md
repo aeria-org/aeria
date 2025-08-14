@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.73
+
+### Patch Changes
+
+- 5a3a8f9: Add missing `readOnly` attribute
+
 ## 0.0.72
 
 ### Patch Changes
