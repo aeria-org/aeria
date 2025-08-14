@@ -1,5 +1,13 @@
 # @aeriajs/builtins
 
+## 0.0.285
+
+### Patch Changes
+
+- 75a0d8a: Refactor jwt wrappers
+- Updated dependencies [75a0d8a]
+  - @aeriajs/core@0.0.285
+
 ## 0.0.284
 
 ### Patch Changes
