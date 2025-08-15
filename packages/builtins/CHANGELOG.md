@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.286
+
+### Patch Changes
+
+- 13e3349: Fix `createAccount()` bug
+  - @aeriajs/core@0.0.286
+
 ## 0.0.285
 
 ### Patch Changes
