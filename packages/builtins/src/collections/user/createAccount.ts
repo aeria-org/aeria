@@ -1,6 +1,5 @@
 import type { Context, ContractToFunction } from '@aeriajs/types'
 import { defineContract, HTTPStatus, ACError, functionSchemas, endpointErrorSchema, resultSchema } from '@aeriajs/types'
-import { validate } from '@aeriajs/validation'
 import * as bcrypt from 'bcryptjs'
 import { insert as originalInsert } from '@aeriajs/core'
 import { description } from './description.js'
@@ -36,41 +35,15 @@ export const createAccountContract = defineContract({
 })
 
 export const createAccount: ContractToFunction<typeof createAccountContract, Context<typeof description>> = async (payload, context) => {
-  const userCandidate = Object.assign({}, payload)
-
   if( !context.config.security.signup ) {
     return context.error(HTTPStatus.Forbidden, {
       code: CreateAccountError.SignupDisallowed,
     })
   }
 
-  const { error, result: user } = validate(userCandidate, {
-    type: 'object',
-    required: [
-      'name',
-      'email',
-    ],
-    properties: {
-      name: {
-        type: 'string',
-      },
-      email: {
-        type: 'string',
-      },
-      password: {
-        type: 'string',
-      },
-    },
-  })
-
-  if( error ) {
-    return context.error(HTTPStatus.UnprocessableContent, {
-      code: ACError.MalformedInput,
-      details: error,
-    })
-  }
-
+  const user = payload as Omit<Required<typeof payload>, 'picture_file'>
   const { roles, ...defaults } = context.config.security.signup
+
   if( user.password ) {
     user.password = await bcrypt.hash(user.password, 10)
   }
