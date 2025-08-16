@@ -1,5 +1,5 @@
 import type { GetTokenFunction, Token, AuthenticatedToken } from '@aeriajs/types'
-import { Result, ACError } from '@aeriajs/types'
+import { Result, HTTPStatus, ACError } from '@aeriajs/types'
 import { throwIfError } from '@aeriajs/common'
 import { getDatabaseCollection, decodeToken, traverseDocument, ObjectId } from '@aeriajs/core'
 
@@ -21,7 +21,9 @@ export const getToken: GetTokenFunction = async (request, context) => {
     : '')
 
   if( error ) {
-    return Result.error(error)
+    return context.error(HTTPStatus.Unauthorized, {
+      code: error.name,
+    })
   }
 
   if( authenticationGuard(decodedToken) ) {
