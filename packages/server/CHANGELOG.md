@@ -1,5 +1,13 @@
 # @aeriajs/server
 
+## 0.0.289
+
+### Patch Changes
+
+- 1bb2a92: Fix token error handling
+- Updated dependencies [1bb2a92]
+  - @aeriajs/server@0.0.289
+
 ## 0.0.288
 
 ### Patch Changes

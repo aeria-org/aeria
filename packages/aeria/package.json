@@ -1,7 +1,7 @@
 {
   "name": "aeria",
   "type": "module",
-  "version": "0.0.341",
+  "version": "0.0.342",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -48,7 +48,7 @@
     "@aeriajs/http": "^0.0.200",
     "@aeriajs/node-http": "^0.0.200",
     "@aeriajs/security": "^0.0.286",
-    "@aeriajs/server": "^0.0.288",
+    "@aeriajs/server": "^0.0.289",
     "@aeriajs/builtins": "^0.0.286",
     "@aeriajs/types": "^0.0.137",
     "@aeriajs/validation": "^0.0.185"
