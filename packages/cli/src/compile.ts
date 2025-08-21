@@ -64,7 +64,7 @@ export const getUserTsconfig = async () => {
   return tsConfig
 }
 
-const findCaseInsensitiveKey = <K extends string | number | symbol, T>(object: Record<K, T>, search: unknown) => {
+const findCaseInsensitiveKey = <K extends PropertyKey, T>(object: Record<K, T>, search: unknown) => {
   if( typeof search !== 'string' ) {
     return object[search as K]
   }

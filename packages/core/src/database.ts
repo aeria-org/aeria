@@ -55,7 +55,7 @@ export const getDatabase = async () => {
 
 export const getDatabaseSync = () => {
   if( !dbMemo.db ) {
-    throw new Error('getDatabaseSync() called with no active database')
+    throw new Error('getDatabaseSync() called with no active database -- make sure you call getDatabase() to instantiate the database first')
   }
 
   return dbMemo.db
