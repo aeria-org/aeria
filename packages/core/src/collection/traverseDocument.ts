@@ -619,7 +619,13 @@ export const traverseDocument = async <TWhat>(
         return Result.error(error)
       }
 
-      value = ctx.target[ctx.propName] = result
+      try {
+        value = ctx.target[ctx.propName] = result
+      } catch( err ) {
+        console.error('The document is invalid. It likely happened because the type of an existing property of the schema was changed (from object to string, for example). It is not a problem with the code, update or delete the document to get rid of this error.')
+        console.error(ctx.root)
+        throw err
+      }
     }
 
     return Result.result(value)
