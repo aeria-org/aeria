@@ -1,5 +1,14 @@
 # @aeriajs/api
 
+## 0.0.287
+
+### Patch Changes
+
+- 0e60aa4: Add error message
+- 4d3e8b5: Improve error message
+  - @aeriajs/builtins@0.0.287
+  - @aeriajs/security@0.0.287
+
 ## 0.0.286
 
 ### Patch Changes
