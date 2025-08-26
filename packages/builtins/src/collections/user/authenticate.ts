@@ -150,17 +150,14 @@ export const authenticate = async (
     }
   }
 
-  const user = await context.collection.model.findOne(
-    {
-      email: props.email,
+  const user = await context.collection.model.findOne({
+    email: props.email.toLowerCase(),
+  }, {
+    projection: {
+      password: 1,
+      active: 1,
     },
-    {
-      projection: {
-        password: 1,
-        active: 1,
-      },
-    },
-  )
+  })
 
   if( !user || !user.password || !await bcryptCompare(props.password, user.password) ) {
     return context.error(HTTPStatus.Unauthorized, {

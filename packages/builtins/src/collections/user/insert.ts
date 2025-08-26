@@ -40,6 +40,10 @@ export const insert = async <
     throw new Error
   }
 
+  if( 'email' in payload.what && typeof payload.what.email === 'string' ) {
+    payload.what.email = payload.what.email.toLowerCase()
+  }
+
   if( 'roles' in payload.what ) {
     if( context.config.security.rolesHierarchy ) {
       if( !arraysIntersect(context.token.roles as string[], Object.keys(context.config.security.rolesHierarchy)) ) {

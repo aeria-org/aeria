@@ -42,6 +42,8 @@ export const createAccount: ContractToFunction<typeof createAccountContract, Con
   }
 
   const user = payload as Omit<Required<typeof payload>, 'picture_file'>
+  user.email = user.email.toLowerCase()
+
   const { roles, ...defaults } = context.config.security.signup
 
   if( user.password ) {
