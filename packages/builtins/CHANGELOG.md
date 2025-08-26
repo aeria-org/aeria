@@ -1,5 +1,14 @@
 # @aeriajs/builtins
 
+## 0.0.287
+
+### Patch Changes
+
+- eaf06aa: Case insensitive email
+- Updated dependencies [0e60aa4]
+- Updated dependencies [4d3e8b5]
+  - @aeriajs/core@0.0.287
+
 ## 0.0.286
 
 ### Patch Changes
