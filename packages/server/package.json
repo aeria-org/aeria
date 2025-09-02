@@ -35,7 +35,7 @@
     "@aeriajs/node-http": "link:../node-http",
     "@aeriajs/server": "link:../server",
     "@aeriajs/types": "link:../types",
-    "mongodb": "^6.18.0"
+    "mongodb": "^6.19.0"
   },
   "peerDependencies": {
     "@aeriajs/core": "^0.0.287",
@@ -46,6 +46,6 @@
     "@aeriajs/node-http": "^0.0.200",
     "@aeriajs/server": "^0.0.290",
     "@aeriajs/types": "^0.0.137",
-    "mongodb": "^6.18.0"
+    "mongodb": "^6.19.0"
   }
 }

@@ -44,7 +44,7 @@
     "@aeriajs/validation": "link:../validation",
     "@types/jsonwebtoken": "^9.0.10",
     "jsonwebtoken": "^9.0.2",
-    "mongodb": "^6.18.0",
+    "mongodb": "^6.19.0",
     "mongodb-memory-server": "^10.2.0"
   },
   "peerDependencies": {
@@ -57,7 +57,7 @@
     "@aeriajs/validation": "^0.0.185"
   },
   "dependencies": {
-    "mongodb": "^6.18.0",
+    "mongodb": "^6.19.0",
     "jsonwebtoken": "^9.0.2"
   },
   "optionalDependencies": {
