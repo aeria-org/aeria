@@ -313,6 +313,9 @@ importers:
       '@aeriajs/core':
         specifier: link:../core
         version: link:../core
+      '@aeriajs/entrypoint':
+        specifier: link:../entrypoint
+        version: link:../entrypoint
       '@aeriajs/types':
         specifier: link:../types
         version: link:../types

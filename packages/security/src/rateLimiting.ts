@@ -1,5 +1,6 @@
 import type { RouteContext, RateLimitingParams } from '@aeriajs/types'
 import { Result, HTTPStatus, RateLimitingError } from '@aeriajs/types'
+import { getCollection } from '@aeriajs/entrypoint'
 
 const buildEntryFilter = (params: RateLimitingParams, context: RouteContext) => {
   if( params.strategy === 'ip' ) {
@@ -20,21 +21,21 @@ const buildEntryFilter = (params: RateLimitingParams, context: RouteContext) => 
 
 export const getOrCreateUsageEntry = async (params: RateLimitingParams, context: RouteContext) => {
   const filters = buildEntryFilter(params, context)
-  return context.collections.resourceUsage.model.findOneAndUpdate(
-    filters,
-    {
-      $setOnInsert: {
-        usage: {},
-      },
+  return context.collections.resourceUsage.model.findOneAndUpdate(filters, {
+    $setOnInsert: {
+      usage: {},
     },
-    {
-      upsert: true,
-      returnDocument: 'after',
-    },
-  )
+  }, {
+    upsert: true,
+    returnDocument: 'after',
+  })
 }
 
 export const limitRate = async (params: RateLimitingParams, context: RouteContext) => {
+  if( !await getCollection('resourceUsage') ) {
+    throw new Error('the builtin collection "resourceUsage" is required when using this feature')
+  }
+
   const { increment = 1 } = params
 
   const entry = await getOrCreateUsageEntry(params, context)
@@ -59,24 +60,20 @@ export const limitRate = async (params: RateLimitingParams, context: RouteContex
     }
   }
 
-  const newEntry = await context.collections.resourceUsage.model.findOneAndUpdate(
-    {
-      _id: entry._id,
+  const newEntry = await context.collections.resourceUsage.model.findOneAndUpdate({
+    _id: entry._id,
+  }, {
+    $inc: {
+      [`usage.${resourceName}.hits`]: 1,
+      [`usage.${resourceName}.points`]: increment,
     },
-    {
-      $inc: {
-        [`usage.${resourceName}.hits`]: 1,
-        [`usage.${resourceName}.points`]: increment,
-      },
-      $set: {
-        [`usage.${resourceName}.last_reach`]: new Date(),
-        [`usage.${resourceName}.last_maximum_reach`]: new Date(),
-      },
+    $set: {
+      [`usage.${resourceName}.last_reach`]: new Date(),
+      [`usage.${resourceName}.last_maximum_reach`]: new Date(),
     },
-    {
-      returnDocument: 'after',
-    },
-  )
+  }, {
+    returnDocument: 'after',
+  })
 
   if( !newEntry || !newEntry.usage[resourceName] ) {
     throw new Error()

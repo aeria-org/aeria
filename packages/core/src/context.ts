@@ -16,8 +16,12 @@ import { limitRate } from '@aeriajs/security'
 import { getDatabaseCollection } from './database.js'
 import { preloadDescription } from './collection/preload.js'
 
-const indepthCollection = (collectionName: string, collections: Record<string, Collection | (()=> Collection)>, parentContext: RouteContext) => {
+const indepthCollection = (collectionName: string, collections: Record<string, Collection | (()=> Collection) | undefined>, parentContext: RouteContext) => {
   const candidate = collections[collectionName]
+  if( !candidate ) {
+    throw new Error(`no such collection "${collectionName}"`)
+  }
+
   const collection = typeof candidate === 'function'
     ? candidate()
     : candidate
