@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.162
+
+### Patch Changes
+
+- fe65d89: Allow URL object in `request()` parameter
+
 ## 0.0.161
 
 ### Patch Changes

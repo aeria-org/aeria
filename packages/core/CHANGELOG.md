@@ -1,5 +1,19 @@
 # @aeriajs/api
 
+## 0.0.288
+
+### Patch Changes
+
+- fbf708a: Improve error verbosity
+- Updated dependencies [fbf708a]
+- Updated dependencies [fe65d89]
+  - @aeriajs/security@0.0.288
+  - @aeriajs/common@0.0.162
+  - @aeriajs/builtins@0.0.288
+  - @aeriajs/entrypoint@0.0.170
+  - @aeriajs/http@0.0.201
+  - @aeriajs/validation@0.0.186
+
 ## 0.0.287
 
 ### Patch Changes
