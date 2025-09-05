@@ -9,7 +9,7 @@ export type RequestConfig = {
 }
 
 export type RequestTransformerContext = {
-  url: string
+  url: string | URL
   payload: unknown
   params: RequestParams
 }
@@ -51,7 +51,7 @@ export const defaultResponseTransformer: ResponseTransformerNext = async (contex
   return context
 }
 
-export const request = async <TResponseType = unknown>(url: string, payload?: unknown, config: RequestConfig = {}) => {
+export const request = async <TResponseType = unknown>(url: string | URL, payload?: unknown, config: RequestConfig = {}) => {
   const {
     requestTransformer,
     responseTransformer,
