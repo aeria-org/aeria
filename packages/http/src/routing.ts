@@ -233,6 +233,7 @@ export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> unk
       try {
         result.pipe(response)
       } catch( err ) {
+        console.trace(err)
       }
       return
     }
@@ -251,8 +252,8 @@ export const wrapRouteExecution = async (response: GenericResponse, cb: ()=> unk
 
     return result
 
-  } catch( e ) {
-    console.trace(e)
+  } catch( err ) {
+    console.trace(err)
     if( !response.headersSent ) {
       response.writeHead(HTTPStatus.InternalServerError)
     }
