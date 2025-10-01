@@ -157,6 +157,9 @@ const cli = async () => {
     force: true,
   })
 
+  await fs.promises.rm(path.join(projectPath, '.github', 'dependabot.yml'))
+  await fs.promises.rm(path.join(projectPath, '.github', 'workflows', 'pr.yaml'))
+
   await fs.promises.copyFile(
     path.join(projectPath, 'api', '.env.sample'),
     path.join(projectPath, 'api', '.env'),
