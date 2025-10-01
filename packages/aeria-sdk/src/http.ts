@@ -21,7 +21,7 @@ const sdkRequestTransformer = (config: InstanceConfig, next: RequestTransformerN
       console.trace(err)
     }
 
-    if( !decoded || Date.now() >= decoded.exp * 1000 ) {
+    if( !decoded || Date.now() >= decoded.exp! * 1000 ) {
       storage.remove('auth')
 
     } else if( !params.headers.authorization ) {
