@@ -4,7 +4,6 @@ import { request as originalRequest, type RequestTransformerContext, type Reques
 import { getStorage } from './storage.js'
 import { jwtDecode } from 'jwt-decode'
 
-
 const sdkRequestTransformer = (config: InstanceConfig, next: RequestTransformerNext) => (context: RequestTransformerContext) => {
   const params = Object.assign({
     headers: {},
