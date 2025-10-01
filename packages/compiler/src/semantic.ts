@@ -87,21 +87,20 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
   }
 
   const recurseProperty = async (node: AST.PropertyNode) => {
-    if( 'type' in node.property && node.property.type === 'object' ) {
-      if( typeof node.nestedAdditionalProperties === 'object' ) {
-        await recurseProperty(node.nestedAdditionalProperties)
+    if( typeof node.nestedAdditionalProperties === 'object' ) {
+      await recurseProperty(node.nestedAdditionalProperties)
+    }
+
+    if( node.nestedProperties ) {
+      await checkObjectLocalProperties(node, 'required')
+      await checkObjectLocalProperties(node, 'writable')
+      await checkObjectLocalProperties(node, 'form')
+
+      for( const propName in node.nestedProperties ) {
+        const subProperty = node.nestedProperties[propName]
+        await recurseProperty(subProperty)
       }
 
-      if( node.nestedProperties ) {
-        await checkObjectLocalProperties(node, 'required')
-        await checkObjectLocalProperties(node, 'writable')
-        await checkObjectLocalProperties(node, 'form')
-
-        for( const propName in node.nestedProperties ) {
-          const subProperty = node.nestedProperties[propName]
-          await recurseProperty(subProperty)
-        }
-      }
     } else if( '$ref' in node.property ) {
       const refName = node.property.$ref
       const foreignCollection = ast.collections.find(({ name }) => name === refName)
