@@ -2,7 +2,8 @@ import type { TokenBase } from '@aeriajs/types'
 import type { InstanceConfig } from './types.js'
 import { request as originalRequest, type RequestTransformerContext, type RequestTransformerNext, type RequestConfig } from '@aeriajs/common'
 import { getStorage } from './storage.js'
-import jwt from 'jsonwebtoken'
+import { jwtDecode } from 'jwt-decode'
+
 
 const sdkRequestTransformer = (config: InstanceConfig, next: RequestTransformerNext) => (context: RequestTransformerContext) => {
   const params = Object.assign({
@@ -13,9 +14,9 @@ const sdkRequestTransformer = (config: InstanceConfig, next: RequestTransformerN
   const auth = storage.get('auth')
 
   if( auth ) {
-    let decoded: Required<TokenBase> | null | undefined
+    let decoded: Required<TokenBase> | undefined
     try {
-      decoded = jwt.decode(auth.token.content) as Exclude<typeof decoded, undefined>
+      decoded = jwtDecode<NonNullable<typeof decoded>>(auth.token.content)
 
     } catch( err ) {
       console.trace(err)

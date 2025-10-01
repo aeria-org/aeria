@@ -49,13 +49,13 @@
   },
   "devDependencies": {
     "@aeriajs/common": "link:../common",
-    "@aeriajs/types": "link:../types",
-    "@types/jsonwebtoken": "^9.0.10",
-    "jsonwebtoken": "^9.0.2"
+    "@aeriajs/types": "link:../types"
   },
   "peerDependencies": {
-    "@aeriajs/common": "^0.0.163",
-    "@aeriajs/types": "^0.0.138",
-    "jsonwebtoken": "^9.0.2"
+    "@aeriajs/common": "^0.0.162",
+    "@aeriajs/types": "^0.0.137"
+  },
+  "dependencies": {
+    "jwt-decode": "^4.0.0"
   }
 }
