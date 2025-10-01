@@ -22,8 +22,8 @@ export type UserRole =
   | 'unauthenticated'
 
 export type TokenBase = {
-  exp: number
-  iat: number
+  exp?: number
+  iat?: number
 }
 
 export type AuthenticatedToken<
