@@ -12,19 +12,25 @@ const sdkRequestTransformer = (config: InstanceConfig, next: RequestTransformerN
   const storage = getStorage(config)
   const auth = storage.get('auth')
 
-  if( auth ) {
-    let decoded: Required<TokenBase> | undefined
-    try {
-      decoded = jwtDecode<NonNullable<typeof decoded>>(auth.token.content)
+  let hasError = false
 
-    } catch( err ) {
-      console.trace(err)
+  if( auth ) {
+    if( auth.token.type.includes('bearer') ) {
+      let decoded: Required<TokenBase> | undefined
+      try {
+        decoded = jwtDecode<NonNullable<typeof decoded>>(auth.token.content)
+
+      } catch( err ) {
+        console.trace(err)
+      }
+
+      if( !decoded || Date.now() >= decoded.exp * 1000 ) {
+        storage.remove('auth')
+        hasError = true
+      }
     }
 
-    if( !decoded || Date.now() >= decoded.exp * 1000 ) {
-      storage.remove('auth')
-
-    } else if( !params.headers.authorization ) {
+    if( !hasError && !params.headers.authorization ) {
       switch( auth.token.type ) {
         case 'bearer': {
           params.headers.authorization = `Bearer ${auth.token.content}`
