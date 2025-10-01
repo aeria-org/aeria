@@ -16,7 +16,7 @@ const sdkRequestTransformer = (config: InstanceConfig, next: RequestTransformerN
     let decoded: Token | null | undefined
     try {
       decoded = jwt.decode(auth.token.content) as Token | null
- 
+
     } catch( err ) {
       console.trace(err)
     }
