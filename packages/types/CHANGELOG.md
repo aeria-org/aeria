@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.138
+
+### Patch Changes
+
+- de4ece3: Check for expired token before building headers
+
 ## 0.0.137
 
 ### Patch Changes

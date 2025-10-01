@@ -1,5 +1,11 @@
 # create-aeria-app
 
+## 0.0.65
+
+### Patch Changes
+
+- 1705e2e: Remove dependabot from quickstart
+
 ## 0.0.64
 
 ### Patch Changes

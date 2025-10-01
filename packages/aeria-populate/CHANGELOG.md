@@ -1,5 +1,11 @@
 # aeria-populate
 
+## 0.0.17
+
+### Patch Changes
+
+- aeria@0.0.345
+
 ## 0.0.16
 
 ### Patch Changes
