@@ -1,5 +1,14 @@
 # @aeriajs/compiler
 
+## 0.0.76
+
+### Patch Changes
+
+- 5aae766: Fix semantic analysis bug
+- Updated dependencies [de4ece3]
+  - @aeriajs/types@0.0.138
+  - @aeriajs/common@0.0.163
+
 ## 0.0.75
 
 ### Patch Changes

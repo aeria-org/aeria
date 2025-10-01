@@ -1,5 +1,14 @@
 # aeria-sdk
 
+## 0.0.217
+
+### Patch Changes
+
+- de4ece3: Check for expired token before building headers
+- Updated dependencies [de4ece3]
+  - @aeriajs/types@0.0.138
+  - @aeriajs/common@0.0.163
+
 ## 0.0.216
 
 ### Patch Changes
