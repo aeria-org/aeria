@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.218
+
+### Patch Changes
+
+- e4ad1ad: Switch to browser-compatible JWT library
+
 ## 0.0.217
 
 ### Patch Changes
