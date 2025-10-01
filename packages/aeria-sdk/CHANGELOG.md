@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.219
+
+### Patch Changes
+
+- 14c46ca: Check bearer tokens only
+
 ## 0.0.218
 
 ### Patch Changes
