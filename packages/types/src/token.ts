@@ -21,10 +21,15 @@ export type UserRole =
   | 'root'
   | 'unauthenticated'
 
+export type TokenBase = {
+  exp: number
+  iat: number
+}
+
 export type AuthenticatedToken<
   TAccessCondition extends AccessCondition = true,
   TUserRole = UserRole,
-> = {
+> = TokenBase & {
   authenticated: true
   sub: ObjectId | null
   roles: TAccessCondition extends readonly unknown[]
@@ -41,7 +46,7 @@ export type AuthenticatedToken<
   >
 }
 
-export type UnauthenticatedToken = {
+export type UnauthenticatedToken = TokenBase & {
   authenticated: false
   sub: null
 }

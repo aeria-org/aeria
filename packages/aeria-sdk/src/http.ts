@@ -1,21 +1,38 @@
+import type { Token } from '@aeriajs/types'
 import type { InstanceConfig } from './types.js'
 import { request as originalRequest, type RequestTransformerContext, type RequestTransformerNext, type RequestConfig } from '@aeriajs/common'
 import { getStorage } from './storage.js'
+import jwt from 'jsonwebtoken'
 
 const sdkRequestTransformer = (config: InstanceConfig, next: RequestTransformerNext) => (context: RequestTransformerContext) => {
   const params = Object.assign({
     headers: {},
   }, context.params)
 
-  const auth = getStorage(config).get('auth')
+  const storage = getStorage(config)
+  const auth = storage.get('auth')
 
-  if( auth?.token && !params.headers.authorization ) {
-    switch( auth.token.type ) {
-      case 'bearer': {
-        params.headers.authorization = `Bearer ${auth.token.content}`
-        break
+  if( auth ) {
+    let decoded: Token | null | undefined
+    try {
+      decoded = jwt.decode(auth.token.content) as Token | null
+ 
+    } catch( err ) {
+      console.trace(err)
+    }
+
+    if( !decoded || Date.now() >= decoded.exp * 1000 ) {
+      storage.remove('auth')
+
+    } else if( !params.headers.authorization ) {
+      switch( auth.token.type ) {
+        case 'bearer': {
+          params.headers.authorization = `Bearer ${auth.token.content}`
+          break
+        }
       }
     }
+
   }
 
   context.params = params
