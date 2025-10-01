@@ -1,4 +1,4 @@
-import type { Token } from '@aeriajs/types'
+import type { TokenBase } from '@aeriajs/types'
 import type { InstanceConfig } from './types.js'
 import { request as originalRequest, type RequestTransformerContext, type RequestTransformerNext, type RequestConfig } from '@aeriajs/common'
 import { getStorage } from './storage.js'
@@ -13,9 +13,9 @@ const sdkRequestTransformer = (config: InstanceConfig, next: RequestTransformerN
   const auth = storage.get('auth')
 
   if( auth ) {
-    let decoded: Token | null | undefined
+    let decoded: Required<TokenBase> | null | undefined
     try {
-      decoded = jwt.decode(auth.token.content) as Token | null
+      decoded = jwt.decode(auth.token.content) as Exclude<typeof decoded, undefined>
 
     } catch( err ) {
       console.trace(err)
