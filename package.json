@@ -29,7 +29,7 @@
     "@aeriajs/validation": "link:packages/validation",
     "@changesets/cli": "^2.29.6",
     "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.0",
+    "@commitlint/config-conventional": "^20.0.0",
     "@eslint-aeria/config": "~0.0.7",
     "@types/node": "^24.6.1",
     "aeria": "link:packages/aeria",
