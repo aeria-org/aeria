@@ -1,5 +1,11 @@
 # @aeriajs/compiler
 
+## 0.0.77
+
+### Patch Changes
+
+- da65c17: Add `immutable` keyword
+
 ## 0.0.76
 
 ### Patch Changes
