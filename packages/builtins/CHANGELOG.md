@@ -1,5 +1,12 @@
 # @aeriajs/builtins
 
+## 0.0.290
+
+### Patch Changes
+
+- 9b6662b: Fix `describe()` console error
+  - @aeriajs/core@0.0.290
+
 ## 0.0.289
 
 ### Patch Changes
