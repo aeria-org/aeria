@@ -843,6 +843,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
             node[AST.LOCATION_SYMBOL].arrays[keyword] = symbols
             break
           }
+          case 'immutable':
           case 'indexes':
           case 'form':
           case 'table':

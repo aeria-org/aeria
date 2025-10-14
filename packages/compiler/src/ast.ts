@@ -101,6 +101,7 @@ export type CollectionNode = NodeBase<'collection'> & {
   functions?: FunctionNode[]
   functionSets?: [string, symbol][]
   required?: RequiredProperties
+  immutable?: readonly string[]
   indexes?: readonly string[]
   presets?: DescriptionPreset[]
   form?: readonly string[]

@@ -29,6 +29,7 @@ export const COLLECTION_KEYWORDS = [
   'formLayout',
   'functions',
   'icon',
+  'immutable',
   'indexes',
   'individualActions',
   'layout',
