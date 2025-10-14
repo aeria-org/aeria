@@ -130,6 +130,6 @@ export const describe = async (contextOrPayload: RouteContext | typeof Payload) 
   }
 
   contextOrPayload.response.setHeader('content-type', 'application/bson')
-  return contextOrPayload.response.end(serialize(result))
+  return serialize(result)
 }
 
