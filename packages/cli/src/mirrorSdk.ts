@@ -11,7 +11,7 @@ export const mirrorSdk = async (defaultConfig?: Partial<InstanceConfig>) => {
       router: true,
     })
 
-    if( !('result' in response) ) {
+    if( typeof response !== 'object' || !('result' in response) ) {
       throw new Error('invalid response')
     }
 
