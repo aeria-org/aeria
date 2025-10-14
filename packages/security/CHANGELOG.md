@@ -1,5 +1,11 @@
 # @aeriajs/security
 
+## 0.0.290
+
+### Patch Changes
+
+- @aeriajs/core@0.0.290
+
 ## 0.0.289
 
 ### Patch Changes
