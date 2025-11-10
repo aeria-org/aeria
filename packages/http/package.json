@@ -32,13 +32,13 @@
     "@aeriajs/entrypoint": "link:../entrypoint",
     "@aeriajs/types": "link:../types",
     "@aeriajs/validation": "link:../validation",
-    "mongodb": "^6.20.0"
+    "mongodb": "^7.0.0"
   },
   "peerDependencies": {
     "@aeriajs/common": "^0.0.163",
     "@aeriajs/entrypoint": "^0.0.171",
     "@aeriajs/types": "^0.0.138",
     "@aeriajs/validation": "^0.0.187",
-    "mongodb": "^6.20.0"
+    "mongodb": "^7.0.0"
   }
 }
