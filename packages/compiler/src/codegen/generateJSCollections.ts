@@ -8,17 +8,17 @@ const initialImportedFunctions = [
 ]
 
 export const generateJSCollections = async (ast: AST.ProgramNode) => {
-  let javascriptCode = ''
+  let code = ''
   const importsResult = makeASTImports(ast.collections, {
     [PACKAGE_NAME]: new Set(initialImportedFunctions),
   }, {
     includeRuntimeOnlyImports: true,
   })
 
-  javascriptCode += importsResult.code.join('\n') + '\n\n'
-  javascriptCode += await makeJSCollections(ast, importsResult.aliasedSymbols) + '\n\n'
+  code += importsResult.code.join('\n') + '\n\n'
+  code += await makeJSCollections(ast, importsResult.aliasedSymbols) + '\n\n'
 
-  return javascriptCode
+  return code
 }
 
 const makeJSFunctions = async (collectionNode: AST.CollectionNode) => {
@@ -50,20 +50,20 @@ const makeJSCollections = async (ast: AST.ProgramNode, aliasedSymbols: Record<st
     const id = getCollectionId(collectionNode.name)
     const extendCollectionName = getExtendName(collectionNode.name)
 
-    const collectionDefinition =
+    const collectionDeclaration =
       `export const ${id} = ${collectionNode.extends
         ? `extendCollection(${id in aliasedSymbols
           ? aliasedSymbols[id]
           : id}, ${await makeJSCollectionSchema(ast, collectionNode, id)})`
         : `defineCollection(${await makeJSCollectionSchema(ast, collectionNode, id)})`}`
 
-    const collectionDeclaration =
+    const collectionExtendFunction =
       `export const ${extendCollectionName} = (collection) => extendCollection(${id}, collection)`
 
     collectionCodes[collectionNode.name] = [
       '//' + collectionNode.name,
-      collectionDefinition,
       collectionDeclaration,
+      collectionExtendFunction,
     ].join('\n')
   }
 

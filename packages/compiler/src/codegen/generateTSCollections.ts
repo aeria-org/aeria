@@ -11,17 +11,17 @@ const initialImportedTypes = [
 ]
 
 const makeTSFunctions = (collectionNode: AST.CollectionNode) => {
-  const funs: Record<string, StringifyProperty> = {}
+  const functions: Record<string, StringifyProperty> = {}
 
   for( const functionNode of collectionNode.functions! ) {
-    funs[functionNode.name] = {
+    functions[functionNode.name] = {
       [UnquotedSymbol]: functionNode.exportSymbol
         ? `typeof import('${functionNode.exportSymbol.importPath}').${functionNode.exportSymbol.symbolName}`
         : 'unknown',
     }
   }
 
-  return funs
+  return functions
 }
 
 export const generateTSCollections = async (ast: AST.ProgramNode) => {
@@ -52,7 +52,7 @@ const makeTSCollections = (ast: AST.ProgramNode, aliasedSymbols: Record<string, 
 
     const collectionSchema = `export declare type ${schemaName} = SchemaWithId<typeof ${id}.description>`
 
-    const collectionExtend = `export declare const extend${schemaName}Collection: <
+    const collectionExtendFunction = `export declare const extend${schemaName}Collection: <
             const TCollection extends {
               [P in Exclude<keyof Collection, "functions">]?: Partial<Collection[P]>
             } & {
@@ -66,7 +66,7 @@ const makeTSCollections = (ast: AST.ProgramNode, aliasedSymbols: Record<string, 
       collectionType,
       collectionDeclaration,
       collectionSchema,
-      collectionExtend,
+      collectionExtendFunction,
     ].join('\n')
   }
 
