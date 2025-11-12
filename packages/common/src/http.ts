@@ -30,7 +30,7 @@ export const defaultRequestTransformer: RequestTransformerNext = async (context)
     } else {
       context.params.body = context.params.headers?.['content-type']?.startsWith('application/json')
         ? JSON.stringify(context.payload)
-        : context.payload as Buffer
+        : context.payload as string
     }
   }
 
