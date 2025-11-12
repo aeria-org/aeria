@@ -32,7 +32,7 @@ const sdkRequestTransformer = (config: InstanceConfig, next: RequestTransformerN
 
     if( !hasError && !params.headers.authorization ) {
       switch( auth.token.type ) {
-        case 'bearer': {
+        default: {
           params.headers.authorization = `Bearer ${auth.token.content}`
           break
         }
