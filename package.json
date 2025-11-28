@@ -27,16 +27,16 @@
     "@aeriajs/server": "link:packages/server",
     "@aeriajs/types": "link:packages/types",
     "@aeriajs/validation": "link:packages/validation",
-    "@changesets/cli": "^2.29.6",
+    "@changesets/cli": "^2.29.8",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
-    "@eslint-aeria/config": "~0.0.7",
-    "@types/node": "^24.10.0",
+    "@eslint-aeria/config": "~0.0.8",
+    "@types/node": "^24.10.1",
     "aeria": "link:packages/aeria",
     "aeria-sdk": "link:packages/aeria-sdk",
     "eslint": "^9.39.1",
-    "husky": "^9.0.11",
+    "husky": "^9.1.7",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.13"
+    "vitest": "^4.0.14"
   }
 }
