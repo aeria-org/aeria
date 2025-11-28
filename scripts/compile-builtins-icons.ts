@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import path from 'node:path'
 import { extractIcons, iconsJsContent, iconsDtsContent } from '../packages/cli/dist/index.js'
 import * as fs from 'node:fs/promises'

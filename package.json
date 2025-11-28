@@ -11,7 +11,7 @@
     "build": "./scripts/build.sh && pnpm write-icons",
     "preinstall": "unlink node_modules/@aeriajs || true",
     "postinstall": "husky; rm -rf packages/*/node_modules/@aeriajs",
-    "write-icons": "NODE_PATH=./playground/node_modules ./scripts/compile-builtins-icons.ts"
+    "write-icons": "NODE_PATH=./playground/node_modules node ./scripts/compile-builtins-icons.ts"
   },
   "devDependencies": {
     "@aeriajs/builtins": "link:packages/builtins",

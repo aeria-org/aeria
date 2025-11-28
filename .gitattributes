@@ -8,7 +8,6 @@ eslint.config.js linguist-vendored
 **/tests/fixtures/**/*.js linguist-vendored
 **/tests/fixtures/**/*.mjs linguist-vendored
 
-# ignore js/sh scripts
-scripts/*.ts linguist-vendored
+# ignore sh scripts
 scripts/*.sh linguist-vendored
 
