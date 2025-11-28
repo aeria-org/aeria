@@ -91,7 +91,7 @@ export type RouteContext<TAccessCondition extends AccessCondition = false> = {
     const TEndpointError extends Omit<EndpointError, 'httpStatus'>,
   >(
     httpStatus: THTTPStatus,
-    error: TEndpointError
+    error: TEndpointError,
   )=> Result.Error<TEndpointError & {
     httpStatus: THTTPStatus
   }>

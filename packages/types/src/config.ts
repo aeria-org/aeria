@@ -73,7 +73,7 @@ export type ApiConfig = {
   tokenUserProperties?: (keyof CollectionItem<'user'>)[]
   errorHandler?: <TError>(
     context: RouteContext,
-    error: TError
+    error: TError,
   )=> unknown | Promise<unknown>
 }
 

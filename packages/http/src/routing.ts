@@ -60,7 +60,7 @@ export type ProxiedRouter<TRouter> = TRouter & Record<
   >(
     exp: RouteUri,
     cb: TCallback,
-    contract?: TContractWithRoles
+    contract?: TContractWithRoles,
   )=> ReturnType<typeof registerRoute>
 >
 
@@ -109,13 +109,16 @@ export const matches = <TRequest extends GenericRequest>(
   options: RouterOptions = {},
   config?: ApiConfig,
 ) => {
-  const base = config?.baseUrl && config.baseUrl !== '/'
-    ? options.base
+  let base: string
+  if( config?.baseUrl && config.baseUrl !== '/' ) {
+    base = options.base
       ? `${config.baseUrl}${options.base}`
       : config.baseUrl
-    : options.base
+  } else {
+    base = options.base
       ? options.base
       : ''
+  }
 
   if( method && method !== req.method ) {
     if( !Array.isArray(method) || !method.includes(req.method) ) {

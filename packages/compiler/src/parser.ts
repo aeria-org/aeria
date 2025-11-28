@@ -823,8 +823,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
           case 'required': {
             const { value, symbols } = parseArrayBlockWithAttributes(['if'], (attributeName, array, identifier) => {
               switch( attributeName ) {
-
-                case 'if': {
+                default: {
                   const ifTerms: [string, symbol][] = []
                   array[identifier] = parseCondition(ifTerms)
                   node[AST.LOCATION_SYMBOL].requiredTerms = ifTerms
@@ -945,7 +944,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
           const { value: macroName } = consume(TokenType.MacroName, ['include'])
 
           switch( macroName ) {
-            case 'include': {
+            default: {
               const { value: functionSetName, location } = consume(TokenType.Identifier)
 
               const functionSetSymbol = Symbol()

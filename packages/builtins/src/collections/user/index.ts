@@ -59,7 +59,7 @@ export const user = defineCollection({
   functions: functions as {
     [P in keyof typeof functions]: (
       payload: Parameters<typeof functions[P]>[0],
-      context: Omit<Context, 'token'>
+      context: Omit<Context, 'token'>,
     ) => ReturnType<typeof functions[P]>
   },
 })
