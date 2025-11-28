@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "build": "tsc",
-    "write-icons": "pnpm -w write-icons"
+    "compile-builtins-icons": "pnpm -w compile-builtins-icons"
   },
   "keywords": [],
   "author": "",
