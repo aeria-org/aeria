@@ -29,7 +29,7 @@
     "aeria": "^0.0.347"
   },
   "dependencies": {
-    "chokidar": "^4.0.3",
+    "chokidar": "^5.0.0",
     "marked": "^17.0.1",
     "yaml": "^2.8.1"
   }
