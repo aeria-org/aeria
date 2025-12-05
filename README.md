@@ -3,7 +3,7 @@
 
 [![npm](https://img.shields.io/npm/v/aeria.svg)](https://npmjs.com/package/aeria) ![https://github.com/aeria-org/aeria/actions/workflows/ci.yaml](https://github.com/aeria-org/aeria/actions/workflows/ci.yaml/badge.svg)
 
-[Documentation](https://aeria.land/aeria/) |
+[Documentation](https://aeria-org.github.io/docs/aeria/) |
 [How to Contribute](.github/CONTRIBUTING.md)
 
 Aeria is a framework designed to streamline CRUD-based applications with a type-safe, developer-friendly experience. It includes a lightweight **MongoDB** abstraction layer and a DSL for model definition supporting nested objects, arrays, references, upload fields, and more, making it ideal for applications with complex data structures and relational logic. Additionally, a HTTP routing API with very simple bindings is provided to build business logic.

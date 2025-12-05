@@ -2,7 +2,7 @@ import { getPackageJson } from './util.js'
 
 export const getBanner = (version: string) => [
   `ÆRIA (create-aeria-app v${version})`,
-  'Visit https://aeria.land/ for documentation',
+  'Visit https://aeria-org.github.io/docs/aeria/ for documentation',
 ].join('\n')
 
 export const printBanner = async () => {
