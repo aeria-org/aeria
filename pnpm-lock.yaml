@@ -235,8 +235,8 @@ importers:
         version: 7.0.0
     optionalDependencies:
       mongodb-memory-server:
-        specifier: ^10.3.0
-        version: 10.3.0
+        specifier: ^10.4.1
+        version: 10.4.1
     devDependencies:
       '@aeriajs/builtins':
         specifier: link:../builtins
@@ -2043,16 +2043,8 @@ packages:
     resolution: {integrity: sha512-irhhjRVLE20hbkRl4zpAYLnDMM+zIZnp0IDB9akAFFUZp/3XdOfwwddc7y6cNvF2WCEtfTYRwYbIfYa2kVY0og==}
     engines: {node: '>=20.19.0'}
 
-  mongodb-memory-server-core@10.3.0:
-    resolution: {integrity: sha512-tp+ZfTBAPqHXjROhAFg6HcVVzXaEhh/iHcbY7QPOIiLwr94OkBFAw4pixyGSfP5wI2SZeEA13lXyRmBAhugWgA==}
-    engines: {node: '>=16.20.1'}
-
   mongodb-memory-server-core@10.4.1:
     resolution: {integrity: sha512-YJdrEyF9hk64nfeoVDMP6IfTzK+gLZhrQqYyP6JJMsqo2LK5eF7JRZ4YPQDmt1re/JhItpiU+ypiZbIG1OsW5Q==}
-    engines: {node: '>=16.20.1'}
-
-  mongodb-memory-server@10.3.0:
-    resolution: {integrity: sha512-dRNr2uEhMgjEe6kgqS+ITBKBbl2cz0DNBjNZ12BGUckvEOAHbhd3R7q/lFPSZrZ6AMKa2EOUJdAmFF1WlqSbsA==}
     engines: {node: '>=16.20.1'}
 
   mongodb-memory-server@10.4.1:
@@ -4217,33 +4209,6 @@ snapshots:
       '@types/whatwg-url': 13.0.0
       whatwg-url: 14.2.0
 
-  mongodb-memory-server-core@10.3.0:
-    dependencies:
-      async-mutex: 0.5.0
-      camelcase: 6.3.0
-      debug: 4.4.3
-      find-cache-dir: 3.3.2
-      follow-redirects: 1.15.11(debug@4.4.3)
-      https-proxy-agent: 7.0.6
-      mongodb: 6.20.0
-      new-find-package-json: 2.0.0
-      semver: 7.7.3
-      tar-stream: 3.1.7
-      tslib: 2.8.1
-      yauzl: 3.2.0
-    transitivePeerDependencies:
-      - '@aws-sdk/credential-providers'
-      - '@mongodb-js/zstd'
-      - bare-abort-controller
-      - gcp-metadata
-      - kerberos
-      - mongodb-client-encryption
-      - react-native-b4a
-      - snappy
-      - socks
-      - supports-color
-    optional: true
-
   mongodb-memory-server-core@10.4.1:
     dependencies:
       async-mutex: 0.5.0
@@ -4258,23 +4223,6 @@ snapshots:
       tar-stream: 3.1.7
       tslib: 2.8.1
       yauzl: 3.2.0
-    transitivePeerDependencies:
-      - '@aws-sdk/credential-providers'
-      - '@mongodb-js/zstd'
-      - bare-abort-controller
-      - gcp-metadata
-      - kerberos
-      - mongodb-client-encryption
-      - react-native-b4a
-      - snappy
-      - socks
-      - supports-color
-    optional: true
-
-  mongodb-memory-server@10.3.0:
-    dependencies:
-      mongodb-memory-server-core: 10.3.0
-      tslib: 2.8.1
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
       - '@mongodb-js/zstd'
