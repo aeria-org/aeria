@@ -1,5 +1,11 @@
 # create-aeria-app
 
+## 0.0.66
+
+### Patch Changes
+
+- 2682833: Change docs URL
+
 ## 0.0.65
 
 ### Patch Changes
