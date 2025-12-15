@@ -34,7 +34,7 @@
     "@types/node": "^24.10.1",
     "aeria": "link:packages/aeria",
     "aeria-sdk": "link:packages/aeria-sdk",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "husky": "^9.1.7",
     "typescript": "^5.9.3",
     "vitest": "^4.0.15"
