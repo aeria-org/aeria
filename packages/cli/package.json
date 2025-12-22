@@ -33,7 +33,7 @@
   "license": "ISC",
   "dependencies": {
     "chokidar": "^5.0.0",
-    "esbuild": "^0.27.1",
+    "esbuild": "^0.27.2",
     "json5": "^2.2.3"
   },
   "devDependencies": {
