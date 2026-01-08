@@ -1,5 +1,5 @@
-import path from 'node:path'
 import { extractIcons, iconsJsContent, iconsDtsContent } from '../packages/cli/dist/index.js'
+import * as path from 'node:path'
 import * as fs from 'node:fs/promises'
 import * as presets from '../packages/core/dist/presets/index.js'
 import * as collections from '../packages/builtins/dist/collections/index.js'
