@@ -45,7 +45,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^7.0.0",
-    "mongodb-memory-server": "^10.4.1"
+    "mongodb-memory-server": "^11.0.1"
   },
   "peerDependencies": {
     "@aeriajs/builtins": "^0.0.290",
@@ -61,6 +61,6 @@
     "jsonwebtoken": "^9.0.3"
   },
   "optionalDependencies": {
-    "mongodb-memory-server": "^10.4.1"
+    "mongodb-memory-server": "^11.0.1"
   }
 }
