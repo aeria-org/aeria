@@ -7,7 +7,7 @@ export const ValidationErrorCode = {
 export const PropertyValidationErrorCode = {
   Missing: 'MISSING_PROPERTY',
   Extraneous: 'EXTRANEOUS_PROPERTY',
-  Unmatching: 'UNMATCHING_PROPERTIES',
+  Unmatching: 'UNMATCHING_PROPERTY',
   ExtraneousElement: 'EXTRANEOUS_ELEMENT',
   MoreItemsExpected: 'MORE_ITEMS_EXPECTED',
   LessItemsExpected: 'LESS_ITEMS_EXPECTED',

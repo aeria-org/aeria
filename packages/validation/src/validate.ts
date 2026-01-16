@@ -94,7 +94,7 @@ export const validateProperty = <TWhat>(
     return Result.result(what)
   }
 
-  if( 'getter' in property ) {
+  if( 'type' in property && property.type === 'getter' ) {
     return Result.result(undefined)
   }
 
