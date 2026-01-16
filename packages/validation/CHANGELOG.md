@@ -1,5 +1,15 @@
 # @aeriajs/validation
 
+## 0.0.188
+
+### Patch Changes
+
+- ae2cef4: Fix getter validation bug
+- Updated dependencies [ae2cef4]
+  - @aeriajs/types@0.0.139
+  - @aeriajs/common@0.0.164
+  - @aeriajs/entrypoint@0.0.172
+
 ## 0.0.187
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
   "name": "create-aeria-app",
   "type": "module",
-  "version": "0.0.65",
+  "version": "0.0.66",
   "description": "",
   "license": "ISC",
   "scripts": {

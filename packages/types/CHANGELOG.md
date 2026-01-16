@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.139
+
+### Patch Changes
+
+- ae2cef4: Fix getter validation bug
+
 ## 0.0.138
 
 ### Patch Changes

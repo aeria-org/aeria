@@ -1,7 +1,7 @@
 {
   "name": "aeria-populate",
   "type": "module",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "",
   "license": "ISC",
   "scripts": {
@@ -26,7 +26,7 @@
     "aeria": "file:../aeria"
   },
   "peerDependencies": {
-    "aeria": "^0.0.347"
+    "aeria": "^0.0.348"
   },
   "dependencies": {
     "chokidar": "^5.0.0",
