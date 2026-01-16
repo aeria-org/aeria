@@ -1,7 +1,7 @@
 {
   "name": "@aeriajs/common",
   "type": "module",
-  "version": "0.0.163",
+  "version": "0.0.164",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,7 +36,7 @@
     "bson": "^7.0.0"
   },
   "peerDependencies": {
-    "@aeriajs/types": "^0.0.138",
+    "@aeriajs/types": "^0.0.139",
     "bson": "^7.0.0"
   }
 }
