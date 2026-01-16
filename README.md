@@ -90,5 +90,5 @@ To sum it up: if your database pick is MongoDB and you are going for building a 
 
 Reach out to learn more about Aeria and know about upcoming features.
 
-[![Aeria Server](https://img.shields.io/discord/1218448912185163816.svg?label=Discord&logo=Discord&colorB=7289da&style=for-the-badge)](https://discord.aeria.land/)
+[![Aeria Server](https://img.shields.io/discord/1218448912185163816.svg?label=Discord&logo=Discord&colorB=7289da&style=for-the-badge)](https://aeria.is-a.dev/discord)
 
