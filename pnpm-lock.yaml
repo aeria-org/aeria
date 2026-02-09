@@ -168,8 +168,8 @@ importers:
         specifier: link:../validation
         version: link:../validation
       mongodb:
-        specifier: ^7.0.0
-        version: 7.0.0
+        specifier: ^7.1.0
+        version: 7.1.0
 
   packages/builtins-icons: {}
 
@@ -231,8 +231,8 @@ importers:
         specifier: ^9.0.3
         version: 9.0.3
       mongodb:
-        specifier: ^7.0.0
-        version: 7.0.0
+        specifier: ^7.1.0
+        version: 7.1.0
     optionalDependencies:
       mongodb-memory-server:
         specifier: ^11.0.1
@@ -297,8 +297,8 @@ importers:
         specifier: link:../validation
         version: link:../validation
       mongodb:
-        specifier: ^7.0.0
-        version: 7.0.0
+        specifier: ^7.1.0
+        version: 7.1.0
 
   packages/node-http:
     devDependencies:
@@ -324,8 +324,8 @@ importers:
         specifier: link:../types
         version: link:../types
       mongodb:
-        specifier: ^7.0.0
-        version: 7.0.0
+        specifier: ^7.1.0
+        version: 7.1.0
 
   packages/server:
     devDependencies:
@@ -354,8 +354,8 @@ importers:
         specifier: link:../types
         version: link:../types
       mongodb:
-        specifier: ^7.0.0
-        version: 7.0.0
+        specifier: ^7.1.0
+        version: 7.1.0
 
   packages/types:
     dependencies:
@@ -375,8 +375,8 @@ importers:
         specifier: link:../types
         version: link:../types
       mongodb:
-        specifier: ^7.0.0
-        version: 7.0.0
+        specifier: ^7.1.0
+        version: 7.1.0
 
   playground:
     dependencies:
@@ -2029,8 +2029,8 @@ packages:
   mongodb-connection-string-url@3.0.2:
     resolution: {integrity: sha512-rMO7CGo/9BFwyZABcKAWL8UJwH/Kc2x0g72uhDWzG48URRax5TCIcJ7Rc3RZqffZzO/Gwff/jyKwCU9TN8gehA==}
 
-  mongodb-connection-string-url@7.0.0:
-    resolution: {integrity: sha512-irhhjRVLE20hbkRl4zpAYLnDMM+zIZnp0IDB9akAFFUZp/3XdOfwwddc7y6cNvF2WCEtfTYRwYbIfYa2kVY0og==}
+  mongodb-connection-string-url@7.0.1:
+    resolution: {integrity: sha512-h0AZ9A7IDVwwHyMxmdMXKy+9oNlF0zFoahHiX3vQ8e3KFcSP3VmsmfvtRSuLPxmyv2vjIDxqty8smTgie/SNRQ==}
     engines: {node: '>=20.19.0'}
 
   mongodb-connection-string-url@7.0.1:
@@ -2072,8 +2072,8 @@ packages:
       socks:
         optional: true
 
-  mongodb@7.0.0:
-    resolution: {integrity: sha512-vG/A5cQrvGGvZm2mTnCSz1LUcbOPl83hfB6bxULKQ8oFZauyox/2xbZOoGNl+64m8VBrETkdGCDBdOsCr3F3jg==}
+  mongodb@7.1.0:
+    resolution: {integrity: sha512-kMfnKunbolQYwCIyrkxNJFB4Ypy91pYqua5NargS/f8ODNSJxT03ZU3n1JqL4mCzbSih8tvmMEMLpKTT7x5gCg==}
     engines: {node: '>=20.19.0'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.806.0
@@ -4134,7 +4134,7 @@ snapshots:
       '@types/whatwg-url': 11.0.5
       whatwg-url: 14.2.0
 
-  mongodb-connection-string-url@7.0.0:
+  mongodb-connection-string-url@7.0.1:
     dependencies:
       '@types/whatwg-url': 13.0.0
       whatwg-url: 14.2.0
@@ -4152,7 +4152,7 @@ snapshots:
       find-cache-dir: 3.3.2
       follow-redirects: 1.15.11(debug@4.4.3)
       https-proxy-agent: 7.0.6
-      mongodb: 7.0.0
+      mongodb: 7.1.0
       new-find-package-json: 2.0.0
       semver: 7.7.4
       tar-stream: 3.1.7
@@ -4194,11 +4194,11 @@ snapshots:
       bson: 6.10.4
       mongodb-connection-string-url: 3.0.2
 
-  mongodb@7.0.0:
+  mongodb@7.1.0:
     dependencies:
-      '@mongodb-js/saslprep': 1.4.4
-      bson: 7.1.1
-      mongodb-connection-string-url: 7.0.0
+      '@mongodb-js/saslprep': 1.4.5
+      bson: 7.2.0
+      mongodb-connection-string-url: 7.0.1
 
   mongodb@7.1.0:
     dependencies:
