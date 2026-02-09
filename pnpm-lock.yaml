@@ -210,8 +210,8 @@ importers:
         specifier: link:../types
         version: link:../types
       bson:
-        specifier: ^7.1.1
-        version: 7.1.1
+        specifier: ^7.2.0
+        version: 7.2.0
 
   packages/compiler:
     devDependencies:
