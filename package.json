@@ -2,7 +2,7 @@
   "name": "aeria-monorepo",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@9.1.0",
+  "packageManager": "pnpm@10.29.3",
   "engines": {
     "node": ">=23"
   },
