@@ -163,12 +163,44 @@ export const main = async () => {
 
   const files = await Array.fromAsync(fs.promises.glob(pattern))
 
-  if( opts.watch ) {
-    if( opts.dropCollections ) {
-      console.error("--dropCollections can't be used together with --watch")
-      process.exit(1)
-    }
+  let failed = 0, successful = 0, dropped = 0
+  const collections: string[] = []
 
+  for ( const file of files ) {
+    const content = await fs.promises.readFile(file, {
+      encoding: 'utf-8',
+    })
+
+    const { frontmatter } = await parseMarkdown(content)
+    collections.push(frontmatter.collection)
+  }
+
+  if( opts.dropCollections ) {
+    for( const collection of collections ) {
+      if( (await db.listCollections().toArray()).some((subject) => collection === subject.name) ) {
+        await db.collection(collection).drop()
+        console.log(styleText(['green'], '✓'), 'dropped collection', styleText(['bold'], collection))
+        dropped++
+      }
+    }
+  }
+
+  for ( const file of files ) {
+    const result = await visitFile(file)
+    failed += result.failed
+    successful += result.successful
+  }
+
+  console.log(dropped, 'dropped collections:', collections.map((collection) => styleText(['bold'], collection)).join(', '))
+  console.log(successful, 'documents imported successfully')
+  console.log(failed, 'failed to import')
+
+  if( failed ) {
+    await client.close()
+    process.exit(1)
+  }
+
+  if( opts.watch ) {
     const watcher = chokidar.watch(files)
     console.log('watching for changes in ', styleText(['bold'], pattern))
 
@@ -176,44 +208,6 @@ export const main = async () => {
       await client.connect()
       await visitFile(filePath)
     })
-
-  } else {
-    let failed = 0, successful = 0, dropped = 0
-    const collections: string[] = []
-
-    for ( const file of files ) {
-      const content = await fs.promises.readFile(file, {
-        encoding: 'utf-8',
-      })
-
-      const { frontmatter } = await parseMarkdown(content)
-      collections.push(frontmatter.collection)
-    }
-
-    if( opts.dropCollections ) {
-      for( const collection of collections ) {
-        if( (await db.listCollections().toArray()).some((subject) => collection === subject.name) ) {
-          await db.collection(collection).drop()
-          console.log(styleText(['green'], '✓'), 'dropped collection', styleText(['bold'], collection))
-          dropped++
-        }
-      }
-    }
-
-    for ( const file of files ) {
-      const result = await visitFile(file)
-      failed += result.failed
-      successful += result.successful
-    }
-
-    console.log(dropped, 'dropped collections:', collections.map((collection) => styleText(['bold'], collection)).join(', '))
-    console.log(successful, 'documents imported successfully')
-    console.log(failed, 'failed to import')
-
-    if( failed ) {
-      await client.close()
-      process.exit(1)
-    }
   }
 
   await client.close()
