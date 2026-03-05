@@ -1,5 +1,11 @@
 # aeria-populate
 
+## 0.0.21
+
+### Patch Changes
+
+- c37250a: Run immediately if `--watch`
+
 ## 0.0.20
 
 ### Patch Changes
