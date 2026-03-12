@@ -178,7 +178,7 @@ export const main = async () => {
   if( opts.dropCollections ) {
     for( const collection of collections ) {
       if( (await db.listCollections().toArray()).some((subject) => collection === subject.name) ) {
-        await db.collection(collection).drop()
+        await db.collection(collection).deleteMany()
         console.log(styleText(['green'], '✓'), 'dropped collection', styleText(['bold'], collection))
         dropped++
       }
