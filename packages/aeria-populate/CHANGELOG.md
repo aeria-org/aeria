@@ -1,5 +1,11 @@
 # aeria-populate
 
+## 0.0.22
+
+### Patch Changes
+
+- d656318: Use `.deleteMany()` instead of `.drop()`
+
 ## 0.0.21
 
 ### Patch Changes
