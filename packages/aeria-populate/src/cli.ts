@@ -111,40 +111,43 @@ const work = async (text: string) => {
 }
 
 const visitFile = async (file: string) => {
-  let failed = 0, successful = 0
+  try {
+    const content = await fs.promises.readFile(file, {
+      encoding: 'utf-8',
+    })
 
-  const content = await fs.promises.readFile(file, {
-    encoding: 'utf-8',
-  })
+    const { insertion: { error }, frontmatter, existing } = await work(content)
+    const uniqueName = styleText(['bold'], frontmatter.document[frontmatter.unique] as string)
+    const collectionName = styleText(['bold'], frontmatter.collection)
 
-  const { insertion: { error }, frontmatter, existing } = await work(content)
-  const uniqueName = styleText(['bold'], frontmatter.document[frontmatter.unique] as string)
-  const collectionName = styleText(['bold'], frontmatter.collection)
+    if( error ) {
+      const actionText = existing
+        ? `update ${uniqueName} into collection`
+        : `add ${uniqueName} to collection`
 
-  if( error ) {
-    const actionText = existing
-      ? `update ${uniqueName} into collection`
-      : `add ${uniqueName} to collection`
+      console.log(styleText(['red'], 'x'), "couldn't", actionText, collectionName)
+      console.log(inspect(error, {
+        depth: null,
+      }))
 
-    console.log(styleText(['red'], 'x'), "couldn't", actionText, collectionName)
-    console.log(inspect(error, {
-      depth: null,
-    }))
 
-    failed++
+    } else {
+      const actionText = existing
+        ? 'updated into collection'
+        : 'added to collection'
 
-  } else {
-    const actionText = existing
-      ? 'updated into collection'
-      : 'added to collection'
+      console.log(styleText(['green'], '✓'), uniqueName, 'successfully', actionText, collectionName)
+    }
 
-    console.log(styleText(['green'], '✓'), uniqueName, 'successfully', actionText, collectionName)
-    successful++
+    return {
+      success: !error,
+    }
+  } catch( err ) {
+    console.trace(err)
   }
 
   return {
-    failed,
-    successful,
+    success: false,
   }
 }
 
@@ -186,8 +189,11 @@ export const main = async () => {
 
   for ( const file of files ) {
     const result = await visitFile(file)
-    failed += result.failed
-    successful += result.successful
+    if( result.success ) {
+      successful++
+    } else {
+      failed++
+    }
   }
 
   console.log(dropped, 'dropped collections:', collections.map((collection) => styleText(['bold'], collection)).join(', '))
