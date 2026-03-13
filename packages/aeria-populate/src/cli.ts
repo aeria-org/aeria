@@ -1,4 +1,5 @@
-import { getDatabase, insert, createContext, type InsertReturnType } from 'aeria'
+import type { WithId } from 'mongodb'
+import { getDatabase, insert, createContext, type InsertPayload } from 'aeria'
 import { parseArgs, styleText, inspect } from 'node:util'
 import * as fs from 'node:fs'
 import * as yaml from 'yaml'
@@ -8,7 +9,7 @@ import * as chokidar from 'chokidar'
 type FrontmatterObject = {
   collection: string
   unique: string
-  content: string
+  content?: string
   document: Record<string, unknown>
 }
 
@@ -33,17 +34,20 @@ const { positionals, values: opts } = parseArgs({
 const dbPromise = getDatabase()
 
 const isValidFrontmatterObject = (value: unknown): value is FrontmatterObject => {
+  if( !value || typeof value !== 'object' ) {
+    return false
+  }
+  if( 'content' in value && typeof value.content !== 'string' ) {
+    return false
+  }
+
   return !!(
-    value
-    && typeof value === 'object'
-    && 'collection' in value
+    'collection' in value
     && 'unique' in value
-    && 'content' in value
     && 'document' in value
     && value.document
     && typeof value.collection === 'string'
     && typeof value.unique === 'string'
-    && typeof value.content === 'string'
     && typeof value.document === 'object'
   )
 }
@@ -86,23 +90,18 @@ const work = async (text: string) => {
     },
   })
 
-  let insertion: InsertReturnType<unknown>
-  if( existing ) {
-    insertion = await insert({
-      what: {
-        ...frontmatter.document,
-        [frontmatter.content]: content,
-        _id: existing._id,
-      },
-    }, context)
-  } else {
-    insertion = await insert({
-      what: {
-        ...frontmatter.document,
-        [frontmatter.content]: content,
-      },
-    }, context)
+  const payload: InsertPayload<WithId<Record<string, unknown>>> = {
+    what: frontmatter.document,
   }
+
+  if( existing ) {
+    payload.what._id = existing._id
+  }
+  if( frontmatter.content ) {
+    payload.what[frontmatter.content] = content
+  }
+
+  const insertion = await insert(payload, context)
 
   return {
     insertion,

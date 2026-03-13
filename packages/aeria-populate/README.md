@@ -4,7 +4,7 @@
 
 - `-c --compileMarkdown`: will compile Markdown to HTML before inserting
 - `-d --dropCollections`: will drop matching collections before inserting
-- `-w --watch`: watch mode (can not be used together with `--dropCollections`)
+- `-w --watch`: watch mode
 
 ```sh
 # when --env-file is applicable
@@ -21,7 +21,7 @@ npx aeria-populate -c "content/**/*.md"
 ---
 collection: person
 unique: slug
-content: description
+content: description # optional
 document:
     slug: john-doe
     sex: male
