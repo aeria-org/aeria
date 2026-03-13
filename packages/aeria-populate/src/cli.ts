@@ -130,7 +130,6 @@ const visitFile = async (file: string) => {
         depth: null,
       }))
 
-
     } else {
       const actionText = existing
         ? 'updated into collection'
