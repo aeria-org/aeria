@@ -52,14 +52,46 @@ const isValidFrontmatterObject = (value: unknown): value is FrontmatterObject =>
   )
 }
 
+const parseInterpolationFallback = (text: string, obj: Record<string, unknown>) => {
+  if(
+    (text.startsWith('"') && text.endsWith('"')) ||
+    (text.startsWith("'") && text.endsWith("'"))
+  ) {
+    return text.slice(1, -1)
+  }
+
+  if( !isNaN(Number(text)) ) {
+    return text
+  }
+
+  switch( text ) {
+    case 'true':
+    case 'false': {
+      return text
+    }
+  }
+
+  return getValueFromPath(obj, text)
+}
+
 const interpolate = (text: string) => {
   const INTERPOLATION_OBJECT = {
     env: process.env,
   }
 
-  return text.replace(/{{\s*([^}]+)\s*}}/g, (_, path) => {
-    const value = getValueFromPath(INTERPOLATION_OBJECT, path.trim())
-    return value !== undefined && value !== null
+  return text.replace(/{{\s*([^}]+)\s*}}/g, (_, expr) => {
+    if( typeof expr !== 'string' ) {
+      return ''
+    }
+
+    const [path, fallback] = expr.split('||').map((s) => s.trim())
+
+    let value = getValueFromPath(INTERPOLATION_OBJECT, path)
+    if( value === undefined && fallback ) {
+      value = parseInterpolationFallback(fallback, INTERPOLATION_OBJECT)
+    }
+
+    return value !== undefined && value !== null 
       ? String(value)
       : ''
   })
@@ -67,9 +99,8 @@ const interpolate = (text: string) => {
 
 const parseMarkdown = async (text: string) => {
   const interpolatedText = interpolate(text)
-
-  console.log(interpolatedText)
   const [, frontmatterString, ...splitContent] = interpolatedText.split('---')
+
   let content = splitContent.join('---').trim()
   if( opts.compileMarkdown ) {
     content = await markdown.parse(content)

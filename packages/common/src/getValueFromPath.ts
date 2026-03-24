@@ -4,3 +4,4 @@ export const getValueFromPath = <TValue>(object: Record<string, unknown>, path: 
     return a && a[fragment as keyof typeof a]
   }, object as unknown) as TValue
 }
+
