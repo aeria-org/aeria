@@ -1,5 +1,5 @@
 import type { WithId } from 'mongodb'
-import { getDatabase, insert, createContext, type InsertPayload } from 'aeria'
+import { getDatabase, insert, createContext, getValueFromPath, type InsertPayload } from 'aeria'
 import { parseArgs, styleText, inspect } from 'node:util'
 import * as fs from 'node:fs'
 import * as yaml from 'yaml'
@@ -52,8 +52,24 @@ const isValidFrontmatterObject = (value: unknown): value is FrontmatterObject =>
   )
 }
 
+const interpolate = (text: string) => {
+  const INTERPOLATION_OBJECT = {
+    env: process.env,
+  }
+
+  return text.replace(/{{\s*([^}]+)\s*}}/g, (_, path) => {
+    const value = getValueFromPath(INTERPOLATION_OBJECT, path.trim())
+    return value !== undefined && value !== null
+      ? String(value)
+      : ''
+  })
+}
+
 const parseMarkdown = async (text: string) => {
-  const [, frontmatterString, ...splitContent] = text.split('---')
+  const interpolatedText = interpolate(text)
+
+  console.log(interpolatedText)
+  const [, frontmatterString, ...splitContent] = interpolatedText.split('---')
   let content = splitContent.join('---').trim()
   if( opts.compileMarkdown ) {
     content = await markdown.parse(content)
@@ -142,6 +158,7 @@ const visitFile = async (file: string) => {
       success: !error,
     }
   } catch( err ) {
+    console.log(styleText(['red'], 'x'), 'error when visiting', file)
     console.trace(err)
   }
 
