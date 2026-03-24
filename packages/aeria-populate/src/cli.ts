@@ -91,7 +91,7 @@ const interpolate = (text: string) => {
       value = parseInterpolationFallback(fallback, INTERPOLATION_OBJECT)
     }
 
-    return value !== undefined && value !== null 
+    return value !== undefined && value !== null
       ? String(value)
       : ''
   })
