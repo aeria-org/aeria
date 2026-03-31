@@ -24,9 +24,19 @@ export type RequestTransformer = (context: RequestTransformerContext, next: Requ
 export type ResponseTransformer = (context: ResponseTransformerContext, next: ResponseTransformerNext) => Promise<ResponseTransformerContext>
 
 export const defaultRequestTransformer: RequestTransformerNext = async (context) => {
+  if( typeof context.url === 'string' ) {
+    context.url = new URL(context.url)
+  }
+
   if( context.payload ) {
     if( context.params.method === 'GET' || context.params.method === 'HEAD' ) {
-      context.url += `?${new URLSearchParams(context.payload as ConstructorParameters<typeof URLSearchParams>[0])}`
+      for( const key in context.payload ) {
+        const value: unknown = context.payload[key as keyof typeof context.payload]
+        if( value !== undefined ) {
+          context.url.searchParams.append(key, String(value))
+        }
+      }
+
     } else {
       context.params.body = context.params.headers?.['content-type']?.startsWith('application/json')
         ? JSON.stringify(context.payload)
