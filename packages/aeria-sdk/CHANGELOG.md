@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.220
+
+### Patch Changes
+
+- 6e8cef9: Bump versions
+
 ## 0.0.219
 
 ### Patch Changes
