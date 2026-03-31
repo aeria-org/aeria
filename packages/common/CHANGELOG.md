@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.165
+
+### Patch Changes
+
+- 9fe66e7: Proper search params handling
+
 ## 0.0.164
 
 ### Patch Changes
