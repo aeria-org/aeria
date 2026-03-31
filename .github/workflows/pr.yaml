@@ -23,7 +23,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 23
+          node-version: 25
           cache: pnpm
       - name: Install dependencies
         run: pnpm install
