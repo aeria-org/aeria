@@ -13,17 +13,18 @@ export namespace Result {
 
   export type Either<E, R> = Result.Error<E> | Result.Result<R>
 
-  export const error = <const TValue>(value?: TValue) => ({
+  export const error = <const TValue>(value: TValue) => ({
     _tag: 'Error',
     error: value,
     result: undefined,
   } as const)
 
-  export const result = <const TValue>(value?: TValue) => ({
+  export const result = <const TValue>(value: TValue) => ({
     _tag: 'Result',
     error: undefined,
     result: value,
   } as const)
+
 }
 
 export type ExtractError<T> = T extends Result.Error<infer L>
