@@ -52,8 +52,8 @@
     "@aeriajs/types": "link:../types"
   },
   "peerDependencies": {
-    "@aeriajs/common": "^0.0.162",
-    "@aeriajs/types": "^0.0.137"
+    "@aeriajs/common": "^0.0.164",
+    "@aeriajs/types": "^0.0.139"
   },
   "dependencies": {
     "jwt-decode": "^4.0.0"
