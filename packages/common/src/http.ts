@@ -25,7 +25,11 @@ export type ResponseTransformer = (context: ResponseTransformerContext, next: Re
 
 export const defaultRequestTransformer: RequestTransformerNext = async (context) => {
   if( typeof context.url === 'string' ) {
-    context.url = new URL(context.url)
+    if( context.url.startsWith('/') && typeof location !== 'undefined' ) {
+      context.url = new URL(`${location.origin}${context.url}`)
+    } else {
+      context.url = new URL(context.url)
+    }
   }
 
   if( context.payload ) {
