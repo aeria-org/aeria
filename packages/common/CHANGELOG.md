@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.166
+
+### Patch Changes
+
+- 185d974: Fix request bug
+
 ## 0.0.165
 
 ### Patch Changes
