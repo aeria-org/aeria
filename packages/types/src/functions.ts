@@ -50,9 +50,11 @@ export type StrictFilterOperators<TDocument> = RemoveAny<FilterOperators<Documen
 
 type FlattenObjectKeys<T> = T extends T & 0 ? never : T extends Record<infer K, unknown>
   ? K extends string
-    ? T[K] extends Record<string, unknown>
-      ? `${K}.${FlattenObjectKeys<T[K]>}`
-      : K
+    ? T[K] extends (infer Elem)[]
+      ? `${K}.${FlattenObjectKeys<Elem>}`
+      : T[K] extends Record<string, unknown>
+        ? `${K}.${FlattenObjectKeys<T[K]>}`
+        : K
     : never
   : never
 
