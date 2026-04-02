@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.140
+
+### Patch Changes
+
+- 28b7152: Update `FlattenObjectKeys<T>` type
+
 ## 0.0.139
 
 ### Patch Changes
