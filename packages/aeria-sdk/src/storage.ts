@@ -14,6 +14,7 @@ export const getStorage = (config: InstanceConfig) => {
 
   if( config.storage?.strategy ) {
     if( config.storage.strategy === 'localStorage' ) {
+      // eslint-disable-next-line
       if( typeof localStorage === 'object' && localStorage && typeof localStorage.getItem === 'function' ) {
         strategy = 'localStorage'
       } else {
