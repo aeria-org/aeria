@@ -1,5 +1,14 @@
 # aeria-sdk
 
+## 0.0.221
+
+### Patch Changes
+
+- 901cba5: Fix localStorage fallback
+- Updated dependencies [28b7152]
+  - @aeriajs/types@0.0.140
+  - @aeriajs/common@0.0.167
+
 ## 0.0.220
 
 ### Patch Changes
