@@ -10,22 +10,36 @@ export const storageKey = (key: string, config: InstanceConfig) => {
 }
 
 export const getStorage = (config: InstanceConfig) => {
-  const strategy: StorageStrategy = !config.storage?.strategy
-    ? 'none'
-    : config.storage.strategy === 'localStorage' && !('localStorage' in globalThis)
-      ? 'none'
-      : config.storage.strategy
+  let strategy: StorageStrategy
+
+  if( config.storage?.strategy ) {
+    if( config.storage.strategy === 'localStorage' ) {
+      if( typeof localStorage === 'object' && localStorage && typeof localStorage.getItem === 'function' ) {
+        strategy = 'localStorage'
+      } else {
+        console.warn('localStorage not available, failing back to memory storage')
+        strategy = 'memo'
+      }
+
+    } else {
+      strategy = config.storage.strategy
+    }
+  } else {
+    strategy = 'none'
+  }
 
   function get(key: 'auth'): AuthenticationResult | null
   function get(key: string) {
     switch( strategy ) {
-      case 'memo':
+      case 'memo': {
         return storageMemo[key] || null
-      case 'localStorage':
+      }
+      case 'localStorage': {
         const value = localStorage.getItem(storageKey(key, config))
         return value
           ? JSON.parse(value)
           : null
+      }
     }
   }
 
@@ -33,22 +47,27 @@ export const getStorage = (config: InstanceConfig) => {
     get,
     remove: (key: string) => {
       switch( strategy ) {
-        case 'memo':
+        case 'memo': {
           delete storageMemo[key]
           break
-        case 'localStorage':
+        }
+        case 'localStorage': {
           localStorage.removeItem(storageKey(key, config))
           break
+        }
       }
     },
     set: (key: string, value: unknown) => {
       switch( strategy ) {
-        case 'memo':
+        case 'memo': {
           storageMemo[key] = value
           break
-        case 'localStorage':
+        }
+        case 'localStorage': {
           const serialized = JSON.stringify(value)
-          return localStorage.setItem(storageKey(key, config), serialized)
+          localStorage.setItem(storageKey(key, config), serialized)
+          break
+        }
       }
     },
   }
