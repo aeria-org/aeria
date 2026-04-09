@@ -38,7 +38,7 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
     property: TProperty,
     attributeName: ArrayProperties<TProperty>,
   ) => {
-    if( !property[attributeName] ) {
+    if( !Array.isArray(property[attributeName]) ) {
       return
     }
 
@@ -71,7 +71,7 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
   }
 
   const checkObjectLocalProperties = async (node: AST.PropertyNode, attributeName: ArrayProperties<Extract<AST.PropertyNode['property'], { properties: unknown }>>) => {
-    if( !('properties' in node.property) || !node.property[attributeName] ) {
+    if( !('properties' in node.property) || !Array.isArray(node.property[attributeName]) ) {
       return
     }
 

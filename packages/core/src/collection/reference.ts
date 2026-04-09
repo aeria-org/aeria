@@ -70,7 +70,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
       const description = throwIfError(await getCollectionAsset(refProperty.$ref, 'description'))
 
       if( refProperty.inline || refProperty.populate ) {
-        if( refProperty.populate && refProperty.populate.length === 0 ) {
+        if( Array.isArray(refProperty.populate) && refProperty.populate.length === 0 ) {
           continue
         }
 
@@ -78,7 +78,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
           depth: depth + 1,
           maxDepth: refProperty.populateDepth || maxDepth,
           memoize: `${memoize}.${propName}`,
-          populate: refProperty.populate
+          populate: Array.isArray(refProperty.populate)
             ? Array.from(refProperty.populate)
             : undefined,
           isArrayOrArrayElement: 'items' in property,
@@ -90,7 +90,9 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
       }
 
       const { indexes = description.indexes || [] } = refProperty
-      reference.populate = (refProperty.populate || []).concat(indexes.filter((index) => typeof index === 'string'))
+      if( Array.isArray(refProperty.populate) || !refProperty.populate ) {
+        reference.populate = (refProperty.populate || []).concat(indexes.filter((index) => typeof index === 'string'))
+      }
 
     } else {
       const entrypoint = 'items' in property

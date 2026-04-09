@@ -57,10 +57,9 @@ export type RefProperty = {
   $ref: Exclude<keyof Collections, 'file'> & string
   indexes?: readonly string[]
   select?: readonly string[]
-  populate?: readonly string[]
+  populate?: readonly string[] | boolean
   form?: readonly string[]
   inline?: boolean
-  purge?: boolean
   populateDepth?: number
   constraints?: Condition
 }

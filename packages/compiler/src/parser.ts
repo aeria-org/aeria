@@ -312,14 +312,18 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
     if( '$ref' in property ) {
       switch( attributeName ) {
-        case 'purge':
         case 'inline': {
           property[attributeName] = consumeBoolean()
           return
         }
+        case 'populate': {
+          property[attributeName] = match(TokenType.Boolean)
+            ? consumeBoolean()
+            : parseArray([TokenType.Identifier]).value
+          return
+        }
         case 'select':
         case 'form':
-        case 'populate':
         case 'indexes': {
           property[attributeName] = parseArray([TokenType.Identifier]).value
           return
