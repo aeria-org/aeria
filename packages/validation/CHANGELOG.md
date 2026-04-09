@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.193
+
+### Patch Changes
+
+- 96e7bc1: Fix dates coercion
+
 ## 0.0.192
 
 ### Patch Changes
