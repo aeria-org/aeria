@@ -136,7 +136,7 @@ export const validateProperty = <TWhat>(
       }
     }
 
-    if( (options.coerce || options.coerceDates) && expectedType === 'datetime' && typeof what === 'string'  ) {
+    if( (options.coerce || options.coerceDates) && expectedType === 'datetime' && typeof what === 'string' ) {
       return Result.result(new Date(what))
     }
 
