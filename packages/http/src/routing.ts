@@ -194,6 +194,7 @@ export const registerRoute = async <TRouteContext extends RouteContext>(
         const { error, result: validated } = await checkUnprocessable(context.request.payload, contract.payload, context, {
           checkObjectIds: true,
           coerceObjectIds: true,
+          coerceDates: true,
           context,
           objectIdConstructor: ObjectId,
         })

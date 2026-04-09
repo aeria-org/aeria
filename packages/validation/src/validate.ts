@@ -10,6 +10,7 @@ export type ValidateOptions = {
   throwOnError?: boolean
   coerce?: boolean
   coerceObjectIds?: boolean
+  coerceDates?: boolean
   parentProperty?: Property | Description
   descriptions?: Record<string, Description>
   objectIdConstructor?: new(arg: unknown) => ObjectId
@@ -127,15 +128,16 @@ export const validateProperty = <TWhat>(
       if( expectedType === 'string' && typeof what === 'number' ) {
         return Result.result(String(what))
       }
-      if( expectedType === 'datetime' && typeof what === 'string' ) {
-        return Result.result(new Date(what))
-      }
     }
 
     if( (options.coerce || options.coerceObjectIds) && options.objectIdConstructor ) {
       if( ('$ref' in property || 'format' in property && property.format === 'objectid') && typeof what === 'string' ) {
         return Result.result(new options.objectIdConstructor(what))
       }
+    }
+
+    if( (options.coerce || options.coerceDates) && expectedType === 'datetime' && typeof what === 'string'  ) {
+      return Result.result(new Date(what))
     }
 
     if( '$ref' in property ) {
