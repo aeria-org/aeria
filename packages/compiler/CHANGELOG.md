@@ -1,5 +1,14 @@
 # @aeriajs/compiler
 
+## 0.0.82
+
+### Patch Changes
+
+- 484e376: Add `populate: true` syntax
+- Updated dependencies [484e376]
+  - @aeriajs/types@0.0.141
+  - @aeriajs/common@0.0.168
+
 ## 0.0.81
 
 ### Patch Changes

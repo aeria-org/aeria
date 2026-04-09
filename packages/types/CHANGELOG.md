@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.141
+
+### Patch Changes
+
+- 484e376: Add `populate: true` syntax
+
 ## 0.0.140
 
 ### Patch Changes
