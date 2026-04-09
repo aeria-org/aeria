@@ -1,5 +1,13 @@
 # @aeriajs/http
 
+## 0.0.208
+
+### Patch Changes
+
+- 96e7bc1: Fix dates coercion
+- Updated dependencies [96e7bc1]
+  - @aeriajs/validation@0.0.193
+
 ## 0.0.207
 
 ### Patch Changes
