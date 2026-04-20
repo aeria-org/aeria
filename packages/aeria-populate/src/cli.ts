@@ -213,7 +213,7 @@ export const main = async () => {
   const files = await Array.fromAsync(fs.promises.glob(pattern))
 
   let failed = 0, successful = 0, dropped = 0
-  const collections: string[] = []
+  const collections = new Set<string>()
 
   for ( const file of files ) {
     const content = await fs.promises.readFile(file, {
@@ -221,7 +221,7 @@ export const main = async () => {
     })
 
     const { frontmatter } = await parseMarkdown(content)
-    collections.push(frontmatter.collection)
+    collections.add(frontmatter.collection)
   }
 
   if( opts.dropCollections ) {
@@ -243,7 +243,7 @@ export const main = async () => {
     }
   }
 
-  console.log(dropped, 'dropped collections:', collections.map((collection) => styleText(['bold'], collection)).join(', '))
+  console.log(dropped, 'dropped collections:', Array.from(collections).map((collection) => styleText(['bold'], collection)).join(', '))
   console.log(successful, 'documents imported successfully')
   console.log(failed, 'failed to import')
 
