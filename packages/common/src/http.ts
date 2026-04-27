@@ -73,7 +73,16 @@ export const request = async <TResponseType = unknown>(url: string | URL, payloa
 
   let params: RequestParams
   if( config.params ) {
-    params = config.params
+    const headers: Record<string, string> = {}
+    for( const header in config.params.headers ) {
+      headers[header.toLowerCase()] = config.params.headers[header]
+    }
+
+    params = {
+      ...config.params,
+      headers,
+    }
+
   } else {
     if( payload ) {
       params = {
