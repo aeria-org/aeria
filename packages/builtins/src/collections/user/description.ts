@@ -89,6 +89,10 @@ export const description = defineDescription({
       type: 'string',
       format: 'date-time',
     },
+    activation_timestamp: {
+      type: 'string',
+      format: 'date-time',
+    },
   },
   presets: [
     'crud',

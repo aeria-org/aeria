@@ -32,6 +32,7 @@ export const redefinePasswordContract = defineContract({
     functionSchemas.getError(),
     endpointErrorSchema({
       httpStatus: [
+        HTTPStatus.BadRequest,
         HTTPStatus.NotFound,
         HTTPStatus.Forbidden,
         HTTPStatus.Unauthorized,
@@ -69,7 +70,7 @@ export const redefinePassword: ContractToFunction<typeof redefinePasswordContrac
   }
 
   if( !userId || !token ) {
-    return context.error(HTTPStatus.NotFound, {
+    return context.error(HTTPStatus.BadRequest, {
       code: RedefinePasswordError.InvalidLink,
     })
   }
@@ -80,6 +81,7 @@ export const redefinePassword: ContractToFunction<typeof redefinePasswordContrac
     projection: {
       password: 1,
       active: 1,
+      activation_timestamp: 1,
     },
   })
 
@@ -94,7 +96,7 @@ export const redefinePassword: ContractToFunction<typeof redefinePasswordContrac
       code: RedefinePasswordError.UserNotActive,
     })
   }
-  const { error } = await decodeToken(token, `${context.config.secret}${user.password||''}`)
+  const { error } = await decodeToken(token, `${context.config.secret}:${user.activation_timestamp?.getTime()||''}`)
   if( error ){
     return context.error(HTTPStatus.Unauthorized, {
       code: RedefinePasswordError.InvalidToken,
@@ -113,6 +115,7 @@ export const redefinePassword: ContractToFunction<typeof redefinePasswordContrac
     $set: {
       active: true,
       password: await bcrypt.hash(password, 10),
+      activation_timestamp: undefined,
     },
   })
 

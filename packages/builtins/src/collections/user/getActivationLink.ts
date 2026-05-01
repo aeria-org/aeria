@@ -1,5 +1,6 @@
 import type { Context, ContractToFunction } from '@aeriajs/types'
 import type { description } from './description.js'
+import { ObjectId } from 'mongodb'
 import { Result, HTTPStatus, defineContract, resultSchema, endpointErrorSchema, functionSchemas } from '@aeriajs/types'
 import { ActivationError } from './activate.js'
 import { getActivationToken } from './getActivationToken.js'
@@ -49,9 +50,15 @@ export const getActivationLink: ContractToFunction<typeof getActivationLinkContr
       code: ActivationError.InvalidLink,
     })
   }
-  const user = await context.collections.user.model.findOne({
-    _id: payload.userId,
+  const now = new Date()
+  const user = await context.collections.user.model.findOneAndUpdate({
+    _id: new ObjectId(payload.userId),
   }, {
+    $set: {
+      activation_link_last_generated_at: now,
+    }
+  }, {
+    returnDocument: 'after',
     projection: {
       active: 1,
       password: 1,
@@ -71,11 +78,14 @@ export const getActivationLink: ContractToFunction<typeof getActivationLinkContr
     })
   }
 
-  const activationToken = await getActivationToken(user, context)
+  const token = await getActivationToken({
+    _id: user._id,
+    timestamp: now,
+  }, context)
 
   const url = new URL(`${context.config.webPublicUrl}/user/activation`)
   url.searchParams.set('u', payload.userId.toString())
-  url.searchParams.set('t', activationToken)
+  url.searchParams.set('t', token)
 
   if( !user.password ) {
     url.searchParams.set('step', 'password')
@@ -88,3 +98,4 @@ export const getActivationLink: ContractToFunction<typeof getActivationLinkContr
     url: url.toString(),
   })
 }
+

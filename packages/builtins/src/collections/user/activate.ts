@@ -30,6 +30,7 @@ export const activateContract = defineContract({
   response: [
     endpointErrorSchema({
       httpStatus: [
+        HTTPStatus.BadRequest,
         HTTPStatus.NotFound,
         HTTPStatus.Forbidden,
         HTTPStatus.Unauthorized,
@@ -68,7 +69,7 @@ export const activate: ContractToFunction<typeof activateContract, Context<typeo
   }
 
   if( !userId || !token ) {
-    return context.error(HTTPStatus.NotFound, {
+    return context.error(HTTPStatus.BadRequest, {
       code: ActivationError.InvalidLink,
     })
   }
@@ -79,6 +80,7 @@ export const activate: ContractToFunction<typeof activateContract, Context<typeo
     projection: {
       password: 1,
       active: 1,
+      activation_timestamp: 1,
     },
   })
 
@@ -92,7 +94,7 @@ export const activate: ContractToFunction<typeof activateContract, Context<typeo
       code: ActivationError.AlreadyActiveUser,
     })
   }
-  const { error } = await decodeToken(token, `${context.config.secret}${user.password||''}`)
+  const { error } = await decodeToken(token, `${context.config.secret}:${user.activation_timestamp?.getTime()||''}`)
   if( error ){
     return context.error(HTTPStatus.Unauthorized, {
       code: ActivationError.InvalidToken,
@@ -112,6 +114,7 @@ export const activate: ContractToFunction<typeof activateContract, Context<typeo
       $set: {
         active: true,
         password: await bcrypt.hash(password, 10),
+        activation_timestamp: undefined,
       },
     })
   } else {
@@ -120,6 +123,7 @@ export const activate: ContractToFunction<typeof activateContract, Context<typeo
     }, {
       $set: {
         active: true,
+        activation_timestamp: undefined,
       },
     })
 

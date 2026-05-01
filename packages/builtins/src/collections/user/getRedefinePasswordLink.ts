@@ -1,5 +1,6 @@
 import type { Context, ContractToFunction } from '@aeriajs/types'
 import type { description } from './description.js'
+import { ObjectId } from 'mongodb'
 import { Result, HTTPStatus, resultSchema, functionSchemas, endpointErrorSchema, defineContract } from '@aeriajs/types'
 import { RedefinePasswordError } from './redefinePassword.js'
 import { getActivationToken } from './getActivationToken.js'
@@ -46,9 +47,17 @@ export const getRedefinePasswordLink: ContractToFunction<typeof getRedefinePassw
     throw new Error('config.webPublicUrl is not set')
   }
 
-  const user = await context.collections.user.model.findOne({
-    _id: payload.userId,
+  console.log(payload)
+
+  const now = new Date()
+  const user = await context.collections.user.model.findOneAndUpdate({
+    _id: new ObjectId(payload.userId),
   }, {
+    $set: {
+      activation_timestamp: now,
+    }
+  }, {
+    returnDocument: 'after',
     projection: {
       active: 1,
       password: 1,
@@ -57,7 +66,7 @@ export const getRedefinePasswordLink: ContractToFunction<typeof getRedefinePassw
 
   if( !user ) {
     return Result.error({
-      httpStatus: HTTPStatus.Forbidden,
+      httpStatus: HTTPStatus.NotFound,
       code: RedefinePasswordError.UserNotFound,
     })
   }
@@ -68,12 +77,15 @@ export const getRedefinePasswordLink: ContractToFunction<typeof getRedefinePassw
     })
   }
 
-  const redefineToken = await getActivationToken(user, context)
+  const token = await getActivationToken({
+    _id: user._id,
+    timestamp: now,
+  }, context)
 
   const url = new URL(`${context.config.webPublicUrl}/user/redefine-password`)
   url.searchParams.set('step', 'password'),
   url.searchParams.set('u', payload.userId.toString())
-  url.searchParams.set('t', redefineToken)
+  url.searchParams.set('t', token)
   if(payload.redirect){
     url.searchParams.set('next', payload.redirect)
   }
