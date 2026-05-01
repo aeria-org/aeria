@@ -56,13 +56,13 @@ export const getActivationLink: ContractToFunction<typeof getActivationLinkContr
   }, {
     $set: {
       activation_link_last_generated_at: now,
-    }
+    },
   }, {
     returnDocument: 'after',
     projection: {
       active: 1,
       password: 1,
-    }
+    },
   })
 
   if( !user ) {

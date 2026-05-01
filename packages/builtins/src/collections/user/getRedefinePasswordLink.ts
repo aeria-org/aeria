@@ -55,13 +55,13 @@ export const getRedefinePasswordLink: ContractToFunction<typeof getRedefinePassw
   }, {
     $set: {
       activation_timestamp: now,
-    }
+    },
   }, {
     returnDocument: 'after',
     projection: {
       active: 1,
       password: 1,
-    }
+    },
   })
 
   if( !user ) {
