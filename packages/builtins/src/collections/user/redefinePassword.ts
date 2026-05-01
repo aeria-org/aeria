@@ -94,7 +94,7 @@ export const redefinePassword: ContractToFunction<typeof redefinePasswordContrac
       code: RedefinePasswordError.UserNotActive,
     })
   }
-  const { error } = await decodeToken(token, context.config.secret)
+  const { error } = await decodeToken(token, `${context.config.secret}${user.password||''}`)
   if( error ){
     return context.error(HTTPStatus.Unauthorized, {
       code: RedefinePasswordError.InvalidToken,

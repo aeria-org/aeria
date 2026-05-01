@@ -2,7 +2,7 @@ import type { Context, ContractToFunction } from '@aeriajs/types'
 import type { description } from './description.js'
 import { Result, HTTPStatus, resultSchema, functionSchemas, endpointErrorSchema, defineContract } from '@aeriajs/types'
 import { RedefinePasswordError } from './redefinePassword.js'
-import { getActivationToken } from './getActivationLink.js'
+import { getActivationToken } from './getActivationToken.js'
 
 export const getRedefinePasswordLinkContract = defineContract({
   payload: {
@@ -21,8 +21,14 @@ export const getRedefinePasswordLinkContract = defineContract({
   response: [
     functionSchemas.getError(),
     endpointErrorSchema({
-      httpStatus: [HTTPStatus.Forbidden],
-      code: [RedefinePasswordError.UserNotActive],
+      httpStatus: [
+        HTTPStatus.Forbidden,
+        HTTPStatus.NotFound,
+      ],
+      code: [
+        RedefinePasswordError.UserNotActive,
+        RedefinePasswordError.UserNotFound,
+      ],
     }),
     resultSchema({
       type: 'object',
@@ -40,23 +46,29 @@ export const getRedefinePasswordLink: ContractToFunction<typeof getRedefinePassw
     throw new Error('config.webPublicUrl is not set')
   }
 
-  const { error, result: user } = await context.collections.user.functions.get({
-    filters: {
-      _id: payload.userId,
-    },
-    project: ['active'],
+  const user = await context.collections.user.model.findOne({
+    _id: payload.userId,
+  }, {
+    projection: {
+      active: 1,
+      password: 1,
+    }
   })
 
-  if( error ) {
-    return Result.error(error)
+  if( !user ) {
+    return Result.error({
+      httpStatus: HTTPStatus.Forbidden,
+      code: RedefinePasswordError.UserNotFound,
+    })
   }
+
   if( !user.active ) {
     return context.error(HTTPStatus.Forbidden, {
       code: RedefinePasswordError.UserNotActive,
     })
   }
 
-  const redefineToken = await getActivationToken(payload.userId.toString(), context)
+  const redefineToken = await getActivationToken(user, context)
 
   const url = new URL(`${context.config.webPublicUrl}/user/redefine-password`)
   url.searchParams.set('step', 'password'),
@@ -69,3 +81,4 @@ export const getRedefinePasswordLink: ContractToFunction<typeof getRedefinePassw
     url: url.toString(),
   })
 }
+

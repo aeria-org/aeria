@@ -1,9 +1,8 @@
 import type { Context, ContractToFunction } from '@aeriajs/types'
 import type { description } from './description.js'
-import { throwIfError } from '@aeriajs/common'
-import { signToken } from '@aeriajs/core'
 import { Result, HTTPStatus, defineContract, resultSchema, endpointErrorSchema, functionSchemas } from '@aeriajs/types'
 import { ActivationError } from './activate.js'
+import { getActivationToken } from './getActivationToken.js'
 
 export const getActivationLinkContract = defineContract({
   payload: {
@@ -25,9 +24,11 @@ export const getActivationLinkContract = defineContract({
       httpStatus: [
         HTTPStatus.BadRequest,
         HTTPStatus.Forbidden,
+        HTTPStatus.NotFound,
       ],
       code: [
         ActivationError.InvalidLink,
+        ActivationError.UserNotFound,
         ActivationError.AlreadyActiveUser,
       ],
     }),
@@ -42,38 +43,26 @@ export const getActivationLinkContract = defineContract({
   ],
 })
 
-export const getActivationToken = async (userId: string, context: Context) => {
-  if( context.calledFunction === 'getActivationToken' ) {
-    throw new Error('cannot be called externally')
-  }
-  if( !context.config.secret ) {
-    throw new Error('config.secret is not set')
-  }
-
-  const token = throwIfError(await signToken({
-    data: userId,
-  }, context.config.secret, {
-    expiresIn: context.config.security.linkTokenExpiration,
-  }))
-
-  return token
-}
-
 export const getActivationLink: ContractToFunction<typeof getActivationLinkContract, Context<typeof description>> = async (payload, context) => {
   if(!context.config.webPublicUrl){
     return context.error(HTTPStatus.BadRequest, {
       code: ActivationError.InvalidLink,
     })
   }
-  const { error, result: user } = await context.collections.user.functions.get({
-    filters: {
-      _id: payload.userId,
-    },
-    project: ['active'],
+  const user = await context.collections.user.model.findOne({
+    _id: payload.userId,
+  }, {
+    projection: {
+      active: 1,
+      password: 1,
+    }
   })
 
-  if( error ) {
-    return Result.error(error)
+  if( !user ) {
+    return Result.error({
+      httpStatus: HTTPStatus.NotFound,
+      code: ActivationError.UserNotFound,
+    })
   }
 
   if( user.active ) {
@@ -82,7 +71,7 @@ export const getActivationLink: ContractToFunction<typeof getActivationLinkContr
     })
   }
 
-  const activationToken = await getActivationToken(payload.userId.toString(), context)
+  const activationToken = await getActivationToken(user, context)
 
   const url = new URL(`${context.config.webPublicUrl}/user/activation`)
   url.searchParams.set('u', payload.userId.toString())
