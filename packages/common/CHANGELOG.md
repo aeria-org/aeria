@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.169
+
+### Patch Changes
+
+- 0b84cf9: Normalize headers to lowercase
+
 ## 0.0.168
 
 ### Patch Changes

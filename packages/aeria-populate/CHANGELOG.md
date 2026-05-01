@@ -1,5 +1,12 @@
 # aeria-populate
 
+## 0.0.30
+
+### Patch Changes
+
+- c67261d: Fix dropping collections more than once
+  - aeria@0.0.354
+
 ## 0.0.29
 
 ### Patch Changes
