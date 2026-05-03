@@ -243,7 +243,9 @@ export const main = async () => {
     }
   }
 
-  console.log(dropped, 'dropped collections:', Array.from(collections).map((collection) => styleText(['bold'], collection)).join(', '))
+  if( dropped ) {
+    console.log(dropped, 'dropped collections:', Array.from(collections).map((collection) => styleText(['bold'], collection)).join(', '))
+  }
   console.log(successful, 'documents imported successfully')
   console.log(failed, 'failed to import')
 
