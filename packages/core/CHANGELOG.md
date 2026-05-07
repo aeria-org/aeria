@@ -1,5 +1,21 @@
 # @aeriajs/api
 
+## 0.0.298
+
+### Patch Changes
+
+- 35bc783: Add `foreignField` attribute to ref properties
+- Updated dependencies [8fd8f39]
+- Updated dependencies [455689d]
+- Updated dependencies [35bc783]
+  - @aeriajs/builtins@0.0.298
+  - @aeriajs/types@0.0.142
+  - @aeriajs/common@0.0.170
+  - @aeriajs/entrypoint@0.0.178
+  - @aeriajs/http@0.0.210
+  - @aeriajs/security@0.0.298
+  - @aeriajs/validation@0.0.195
+
 ## 0.0.297
 
 ### Patch Changes

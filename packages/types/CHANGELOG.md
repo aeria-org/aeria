@@ -1,5 +1,12 @@
 # @aeriajs/types
 
+## 0.0.142
+
+### Patch Changes
+
+- 455689d: Fix types
+- 35bc783: Add `foreignField` attribute to ref properties
+
 ## 0.0.141
 
 ### Patch Changes
