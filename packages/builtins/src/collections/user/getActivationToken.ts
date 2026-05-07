@@ -11,7 +11,7 @@ export const getActivationToken = async (options: { _id: ObjectId,
 
   const token = throwIfError(await signToken({
     data: options._id.toString(),
-  }, `${context.config.secret}:${options.timestamp}`, {
+  }, `${context.config.secret}:${options.timestamp.getTime()}`, {
     expiresIn: context.config.security.linkTokenExpiration,
   }))
 

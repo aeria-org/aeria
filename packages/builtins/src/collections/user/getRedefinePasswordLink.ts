@@ -47,8 +47,6 @@ export const getRedefinePasswordLink: ContractToFunction<typeof getRedefinePassw
     throw new Error('config.webPublicUrl is not set')
   }
 
-  console.log(payload)
-
   const now = new Date()
   const user = await context.collections.user.model.findOneAndUpdate({
     _id: new ObjectId(payload.userId),
