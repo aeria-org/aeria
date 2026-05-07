@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.143
+
+### Patch Changes
+
+- 9317a83: Fix types
+
 ## 0.0.142
 
 ### Patch Changes
