@@ -122,8 +122,18 @@ export const documents = (async () => {
   }, projectContext)) as Project
 
   const { insertedIds: { 0: comment1, 1: comment2 } } = await db.collection<PackReferences<Omit<Comment, '_id'>>>('comment').insertMany([
-    { meta: { user: user1, user_by_email: 'john@test', } },
-    { meta: { user: user2, user_by_email: 'terry@test', } },
+    {
+      meta: {
+        user: user1,
+        user_by_email: 'john@test',
+      },
+    },
+    {
+      meta: {
+        user: user2,
+        user_by_email: 'terry@test',
+      },
+    },
   ])
 
   const post1 = throwIfError(await insert({

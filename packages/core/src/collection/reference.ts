@@ -147,7 +147,6 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
       }
     }
 
-
     reference.foreignField ||= '_id'
     refMap[propName] = reference
   }
@@ -480,7 +479,9 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       lookupMemo[memoize] = finalPipeline
     }
 
-    console.log(inspect(finalPipeline, { depth: null }))
+    console.log(inspect(finalPipeline, {
+      depth: null,
+    }))
     return finalPipeline
   }
 
