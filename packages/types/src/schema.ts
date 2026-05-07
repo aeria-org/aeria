@@ -150,7 +150,7 @@ type MapReferences<TSchema, TSchemaOptions extends SchemaOptions> = TSchema exte
 type PackReferencesAux<T> = T extends (...args: unknown[])=> unknown
   ? T
   : T extends ObjectId
-    ? T
+    ? T | string
     : T extends { _id: infer Id }
       ? Id
       : T extends Record<string, unknown>

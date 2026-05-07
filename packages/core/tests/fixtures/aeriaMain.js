@@ -16,7 +16,11 @@ export default init({
               user: {
                 $ref: 'user',
                 inline: true,
-              }
+              },
+              user_by_email: {
+                $ref: 'user',
+                foreignField: 'email',
+              },
             }
           }
         }

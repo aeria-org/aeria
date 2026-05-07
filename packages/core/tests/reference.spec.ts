@@ -1,8 +1,8 @@
+import type { Featured, Post, Comment, UnpackReferences } from './fixtures/types.js'
 import { expect, assert, test } from 'vitest'
 import { ObjectId } from 'mongodb'
 import { documents } from './fixtures/documents.js'
 import { circularDocuments } from './fixtures/circularDocuments.js'
-import { Featured, Post, UnpackReferences } from './fixtures/types.js'
 
 test('populates top level references', async () => {
   const {
@@ -25,6 +25,17 @@ test('respects the "populate" property', async () => {
   } = await documents
 
   expect(user1.equals(project.user_id)).toBeTruthy()
+})
+
+test('resolves custom foreignField references', async () => {
+  const {
+    user1,
+    user2,
+    post1,
+  } = await documents
+
+  expect(user1.equals((post1.comments[0] as Comment).meta.user_by_email._id)).toBeTruthy()
+  expect(user2.equals((post1.comments[1] as Comment).meta.user_by_email._id)).toBeTruthy()
 })
 
 test('populates deep-nested references', async () => {

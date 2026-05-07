@@ -92,7 +92,9 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
 
       const { indexes = description.indexes || [] } = refProperty
       if( Array.isArray(refProperty.populate) || !refProperty.populate ) {
-        reference.populate = (refProperty.populate || []).concat(indexes.filter((index) => typeof index === 'string'))
+        reference.populate = (refProperty.populate || [])
+          .concat(indexes.filter((index) => typeof index === 'string'))
+          .concat([refProperty.foreignField!])
       }
 
     } else {
@@ -138,13 +140,15 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
     if( refProperty ) {
       if( refProperty.$ref ) {
         reference.referencedCollection = refProperty.$ref
-        reference.foreignField = refProperty.foreignField || '_id'
+        reference.foreignField = refProperty.foreignField
       }
       if( refProperty.inline ) {
         reference.isInline = true
       }
     }
 
+
+    reference.foreignField ||= '_id'
     refMap[propName] = reference
   }
 
@@ -444,7 +448,7 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       rootPipeline.unshift({
         $lookup: {
           from: reference.referencedCollection,
-          foreignField: '_id',
+          foreignField: reference.foreignField,
           localField,
           as: tempName,
           pipeline: lookupPipeline,
@@ -476,11 +480,14 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       lookupMemo[memoize] = finalPipeline
     }
 
+    console.log(inspect(finalPipeline, { depth: null }))
     return finalPipeline
   }
 
   return pipeline
 }
+
+import { inspect } from 'util'
 
 export const getLookupPipeline = async (description: Description, options?: BuildLookupPipelineOptions) => {
   const refMap = await getReferences(description.properties)
