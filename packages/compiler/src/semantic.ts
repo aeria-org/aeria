@@ -1,5 +1,4 @@
 import type { Location } from './token.js'
-import type { ArrayProperties } from './utils.js'
 import type { CompilationOptions } from './types.js'
 import { isValidCollection } from '@aeriajs/common'
 import { locationMap } from './parser.js'
@@ -36,49 +35,93 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
   const checkCollectionForeignProperties = async <TProperty extends Extract<AST.PropertyNode['property'], { $ref: string }>>(
     foreignCollection: AST.CollectionNode,
     property: TProperty,
-    attributeName: ArrayProperties<TProperty>,
+    attributeName: Extract<keyof TProperty, string>,
   ) => {
-    if( !Array.isArray(property[attributeName]) ) {
-      return
-    }
+    const attribute = property[attributeName]
+    const loc = property[AST.LOCATION_SYMBOL]!
 
-    for( const foreignPropName of property[attributeName] as string[] ) {
-      if( !await collectionHasProperty(foreignCollection, foreignPropName, options) ) {
-        let location: Location | undefined
-        if( property[AST.LOCATION_SYMBOL] ) {
-          location = locationMap.get(property[AST.LOCATION_SYMBOL].attributes[attributeName])
+    const missingProperties: [string, string, Location | undefined][] = []
+
+    if( Array.isArray(attribute) ) {
+      for( const index in attribute ) {
+        const propName = attribute[index]
+        if( typeof propName !== 'string' ) {
+          continue
         }
 
-        errors.push(new Diagnostic(`collection "${foreignCollection.name}" hasn't such property "${foreignPropName}"`, location))
+        if( !await collectionHasProperty(foreignCollection, propName, options) ) {
+          const symbol = loc.arrays[attributeName as keyof typeof loc.arrays]![index]
+          const location = locationMap.get(symbol)
+          missingProperties.push([foreignCollection.name, propName, location])
+        }
       }
-    }
-  }
 
-  const checkCollectionLocalProperties = async (node: AST.CollectionNode, attributeName: ArrayProperties<AST.CollectionNode>) => {
-    if( !node[attributeName] ) {
-      return
-    }
-
-    for( const index in node[attributeName] ) {
-      const propName = node[attributeName][index]
-      if( !await collectionHasProperty(node, propName, options) ) {
-        const symbol = node[AST.LOCATION_SYMBOL].arrays[attributeName]![index]
+    } else if( typeof attribute === 'string' ) {
+      const propName = attribute
+      if( !await collectionHasProperty(foreignCollection, propName, options) ) {
+        const symbol = loc.attributes[propName]
         const location = locationMap.get(symbol)
-
-        errors.push(new Diagnostic(`collection "${node.name}" hasn't such property "${propName}"`, location))
+        missingProperties.push([foreignCollection.name, propName, location])
       }
+    }
+
+    for( const [collName, propName, location] of missingProperties ) {
+      errors.push(new Diagnostic(`collection "${collName}" hasn't such property "${propName}"`, location))
     }
   }
 
-  const checkObjectLocalProperties = async (node: AST.PropertyNode, attributeName: ArrayProperties<Extract<AST.PropertyNode['property'], { properties: unknown }>>) => {
+  const checkCollectionLocalProperties = async (node: AST.CollectionNode, attributeName: Extract<keyof AST.CollectionNode, string>) => {
+    const attribute = node[attributeName]
+    const loc = node[AST.LOCATION_SYMBOL]!
+
+    const missingProperties: [string, string, Location | undefined][] = []
+
+    if( Array.isArray(attribute) ) {
+      for( const index in attribute ) {
+        const propName = attribute[index]
+        if( typeof propName !== 'string' ) {
+          continue
+        }
+
+        if( !await collectionHasProperty(node, propName, options) ) {
+          const symbol = loc.arrays[attributeName as keyof typeof loc.arrays]![index]
+          const location = locationMap.get(symbol)
+          missingProperties.push([node.name, propName, location])
+        }
+      }
+
+    } else if( typeof attribute === 'string' ) {
+      const propName = attribute
+      if( !await collectionHasProperty(node, propName, options) ) {
+        const symbol = loc.attributes[propName]
+        const location = locationMap.get(symbol)
+        missingProperties.push([node.name, propName, location])
+      }
+    }
+
+    for( const [collName, propName, location] of missingProperties ) {
+      errors.push(new Diagnostic(`collection "${collName}" hasn't such property "${propName}"`, location))
+    }
+  }
+
+  const checkObjectLocalProperties = async (node: AST.PropertyNode, attributeName: Extract<keyof Extract<AST.PropertyNode['property'], { properties: unknown }>, string>) => {
     if( !('properties' in node.property) || !Array.isArray(node.property[attributeName]) ) {
       return
     }
 
-    for( const index in node.property[attributeName] ) {
-      const propName = node.property[attributeName][index]
+    const loc = node.property[AST.LOCATION_SYMBOL]!
+    const attribute = Array.isArray(node.property[attributeName])
+      ? node.property[attributeName]
+      : [node.property[attributeName]]
+
+
+    for( const index in attribute ) {
+      const propName = attribute[index]
       if( !(propName in node.nestedProperties!) ) {
-        const symbol = node.property[AST.LOCATION_SYMBOL]!.arrays[attributeName]![index]
+        const symbol = Array.isArray(node.property[attributeName])
+          ? loc.arrays[attributeName as keyof typeof loc.arrays]![index]
+          : loc.attributes[attributeName]
+
         const location = locationMap.get(symbol)
 
         errors.push(new Diagnostic(`object hasn't such property "${propName}"`, location))
@@ -111,6 +154,7 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
         return
       }
 
+      await checkCollectionForeignProperties(foreignCollection, node.property, 'foreignField')
       await checkCollectionForeignProperties(foreignCollection, node.property, 'indexes')
       await checkCollectionForeignProperties(foreignCollection, node.property, 'populate')
       await checkCollectionForeignProperties(foreignCollection, node.property, 'form')

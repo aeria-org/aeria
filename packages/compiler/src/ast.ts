@@ -113,6 +113,7 @@ export type CollectionNode = NodeBase<'collection'> & {
   layout?: LayoutNode
   formLayout?: FormLayoutNode
   [LOCATION_SYMBOL]: {
+    attributes: Record<string, symbol>
     arrays: {
       [P in ArrayProperties<CollectionNode>]?: symbol[]
     }

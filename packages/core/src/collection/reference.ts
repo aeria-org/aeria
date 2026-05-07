@@ -10,6 +10,7 @@ export type Reference = {
   isRecursive?: boolean
   deepReferences?: ReferenceMap
   referencedCollection?: string
+  foreignField?: string
   indexes?: string[]
   populate?: string[]
 }
@@ -137,6 +138,7 @@ export const getReferences = async (properties: FixedObjectProperty['properties'
     if( refProperty ) {
       if( refProperty.$ref ) {
         reference.referencedCollection = refProperty.$ref
+        reference.foreignField = refProperty.foreignField || '_id'
       }
       if( refProperty.inline ) {
         reference.isInline = true
@@ -164,13 +166,13 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
     if( isRef ) {
       indexOfArray = {
         $indexOfArray: [
-          `$${getTempName(path)}._id`,
+          `$${getTempName(path)}.${reference.foreignField}`,
           {
             $arrayElemAt: [
               `$${getTempName(path.slice(0, -1))}.${refName}`,
               {
                 $indexOfArray: [
-                  `$${getTempName(path.slice(0, -1))}._id`,
+                  `$${getTempName(path.slice(0, -1))}.${reference.foreignField}`,
                   parentElem,
                 ],
               },
@@ -181,7 +183,7 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
     } else {
       indexOfArray = {
         $indexOfArray: [
-          `$${getTempName(path.slice(0, -1))}._id`,
+          `$${getTempName(path.slice(0, -1))}.${reference.foreignField}`,
           parentElem,
         ],
       }
@@ -190,7 +192,7 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
   } else {
     indexOfArray = {
       $indexOfArray: [
-        `$${getTempName(path)}._id`,
+        `$${getTempName(path)}.${reference.foreignField}`,
         parentElem,
       ],
     }
@@ -225,7 +227,7 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
             `$${getTempName(path.slice(0, -1))}.${refName}`,
             {
               $indexOfArray: [
-                `$${getTempName(path.slice(0, -1))}._id`,
+                `$${getTempName(path.slice(0, -1))}.${reference.foreignField}`,
                 parentElem,
               ],
             },
@@ -273,7 +275,7 @@ export const recurseSetStage = (reference: Reference, path: PathSegment[], paren
               `$${getTempName(path.slice(0, -1))}.${refName}`,
               {
                 $indexOfArray: [
-                  `$${getTempName(path.slice(0, -1))}._id`,
+                  `$${getTempName(path.slice(0, -1))}.${reference.foreignField}`,
                   parentElem,
                 ],
               },

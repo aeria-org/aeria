@@ -62,6 +62,7 @@ export type RefProperty = {
   inline?: boolean
   populateDepth?: number
   constraints?: Condition
+  foreignField?: string
 }
 
 export type NonCircularRefProperty = Omit<RefProperty, '$ref'> & {

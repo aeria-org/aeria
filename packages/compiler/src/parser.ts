@@ -312,14 +312,13 @@ export const parse = (tokens: (Token | undefined)[]) => {
 
     if( '$ref' in property ) {
       switch( attributeName ) {
-        case 'inline': {
-          property[attributeName] = consumeBoolean()
+        case 'foreignField': {
+          const { value } = consume(TokenType.Identifier)
+          property[attributeName] = value
           return
         }
-        case 'populate': {
-          property[attributeName] = match(TokenType.Boolean)
-            ? consumeBoolean()
-            : parseArray([TokenType.Identifier]).value
+        case 'inline': {
+          property[attributeName] = consumeBoolean()
           return
         }
         case 'select':
@@ -328,17 +327,23 @@ export const parse = (tokens: (Token | undefined)[]) => {
           property[attributeName] = parseArray([TokenType.Identifier]).value
           return
         }
-        case 'populateDepth': {
-          const { value } = consume(TokenType.Number)
-          property[attributeName] = value
-          return
-        }
         case 'constraints': {
           const constraintTerms: [string, symbol][] = []
           rollback()
           property[attributeName] = parseCondition(constraintTerms)
           property[AST.LOCATION_SYMBOL]!.contraintTerms = constraintTerms
           rollback()
+          return
+        }
+        case 'populate': {
+          property[attributeName] = match(TokenType.Boolean)
+            ? consumeBoolean()
+            : parseArray([TokenType.Identifier]).value
+          return
+        }
+        case 'populateDepth': {
+          const { value } = consume(TokenType.Number)
+          property[attributeName] = value
           return
         }
       }
@@ -761,6 +766,7 @@ export const parse = (tokens: (Token | undefined)[]) => {
       name,
       properties: {},
       [AST.LOCATION_SYMBOL]: {
+        attributes: {},
         arrays: {},
       },
     }
