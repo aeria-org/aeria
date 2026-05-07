@@ -52,7 +52,11 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
         if( !await collectionHasProperty(foreignCollection, propName, options) ) {
           const symbol = loc.arrays[attributeName as keyof typeof loc.arrays]![index]
           const location = locationMap.get(symbol)
-          missingProperties.push([foreignCollection.name, propName, location])
+          missingProperties.push([
+            foreignCollection.name,
+            propName,
+            location,
+          ])
         }
       }
 
@@ -61,7 +65,11 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
       if( !await collectionHasProperty(foreignCollection, propName, options) ) {
         const symbol = loc.attributes[propName]
         const location = locationMap.get(symbol)
-        missingProperties.push([foreignCollection.name, propName, location])
+        missingProperties.push([
+          foreignCollection.name,
+          propName,
+          location,
+        ])
       }
     }
 
@@ -72,7 +80,7 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
 
   const checkCollectionLocalProperties = async (node: AST.CollectionNode, attributeName: Extract<keyof AST.CollectionNode, string>) => {
     const attribute = node[attributeName]
-    const loc = node[AST.LOCATION_SYMBOL]!
+    const loc = node[AST.LOCATION_SYMBOL]
 
     const missingProperties: [string, string, Location | undefined][] = []
 
@@ -86,7 +94,11 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
         if( !await collectionHasProperty(node, propName, options) ) {
           const symbol = loc.arrays[attributeName as keyof typeof loc.arrays]![index]
           const location = locationMap.get(symbol)
-          missingProperties.push([node.name, propName, location])
+          missingProperties.push([
+            node.name,
+            propName,
+            location,
+          ])
         }
       }
 
@@ -95,7 +107,11 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
       if( !await collectionHasProperty(node, propName, options) ) {
         const symbol = loc.attributes[propName]
         const location = locationMap.get(symbol)
-        missingProperties.push([node.name, propName, location])
+        missingProperties.push([
+          node.name,
+          propName,
+          location,
+        ])
       }
     }
 
@@ -113,7 +129,6 @@ export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOpt
     const attribute = Array.isArray(node.property[attributeName])
       ? node.property[attributeName]
       : [node.property[attributeName]]
-
 
     for( const index in attribute ) {
       const propName = attribute[index]
