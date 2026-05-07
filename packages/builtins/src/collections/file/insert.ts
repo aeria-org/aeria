@@ -39,16 +39,13 @@ export const insert = async (
     throw new Error('filename lacks extension')
   }
 
-  const oldFile = await context.collection.model.findOne(
-    {
-      _id: payload.what._id,
+  const oldFile = await context.collection.model.findOne({
+    _id: payload.what._id,
+  }, {
+    projection: {
+      absolute_path: 1,
     },
-    {
-      projection: {
-        absolute_path: 1,
-      },
-    },
-  )
+  })
 
   if( oldFile && oldFile.absolute_path ) {
     await unlink(oldFile.absolute_path).catch(console.trace)

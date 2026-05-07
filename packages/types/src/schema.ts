@@ -103,7 +103,9 @@ export type InferProperties<TSchema, TSchemaOptions extends SchemaOptions = {}> 
   : never
 
 export type PackReferences<T> = {
-  [P in keyof T]: PackReferencesAux<T[P]>
+  [P in keyof T]: P extends '_id'
+    ? ObjectId
+    : PackReferencesAux<T[P]>
 }
 
 export type FilterReadonlyProperties<TProperties, TSchemaOptions extends SchemaOptions = {}> = {
