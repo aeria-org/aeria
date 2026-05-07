@@ -479,16 +479,11 @@ export const buildLookupPipeline = (refMap: ReferenceMap, options: BuildLookupPi
       lookupMemo[memoize] = finalPipeline
     }
 
-    console.log(inspect(finalPipeline, {
-      depth: null,
-    }))
     return finalPipeline
   }
 
   return pipeline
 }
-
-import { inspect } from 'util'
 
 export const getLookupPipeline = async (description: Description, options?: BuildLookupPipelineOptions) => {
   const refMap = await getReferences(description.properties)
