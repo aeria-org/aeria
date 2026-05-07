@@ -57,7 +57,7 @@ export type Comment = {
   _id?: ObjectId
   meta: {
     user: User
-    user_by_email: User
+    user_by_email: User | string
   }
 }
 

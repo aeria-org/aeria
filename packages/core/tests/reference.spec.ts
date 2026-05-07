@@ -1,4 +1,5 @@
 import type { Featured, Post, Comment, UnpackReferences } from './fixtures/types.js'
+import type { User } from '@aeriajs/builtins'
 import { expect, assert, test } from 'vitest'
 import { ObjectId } from 'mongodb'
 import { documents } from './fixtures/documents.js'
@@ -34,8 +35,8 @@ test('resolves custom foreignField references', async () => {
     post1,
   } = await documents
 
-  expect(user1.equals((post1.comments[0] as Comment).meta.user_by_email._id)).toBeTruthy()
-  expect(user2.equals((post1.comments[1] as Comment).meta.user_by_email._id)).toBeTruthy()
+  expect(user1.equals(((post1.comments[0] as Comment).meta.user_by_email as User)._id)).toBeTruthy()
+  expect(user2.equals(((post1.comments[1] as Comment).meta.user_by_email as User)._id)).toBeTruthy()
 })
 
 test('populates deep-nested references', async () => {
