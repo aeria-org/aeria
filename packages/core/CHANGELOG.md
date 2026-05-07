@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.299
+
+### Patch Changes
+
+- b776143: Remove debug `console.log()`
+  - @aeriajs/builtins@0.0.299
+  - @aeriajs/security@0.0.299
+
 ## 0.0.298
 
 ### Patch Changes
