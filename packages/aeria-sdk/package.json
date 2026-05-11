@@ -42,9 +42,9 @@
       "types": "./dist/mirror.d.ts",
       "default": "./dist/mirror.js"
     },
-    "./topLevel": {
-      "types": "./dist/topLevel.d.ts",
-      "default": "./dist/topLevel.js"
+    "./instance": {
+      "types": "./dist/instance.d.ts",
+      "default": "./dist/instance.js"
     }
   },
   "devDependencies": {
