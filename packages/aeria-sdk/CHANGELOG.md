@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.226
+
+### Patch Changes
+
+- da51c0b: Fix aeria-sdk exports
+
 ## 0.0.225
 
 ### Patch Changes
