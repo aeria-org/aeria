@@ -1,5 +1,11 @@
 # @aeriajs/types
 
+## 0.0.144
+
+### Patch Changes
+
+- f4f8307: Fix `PackReferences<T>`
+
 ## 0.0.143
 
 ### Patch Changes
