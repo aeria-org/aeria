@@ -104,7 +104,7 @@ export type InferProperties<TSchema, TSchemaOptions extends SchemaOptions = {}> 
 
 export type PackReferences<T> = {
   [P in keyof T]: P extends '_id'
-    ? ObjectId
+    ? T[P]
     : PackReferencesAux<T[P]>
 }
 
