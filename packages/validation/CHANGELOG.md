@@ -1,5 +1,14 @@
 # @aeriajs/validation
 
+## 0.0.198
+
+### Patch Changes
+
+- 98c5308: Fix `null` validation
+- Updated dependencies [98c5308]
+  - @aeriajs/common@0.0.173
+  - @aeriajs/entrypoint@0.0.181
+
 ## 0.0.197
 
 ### Patch Changes

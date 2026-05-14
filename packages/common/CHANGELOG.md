@@ -1,5 +1,11 @@
 # @aeriajs/common
 
+## 0.0.173
+
+### Patch Changes
+
+- 98c5308: Fix `null` validation
+
 ## 0.0.172
 
 ### Patch Changes
