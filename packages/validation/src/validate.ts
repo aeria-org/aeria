@@ -446,11 +446,14 @@ export const validate = <TWhat, const TJsonSchema extends Property | Description
   schema: TJsonSchema,
   options: ValidateOptions = {},
 ) => {
-  if( what === undefined ) {
-    return Result.error(makeValidationError({
-      code: ValidationErrorCode.EmptyTarget,
-      details: {},
-    }))
+  switch( what ) {
+    case undefined:
+    case null: {
+      return Result.error(makeValidationError({
+        code: ValidationErrorCode.EmptyTarget,
+        details: {},
+      }))
+    }
   }
 
   if( !('properties' in schema) ) {

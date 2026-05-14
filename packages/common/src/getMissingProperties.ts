@@ -7,7 +7,7 @@ export const getMissingProperties = (what: Record<string, unknown>, schema: Omit
 
   if( Array.isArray(required) ) {
     for( const propName of required ) {
-      const isMissing = checkForEmptiness(schema.properties[propName], propName, what)
+      const isMissing = checkForEmptiness(what, schema.properties[propName], propName)
       if( isMissing ) {
         missingProps.push(propName)
       }
@@ -28,12 +28,7 @@ export const getMissingProperties = (what: Record<string, unknown>, schema: Omit
         }
       }
 
-      const isMissing = checkForEmptiness(
-        schema.properties[propName],
-        propName,
-        what,
-      )
-
+      const isMissing = checkForEmptiness(what, schema.properties[propName], propName)
       if( isMissing ) {
         missingProps.push(propName)
       }

@@ -1,6 +1,6 @@
 import type { Property } from '@aeriajs/types'
 
-export const checkForEmptiness = (property: Property, propName: string, what: Record<string, unknown>) => {
+export const checkForEmptiness = (what: Record<string, unknown>, property: Property, propName: string) => {
   if( property.readOnly || property.isTimestamp ) {
     return false
   }

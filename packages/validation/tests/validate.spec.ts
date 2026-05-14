@@ -147,7 +147,7 @@ test('validates unstructured object', () => {
   const { error: error3 } = validate(undefined, property)
 
   assert(!error1)
-  assert(!error2)
+  assert(error2)
   assert(error3)
 })
 
@@ -162,7 +162,7 @@ test('validates unstructured object', () => {
   const { error: error3 } = validate(undefined, property)
 
   assert(!error1)
-  assert(!error2)
+  assert(error2)
   assert(error3)
 })
 
