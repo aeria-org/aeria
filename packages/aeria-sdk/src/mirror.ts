@@ -160,7 +160,9 @@ export const writeMirrorFiles = async (mirror: MirrorObject | undefined, config:
   }
 }
 
-export const mirrorRemotely = async (config: InstanceConfig, options = { dts: true }) => {
+export const mirrorRemotely = async (config: InstanceConfig, options = {
+  dts: true,
+}) => {
   const aeria = createInstance<AeriaInstance>(config)
   let mirror
   if( options.dts ) {
