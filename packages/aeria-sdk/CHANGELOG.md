@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.229
+
+### Patch Changes
+
+- de99cef: Add --runtimeOnly option
+
 ## 0.0.228
 
 ### Patch Changes
