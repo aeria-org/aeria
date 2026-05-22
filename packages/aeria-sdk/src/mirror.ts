@@ -119,40 +119,55 @@ export const upload = uploader(instanceConfig)
 export default aeria
 \n`
 
-export const writeMirrorFiles = async (mirror: MirrorObject, config: InstanceConfig) => {
+export const writeRuntimeFile = async (mirrorPath: string, config: InstanceConfig) => {
+  const syntheticRequire = createRequire(path.join(path.dirname(path.resolve(mirrorPath)), 'node_modules'))
+
+  let resolvedPath: string
+  try {
+    resolvedPath = syntheticRequire.resolve('aeria-sdk')
+  } catch( err ) {
+    console.warn(`couldn't locate node_modules in "${mirrorPath}"`)
+    return
+  }
+
+  const runtimeBase = path.dirname(resolvedPath)
+  const js = runtimeContent(config)
+
+  // this array join must be used, otherwise the .js will be transformed by the transform-import-extensions script
+  const fname = [
+    'runtime',
+    'js',
+  ].join('.')
+
+  await writeFile(path.join(runtimeBase, fname), js)
+  await writeFile(path.join(mirrorPath, fname), js)
+}
+
+export const writeDtsFile = async (mirrorPath: string, mirror: MirrorObject, config: InstanceConfig) => {
+  const dts = mirrorDts(mirror, config)
+  await writeFile(path.join(mirrorPath, DTS_FILENAME), dts)
+}
+
+export const writeMirrorFiles = async (mirror: MirrorObject | undefined, config: InstanceConfig) => {
   const mirrorPaths = config.mirrorPaths || ['.aeria']
     .map((mirrorPath) => path.join(process.cwd(), mirrorPath))
 
-  const dts = mirrorDts(mirror, config)
-  const js = runtimeContent(config)
-
   for( const mirrorPath of mirrorPaths ) {
-    const syntheticRequire = createRequire(path.join(path.dirname(path.resolve(mirrorPath)), 'node_modules'))
-
-    let resolvedPath: string
-    try {
-      resolvedPath = syntheticRequire.resolve('aeria-sdk')
-    } catch( err ) {
-      console.warn(`couldn't locate node_modules in "${mirrorPath}"`)
-      continue
+    await writeRuntimeFile(mirrorPath, config)
+    if( mirror ) {
+      await writeDtsFile(mirrorPath, mirror, config)
     }
-
-    const runtimeBase = path.dirname(resolvedPath)
-
-    await writeFile(path.join(mirrorPath, DTS_FILENAME), dts)
-    // this array join must be used, otherwise the .js will be transformed by the transform-import-extensions script
-    await writeFile(path.join(runtimeBase, [
-      'runtime',
-      'js',
-    ].join('.')), js)
   }
 }
 
-export const mirrorRemotely = async (config: InstanceConfig) => {
+export const mirrorRemotely = async (config: InstanceConfig, options = { dts: true }) => {
   const aeria = createInstance<AeriaInstance>(config)
-  const mirror = deserialize<MirrorObject>(await aeria().describe.POST({
-    router: true,
-  }))
+  let mirror
+  if( options.dts ) {
+    mirror = deserialize<MirrorObject>(await aeria().describe.POST({
+      router: true,
+    }))
+  }
 
   return writeMirrorFiles(mirror, config)
 }

@@ -8,6 +8,10 @@ const { values: opts } = parseArgs({
       type: 'boolean',
       short: 'd',
     },
+    runtimeOnly: {
+      type: 'boolean',
+      short: 'r',
+    },
   },
 })
 
@@ -17,6 +21,8 @@ export const main = async () => {
     config.environment = 'development'
   }
 
-  mirrorRemotely(config)
+  await mirrorRemotely(config, {
+    dts: !opts.runtimeOnly,
+  })
 }
 
