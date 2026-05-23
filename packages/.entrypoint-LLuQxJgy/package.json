@@ -1,0 +1,38 @@
+{
+  "name": "@aeriajs/entrypoint",
+  "type": "module",
+  "version": "0.0.181",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:typecheck": "tsc -p tsconfig.test.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@aeriajs/common": "link:../common",
+    "@aeriajs/types": "link:../types"
+  },
+  "peerDependencies": {
+    "@aeriajs/common": "^0.0.173",
+    "@aeriajs/types": "^0.0.144"
+  }
+}

@@ -140,9 +140,7 @@ export const writeRuntimeFile = async (mirrorPath: string, config: InstanceConfi
   ].join('.')
 
   await writeFile(path.join(runtimeBase, fname), js)
-  if( config.environment !== 'development' ) {
-    await writeFile(path.join(mirrorPath, fname), js)
-  }
+  await writeFile(path.join(mirrorPath, fname), js)
 }
 
 export const writeDtsFile = async (mirrorPath: string, mirror: MirrorObject, config: InstanceConfig) => {

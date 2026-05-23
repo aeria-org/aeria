@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "paths": {
+      "mongodb": [
+        "../node_modules/mongodb"
+      ],
+      "mongodb-memory-server": [
+        "../node_modules/mongodb-memory-server"
+      ]
+    }
+  }
+}

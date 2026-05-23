@@ -1,0 +1,37 @@
+{
+  "name": "@aeriajs/node-http",
+  "type": "module",
+  "version": "0.0.213",
+  "description": "## Installation",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "echo skipping",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@aeriajs/common": "link:../common",
+    "@aeriajs/http": "link:../http"
+  },
+  "peerDependencies": {
+    "@aeriajs/common": "^0.0.173",
+    "@aeriajs/http": "^0.0.213"
+  }
+}

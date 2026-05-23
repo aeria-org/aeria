@@ -1,0 +1,213 @@
+# aeria-populate
+
+## 0.0.35
+
+### Patch Changes
+
+- aeria@0.0.359
+
+## 0.0.34
+
+### Patch Changes
+
+- aeria@0.0.358
+
+## 0.0.33
+
+### Patch Changes
+
+- aeria@0.0.357
+
+## 0.0.32
+
+### Patch Changes
+
+- aeria@0.0.356
+
+## 0.0.31
+
+### Patch Changes
+
+- aeria@0.0.355
+
+## 0.0.30
+
+### Patch Changes
+
+- c67261d: Fix dropping collections more than once
+  - aeria@0.0.354
+
+## 0.0.29
+
+### Patch Changes
+
+- aeria@0.0.353
+
+## 0.0.28
+
+### Patch Changes
+
+- aeria@0.0.352
+
+## 0.0.27
+
+### Patch Changes
+
+- aeria@0.0.351
+
+## 0.0.26
+
+### Patch Changes
+
+- aeria@0.0.350
+
+## 0.0.25
+
+### Patch Changes
+
+- aeria@0.0.349
+
+## 0.0.24
+
+### Patch Changes
+
+- 759b0b3: Add interpolation
+
+## 0.0.23
+
+### Patch Changes
+
+- 9492440: Update behavior
+
+## 0.0.22
+
+### Patch Changes
+
+- d656318: Use `.deleteMany()` instead of `.drop()`
+
+## 0.0.21
+
+### Patch Changes
+
+- c37250a: Run immediately if `--watch`
+
+## 0.0.20
+
+### Patch Changes
+
+- aeria@0.0.348
+
+## 0.0.19
+
+### Patch Changes
+
+- aeria@0.0.347
+
+## 0.0.18
+
+### Patch Changes
+
+- aeria@0.0.346
+
+## 0.0.17
+
+### Patch Changes
+
+- aeria@0.0.345
+
+## 0.0.16
+
+### Patch Changes
+
+- aeria@0.0.344
+
+## 0.0.15
+
+### Patch Changes
+
+- aeria@0.0.343
+
+## 0.0.14
+
+### Patch Changes
+
+- aeria@0.0.342
+
+## 0.0.13
+
+### Patch Changes
+
+- aeria@0.0.341
+
+## 0.0.12
+
+### Patch Changes
+
+- aeria@0.0.340
+
+## 0.0.11
+
+### Patch Changes
+
+- aeria@0.0.339
+
+## 0.0.10
+
+### Patch Changes
+
+- aeria@0.0.338
+
+## 0.0.9
+
+### Patch Changes
+
+- aeria@0.0.337
+
+## 0.0.8
+
+### Patch Changes
+
+- aeria@0.0.336
+
+## 0.0.7
+
+### Patch Changes
+
+- aeria@0.0.335
+
+## 0.0.6
+
+### Patch Changes
+
+- aeria@0.0.334
+
+## 0.0.5
+
+### Patch Changes
+
+- aeria@0.0.333
+
+## 0.0.4
+
+### Patch Changes
+
+- cb9c2e4: Add `--watch`
+  - aeria@0.0.332
+
+## 0.0.3
+
+### Patch Changes
+
+- 2d36f35: Add `-d` option to `aeria-populate`
+
+## 0.0.2
+
+### Patch Changes
+
+- 14ec3ff: Fix failed release
+
+## 0.0.1
+
+### Patch Changes
+
+- 4259840: First release

@@ -1,0 +1,24 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "paths": {
+      "@aeriajs/common": [
+        "../common/dist"
+      ],
+      "@aeriajs/entrypoint": [
+        "../entrypoint/dist"
+      ],
+      "@aeriajs/types": [
+        "../types/dist"
+      ],
+      "@aeriajs/types/*": [
+        "../types/dist/*"
+      ]
+    }
+  },
+  "include": [
+    "@types/*.d.ts",
+    "tests"
+  ]
+}

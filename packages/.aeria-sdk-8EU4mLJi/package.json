@@ -1,0 +1,61 @@
+{
+  "name": "aeria-sdk",
+  "type": "module",
+  "version": "0.0.228",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "echo skipping",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "aeria-sdk": "bin/index.js"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./next": "./dist/index.js",
+    "./config": {
+      "types": "./dist/config.d.ts",
+      "default": "./dist/config.js"
+    },
+    "./http": {
+      "types": "./dist/http.d.ts",
+      "default": "./dist/http.js"
+    },
+    "./mirror": {
+      "types": "./dist/mirror.d.ts",
+      "default": "./dist/mirror.js"
+    },
+    "./instance": {
+      "types": "./dist/instance.d.ts",
+      "default": "./dist/instance.js"
+    }
+  },
+  "devDependencies": {
+    "@aeriajs/common": "link:../common",
+    "@aeriajs/types": "link:../types"
+  },
+  "peerDependencies": {
+    "@aeriajs/common": "^0.0.173",
+    "@aeriajs/types": "^0.0.144"
+  },
+  "dependencies": {
+    "jwt-decode": "^4.0.0"
+  }
+}

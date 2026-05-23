@@ -1,0 +1,40 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@aeriajs/core": [
+        "../core/dist"
+      ],
+      "@aeriajs/common": [
+        "../common/dist"
+      ],
+      "@aeriajs/compiler": [
+        "../compiler/dist"
+      ],
+      "@aeriajs/entrypoint": [
+        "../entrypoint/dist"
+      ],
+      "@aeriajs/types": [
+        "../types/dist"
+      ],
+      "@aeriajs/builtins": [
+        "../builtins/dist"
+      ],
+      "aeria-sdk": [
+        "../aeria-sdk/dist"
+      ],
+      "aeria-sdk/*": [
+        "../aeria-sdk/dist/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json"
+  ]
+}

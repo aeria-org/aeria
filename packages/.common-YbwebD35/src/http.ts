@@ -1,0 +1,128 @@
+export type RequestParams = Omit<RequestInit, 'headers'> & {
+  headers?: Record<string, string>
+}
+
+export type RequestConfig = {
+  params?: RequestParams
+  requestTransformer?: RequestTransformer
+  responseTransformer?: ResponseTransformer
+}
+
+export type RequestTransformerContext = {
+  url: string | URL
+  payload: unknown
+  params: RequestParams
+}
+
+export type ResponseTransformerContext = {
+  response: Response
+}
+
+export type RequestTransformerNext = (context: RequestTransformerContext) => ReturnType<RequestTransformer>
+export type ResponseTransformerNext = (context: ResponseTransformerContext) => ReturnType<ResponseTransformer>
+export type RequestTransformer = (context: RequestTransformerContext, next: RequestTransformerNext) => Promise<RequestTransformerContext>
+export type ResponseTransformer = (context: ResponseTransformerContext, next: ResponseTransformerNext) => Promise<ResponseTransformerContext>
+
+export const defaultRequestTransformer: RequestTransformerNext = async (context) => {
+  if( typeof context.url === 'string' ) {
+    if( context.url.startsWith('/') && typeof location !== 'undefined' ) {
+      context.url = new URL(`${location.origin}${context.url}`)
+    } else {
+      context.url = new URL(context.url)
+    }
+  }
+
+  if( context.payload ) {
+    if( context.params.method === 'GET' || context.params.method === 'HEAD' ) {
+      for( const key in context.payload ) {
+        const value: unknown = context.payload[key as keyof typeof context.payload]
+        if( value !== undefined ) {
+          context.url.searchParams.append(key, String(value))
+        }
+      }
+
+    } else {
+      context.params.body = context.params.headers?.['content-type']?.startsWith('application/json')
+        ? JSON.stringify(context.payload)
+        : context.payload as string
+    }
+  }
+
+  return context
+}
+
+export const defaultResponseTransformer: ResponseTransformerNext = async (context) => {
+  const result = context.response as Response & {
+    data: unknown
+  }
+
+  result.data = await context.response.text()
+  if( context.response.headers.get('content-type')?.startsWith('application/json') ) {
+    result.data = JSON.parse(String(result.data))
+  }
+
+  context.response = result
+  return context
+}
+
+export const request = async <TResponseType = unknown>(url: string | URL, payload?: unknown, config: RequestConfig = {}) => {
+  const {
+    requestTransformer,
+    responseTransformer,
+  } = config
+
+  let params: RequestParams
+  if( config.params ) {
+    const headers: Record<string, string> = {}
+    for( const header in config.params.headers ) {
+      headers[header.toLowerCase()] = config.params.headers[header]
+    }
+
+    params = {
+      ...config.params,
+      headers,
+    }
+
+  } else {
+    if( payload ) {
+      params = {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+      }
+    } else {
+      params = {
+        method: 'GET',
+      }
+    }
+  }
+
+  let transformedRequest: RequestTransformerContext = {
+    url,
+    payload,
+    params,
+  }
+
+  if( requestTransformer ) {
+    transformedRequest = await requestTransformer(transformedRequest, defaultRequestTransformer)
+  } else {
+    transformedRequest = await defaultRequestTransformer(transformedRequest)
+  }
+
+  const response = await fetch(transformedRequest.url, transformedRequest.params)
+  let transformedResponse: ResponseTransformerContext = {
+    response,
+  }
+
+  if( responseTransformer ) {
+    transformedResponse = await responseTransformer(transformedResponse, defaultResponseTransformer)
+  } else {
+    transformedResponse = await defaultResponseTransformer(transformedResponse)
+  }
+
+  return transformedResponse.response as typeof transformedResponse['response'] & {
+    data: TResponseType
+  }
+}
+

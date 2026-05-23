@@ -1,0 +1,56 @@
+{
+  "name": "aeria",
+  "type": "module",
+  "version": "0.0.359",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "echo skipping",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./loader": "./dist/loader.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@aeriajs/cli": "link:../cli",
+    "@aeriajs/core": "link:../core",
+    "@aeriajs/common": "link:../common",
+    "@aeriajs/entrypoint": "link:../entrypoint",
+    "@aeriajs/http": "link:../http",
+    "@aeriajs/node-http": "link:../node-http",
+    "@aeriajs/security": "link:../security",
+    "@aeriajs/server": "link:../server",
+    "@aeriajs/builtins": "link:../builtins",
+    "@aeriajs/types": "link:../types",
+    "@aeriajs/validation": "link:../validation"
+  },
+  "peerDependencies": {
+    "@aeriajs/cli": "^0.0.289",
+    "@aeriajs/core": "^0.0.302",
+    "@aeriajs/common": "^0.0.173",
+    "@aeriajs/entrypoint": "^0.0.181",
+    "@aeriajs/http": "^0.0.213",
+    "@aeriajs/node-http": "^0.0.213",
+    "@aeriajs/security": "^0.0.302",
+    "@aeriajs/server": "^0.0.305",
+    "@aeriajs/builtins": "^0.0.302",
+    "@aeriajs/types": "^0.0.144",
+    "@aeriajs/validation": "^0.0.198"
+  }
+}

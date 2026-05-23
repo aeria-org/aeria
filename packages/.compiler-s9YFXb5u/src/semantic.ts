@@ -1,0 +1,307 @@
+import type { Location } from './token.js'
+import type { CompilationOptions } from './types.js'
+import { isValidCollection } from '@aeriajs/common'
+import { locationMap } from './parser.js'
+import { Diagnostic } from './diagnostic.js'
+import * as AST from './ast.js'
+
+const containsPropertyWithId = (propName: string, properties: Record<string, unknown>) => {
+  return propName === '_id' || propName in properties
+}
+
+const collectionHasProperty = async (collection: AST.CollectionNode, propName: string, options: Pick<CompilationOptions, 'languageServer'> = {}) => {
+  let hasProperty = containsPropertyWithId(propName, collection.properties)
+  if( !hasProperty ) {
+    if( collection.extends ) {
+      if( options.languageServer ) {
+        return true
+      }
+
+      const { importPath, symbolName } = collection.extends
+      const { [symbolName]: importedCollection } = await import(importPath)
+
+      if( !isValidCollection(importedCollection) ) {
+        throw new Error
+      }
+
+      hasProperty = containsPropertyWithId(propName, importedCollection.description.properties)
+    }
+  }
+
+  return hasProperty
+}
+
+export const analyze = async (ast: AST.ProgramNode, options: Pick<CompilationOptions, 'languageServer'>, errors: Diagnostic[] = []) => {
+  const checkCollectionForeignProperties = async <TProperty extends Extract<AST.PropertyNode['property'], { $ref: string }>>(
+    foreignCollection: AST.CollectionNode,
+    property: TProperty,
+    attributeName: Extract<keyof TProperty, string>,
+  ) => {
+    const attribute = property[attributeName]
+    const loc = property[AST.LOCATION_SYMBOL]!
+
+    const missingProperties: [string, string, Location | undefined][] = []
+
+    if( Array.isArray(attribute) ) {
+      for( const index in attribute ) {
+        const propName = attribute[index]
+        if( typeof propName !== 'string' ) {
+          continue
+        }
+
+        if( !await collectionHasProperty(foreignCollection, propName, options) ) {
+          const symbol = loc.arrays[attributeName as keyof typeof loc.arrays]![index]
+          const location = locationMap.get(symbol)
+          missingProperties.push([
+            foreignCollection.name,
+            propName,
+            location,
+          ])
+        }
+      }
+
+    } else if( typeof attribute === 'string' ) {
+      const propName = attribute
+      if( !await collectionHasProperty(foreignCollection, propName, options) ) {
+        const symbol = loc.attributes[propName]
+        const location = locationMap.get(symbol)
+        missingProperties.push([
+          foreignCollection.name,
+          propName,
+          location,
+        ])
+      }
+    }
+
+    for( const [collName, propName, location] of missingProperties ) {
+      errors.push(new Diagnostic(`collection "${collName}" hasn't such property "${propName}"`, location))
+    }
+  }
+
+  const checkCollectionLocalProperties = async (node: AST.CollectionNode, attributeName: Extract<keyof AST.CollectionNode, string>) => {
+    const attribute = node[attributeName]
+    const loc = node[AST.LOCATION_SYMBOL]
+
+    const missingProperties: [string, string, Location | undefined][] = []
+
+    if( Array.isArray(attribute) ) {
+      for( const index in attribute ) {
+        const propName = attribute[index]
+        if( typeof propName !== 'string' ) {
+          continue
+        }
+
+        if( !await collectionHasProperty(node, propName, options) ) {
+          const symbol = loc.arrays[attributeName as keyof typeof loc.arrays]![index]
+          const location = locationMap.get(symbol)
+          missingProperties.push([
+            node.name,
+            propName,
+            location,
+          ])
+        }
+      }
+
+    } else if( typeof attribute === 'string' ) {
+      const propName = attribute
+      if( !await collectionHasProperty(node, propName, options) ) {
+        const symbol = loc.attributes[propName]
+        const location = locationMap.get(symbol)
+        missingProperties.push([
+          node.name,
+          propName,
+          location,
+        ])
+      }
+    }
+
+    for( const [collName, propName, location] of missingProperties ) {
+      errors.push(new Diagnostic(`collection "${collName}" hasn't such property "${propName}"`, location))
+    }
+  }
+
+  const checkObjectLocalProperties = async (node: AST.PropertyNode, attributeName: Extract<keyof Extract<AST.PropertyNode['property'], { properties: unknown }>, string>) => {
+    if( !('properties' in node.property) || !Array.isArray(node.property[attributeName]) ) {
+      return
+    }
+
+    const loc = node.property[AST.LOCATION_SYMBOL]!
+    const attribute = Array.isArray(node.property[attributeName])
+      ? node.property[attributeName]
+      : [node.property[attributeName]]
+
+    for( const index in attribute ) {
+      const propName = attribute[index]
+      if( !(propName in node.nestedProperties!) ) {
+        const symbol = Array.isArray(node.property[attributeName])
+          ? loc.arrays[attributeName as keyof typeof loc.arrays]![index]
+          : loc.attributes[attributeName]
+
+        const location = locationMap.get(symbol)
+
+        errors.push(new Diagnostic(`object hasn't such property "${propName}"`, location))
+      }
+    }
+  }
+
+  const recurseProperty = async (node: AST.PropertyNode) => {
+    if( typeof node.nestedAdditionalProperties === 'object' ) {
+      await recurseProperty(node.nestedAdditionalProperties)
+    }
+
+    if( node.nestedProperties ) {
+      await checkObjectLocalProperties(node, 'required')
+      await checkObjectLocalProperties(node, 'writable')
+      await checkObjectLocalProperties(node, 'form')
+
+      for( const propName in node.nestedProperties ) {
+        const subProperty = node.nestedProperties[propName]
+        await recurseProperty(subProperty)
+      }
+
+    } else if( '$ref' in node.property ) {
+      const refName = node.property.$ref
+      const foreignCollection = ast.collections.find(({ name }) => name === refName)
+
+      if( !foreignCollection ) {
+        const location = locationMap.get(node.property[AST.LOCATION_SYMBOL]!.type)
+        errors.push(new Diagnostic(`invalid reference "${refName}"`, location))
+        return
+      }
+
+      await checkCollectionForeignProperties(foreignCollection, node.property, 'foreignField')
+      await checkCollectionForeignProperties(foreignCollection, node.property, 'indexes')
+      await checkCollectionForeignProperties(foreignCollection, node.property, 'populate')
+      await checkCollectionForeignProperties(foreignCollection, node.property, 'form')
+
+      if( node.property.constraints ) {
+        for( const [name, symbol] of node.property[AST.LOCATION_SYMBOL]!.contraintTerms! ) {
+          if( !await collectionHasProperty(foreignCollection, name, options) ) {
+            const location = locationMap.get(symbol)
+            errors.push(new Diagnostic(`left operand "${name}" does not exist on collection "${foreignCollection.name}"`, location))
+          }
+        }
+      }
+
+    } else if( 'items' in node.property ) {
+      await recurseProperty({
+        kind: 'property',
+        property: node.property.items,
+      })
+    }
+  }
+
+  for( const node of ast.collections ) {
+    await checkCollectionLocalProperties(node, 'indexes')
+    await checkCollectionLocalProperties(node, 'filters')
+    await checkCollectionLocalProperties(node, 'form')
+    await checkCollectionLocalProperties(node, 'table')
+    await checkCollectionLocalProperties(node, 'tableMeta')
+
+    if( node.required ) {
+      const propNames = Array.isArray(node.required)
+        ? node.required
+        : Object.keys(node.required)
+
+      for( const index in propNames ) {
+        const propName = propNames[index]
+
+        if( !containsPropertyWithId(propName, node.properties) ) {
+          const symbol = node[AST.LOCATION_SYMBOL].required![index]
+          const location = locationMap.get(symbol)
+
+          errors.push(new Diagnostic(`collection "${node.name}" hasn't such property "${propName}"`, location))
+        }
+      }
+    }
+
+    for( const propName in node.properties ) {
+      const subNode = node.properties[propName]
+      await recurseProperty(subNode)
+    }
+
+    if( node[AST.LOCATION_SYMBOL].requiredTerms ) {
+      for( const [name, symbol] of node[AST.LOCATION_SYMBOL].requiredTerms ) {
+        if( !containsPropertyWithId(name, node.properties) ) {
+          const location = locationMap.get(symbol)
+          errors.push(new Diagnostic(`invalid left operand "${name}"`, location))
+        }
+      }
+    }
+
+    if( node.layout ) {
+      if( node.layout.options ) {
+        for( const [name, value] of Object.entries(node.layout[AST.LOCATION_SYMBOL].options) ) {
+          const option = node.layout.options[name as keyof typeof node.layout.options]!
+
+          if( Array.isArray(option) ) {
+            for( const [i, propName] of option.entries() ) {
+              if( !containsPropertyWithId(propName, node.properties) ) {
+                const location = locationMap.get((value as symbol[])[i])
+                errors.push(new Diagnostic(`invalid property "${propName}"`, location))
+              }
+            }
+          } else {
+            if( !containsPropertyWithId(option as string, node.properties) ) {
+              const location = locationMap.get(value as symbol)
+              errors.push(new Diagnostic(`invalid property "${option}"`, location))
+            }
+          }
+        }
+      }
+    }
+
+    if( node.formLayout ) {
+      if( node.formLayout.fields ) {
+        for( const [name, value] of Object.entries(node.formLayout[AST.LOCATION_SYMBOL].fields) ) {
+          if( !containsPropertyWithId(name, node.properties) ) {
+            const location = locationMap.get(value.name)
+            errors.push(new Diagnostic(`invalid property "${name}"`, location))
+          }
+        }
+      }
+
+      if( node.formLayout[AST.LOCATION_SYMBOL].terms ) {
+        for( const [name, symbol] of node.formLayout[AST.LOCATION_SYMBOL].terms ) {
+          if( !containsPropertyWithId(name, node.properties) ) {
+            const location = locationMap.get(symbol)
+            errors.push(new Diagnostic(`invalid left operand "${name}"`, location))
+          }
+        }
+      }
+    }
+
+    if( node.search ) {
+      for( const [i, symbol] of node[AST.LOCATION_SYMBOL].searchIndexes!.entries() ) {
+        const propName = node.search.indexes[i]
+        if( !containsPropertyWithId(propName, node.properties) ) {
+          const location = locationMap.get(symbol)
+          errors.push(new Diagnostic(`invalid property "${propName}"`, location))
+        }
+      }
+    }
+  }
+
+  for( const node of ast.contracts ) {
+    if( node.payload ) {
+      await recurseProperty(node.payload)
+    }
+    if( node.query ) {
+      await recurseProperty(node.query)
+    }
+    if( node.response ) {
+      if( Array.isArray(node.response) ) {
+        for( const subNode of node.response ) {
+          await recurseProperty(subNode)
+        }
+      } else {
+        await recurseProperty(node.response)
+      }
+    }
+  }
+
+  return {
+    errors,
+  }
+}
+
