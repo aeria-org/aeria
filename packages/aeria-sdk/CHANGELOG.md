@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.230
+
+### Patch Changes
+
+- c6e918d: Fix runtime.js generation
+
 ## 0.0.229
 
 ### Patch Changes
