@@ -13,8 +13,8 @@ export const useSecurity = <TDescription extends Description>(context: Context<T
   const secureReadPayload = async <TPayload extends Partial<CollectionReadPayload>>(payload: TPayload) => {
     const props = {
       payload: {
-        filters: {},
         ...payload,
+        filters: payload.filters || {},
       },
     }
 
