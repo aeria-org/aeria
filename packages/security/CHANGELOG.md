@@ -1,5 +1,12 @@
 # @aeriajs/security
 
+## 0.0.303
+
+### Patch Changes
+
+- ff70233: Fix undefined prop access bug
+  - @aeriajs/core@0.0.303
+
 ## 0.0.302
 
 ### Patch Changes
