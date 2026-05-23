@@ -135,11 +135,11 @@ export const migrate = async () => {
     const indexes = Array.from(indexesSet)
 
     const textIndex = collIndexes.find((index) => 'textIndexVersion' in index)
-    const invalidated = textIndex && !indexes.every((key) => Object.keys(textIndex.weights!).includes(key))
+    const invalidated = textIndex && !indexes.every((key) => textIndex.weights && Object.keys(textIndex.weights).includes(key))
 
     if( !textIndex || invalidated ) {
-      if( textIndex ) {
-        await model.dropIndex(textIndex.name!)
+      if( textIndex?.name ) {
+        await model.dropIndex(textIndex.name)
       }
 
       await model.createIndex(Object.fromEntries(indexes.map((index) => [
