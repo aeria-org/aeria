@@ -131,7 +131,7 @@ export const validateProperty = <TWhat>(
     }
 
     if( (options.coerce || options.coerceObjectIds) && options.objectIdConstructor ) {
-      if( ('$ref' in property || 'format' in property && property.format === 'objectid') && typeof what === 'string' ) {
+      if( (('$ref' in property && !property.foreignField) || 'format' in property && property.format === 'objectid') && typeof what === 'string' ) {
         return Result.result(new options.objectIdConstructor(what))
       }
     }
@@ -143,7 +143,7 @@ export const validateProperty = <TWhat>(
     if( '$ref' in property ) {
       switch( typeof what ) {
         case 'string': {
-          if( !isValidObjectId(what) ) {
+          if( !property.foreignField && !isValidObjectId(what) ) {
             return Result.error(makePropertyValidationError(PropertyValidationErrorCode.Unmatching, {
               expected: expectedType,
               got: actualType,
@@ -325,7 +325,9 @@ export const validateRefs = async <TWhat>(
         return Result.result({})
       }
 
-      if( !isValidObjectId(String(what)) ) {
+      const foreignField = property.foreignField
+
+      if( !foreignField && !isValidObjectId(String(what)) ) {
         return Result.error(makePropertyValidationError(PropertyValidationErrorCode.Unmatching, {
           expected: 'objectid',
           got: typeof what,
@@ -337,16 +339,17 @@ export const validateRefs = async <TWhat>(
       if( property.constraints ) {
         query = {
           $and: [
-            {
-              _id: new options.objectIdConstructor(what),
-            },
+            foreignField
+              ? { [foreignField]: what, }
+              : { _id: new options.objectIdConstructor(what), },
             convertConditionToQuery(property.constraints),
           ],
         }
       } else {
-        query = {
-          _id: new options.objectIdConstructor(what),
-        }
+        query = 
+          foreignField
+            ? { [foreignField]: what, }
+            : { _id: new options.objectIdConstructor(what), }
       }
 
       const exists = await options.context.collections[property.$ref].model.findOne(query, {
