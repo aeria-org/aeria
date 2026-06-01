@@ -495,11 +495,9 @@ const recurse = async <TRecursionTarget extends Record<string, unknown>>(
               switch( typeof elem ) {
                 case 'string':
                 case 'number': {
-                  documents.push(
-                    typeof elem === 'string' && !propCast.foreignField
-                      ? new ObjectId(elem)
-                      : elem
-                  )
+                  documents.push(typeof elem === 'string' && !propCast.foreignField
+                    ? new ObjectId(elem)
+                    : elem)
                   continue
                 }
                 case 'object': {

@@ -340,16 +340,24 @@ export const validateRefs = async <TWhat>(
         query = {
           $and: [
             foreignField
-              ? { [foreignField]: what, }
-              : { _id: new options.objectIdConstructor(what), },
+              ? {
+                [foreignField]: what,
+              }
+              : {
+                _id: new options.objectIdConstructor(what),
+              },
             convertConditionToQuery(property.constraints),
           ],
         }
       } else {
-        query = 
+        query =
           foreignField
-            ? { [foreignField]: what, }
-            : { _id: new options.objectIdConstructor(what), }
+            ? {
+              [foreignField]: what,
+            }
+            : {
+              _id: new options.objectIdConstructor(what),
+            }
       }
 
       const exists = await options.context.collections[property.$ref].model.findOne(query, {
