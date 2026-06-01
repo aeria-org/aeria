@@ -123,8 +123,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       marked:
-        specifier: ^17.0.1
-        version: 17.0.1
+        specifier: ^18.0.4
+        version: 18.0.4
       yaml:
         specifier: ^2.8.2
         version: 2.8.2
@@ -1779,8 +1779,8 @@ packages:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
     engines: {node: '>=8'}
 
-  marked@17.0.1:
-    resolution: {integrity: sha512-boeBdiS0ghpWcSwoNm/jJBwdpFaMnZWRzjA6SkUMYb40SVaN1x7mmfGKp0jvexGcx+7y2La5zRZsYFZI6Qpypg==}
+  marked@18.0.4:
+    resolution: {integrity: sha512-c/BTaKzg0G6ezQx97DAkYU7k0HM6ys0FqYeKBL6hlBByZwy+ycA1+f0vDdjMHKKeEjdgkx0GOv9Il6D+85cOqA==}
     engines: {node: '>= 20'}
     hasBin: true
 
@@ -3706,7 +3706,7 @@ snapshots:
       semver: 6.3.1
     optional: true
 
-  marked@17.0.1: {}
+  marked@18.0.4: {}
 
   memory-pager@1.5.0: {}
 
