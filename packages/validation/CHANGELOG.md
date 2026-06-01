@@ -1,5 +1,11 @@
 # @aeriajs/validation
 
+## 0.0.199
+
+### Patch Changes
+
+- e963bec: property.foreignField bug
+
 ## 0.0.198
 
 ### Patch Changes

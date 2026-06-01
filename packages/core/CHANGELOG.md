@@ -1,5 +1,16 @@
 # @aeriajs/api
 
+## 0.0.304
+
+### Patch Changes
+
+- e963bec: property.foreignField bug
+- Updated dependencies [e963bec]
+  - @aeriajs/validation@0.0.199
+  - @aeriajs/builtins@0.0.304
+  - @aeriajs/http@0.0.214
+  - @aeriajs/security@0.0.304
+
 ## 0.0.303
 
 ### Patch Changes
