@@ -31,6 +31,6 @@
   "dependencies": {
     "chokidar": "^5.0.0",
     "marked": "^18.0.4",
-    "yaml": "^2.8.2"
+    "yaml": "^2.9.0"
   }
 }
