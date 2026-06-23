@@ -1,5 +1,13 @@
 # @aeriajs/api
 
+## 0.0.305
+
+### Patch Changes
+
+- 41741b3: Use `fs.rename()` fallback
+  - @aeriajs/builtins@0.0.305
+  - @aeriajs/security@0.0.305
+
 ## 0.0.304
 
 ### Patch Changes
