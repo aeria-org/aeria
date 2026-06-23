@@ -318,7 +318,16 @@ const moveFiles = async (value: unknown, ctx: PhaseContext) => {
   const { _id: fileId, ...newFile } = tempFile
   newFile.absolute_path = `${ctx.options.context.config.storage!.fs}/${tempFile.absolute_path.split(path.sep).at(-1)}`
   newFile.owner = ctx.options.context.token.sub
-  await fs.rename(tempFile.absolute_path, newFile.absolute_path)
+  try {
+    await fs.rename(tempFile.absolute_path, newFile.absolute_path)
+  } catch( err ) {
+    if( (err as NodeJS.ErrnoException).code !== 'EXDEV' ) {
+      throw err
+    }
+
+    await fs.copyFile(tempFile.absolute_path, newFile.absolute_path)
+    await fs.unlink(tempFile.absolute_path)
+  }
 
   const file = await ctx.options.context.collections.file.model.insertOne(newFile)
   return Result.result(file.insertedId)
