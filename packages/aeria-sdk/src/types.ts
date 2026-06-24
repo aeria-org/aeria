@@ -8,7 +8,10 @@ export type StorageStrategy =
 
 export type InstanceConfig = {
   publicUrl: string | {
-    production: string
+    production: string | {
+      client: string
+      ssr: string
+    }
     development: string
   }
   storage?: {

@@ -5,8 +5,17 @@ export const publicUrl = (config: InstanceConfig) => {
     return config.publicUrl
   }
 
-  return config.environment === 'development'
-    ? config.publicUrl.development
-    : config.publicUrl.production
+  if( config.environment === 'development' ) {
+    return config.publicUrl.development
+  }
+
+  switch( typeof config.publicUrl.production ) {
+    case 'string': return config.publicUrl.production
+    case 'object': {
+      return typeof window === 'undefined'
+        ? config.publicUrl.production.ssr
+        : config.publicUrl.production.client
+    }
+  }
 }
 
