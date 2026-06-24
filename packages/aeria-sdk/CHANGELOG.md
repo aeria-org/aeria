@@ -1,5 +1,11 @@
 # aeria-sdk
 
+## 0.0.231
+
+### Patch Changes
+
+- 14280fb: Allow specifying different URLs for SSR and Client environments
+
 ## 0.0.230
 
 ### Patch Changes
