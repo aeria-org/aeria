@@ -1,4 +1,4 @@
-import type { ServerResponse, IncomingMessage } from 'http'
+import type { ServerResponse, IncomingMessage } from 'node:http'
 import type { Result, ExtractError, ExtractResult } from './result.js'
 import type { EndpointError } from './endpointError.js'
 import type { ACError } from './accessControl.js'

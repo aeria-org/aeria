@@ -1,12 +1,16 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "rootDir": "src",
     "outDir": "dist",
     "paths": {
       "mongodb": [
         "../core/node_modules/mongodb/mongodb.d.ts"
       ]
-    }
+    },
+    "types": [
+      "node"
+    ]
   },
   "include": [
     "@types/*.d.ts",

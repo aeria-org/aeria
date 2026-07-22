@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "rootDir": "src",
     "outDir": "dist",
     "paths": {
       "@aeriajs/common": [
@@ -9,7 +10,10 @@
       "@aeriajs/types": [
         "../types/dist"
       ]
-    }
+    },
+    "types": [
+      "node"
+    ]
   },
   "include": [
     "@types/*.d.ts",
