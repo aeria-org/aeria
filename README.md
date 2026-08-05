@@ -2,7 +2,7 @@
 >A framework to prototype webapps fast so you can touch grass
 
 > [!NOTE]
-> It's pretty much clear now Aeria is and will remain to be a hobby project. I can only look back to it now and see how it contributed to my (now useless?) TypeScript and overall programming skills. Still, 100% human-made. No AI was ever directly used across any of the many project repositories. I'll still use Aeria for personal projects, and I'll keep working on the framework while doing so, just not so ambitiously anymore.
+> It's pretty much clear now Aeria is and will remain to be a hobby project. I can only look back to it now and see how it contributed to my (now useless?) TypeScript and overall programming knowledge. Still, 100% human-made. No AI was ever directly used across any of the many project repositories. I'll still use Aeria for personal projects, and I'll keep working on the framework while doing so, just not so ambitiously anymore.
 
 [![npm](https://img.shields.io/npm/v/aeria.svg)](https://npmjs.com/package/aeria) ![https://github.com/aeria-org/aeria/actions/workflows/ci.yaml](https://github.com/aeria-org/aeria/actions/workflows/ci.yaml/badge.svg)
 
