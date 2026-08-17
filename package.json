@@ -27,7 +27,7 @@
     "@aeriajs/server": "link:packages/server",
     "@aeriajs/types": "link:packages/types",
     "@aeriajs/validation": "link:packages/validation",
-    "@changesets/cli": "^2.31.0",
+    "@changesets/cli": "^3.0.0",
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
     "@eslint-aeria/config": "~0.0.9",
