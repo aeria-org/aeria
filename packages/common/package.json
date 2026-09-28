@@ -33,10 +33,10 @@
   },
   "devDependencies": {
     "@aeriajs/types": "link:../types",
-    "bson": "^7.3.2"
+    "bson": "^7.3.3"
   },
   "peerDependencies": {
     "@aeriajs/types": "^0.0.144",
-    "bson": "^7.3.2"
+    "bson": "^7.3.3"
   }
 }
