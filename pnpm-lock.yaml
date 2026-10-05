@@ -168,8 +168,8 @@ importers:
         specifier: link:../validation
         version: link:../validation
       mongodb:
-        specifier: ^7.6.0
-        version: 7.6.0
+        specifier: ^7.7.0
+        version: 7.7.0
 
   packages/builtins-icons: {}
 
@@ -231,8 +231,8 @@ importers:
         specifier: ^9.0.3
         version: 9.0.3
       mongodb:
-        specifier: ^7.6.0
-        version: 7.6.0
+        specifier: ^7.7.0
+        version: 7.7.0
     devDependencies:
       '@aeriajs/builtins':
         specifier: link:../builtins
@@ -297,8 +297,8 @@ importers:
         specifier: link:../validation
         version: link:../validation
       mongodb:
-        specifier: ^7.6.0
-        version: 7.6.0
+        specifier: ^7.7.0
+        version: 7.7.0
 
   packages/node-http:
     devDependencies:
@@ -324,8 +324,8 @@ importers:
         specifier: link:../types
         version: link:../types
       mongodb:
-        specifier: ^7.6.0
-        version: 7.6.0
+        specifier: ^7.7.0
+        version: 7.7.0
 
   packages/server:
     devDependencies:
@@ -354,8 +354,8 @@ importers:
         specifier: link:../types
         version: link:../types
       mongodb:
-        specifier: ^7.6.0
-        version: 7.6.0
+        specifier: ^7.7.0
+        version: 7.7.0
 
   packages/types:
     dependencies:
@@ -375,8 +375,8 @@ importers:
         specifier: link:../types
         version: link:../types
       mongodb:
-        specifier: ^7.6.0
-        version: 7.6.0
+        specifier: ^7.7.0
+        version: 7.7.0
 
   playground:
     dependencies:
@@ -994,9 +994,6 @@ packages:
 
   '@mongodb-js/saslprep@1.4.4':
     resolution: {integrity: sha512-p7X/ytJDIdwUfFL/CLOhKgdfJe1Fa8uw9seJYvdOmnP9JBWGWHW69HkOixXS6Wy9yvGf1MbhcS6lVmrhy4jm2g==}
-
-  '@mongodb-js/saslprep@1.5.4':
-    resolution: {integrity: sha512-05UC0jQsjKAOuXQ0H9Ud9vUTJpZIg+n/FinpR30tI5I8pY2inTfPOZ5OF/cg3Ce/N9MoD1xhRCeOsJtuTbFYlw==}
 
   '@mongodb-js/saslprep@1.5.5':
     resolution: {integrity: sha512-0PV4mvjGd2Q2/viDvXuoSNzTjQngHvtuWUry1vqvcK4Q/CTeO1zEKMf9set01DMocJnogl/pyNAdvyk+Pe0kQA==}
@@ -1945,8 +1942,8 @@ packages:
       socks:
         optional: true
 
-  mongodb@7.6.0:
-    resolution: {integrity: sha512-WbZ6OCjYw2c53LOjfkQa+reXr7kIiOVpXXglnASFuiMtif0BvsMwHe3ClJHLm1/r7wJFwaasfFtD6iYIktB01g==}
+  mongodb@7.7.0:
+    resolution: {integrity: sha512-XG1xXEqyouAV8GCb3PuRaujofeXKpAJAPvXYWZgHl6Dz4QHSJ1nRLl0+GpqaLTwKvC0RFE9truOur34RNFY1nw==}
     engines: {node: '>=20.19.0'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.806.0
@@ -2837,14 +2834,9 @@ snapshots:
     dependencies:
       sparse-bitfield: 3.0.3
 
-  '@mongodb-js/saslprep@1.5.4':
-    dependencies:
-      sparse-bitfield: 3.0.3
-
   '@mongodb-js/saslprep@1.5.5':
     dependencies:
       sparse-bitfield: 3.0.3
-    optional: true
 
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
@@ -3753,9 +3745,9 @@ snapshots:
       mongodb-connection-string-url: 7.0.2
     optional: true
 
-  mongodb@7.6.0:
+  mongodb@7.7.0:
     dependencies:
-      '@mongodb-js/saslprep': 1.5.4
+      '@mongodb-js/saslprep': 1.5.5
       bson: 7.3.3
       mongodb-connection-string-url: 7.0.2
 
