@@ -210,8 +210,8 @@ importers:
         specifier: link:../types
         version: link:../types
       bson:
-        specifier: ^7.3.2
-        version: 7.3.2
+        specifier: ^7.3.3
+        version: 7.3.3
 
   packages/compiler:
     devDependencies:
@@ -1407,10 +1407,6 @@ packages:
   bson@6.10.4:
     resolution: {integrity: sha512-WIsKqkSC0ABoBJuT1LEX+2HEvNmNKKgnTAyd0fL8qzK4SH2i9NXg+t08YtdZp/V9IZ33cxe3iV4yM0qg8lMQng==}
     engines: {node: '>=16.20.1'}
-
-  bson@7.3.2:
-    resolution: {integrity: sha512-1w0ra+ho1cuE+w8jzwgzTFIimFtCfZeCoOsvIPQg6uyFCsp8M29U7bNNf5GrFh88TXbYg1g3TyKUGpd6O7q6zA==}
-    engines: {node: '>=20.19.0'}
 
   bson@7.3.3:
     resolution: {integrity: sha512-oz3LwE3qGEhTCSyhzQRLY3Bj1NLOsjFMf6tcmY5J8M+3R7EVcmoBfSHWvjUK3yXCLDUsGpIuB3aQL4nDZ1EV/g==}
@@ -3193,8 +3189,6 @@ snapshots:
       balanced-match: 1.0.2
 
   bson@6.10.4: {}
-
-  bson@7.3.2: {}
 
   bson@7.3.3: {}
 
